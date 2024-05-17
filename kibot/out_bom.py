@@ -257,7 +257,7 @@ class BoMLinkable(Optionable):
             self.logo = '' if self.logo else None
         elif self.logo:
             if not os.path.isabs(self.logo):
-              self.logo = os.path.abspath(os.path.expandvars(os.path.expanduser(self.logo)))
+                self.logo = os.path.abspath(os.path.expandvars(os.path.expanduser(self.logo)))
             if not os.path.isfile(self.logo):
                 raise KiPlotConfigurationError('Missing logo file `{}`'.format(self.logo))
         # Extra info lines
