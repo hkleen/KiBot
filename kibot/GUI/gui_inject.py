@@ -7,11 +7,13 @@
 # Code to do regression tests by injecting actions to the GUI code
 
 import csv
+import signal
 import wx
 from ..gs import GS
 from .. import log
 
 logger = log.get_logger()
+TIME_OUT = 10
 IDLE_ID = wx.EVT_IDLE.typeId
 ids = {}
 # eventDict = {}
@@ -131,9 +133,12 @@ class InjectDialog(wx.Dialog):
         return len(InjectDialog.events) and InjectDialog.events[0][1] == '_WaitDialog'
 
     def retire_event(self):
+        signal.alarm(0)
         if not InjectDialog.events:
             return False
         e = InjectDialog.events.pop(0)
+        # Create a time-out, in case the flow doesn't call us again
+        signal.alarm(TIME_OUT)
         id = e[0]
         command = e[1]
         data = e[2:]
