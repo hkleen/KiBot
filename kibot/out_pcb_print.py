@@ -164,6 +164,12 @@ class LayerOptions(Layer):
                 la.exclude_filter = None
         return layers
 
+    @classmethod
+    def create_layer(cls, name):
+        la = super().create_layer(name)
+        la.exclude_filter = None
+        return la
+
     def copy_extra_from(self, ref):
         """ Copy members specific to LayerOptions """
         self.color = ref.color
