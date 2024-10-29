@@ -12,7 +12,7 @@ filters:
 
 outputs:
   - name: 'print_front'
-    comment: "Print Top and Bottom layers"
+    comment: "Print Top layer, testpoints in red"
     type: pcb_print
     dir: Layers
     options:
