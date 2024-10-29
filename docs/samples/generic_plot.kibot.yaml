@@ -2693,6 +2693,10 @@ outputs:
               # [string=''] A description for the layer, for documentation purposes.
               # A default can be specified using the `layer_defaults` global option
               description: ''
+              # [string|list(string)='_null'] Name of the filter to exclude components before printing this layer.
+              # This option affects only this layer.
+              # You should also set `plot_footprint_values` and `sketch_pads_on_fab` to false
+              exclude_filter: '_null'
               # [boolean=false] Include references and values even when they are marked as invisible
               force_plot_invisible_refs_vals: false
               # [string=''] Name of the layer. As you see it in KiCad
@@ -2701,6 +2705,9 @@ outputs:
               plot_footprint_refs: true
               # [boolean=true] Include the footprint values
               plot_footprint_values: true
+              # [boolean=true] Draw the outline of the pads on the *.Fab layers (KiCad 6+).
+              # When not defined we use the default value for the page
+              sketch_pads_on_fab_layers: true
               # [string=''] Suffix used in file names related to this layer. Derived from the name if not specified.
               # A default can be specified using the `layer_defaults` global option
               suffix: ''
@@ -2739,6 +2746,10 @@ outputs:
               # [string=''] A description for the layer, for documentation purposes.
               # A default can be specified using the `layer_defaults` global option
               description: ''
+              # [string|list(string)='_null'] Name of the filter to exclude components before printing this layer.
+              # This option affects only this layer.
+              # You should also set `plot_footprint_values` and `sketch_pads_on_fab` to false
+              exclude_filter: '_null'
               # [boolean=false] Include references and values even when they are marked as invisible
               force_plot_invisible_refs_vals: false
               # [string=''] Name of the layer. As you see it in KiCad
@@ -2747,6 +2758,9 @@ outputs:
               plot_footprint_refs: true
               # [boolean=true] Include the footprint values
               plot_footprint_values: true
+              # [boolean=true] Draw the outline of the pads on the *.Fab layers (KiCad 6+).
+              # When not defined we use the default value for the page
+              sketch_pads_on_fab_layers: true
               # [string=''] Suffix used in file names related to this layer. Derived from the name if not specified.
               # A default can be specified using the `layer_defaults` global option
               suffix: ''
@@ -2766,7 +2780,7 @@ outputs:
           # [number=0.1] Line width for the sketched pads [mm], see `sketch_pads_on_fab_layers` (KiCad 6+)
           # Note that this value is currently ignored by KiCad (6.0.9)
           sketch_pad_line_width: 0.1
-          # [boolean=false] Draw only the outline of the pads on the *.Fab layers (KiCad 6+)
+          # [boolean=false] Draw the outline of the pads on the *.Fab layers (KiCad 6+)
           sketch_pads_on_fab_layers: false
           # [boolean=false] Try to sort the layers in the same order that uses KiCad for printing
           sort_layers: false

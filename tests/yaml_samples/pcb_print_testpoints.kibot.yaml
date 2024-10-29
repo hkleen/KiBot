@@ -1,0 +1,44 @@
+# Example KiBot config file
+kibot:
+  version: 1
+
+filters:
+  - name: only_testpoints
+    comment: "Select only testpoints"
+    type: generic
+    include_only:
+      - column: Value
+        regex: "^TestPoint"
+
+outputs:
+  - name: 'print_front'
+    comment: "Print Top and Bottom layers"
+    type: pcb_print
+    dir: Layers
+    options:
+      format: 'PDF'
+      keep_temporal_files: true
+      colored_pads: false
+      colored_vias: false
+      pages:
+        - sheet: Front
+          sheet_reference_color: "#A02020"
+          sketch_pads_on_fab_layers: true
+          sketch_pad_line_width: 1
+          layers:
+            - layer: Edge.Cuts
+              color: '#A0A0A0'
+            - layer: F.Cu
+              color: '#A0A0A0'
+            - layer: F.SilkS
+              color: '#A0A0A0'
+            - layer: F.Fab
+              plot_footprint_refs: false
+              plot_footprint_values: false
+              color: '#202020'
+            - layer: F.Fab
+              exclude_filter: 'only_testpoints'
+              color: '#FF0000'
+              plot_footprint_values: false
+              sketch_pads_on_fab_layers: false
+            - layer: Dwgs.User

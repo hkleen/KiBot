@@ -37,6 +37,7 @@ from pcbnew import B_Cu, B_Mask, F_Cu, F_Mask, FromMM, IsCopperLayer, LSET, PLOT
 from shutil import rmtree, copy2
 import sys
 from .error import KiPlotConfigurationError
+from .fil_base import BaseFilter, apply_exclude_filter
 from .gs import GS
 from .optionable import Optionable
 from .out_base import VariantOptions
@@ -52,7 +53,7 @@ from .create_pdf import create_pdf_from_pages
 from .macros import macros, document, output_class  # noqa: F401
 from .drill_marks import DRILL_MARKS_MAP, add_drill_marks
 from .layer import Layer, get_priority
-from .kiplot import run_command, load_board
+from .kiplot import run_command, load_board, get_all_components
 from . import __version__
 from . import log
 
@@ -139,11 +140,29 @@ class LayerOptions(Layer):
             self.use_for_center = True
             """ Use this layer for centering purposes.
                 You can invert the meaning using the `invert_use_for_center` option """
+            self.sketch_pads_on_fab_layers = True
+            r""" Draw the outline of the pads on the \*.Fab layers (KiCad 6+).
+                 When not defined we use the default value for the page """
+            self.exclude_filter = Optionable
+            """ [string|list(string)='_null'] Name of the filter to exclude components before printing this layer.
+                This option affects only this layer.
+                You should also set `plot_footprint_values` and `sketch_pads_on_fab` to false """
 
     def config(self, parent):
         super().config(parent)
         if self.color:
             self.validate_color('color')
+        self.exclude_filter = BaseFilter.solve_filter(self.exclude_filter, 'exclude_filter')
+        if not self.get_user_defined('sketch_pads_on_fab_layers'):
+            self.sketch_pads_on_fab_layers = parent.sketch_pads_on_fab_layers
+
+    @classmethod
+    def solve(cls, values):
+        layers = super().solve(values)
+        for la in layers:
+            if isinstance(la.exclude_filter, type):
+                la.exclude_filter = None
+        return layers
 
     def copy_extra_from(self, ref):
         """ Copy members specific to LayerOptions """
@@ -211,7 +230,7 @@ class PagesOptions(Optionable):
             self.page_id = '%02d'
             """ Text to differentiate the pages. Use %d (like in C) to get the page number """
             self.sketch_pads_on_fab_layers = False
-            r""" Draw only the outline of the pads on the \*.Fab layers (KiCad 6+) """
+            r""" Draw the outline of the pads on the \*.Fab layers (KiCad 6+) """
             self.sketch_pad_line_width = 0.1
             """ Line width for the sketched pads [mm], see `sketch_pads_on_fab_layers` (KiCad 6+)
                 Note that this value is currently ignored by KiCad (6.0.9) """
@@ -1232,6 +1251,23 @@ class PCB_PrintOptions(VariantOptions):
                 vis_layers.addLayer(edge_id)
             GS.board.SetVisibleLayers(vis_layers)
 
+    def exclude_components_from_layer(self, layer):
+        if not layer.exclude_filter:
+            return
+        comps = self._comps_for_fab_ex = self._comps if self._comps else get_all_components()
+        comps_hash = self._comps_hash_for_fab_ex = {c.ref: c for c in comps}
+        self._old_included_fab = [c.included for c in comps]
+        apply_exclude_filter(comps, layer.exclude_filter)
+        # Save the current savings
+        self._layer_id_ex, self._graphs_ex = self.remove_graphics_from_layer(GS.board, comps_hash, layer.layer)
+
+    def restore_components_from_layer(self, layer):
+        if not layer.exclude_filter:
+            return
+        for c, v in zip(self._comps_for_fab_ex, self._old_included_fab):
+            c.included = v
+        self.restore_graphics_from_layer(GS.board, self._comps_hash_for_fab_ex, self._layer_id_ex, self._graphs_ex)
+
     def generate_output(self, output):
         self.check_tools()
         if not self._pages:
@@ -1308,7 +1344,6 @@ class PCB_PrintOptions(VariantOptions):
                 po.SetLineWidth(FromMM(p.line_width))
                 po.SetPlotPadsOnSilkLayer(not p.exclude_pads_from_silkscreen)
             else:
-                po.SetSketchPadsOnFabLayers(p.sketch_pads_on_fab_layers)
                 po.SetSketchPadLineWidth(p._sketch_pad_line_width)
             filelist = []
             if self.force_edge_cuts and next(filter(lambda x: x._id == edge_id, p._layers), None) is None:
@@ -1317,18 +1352,22 @@ class PCB_PrintOptions(VariantOptions):
             if p.layers == ['all'] and not p.get_user_defined('layers'):
                 logger.warning(W_NOLAYERS+f'No layers specified for `{p}` (`{self._parent.name}`), including `all`')
             re_filled_zones = False
-            for la in p._layers:
+            for pos, la in enumerate(p._layers):
                 id = la._id
                 logger.debug('- Plotting layer {} ({})'.format(la.layer, id))
                 po.SetPlotReference(la.plot_footprint_refs)
                 po.SetPlotValue(la.plot_footprint_values)
                 po.SetPlotInvisibleText(la.force_plot_invisible_refs_vals)
+                if GS.ki6:
+                    po.SetSketchPadsOnFabLayers(la.sketch_pads_on_fab_layers)
                 # Avoid holes on non-copper layers
                 po.SetDrillMarksType(self._drill_marks if IsCopperLayer(id) else 0)
                 pc.SetLayer(id)
                 if id in user_layer_ids:
                     self.mirror_text(p, id)
-                pc.OpenPlotfile(la.suffix, PLOT_FORMAT_SVG, p.sheet)
+                # Apply a filter to this layer
+                self.exclude_components_from_layer(la)
+                pc.OpenPlotfile(la.suffix+str(pos), PLOT_FORMAT_SVG, p.sheet)
                 pc.PlotLayer()
                 if id in user_layer_ids:
                     self.mirror_text(p, id)
@@ -1336,6 +1375,8 @@ class PCB_PrintOptions(VariantOptions):
                 filelist.append((pc.GetPlotFileName(), la.color))
                 re_filled_zones |= self.plot_extra_cu(id, la, pc, p, filelist)
                 self.plot_realistic_solder_mask(id, temp_dir, filelist[-1][0], filelist[-1][1], p.mirror, p.scaling)
+                # Revert a filter to this layer
+                self.restore_components_from_layer(la)
 #                 if needs_ki7_scale_workaround:
 #                     self.kicad7_scale_workaround(id, temp_dir, filelist[-1][0], filelist[-1][1], p.mirror, p.scaling)
             # 2) Plot the frame using an empty layer and 1.0 scale

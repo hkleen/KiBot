@@ -11,7 +11,7 @@ from shutil import rmtree
 from .bom.columnlist import ColumnList
 from .gs import GS
 from .kicad.pcb import replace_footprints
-from .kiplot import load_sch, get_board_comps_data
+from .kiplot import get_all_components
 from .misc import Rect, W_WRONGPASTE, DISABLE_3D_MODEL_TEXT, W_NOCRTYD, MOD_ALLOW_MISSING_COURTYARD, W_MISSDIR, W_KEEPTMP
 if not GS.kicad_version_n:
     # When running the regression tests we need it
@@ -531,43 +531,41 @@ class VariantOptions(BaseOptions):
             for gi in self._old_bmask:
                 gi.SetLayer(self._bmask)
 
-    def remove_fab(self, board, comps_hash):
-        """ Remove from Fab the excluded components. """
+    def remove_graphics_from_layer(self, board, comps_hash, layer_name):
+        """ Remove from layer_name the excluded components. """
         if comps_hash is None:
-            return
-        logger.debug('Removing from Fab')
-        ffab = board.GetLayerID('F.Fab')
-        bfab = board.GetLayerID('B.Fab')
-        old_ffab = []
-        old_bfab = []
+            return None, None
+        logger.debug(f'Removing from {layer_name}')
+        layer_id = board.GetLayerID(layer_name)
+        old_graphs = []
         rescue = board.GetLayerID(GS.work_layer)
         for m in GS.get_modules_board(board):
             ref = m.GetReference()
             c = comps_hash.get(ref, None)
             if c is not None and not c.included:
-                logger.debugl(3, '- Removed Fab drawings from '+ref)
+                logger.debugl(3, f'- Removed {ref} drawings from {layer_name}')
                 # Remove any graphical item in the *.Fab layers
                 for gi in m.GraphicalItems():
                     l_gi = gi.GetLayer()
-                    if l_gi == ffab:
+                    if l_gi == layer_id:
                         gi.SetLayer(rescue)
-                        old_ffab.append(gi)
-                    if l_gi == bfab:
-                        gi.SetLayer(rescue)
-                        old_bfab.append(gi)
-        # Store the data to undo the above actions
-        self.old_ffab = old_ffab
-        self.old_bfab = old_bfab
-        self._ffab = ffab
-        self._bfab = bfab
+                        old_graphs.append(gi)
+        return layer_id, old_graphs
 
-    def restore_fab(self, board, comps_hash):
+    def remove_fab(self, board, comps_hash):
+        """ Remove from Fab the excluded components. """
+        self._ffab, self.old_ffab = self.remove_graphics_from_layer(board, comps_hash, 'F.Fab')
+        self._bfab, self.old_bfab = self.remove_graphics_from_layer(board, comps_hash, 'B.Fab')
+
+    def restore_graphics_from_layer(self, board, comps_hash, layer_id, graphs):
         if comps_hash is None:
             return
-        for gi in self.old_ffab:
-            gi.SetLayer(self._ffab)
-        for gi in self.old_bfab:
-            gi.SetLayer(self._bfab)
+        for gi in graphs:
+            gi.SetLayer(layer_id)
+
+    def restore_fab(self, board, comps_hash):
+        self.restore_graphics_from_layer(board, comps_hash, self._ffab, self.old_ffab)
+        self.restore_graphics_from_layer(board, comps_hash, self._bfab, self.old_bfab)
 
     def replace_3D_models(self, models, new_model, c):
         """ Changes the 3D model using a provided model.
@@ -1027,12 +1025,7 @@ class VariantOptions(BaseOptions):
         if not self._filters_to_expand:
             return components
         new_list = []
-        if self._comps:
-            all_comps = self._comps
-        else:
-            load_sch()
-            all_comps = GS.sch.get_components()
-            get_board_comps_data(all_comps)
+        all_comps = self._comps if self._comps else get_all_components()
         # Scan the list to show
         for c in components:
             if isinstance(c, str):
@@ -1083,10 +1076,8 @@ class VariantOptions(BaseOptions):
         self._files_to_remove = []
         if not self.dnf_filter and not self.variant and not self.pre_transform:
             return
-        load_sch()
         # Get the components list from the schematic
-        comps = GS.sch.get_components()
-        get_board_comps_data(comps)
+        comps = get_all_components()
         # Apply the filter
         reset_filters(comps)
         comps = apply_pre_transform(comps, self.pre_transform)
@@ -1137,9 +1128,7 @@ class VariantOptions(BaseOptions):
         if not self._comps:
             # No variant or filter applied
             # Load the components
-            load_sch()
-            self._comps = GS.sch.get_components()
-            get_board_comps_data(self._comps)
+            self._comps = get_all_components()
         # If the component isn't listed by the user make it DNF
         show_components = set(self.expand_kf_components(self.show_components))
         self.undo_show = set()

@@ -8338,6 +8338,20 @@
                     "DataTypeBoolean"
                   ],
                   null
+                ],
+                [
+                  "sketch_pads_on_fab_layers",
+                  [
+                    "DataTypeBoolean"
+                  ],
+                  null
+                ],
+                [
+                  "exclude_filter",
+                  [
+                    "DataTypeListStringSingular"
+                  ],
+                  null
                 ]
               ]
             ],
@@ -8429,6 +8443,20 @@
                   "use_for_center",
                   [
                     "DataTypeBoolean"
+                  ],
+                  null
+                ],
+                [
+                  "sketch_pads_on_fab_layers",
+                  [
+                    "DataTypeBoolean"
+                  ],
+                  null
+                ],
+                [
+                  "exclude_filter",
+                  [
+                    "DataTypeListStringSingular"
                   ],
                   null
                 ]

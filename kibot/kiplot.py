@@ -354,6 +354,13 @@ def copy_fields(c, m):
             c.set_field(name, value)
 
 
+def get_all_components():
+    load_sch()
+    comps = GS.sch.get_components()
+    get_board_comps_data(comps)
+    return comps
+
+
 def get_board_comps_data(comps):
     """ Add information from the PCB to the list of components from the schematic.
         Note that we do it every time the function is called to reset transformation filters like rot_footprint. """

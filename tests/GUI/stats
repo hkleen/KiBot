@@ -1,5 +1,5 @@
-48 outputs types with a total of 1874 different parameters
-Single type parameters: 1700 (91 %)
+48 outputs types with a total of 1878 different parameters
+Single type parameters: 1704 (91 %)
 Multi type parameters: 174 (9 %)
 Average parameters: 39
 Maximum number of parameters: 214
@@ -13,8 +13,8 @@ Histogram:
  50- 59: **
  60- 69: **
  70- 79: *
- 80- 89: *
- 90- 99: 
+ 80- 89: 
+ 90- 99: *
 100-109: 
 110-119: 
 120-129: 
@@ -73,7 +73,7 @@ Outputs sorted by parameters:
 - pdf: 63
 - render_3d: 66
 - blender_export: 75
-- pcb_print: 89
+- pcb_print: 93
 - bom: 145
 - panelize: 214
 Average depth: 2.5416666666666665
@@ -138,9 +138,9 @@ Outputs sorted by depth:
 --------------------------------------------------------------------------------
 14 different data types
 -             String:  843
--            Boolean:  469
+-            Boolean:  471
 -             Number:  266
-- ListStringSingular:  222
+- ListStringSingular:  224
 -             Choice:   95
 -               Dict:   79
 -   ListDictOrString:   21
@@ -154,8 +154,8 @@ Outputs sorted by depth:
 --------------------------------------------------------------------------------
 Used as single data type:
 -             String:  689 
--            Boolean:  413 
-- ListStringSingular:  219 
+-            Boolean:  415 
+- ListStringSingular:  221 
 -             Number:  172 
 -             Choice:   92 
 -               Dict:   70 
@@ -390,8 +390,8 @@ Used as single data type:
 -              Number,String:   15 
 ================================================================================
 ================================================================================
-86 totals types with a total of 2242 different parameters
-Single type parameters: 2044 (91 %)
+86 totals types with a total of 2246 different parameters
+Single type parameters: 2048 (91 %)
 Multi type parameters: 198 (9 %)
 Average parameters: 26
 Maximum number of parameters: 214
@@ -405,8 +405,8 @@ Histogram:
  50- 59: **
  60- 69: **
  70- 79: *
- 80- 89: *
- 90- 99: 
+ 80- 89: 
+ 90- 99: *
 100-109: 
 110-119: 
 120-129: 
@@ -503,7 +503,7 @@ Totals sorted by parameters:
 - pdf: 63
 - render_3d: 66
 - blender_export: 75
-- pcb_print: 89
+- pcb_print: 93
 - bom: 145
 - panelize: 214
 Average depth: 2.186046511627907
@@ -606,9 +606,9 @@ Totals sorted by depth:
 --------------------------------------------------------------------------------
 14 different data types
 -             String:  994
--            Boolean:  567
+-            Boolean:  569
 -             Number:  314
-- ListStringSingular:  251
+- ListStringSingular:  253
 -             Choice:  127
 -               Dict:   90
 -           ListDict:   30
@@ -622,8 +622,8 @@ Totals sorted by depth:
 --------------------------------------------------------------------------------
 Used as single data type:
 -             String:  824 
--            Boolean:  503 
-- ListStringSingular:  248 
+-            Boolean:  505 
+- ListStringSingular:  250 
 -             Number:  205 
 -             Choice:  124 
 -               Dict:   73 
