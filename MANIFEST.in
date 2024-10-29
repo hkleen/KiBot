@@ -14,6 +14,7 @@ include kibot/resources/kiri/*.js
 include kibot/resources/kiri/kiri-server
 include kibot/resources/kiri/*.svg
 include kibot/resources/kiri/images/*.svg
+include kibot/resources/kiri/images/*.png
 include kibot/resources/kiri/utils/*.css
 include kibot/resources/kiri/utils/*.js
 include kibot/resources/parsers/*.lark

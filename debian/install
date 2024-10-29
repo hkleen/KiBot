@@ -11,6 +11,7 @@ kibot/resources/kiri/*.js /usr/share/kibot/kiri/
 kibot/resources/kiri/kiri-server /usr/share/kibot/kiri/
 kibot/resources/kiri/*.svg /usr/share/kibot/kiri/
 kibot/resources/kiri/images/*.svg /usr/share/kibot/kiri/images/
+kibot/resources/kiri/images/*.png /usr/share/kibot/kiri/images/
 kibot/resources/kiri/utils/*.css /usr/share/kibot/kiri/utils/
 kibot/resources/kiri/utils/*.js /usr/share/kibot/kiri/utils/
 kibot/resources/parsers/*.lark /usr/share/kibot/parsers/
