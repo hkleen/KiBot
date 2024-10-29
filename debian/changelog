@@ -1,3 +1,9 @@
+kibot (1.8.3-1) UNRELEASED; urgency=medium
+
+  * Next release
+
+ -- Salvador Eduardo Tropea <salvador@inti.gob.ar>  Tue, 29 Oct 2024 08:35:20 -0300
+
 kibot (1.8.2-1) stable; urgency=medium
 
   * Added experimental GUI
@@ -23,16 +29,16 @@ kibot (1.8.2-1) stable; urgency=medium
       single layer (even technical ones)
     - When trying to force a WKS and the project didn't define a WKS.
       The "gui" strategy failed to use the specified WKS
- * Fixed on Draw stackup:
-    - Segmentation Fault on KiCad 8 when creating a new group
-    - Units not applied when creating a new group
- * Fixed in the expansion of internal field names. KiCad expands "VALUE",
-   not "Value"
- * Changed in Quick Start's Diff/KiRi: Avoid creating when we don't have at
-   least 2 to compare
- * Changed PCB Print: Avoid `colored_pads` and `colored_vias` side effects
- * Changed in BoM: Avoid leaking DIGIKEY_CLIENT_ID and DIGIKEY_CLIENT_SECRET
-   in logs
+  * Fixed on Draw stackup:
+     - Segmentation Fault on KiCad 8 when creating a new group
+     - Units not applied when creating a new group
+  * Fixed in the expansion of internal field names. KiCad expands "VALUE",
+    not "Value"
+  * Changed in Quick Start's Diff/KiRi: Avoid creating when we don't have at
+    least 2 to compare
+  * Changed PCB Print: Avoid `colored_pads` and `colored_vias` side effects
+  * Changed in BoM: Avoid leaking DIGIKEY_CLIENT_ID and DIGIKEY_CLIENT_SECRET
+    in logs
 
  -- Salvador Eduardo Tropea <salvador@inti.gob.ar>  Mon, 28 Oct 2024 09:42:20 -0300
 
