@@ -11,5 +11,7 @@ outputs:
       ignore_dnf: false
       group_fields: []
       group_not_fitted: true
+      # sort_ascending: false
+      sort_style: kicad_bom
       columns:
         - _kicad_bom_fields

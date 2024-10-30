@@ -585,10 +585,10 @@
         }
       ],
       "filter_string": "",
-      "group_symbols": false,
+      "group_symbols": true,
       "name": "",
-      "sort_asc": true,
-      "sort_field": "Reference"
+      "sort_asc": false,
+      "sort_field": "Value"
     },
     "connection_grid_size": 50.0,
     "drawing": {
@@ -642,7 +642,7 @@
   "sheets": [
     [
       "b46c2c6c-7e43-449c-85cf-14dd1c57aabb",
-      ""
+      "Root"
     ]
   ],
   "text_variables": {}

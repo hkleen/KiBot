@@ -1681,6 +1681,13 @@
           null
         ],
         [
+          "sort_ascending",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
           "footprint_populate_values",
           [
             "DataTypeListStringSingular"

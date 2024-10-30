@@ -30,6 +30,9 @@ Added
    -  New option ``group_not_fitted`` to group not fitted components
       with fitted components. For compatibility with KiCad’s internal
       BoM.
+   -  New option ``sort_ascending`` to sort in reverse order
+   -  New sort style: *kicad_bom*, uses the field an ascending used by
+      KiCad’s BoM
 
 -  PCB Print: a mechanism to filter components for a particular layer
    (#706)

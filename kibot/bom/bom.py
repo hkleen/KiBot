@@ -15,7 +15,7 @@ from math import ceil
 from .units import compare_values, comp_match
 from .bom_writer import write_bom
 from .columnlist import ColumnList
-from ..misc import DNF, W_FIELDCONF, W_MISSFPINFO
+from ..misc import DNF, W_FIELDCONF, W_MISSFPINFO, W_NOBOMOPS
 from ..gs import GS
 from .. import log
 
@@ -500,16 +500,30 @@ def group_components(cfg, components):
         if cfg.normalize_values:
             g.fields[ColumnList.COL_VALUE_L] = normalize_value(g.components[0], decimal_point)
     # Sort the groups
-    if cfg.sort_style == 'type_value':
+    sort_style = cfg.sort_style
+    if sort_style == 'kicad_bom':
+        bom_settings = GS.load_pro_bom_settings()
+        sort_asc = bom_settings.get("sort_asc", True)
+        sort_field = bom_settings.get("sort_field", '')
+        if not sort_field:
+            logger.warning(W_NOBOMOPS+'No KiCad BoM options available, sorting using `type_value`')
+            sort_style = 'type_value'
+    if sort_style == 'type_value':
         # First priority is the Type of component (e.g. R?, U?, L?)
         # Second is the value
-        groups = sorted(groups, key=lambda g: [g.components[0].ref_prefix, get_value_sort(g.components[0])])
-    elif cfg.sort_style == 'type_value_ref':
+        groups = sorted(groups, key=lambda g: [g.components[0].ref_prefix, get_value_sort(g.components[0])],
+                        reverse=not cfg.sort_ascending)
+    elif sort_style == 'type_value_ref':
         # First priority is the Type of component (e.g. R?, U?, L?)
         # Second is the value, but if we don't have a value we use the reference
-        groups = sorted(groups, key=lambda g: [g.components[0].ref_prefix, get_value_sort(g.components[0], True)])
-    else:  # ref
-        groups = sorted(groups, key=lambda g: [g.components[0].ref_prefix, _suffix_to_num(g.components[0].ref_suffix)])
+        groups = sorted(groups, key=lambda g: [g.components[0].ref_prefix, get_value_sort(g.components[0], True)],
+                        reverse=not cfg.sort_ascending)
+    elif sort_style == 'ref':
+        groups = sorted(groups, key=lambda g: [g.components[0].ref_prefix, _suffix_to_num(g.components[0].ref_suffix)],
+                        reverse=not cfg.sort_ascending)
+    else:  # kicad_bom
+        logger.debug(f'Sorting using KiCad definition, field: `{sort_field}`, ascending: {sort_asc}')
+        groups = sorted(groups, key=lambda g: g.components[0].get_field_value(sort_field).lower(), reverse=not sort_asc)
     # Enumerate the groups and compute stats
     n_total = n_total_smd = n_total_tht = 0
     n_fitted = n_fitted_smd = n_fitted_tht = 0
