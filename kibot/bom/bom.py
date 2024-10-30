@@ -314,7 +314,7 @@ class ComponentGroup(object):
         else:
             self.fields[ColumnList.COL_REFERENCE_L] = self.get_refs()
         # Quantity
-        self.fields[ColumnList.COL_GRP_QUANTITY_L] = str(self.get_count())
+        self.fields[ColumnList.COL_QUANTITY_L] = self.fields[ColumnList.COL_GRP_QUANTITY_L] = str(self.get_count())
         self.total = self.get_build_count()
         self.fields[ColumnList.COL_GRP_BUILD_QUANTITY_L] = str(self.total)
         self.fields[ColumnList.COL_SOURCE_BOM_L] = self.get_sources()
@@ -366,6 +366,12 @@ class ComponentGroup(object):
             self.fields[ColumnList.COL_DESCRIPTION_L] = comp.desc
         self.fields[ColumnList.COL_NET_NAME_L] = comp.net_name
         self.fields[ColumnList.COL_NET_CLASS_L] = comp.net_class
+        # KiCad attributes
+        self.fields[ColumnList.COL_DNP_L] = ("DNP" if comp.kicad_dnp else "") if hasattr(comp, 'kicad_dnp') else 'Unknown'
+        self.fields[ColumnList.COL_EXCLUDE_FROM_BOARD_L] = (("Excluded from board" if not comp.on_board else "")
+                                                            if hasattr(comp, 'on_board') else 'Unknown')
+        self.fields[ColumnList.COL_EXCLUDE_FROM_SIM_L] = (("Excluded from simulation" if comp.exclude_from_sim else "")
+                                                          if hasattr(comp, 'exclude_from_sim') else 'Unknown')
 
     def get_row(self, columns):
         """ Return a dict of the KiCad data based on the supplied columns """
@@ -500,10 +506,12 @@ def group_components(cfg, components):
     for g in groups:
         is_fitted = g.is_fitted()
         if cfg.ignore_dnf and not is_fitted:
-            g.update_field('Row', str(dnf))
+            g.update_field(ColumnList.COL_ROW_NUMBER, str(dnf))
+            g.update_field(ColumnList.COL_ITEM_NUMBER, str(dnf))
             dnf += 1
         else:
-            g.update_field('Row', str(c))
+            g.update_field(ColumnList.COL_ROW_NUMBER, str(c))
+            g.update_field(ColumnList.COL_ITEM_NUMBER, str(c))
             c += 1
         # Stats
         g_l = g.get_count()

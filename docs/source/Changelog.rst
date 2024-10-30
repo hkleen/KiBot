@@ -19,6 +19,13 @@ Versioning <https://semver.org/spec/v2.0.0.html>`__.
 Added
 ~~~~~
 
+-  BoM:
+
+   -  Field aliases ${QUANTITY} and ${ITEM_NUMBER} for compatibility
+      with KiCad’s internal BoM.
+   -  Fields ${DNP}, ${EXCLUDE_FROM_BOARD} and ${EXCLUDE_FROM_SIM}, like
+      the ones used by KiCad’s internal BoM.
+
 -  PCB Print: a mechanism to filter components for a particular layer
    (#706)
 

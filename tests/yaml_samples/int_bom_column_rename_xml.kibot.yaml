@@ -11,7 +11,7 @@ outputs:
       format: XML
       count_smd_tht: true
       columns:
-        - field: Row
+        - field: ${ITEM_NUMBER}
           name: Renglón
         - field: References
           name: Referencias
@@ -21,5 +21,5 @@ outputs:
           name: Valor
         - field: digikey#
           name: Código Digi-Key
-        - field: Quantity Per PCB
+        - field: ${QUANTITY}
           name: Cantidad por PCB

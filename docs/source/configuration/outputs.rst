@@ -671,34 +671,41 @@ Columns available for the BoM
 
 In addition to all the user defined fields you also have the following columns:
 
--  **References**: The component references.
+-  **Build Quantity**: How many components we use for this row for all the PCBs.
+-  **Datasheet**: The datasheet from the standard field.
 -  **Description**: The description from the component library (DCM file).
    Note that a user field with the same name has more precedence.
--  **Value**: The value for the component. Affected by the **normalize_values** option.
+-  **${DNP}**: Is **DNP** when the schematic DNP attribute is enabled, for compatibility with KiCad BoM.
+-  **${EXCLUDE_FROM_BOARD}**: Is **Excluded from board** when the schematic *exclude from board*
+   attribute is enabled, for compatibility with KiCad BoM.
+-  **${EXCLUDE_FROM_SIM}**: Is **Excluded from simulation** when the schematic *exclude from simulation*
+   attribute is enabled, for compatibility with KiCad BoM.
 -  **Footprint**: The name of the footprint, without the library name.
 -  **Footprint Lib**: The name of the library for the footprint.
--  **Footprint X**: The X coordinate for the footprint.
--  **Footprint Y**: The Y coordinate for the footprint.
+-  **Footprint Populate**: If the footprint is populated (soldered) or not, can be: *yes* or *no*.
+   Affected by the **footprint_populate_values** option.
 -  **Footprint Rot**: The rotation angle for the footprint.
 -  **Footprint Side**: The side of the footprint, *bottom* or *top*.
 -  **Footprint Type**: The type of the footprint, can be: *SMD*, *THT* or *VIRTUAL*.
 -  **Footprint Type NV**: The type of the footprint, can be: *SMD* or *THT*. Empty if not defined.
    Affected by the **footprint_type_values** option.
--  **Footprint Populate**: If the footprint is populated (soldered) or not, can be: *yes* or *no*.
-   Affected by the **footprint_populate_values** option.
+-  **Footprint X**: The X coordinate for the footprint.
+-  **Footprint Y**: The Y coordinate for the footprint.
 -  **Footprint X-Size**: The footprint width, no rotation computed.
 -  **Footprint Y-Size**: The footprint height, no rotation computed.
+-  **${ITEM_NUMBER}**: Same as **Row**, for compatibility with KiCad BoM.
 -  **Net Name**: Name of the nets associated with the footprint. Useful for testpoints.
 -  **Net Class**: Name of the net classes associated with the footprint. Useful for testpoints.
 -  **Part**: The name of the symbol for the component, without the library name.
 -  **Part Lib**: The name of the library for the symbol.
--  **Datasheet**: The datasheet from the standard field.
--  **Sheetpath**: The path in the schematic hierarchy for the component.
--  **Row**: The row number in the BoM for this entry.
--  **Status**: The DNF (Do Not Fit) and/or DNC (Do Not Change) status for the component.
+-  **${QUANTITY}**: Same as **Quantity Per PCB**, for compatibility with KiCad BoM.
 -  **Quantity Per PCB**: How many components we use for this row for each PCB.
--  **Build Quantity**: How many components we use for this row for all the PCBs.
+-  **References**: The component references.
+-  **Row**: The row number in the BoM for this entry.
+-  **Sheetpath**: The path in the schematic hierarchy for the component.
 -  **Source BoM**: From which BoM/s comes this component/s. This is used when consolidating more than one BoM.
+-  **Status**: The DNF (Do Not Fit) and/or DNC (Do Not Change) status for the component.
+-  **Value**: The value for the component. Affected by the **normalize_values** option.
 
 Most of the footprint columns are oriented to the creation of position files using the BoM output,
 for more information consult :ref:`xyrs_files`.

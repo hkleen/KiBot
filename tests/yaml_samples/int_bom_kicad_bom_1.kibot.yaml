@@ -1,0 +1,23 @@
+# Example KiBot config file
+kibot:
+  version: 1
+
+outputs:
+  - name: 'bom_kicad_test'
+    comment: "Bill of Materials test using KiCad settings"
+    type: bom
+    options:
+      format: CSV
+      ignore_dnf: false
+      group_fields: []
+      columns:
+        - field: ${ITEM_NUMBER}
+          name: Row
+        - field: References
+        - field: Part
+        - field: Value
+        - ${DNP}
+        - ${EXCLUDE_FROM_BOARD}
+        - ${EXCLUDE_FROM_SIM}
+        - field: ${QUANTITY}
+          name: Qty
