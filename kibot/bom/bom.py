@@ -80,7 +80,7 @@ def compare_field(c1, c2, field, cfg):
 def compare_components(c1, c2, cfg):
     """ Determine if two parts are 'equal' """
     # 'fitted' value must be the same for both parts
-    if c1.fitted != c2.fitted:
+    if not cfg.group_not_fitted and c1.fitted != c2.fitted:
         return False
     # 'fixed' value must be the same for both parts
     if c1.fixed != c2.fixed:
@@ -367,11 +367,25 @@ class ComponentGroup(object):
         self.fields[ColumnList.COL_NET_NAME_L] = comp.net_name
         self.fields[ColumnList.COL_NET_CLASS_L] = comp.net_class
         # KiCad attributes
-        self.fields[ColumnList.COL_DNP_L] = ("DNP" if comp.kicad_dnp else "") if hasattr(comp, 'kicad_dnp') else 'Unknown'
-        self.fields[ColumnList.COL_EXCLUDE_FROM_BOARD_L] = (("Excluded from board" if not comp.on_board else "")
-                                                            if hasattr(comp, 'on_board') else 'Unknown')
-        self.fields[ColumnList.COL_EXCLUDE_FROM_SIM_L] = (("Excluded from simulation" if comp.exclude_from_sim else "")
-                                                          if hasattr(comp, 'exclude_from_sim') else 'Unknown')
+        self.fields[ColumnList.COL_DNP_L] = self.solve_multiple_attributes('kicad_dnp', 'DNP')
+        self.fields[ColumnList.COL_EXCLUDE_FROM_BOARD_L] = self.solve_multiple_attributes('on_board', 'Excluded from board',
+                                                                                          invert=True)
+        self.fields[ColumnList.COL_EXCLUDE_FROM_SIM_L] = self.solve_multiple_attributes('exclude_from_sim',
+                                                                                        'Excluded from simulation',)
+
+    def solve_multiple_attributes(self, attr, label, invert=False):
+        positive = 0
+        found = 0
+        for c in self.components:
+            if hasattr(c, attr):
+                found += 1
+                if getattr(c, attr):
+                    positive += 1
+        if not found:
+            return 'Unknown'
+        if positive != 0 and positive != len(self.components):
+            return '-- mixed values --'
+        return label if invert ^ positive != 0 else ''
 
     def get_row(self, columns):
         """ Return a dict of the KiCad data based on the supplied columns """

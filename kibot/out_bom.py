@@ -482,7 +482,9 @@ class BoMOptions(BaseOptions):
             """ Print grouped references in the alternate compressed style eg: R1-R7,R18 """
             self.columns = BoMColumns
             """ *[list(dict)|list(string)=?] List of columns to display.
-                Can be just the name of the field.
+                One entry can be just the name of the field (a string).
+                If you want to import the columns used in KiCad internal BoM tool add an entry `_kicad_bom_fields`,
+                this will be replaced by the list from KiCad.
                 In addition to all user defined fields you have various special columns, consult :ref:`bom_columns` """
             self.cost_extra_columns = BoMColumns
             """ [list(dict)|list(string)=[]] List of columns to add to the global section of the cost.
@@ -525,6 +527,8 @@ class BoMOptions(BaseOptions):
             """ Component groups with blank fields will be merged into the most compatible group, where possible """
             self.merge_both_blank = True
             """ When creating groups two components with empty/missing field will be interpreted as with the same value """
+            self.group_not_fitted = False
+            """ Enable it to group fitted and not fitted components together. This is how KiCad's internal BoM behaves """
             self.group_fields = GroupFields
             """ *[list(string)] {no_case} List of fields used for sorting individual components into groups.
                 Components which match (comparing *all* fields) will be grouped together.
@@ -534,6 +538,8 @@ class BoMOptions(BaseOptions):
                 Note that for resistors, capacitors and inductors the _Value_ field is parsed and qualifiers, like
                 tolerance, are discarded. Please use a separated field and disable `merge_blank_fields` if this
                 information is important. You can also disable `parse_value`.
+                When using `_kicad_bom_fields` in the `columns` you should use `[]` for this value, so the fields
+                selected in KiCad are used.
                 If empty: ['Part', 'Part Lib', 'Value', 'Footprint', 'Footprint Lib',
                 .          'Voltage', 'Tolerance', 'Current', 'Power'] is used """
             self.group_fields_fallbacks = Optionable
@@ -566,7 +572,7 @@ class BoMOptions(BaseOptions):
                 The `Reference` and `Value` are mandatory, in most cases `Part` is also needed.
                 The `Part` column should contain the name/type of the component. This is important for
                 passive components (R, L, C, etc.). If this information isn't available consider
-                configuring the grouping to exclude the `Part`. """
+                configuring the grouping to exclude the `Part` """
             self.ref_id = ''
             """ A prefix to add to all the references from this project. Used for multiple projects """
             self.source_by_id = False
@@ -650,7 +656,7 @@ class BoMOptions(BaseOptions):
             return
         self.variant = RegOutput.check_variant(self.variant)
 
-    def process_columns_config(self, cols, valid_columns, extra_columns):
+    def process_columns_config(self, cols, valid_columns, extra_columns, group_fields=None):
         column_rename = {}
         join = []
         columns = []
@@ -661,8 +667,36 @@ class BoMOptions(BaseOptions):
         # Lower case available columns (to check if valid)
         valid_columns_l = {c.lower(): c for c in valid_columns + extra_columns}
         logger.debug("Valid columns: {} ({})".format(valid_columns, len(valid_columns)))
-        # Create the different lists
+        # Expand the KiCad import
+        new_cols = []
         for col in cols:
+            if not isinstance(col, str) or col != '_kicad_bom_fields':
+                new_cols.append(col)
+                continue
+            logger.debug('Importing BoM settings from project')
+            # Import KiCad's BoM fields
+            bom_settings = GS.load_pro_bom_settings()
+            group_symbols = bom_settings.get('group_symbols', True)
+            fields_ordered = bom_settings.get('fields_ordered', [])
+            if not fields_ordered:
+                raise KiPlotConfigurationError("`_kicad_bom_fields` used, but no data found in the project")
+            for col in fields_ordered:
+                name = col.get('name', 'unknown')
+                if group_symbols and group_fields is not None and col.get('group_by', False):
+                    group_fields.append(name)
+                    logger.debugl(2, f'- Adding `{name}` to the grouping')
+                if not col.get('show', False) or name == '${EXCLUDE_FROM_BOM}':
+                    # Not used in the BoM
+                    logger.debugl(3, f'- Skipping `{name}`')
+                    continue
+                entry = BoMColumns()
+                entry.field = name
+                entry.name = col.get('label', '')
+                entry.join = ''
+                logger.debugl(2, f'- Adding `{entry.field}` as `{entry.name}`')
+                new_cols.append(entry)
+        # Create the different lists
+        for col in new_cols:
             if isinstance(col, str):
                 # Just a string, add to the list of used
                 new_col = col
@@ -687,6 +721,19 @@ class BoMOptions(BaseOptions):
                 # raise KiPlotConfigurationError('Invalid column name `{}`'.format(new_col))
                 logger.warning(W_BADFIELD+'Invalid column name `{}`. Valid columns are {}.'.
                                format(new_col, list(valid_columns_l.values())))
+            # Allow using "Reference" and "References"
+            if new_col_l == ColumnList.COL_REFERENCE_L[:-1]:
+                logger.debugl(3, '- Reference -> References')
+                renamed = ColumnList.COL_REFERENCE
+                renamed_l = renamed.lower()
+                if new_col_l in column_rename:
+                    # A display name already specified
+                    column_rename[renamed_l] = column_rename[new_col_l]
+                else:
+                    # Not specified, use the name as it was provided
+                    column_rename[renamed_l] = new_col
+                new_col = renamed
+            # Add the result to the output vectors
             columns.append(new_col)
             column_levels.append(level)
             column_comments.append(comment)
@@ -707,9 +754,6 @@ class BoMOptions(BaseOptions):
         if self._format == 'xlsx' and self.xlsx.title:
             self.xlsx.title = self.expand_filename_both(self.xlsx.title, make_safe=False)
             self.xlsx.extra_info = [self.expand_filename_both(t, make_safe=False) for t in self.xlsx.extra_info]
-        # Fill with empty if needed
-        if len(self.group_fields_fallbacks) < len(self.group_fields):
-            self.group_fields_fallbacks.extend(['']*(len(self.group_fields)-len(self.group_fields_fallbacks)))
         # Filters
         self.pre_transform = BaseFilter.solve_filter(self.pre_transform, 'pre_transform', is_transform=True)
         self.exclude_filter = BaseFilter.solve_filter(self.exclude_filter, 'exclude_filter')
@@ -730,9 +774,12 @@ class BoMOptions(BaseOptions):
         (valid_columns, extra_columns) = self._get_columns()
         self.create_default_columns(valid_columns)
         (self._columns, self._column_levels, self._column_comments, self._column_rename,
-         self._join) = self.process_columns_config(self.columns, valid_columns, extra_columns)
+         self._join) = self.process_columns_config(self.columns, valid_columns, extra_columns, self.group_fields)
         (self.columns_ce, self._column_levels_ce, self._column_comments_ce, self._column_rename_ce,
          self._join_ce) = self.process_columns_config(self.cost_extra_columns, valid_columns, extra_columns)
+        # Fill with empty if needed
+        if len(self.group_fields_fallbacks) < len(self.group_fields):
+            self.group_fields_fallbacks.extend(['']*(len(self.group_fields)-len(self.group_fields_fallbacks)))
 
     def create_default_columns(self, valid_columns):
         if not isinstance(self.columns, type):

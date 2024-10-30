@@ -72,6 +72,7 @@ class GS(object):
     pro_fname = None     # file.kicad_pro (or .pro)
     pro_ext = '.pro'
     pro_variables = None  # KiCad 6 text variables defined in the project
+    pro_bom_settings = None  # KiCad BoM settings from the project
     vars_regex = re.compile(r'\$\{([^\}]+)\}')
     # Main output dir
     out_dir = None
@@ -264,6 +265,24 @@ class GS(object):
         GS.pro_variables = data.get('text_variables', {})
         logger.debug("Current text variables: {}".format(GS.pro_variables))
         return GS.pro_variables
+
+    @staticmethod
+    def load_pro_bom_settings():
+        if GS.pro_bom_settings is not None:
+            return GS.pro_bom_settings
+        if GS.pro_file is None or GS.pro_ext == '.pro':
+            return {}
+        # Get the bom settings
+        with open(GS.pro_file, 'rt') as f:
+            pro_text = f.read()
+        try:
+            data = json.loads(pro_text)
+        except Exception:
+            GS.exit_with_error('Corrupted project {}'.format(GS.pro_file), CORRUPTED_PRO)
+        schematic = data.get('schematic', {})
+        GS.pro_bom_settings = schematic.get('bom_settings', {})
+        logger.debug("Current bom_settings: {}".format(GS.pro_bom_settings))
+        return GS.pro_bom_settings
 
     @staticmethod
     def read_pro():

@@ -441,7 +441,7 @@ outputs:
       # The `Reference` and `Value` are mandatory, in most cases `Part` is also needed.
       # The `Part` column should contain the name/type of the component. This is important for
       # passive components (R, L, C, etc.). If this information isn't available consider
-      # configuring the grouping to exclude the `Part`.
+      # configuring the grouping to exclude the `Part`
       aggregate:
         # [string=','] Delimiter used for CSV files
         - delimiter: ','
@@ -458,7 +458,9 @@ outputs:
       # [boolean=false] Use negative X coordinates for footprints on bottom layer (for XYRS)
       bottom_negative_x: false
       # [list(dict)|list(string)=computed for your project] List of columns to display.
-      # Can be just the name of the field.
+      # One entry can be just the name of the field (a string).
+      # If you want to import the columns used in KiCad internal BoM tool add an entry `_kicad_bom_fields`,
+      # this will be replaced by the list from KiCad.
       # In addition to all user defined fields you have various special columns, consult :ref:`bom_columns`
       columns:
         # [string=''] Used as explanation for this column. The XLSX output uses it
@@ -586,12 +588,16 @@ outputs:
       # Note that for resistors, capacitors and inductors the _Value_ field is parsed and qualifiers, like
       # tolerance, are discarded. Please use a separated field and disable `merge_blank_fields` if this
       # information is important. You can also disable `parse_value`.
+      # When using `_kicad_bom_fields` in the `columns` you should use `[]` for this value, so the fields
+      # selected in KiCad are used.
       # If empty: ['Part', 'Part Lib', 'Value', 'Footprint', 'Footprint Lib',
       #            'Voltage', 'Tolerance', 'Current', 'Power'] is used
       group_fields: ['part', 'part lib', 'value', 'footprint', 'footprint lib', 'voltage', 'tolerance', 'current', 'power']
       # [list(string)=[]] {no_case} List of fields to be used when the fields in `group_fields` are empty.
       # The first field in this list is the fallback for the first in `group_fields`, and so on
       group_fields_fallbacks: []
+      # [boolean=false] Enable it to group fitted and not fitted components together. This is how KiCad's internal BoM behaves
+      group_not_fitted: false
       # [dict={}] Options for the HRTXT formats
       hrtxt:
         # [string='-'] Separator between the header and the data

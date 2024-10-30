@@ -1519,6 +1519,13 @@
           null
         ],
         [
+          "group_not_fitted",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
           "group_fields",
           [
             "DataTypeListString"

@@ -12,8 +12,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     KiCad's internal BoM.
   - Fields ${DNP}, ${EXCLUDE_FROM_BOARD} and ${EXCLUDE_FROM_SIM}, like
     the ones used by KiCad's internal BoM.
+  - Using `_kicad_bom_fields` in the list of columns now you can import the
+    fields from the KiCad's internal BoM.
+  - New option `group_not_fitted` to group not fitted components with fitted
+    components. For compatibility with KiCad's internal BoM.
 - PCB Print: a mechanism to filter components for a particular layer (#706)
 
+### Fixed
+- BoM
+  - The field name `Reference` was accepted, but didn't work
 
 ## [1.8.2] - 2024-10-28
 ### Added
