@@ -14,7 +14,7 @@ Navigate_ResultsOptions parameters
 -  ``nav_bar`` :index:`: <pair: output - navigate_results - options; nav_bar>` [:ref:`boolean <boolean>`] (default: ``true``) Add a side navigation bar to quickly access to the outputs.
 -  ``skip_not_run`` :index:`: <pair: output - navigate_results - options; skip_not_run>` [:ref:`boolean <boolean>`] (default: ``false``) Skip outputs with `run_by_default: false`.
 -  ``title`` :index:`: <pair: output - navigate_results - options; title>` [:ref:`string <string>`] (default: ``''``) Title for the page, when empty KiBot will try using the schematic or PCB title.
-   If they are empty the name of the project, schematic or PCB file is used.
+   If they are empty the name of the project, schematic or PCB file is used. |br|
    You can use %X values and KiCad variables here.
 -  ``title_url`` :index:`: <pair: output - navigate_results - options; title_url>` [:ref:`string <string>` | :ref:`boolean <boolean>`] (default: ``''``) Target link when clicking the title, use false to remove.
    KiBot will try with the origin of the current git repo when empty.

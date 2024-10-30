@@ -5,8 +5,8 @@ Copy_FilesOptions parameters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 -  **download** :index:`: <pair: output - copy_files - options; download>` [:ref:`boolean <boolean>`] (default: ``true``) Downloads missing 3D models from KiCad git.
-   Only applies to models in KISYS3DMOD and KICAD6_3DMODEL_DIR.
-   They are downloaded to a temporal directory and discarded.
+   Only applies to models in KISYS3DMOD and KICAD6_3DMODEL_DIR. |br|
+   They are downloaded to a temporal directory and discarded. |br|
    If you want to cache the downloaded files specify a directory using the
    KIBOT_3D_MODELS environment variable.
 -  **files** :index:`: <pair: output - copy_files - options; files>`  [:ref:`FilesListCopy parameters <FilesListCopy>`] [:ref:`list(dict) <list(dict)>`] (default: ``[]``) Which files will be included.

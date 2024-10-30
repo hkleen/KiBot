@@ -5,7 +5,7 @@ Blender_ExportOptions parameters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 -  **pcb3d** :index:`: <pair: output - blender_export - options; pcb3d>`  [:ref:`PCB3DExportOptions parameters <PCB3DExportOptions>`] [:ref:`string <string>` | :ref:`dict <dict>`] (default: empty dict, default values used) Options to export the PCB to Blender.
-   You can also specify the name of the output that generates the PCB3D file.
+   You can also specify the name of the output that generates the PCB3D file. |br|
    See the `PCB2Blender_2_1`, `PCB2Blender_2_7` and `PCB2Blender_2_1_haschtl` templates.
 -  **point_of_view** :index:`: <pair: output - blender_export - options; point_of_view>`  [:ref:`BlenderPointOfViewOptions parameters <BlenderPointOfViewOptions>`] [:ref:`dict <dict>` | :ref:`list(dict) <list(dict)>`] (default: ``[{'view': 'top'}]``) How the object is viewed by the camera.
 -  **render_options** :index:`: <pair: output - blender_export - options; render_options>`  [:ref:`BlenderRenderOptions parameters <BlenderRenderOptions>`] [:ref:`dict <dict>`] (default: empty dict, default values used) Controls how the render is done for the `render` output type.
@@ -14,7 +14,7 @@ Blender_ExportOptions parameters
 -  ``auto_camera_z_axis_factor`` :index:`: <pair: output - blender_export - options; auto_camera_z_axis_factor>` [:ref:`number <number>`] (default: ``1.1``) Value to multiply the Z axis coordinate after computing the automatically generated camera.
    Used to avoid collision of the camera and the object.
 -  ``camera`` :index:`: <pair: output - blender_export - options; camera>`  [:ref:`BlenderCameraOptions parameters <BlenderCameraOptions>`] [:ref:`dict <dict>`] (default: empty dict, default values used) Options for the camera.
-   If none specified KiBot will create a suitable camera.
+   If none specified KiBot will create a suitable camera. |br|
    If no position is specified for the camera KiBot will look for a suitable position.
 -  ``default_file_id`` :index:`: <pair: output - blender_export - options; default_file_id>` [:ref:`string <string>`] (default: ``''``) Default value for the `file_id` in the `point_of_view` options.
    Use something like '_%03d' for animations.

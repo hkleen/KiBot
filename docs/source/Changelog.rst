@@ -25,9 +25,21 @@ Added
       with KiCad’s internal BoM.
    -  Fields ${DNP}, ${EXCLUDE_FROM_BOARD} and ${EXCLUDE_FROM_SIM}, like
       the ones used by KiCad’s internal BoM.
+   -  Using ``_kicad_bom_fields`` in the list of columns now you can
+      import the fields from the KiCad’s internal BoM.
+   -  New option ``group_not_fitted`` to group not fitted components
+      with fitted components. For compatibility with KiCad’s internal
+      BoM.
 
 -  PCB Print: a mechanism to filter components for a particular layer
    (#706)
+
+Fixed
+~~~~~
+
+-  BoM
+
+   -  The field name ``Reference`` was accepted, but didn’t work
 
 [1.8.2] - 2024-10-28
 --------------------
@@ -60,6 +72,8 @@ Added
 
    -  ``copy_vias_on_mask`` option to workaround KiCad’s bug 18991 (See
       #703 and #704)
+
+.. _fixed-1:
 
 Fixed
 ~~~~~
@@ -106,7 +120,7 @@ Changed
 [1.8.1] - 2024-09-25
 --------------------
 
-.. _fixed-1:
+.. _fixed-2:
 
 Fixed
 ~~~~~
@@ -187,7 +201,7 @@ Added
 
    -  Support for panels repeating the same component (See #656)
 
-.. _fixed-2:
+.. _fixed-3:
 
 Fixed:
 ~~~~~~
@@ -341,7 +355,7 @@ Added
    -  Added options to control Eco1/Eco2/Drawings individually on KiCad
       8 (#614)
 
-.. _fixed-3:
+.. _fixed-4:
 
 Fixed
 ~~~~~
@@ -411,7 +425,7 @@ Changed
 -  BoardView: Skip footprints with no pads (not just REF**)
    (whitequark/kicad-boardview#14)
 
-.. _fixed-4:
+.. _fixed-5:
 
 Fixed
 ~~~~~
@@ -631,7 +645,7 @@ Changed
    -  When *check_zone_fills* is enabled now we do a refill for the
       boards
 
-.. _fixed-5:
+.. _fixed-6:
 
 Fixed
 ~~~~~
@@ -849,7 +863,7 @@ Changed
 -  JLCPCB_stencil: Is now just like JLCPCB. The only difference is the
    added layers.
 
-.. _fixed-6:
+.. _fixed-7:
 
 Fixed
 ~~~~~
@@ -959,7 +973,7 @@ Added
 
    -  Option to use the auxiliary origin as reference. (#420)
 
-.. _fixed-7:
+.. _fixed-8:
 
 Fixed
 ~~~~~
@@ -1046,7 +1060,7 @@ Added
    -  ``cross_using_kicad`` global option to use KiCad to cross DNP
       components in the schematic. Enabled by default.
 
-.. _fixed-8:
+.. _fixed-9:
 
 Fixed
 ~~~~~
@@ -1180,7 +1194,7 @@ Added
 [1.5.1] - 2022-12-16
 --------------------
 
-.. _fixed-9:
+.. _fixed-10:
 
 Fixed
 ~~~~~
@@ -1267,7 +1281,7 @@ Changed
 
    -  loss tangent decimals, added one more.
 
-.. _fixed-10:
+.. _fixed-11:
 
 Fixed
 ~~~~~
@@ -1377,7 +1391,7 @@ Added
 
 -  Position: option to set the resolution for floating values (#314)
 
-.. _fixed-11:
+.. _fixed-12:
 
 Fixed
 ~~~~~
@@ -1467,7 +1481,7 @@ Added
 
 -  Installation checker: option to show the tool paths.
 
-.. _fixed-12:
+.. _fixed-13:
 
 Fixed
 ~~~~~
@@ -1551,7 +1565,7 @@ Added
 -  GitHub discussions are now enabled. Comment about your KiBot
    experience `here <https://github.com/INTI-CMNB/KiBot/discussions>`__
 
-.. _fixed-13:
+.. _fixed-14:
 
 Fixed
 ~~~~~
@@ -1599,7 +1613,7 @@ Added
    -  Pattern and text variables expansion in the title (#198)
    -  Customizable extra info after the title (#199)
 
-.. _fixed-14:
+.. _fixed-15:
 
 Fixed
 ~~~~~
@@ -1747,7 +1761,7 @@ Changed
 -  The default output pattern now includes the ``output_id`` (%I)
 -  The ``source`` path for ``compress`` now has pattern expansion (#152)
 
-.. _fixed-15:
+.. _fixed-16:
 
 Fixed
 ~~~~~
@@ -1829,7 +1843,7 @@ Changed
 -  Reference ranges of two elements no longer represented as ranges.
    Examples: “R1-R2” is now “R1 R2”, “R1-R3” remains unchanged.
 
-.. _fixed-16:
+.. _fixed-17:
 
 Fixed
 ~~~~~
@@ -1861,7 +1875,7 @@ Added
 [0.10.0-4] - 2021-02-16
 -----------------------
 
-.. _fixed-17:
+.. _fixed-18:
 
 Fixed
 ~~~~~
@@ -1873,7 +1887,7 @@ Fixed
 [0.10.0-3] - 2021-02-16
 -----------------------
 
-.. _fixed-18:
+.. _fixed-19:
 
 Fixed
 ~~~~~
@@ -1885,7 +1899,7 @@ Fixed
 [0.10.0-2] - 2021-02-12
 -----------------------
 
-.. _fixed-19:
+.. _fixed-20:
 
 Fixed
 ~~~~~
@@ -1943,7 +1957,7 @@ Changed
    and error messages still use stderr.
 -  Now InteractiveHtmlBom can be installed just as a plugin.
 
-.. _fixed-20:
+.. _fixed-21:
 
 Fixed
 ~~~~~
@@ -1984,7 +1998,7 @@ Changed
 -  Position files in CSV format quotes only the columns that could
    contain an space. Just like KiCad does.
 
-.. _fixed-21:
+.. _fixed-22:
 
 Fixed
 ~~~~~
@@ -2006,7 +2020,7 @@ Added
 -  Internal BoM HTML: highlight cell when hover.
 -  Internal BoM HTML: allow to jump to REF of row number using anchors.
 
-.. _fixed-22:
+.. _fixed-23:
 
 Fixed
 ~~~~~
@@ -2032,7 +2046,7 @@ Added
 -  Columns in position files can be selected, renamed and sorted as you
    like.
 
-.. _fixed-23:
+.. _fixed-24:
 
 Fixed
 ~~~~~
@@ -2075,7 +2089,7 @@ Added
 -  Default output file name format and default variant can be specified
    from the command line.
 
-.. _fixed-24:
+.. _fixed-25:
 
 Fixed
 ~~~~~
@@ -2097,7 +2111,7 @@ Changed
    creating the internal BoM. They are usually mistakes that prevents
    grouping components.
 
-.. _fixed-25:
+.. _fixed-26:
 
 Fixed
 ~~~~~
@@ -2128,7 +2142,7 @@ Changed
 
 -  Incorporated mcpy, no longer a dependency.
 
-.. _fixed-26:
+.. _fixed-27:
 
 Fixed
 ~~~~~
@@ -2264,7 +2278,7 @@ Added
    -  variants_blacklist
    -  dnp_field
 
-.. _fixed-27:
+.. _fixed-28:
 
 Fixed
 ~~~~~
@@ -2308,7 +2322,7 @@ Changed
    missing or corrupted.
 -  The ‘check_zone_fills’ option is now independent of ‘run_drc’
 
-.. _fixed-28:
+.. _fixed-29:
 
 Fixed
 ~~~~~
@@ -2328,7 +2342,7 @@ Added
 -  Tolerate config files without outputs
 -  Mechanism to filter ERC/DRC errors
 
-.. _fixed-29:
+.. _fixed-30:
 
 Fixed
 ~~~~~
@@ -2348,7 +2362,7 @@ Changed
 
 -  Now kicad-automation-scripts 1.3.1 or newer is needed.
 
-.. _fixed-30:
+.. _fixed-31:
 
 Fixed
 ~~~~~
@@ -2373,7 +2387,7 @@ Added
 [0.2.2] - 2020-04-20
 --------------------
 
-.. _fixed-31:
+.. _fixed-32:
 
 Fixed
 ~~~~~
@@ -2386,7 +2400,7 @@ Fixed
 [0.2.1] - 2020-04-18
 --------------------
 
-.. _fixed-32:
+.. _fixed-33:
 
 Fixed
 ~~~~~
@@ -2417,7 +2431,7 @@ Added
 -  Progress information
 -  –version option
 
-.. _fixed-33:
+.. _fixed-34:
 
 Fixed
 ~~~~~

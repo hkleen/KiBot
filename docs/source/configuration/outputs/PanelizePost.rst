@@ -15,7 +15,7 @@ PanelizePost parameters
 -  ``millradiusouter`` :index:`: <pair: output - panelize - options - configs - post; millradiusouter>` [:ref:`number <number>` | :ref:`string <string>`] (default: ``0``) Like `millradius`, but modifies only board outer counter.
    No internal features of the board are affected.
 -  ``origin`` :index:`: <pair: output - panelize - options - configs - post; origin>` [:ref:`string <string>`] (default: ``'tl'``) (choices: "tl", "tr", "bl", "br", "mt", "mb", "ml", "mr", "c") Specify if the auxiliary origin an grid origin should be placed.
-   Can be one of tl, tr, bl, br (corners), mt, mb, ml, mr (middle of sides), c (center).
+   Can be one of tl, tr, bl, br (corners), mt, mb, ml, mr (middle of sides), c (center). |br|
    Empty string does not changes the origin.
 -  *reconstruct_arcs* :index:`: <pair: output - panelize - options - configs - post; reconstruct_arcs>` Alias for reconstructarcs.
 -  ``reconstructarcs`` :index:`: <pair: output - panelize - options - configs - post; reconstructarcs>` [:ref:`boolean <boolean>`] (default: ``false``) The panelization process works on top of a polygonal representation of the board.

@@ -5,7 +5,7 @@ PositionOptions parameters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 -  **format** :index:`: <pair: output - position - options; format>` [:ref:`string <string>`] (default: ``'ASCII'``) (choices: "ASCII", "CSV", "GBR") Format for the position file.
-   Note that the gerber format (GBR) needs KiCad 7+ and doesn't support most of the options.
+   Note that the gerber format (GBR) needs KiCad 7+ and doesn't support most of the options. |br|
    Only the options that explicitly say the format is supported.
 -  **only_smd** :index:`: <pair: output - position - options; only_smd>` [:ref:`boolean <boolean>`] (default: ``true``) Only include the surface mount components.
 -  **output** :index:`: <pair: output - position - options; output>` [:ref:`string <string>`] (default: ``'%f-%i%I%v.%x'``) Output file name (%i='top_pos'|'bottom_pos'|'both_pos', %x='pos'|'csv'|'gbr').
@@ -23,7 +23,7 @@ PositionOptions parameters
 
 -  ``gerber_board_edge`` :index:`: <pair: output - position - options; gerber_board_edge>` [:ref:`boolean <boolean>`] (default: ``false``) Include the board edge in the gerber output.
 -  ``include_virtual`` :index:`: <pair: output - position - options; include_virtual>` [:ref:`boolean <boolean>`] (default: ``false``) Include virtual components. For special purposes, not pick & place.
-   Note that virtual components is a KiCad 5 concept.
+   Note that virtual components is a KiCad 5 concept. |br|
    For KiCad 6+ we replace this concept by the option to exclude from position file.
 -  ``pre_transform`` :index:`: <pair: output - position - options; pre_transform>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to transform fields before applying other filters.
    A short-cut to use for simple cases where a variant is an overkill.

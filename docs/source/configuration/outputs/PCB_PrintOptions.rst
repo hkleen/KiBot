@@ -5,7 +5,7 @@ PCB_PrintOptions parameters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 -  **color_theme** :index:`: <pair: output - pcb_print - options; color_theme>` [:ref:`string <string>`] (default: ``'_builtin_classic'``) Selects the color theme. Only applies to KiCad 6.
-   To use the KiCad 6 default colors select `_builtin_default`.
+   To use the KiCad 6 default colors select `_builtin_default`. |br|
    Usually user colors are stored as `user`, but you can give it another name.
 -  **force_edge_cuts** :index:`: <pair: output - pcb_print - options; force_edge_cuts>` [:ref:`boolean <boolean>`] (default: ``false``) Add the `Edge.Cuts` to all the pages.
 -  **format** :index:`: <pair: output - pcb_print - options; format>` [:ref:`string <string>`] (default: ``'PDF'``) (choices: "PDF", "SVG", "PNG", "EPS", "PS") Format for the output file/s.
@@ -35,12 +35,12 @@ PCB_PrintOptions parameters
 -  ``forced_edge_cuts_use_for_center`` :index:`: <pair: output - pcb_print - options; forced_edge_cuts_use_for_center>` [:ref:`boolean <boolean>`] (default: ``true``) Used when enabling the `force_edge_cuts`, in this case this is the `use_for_center` option of the forced
    layer.
 -  ``frame_plot_mechanism`` :index:`: <pair: output - pcb_print - options; frame_plot_mechanism>` [:ref:`string <string>`] (default: ``'internal'``) (choices: "gui", "internal", "plot") Plotting the frame from Python is problematic.
-   This option selects a workaround strategy.
-   gui: uses KiCad GUI to do it. Is slow but you get the correct frame.
-   But it can't keep track of page numbers.
-   internal: KiBot loads the `.kicad_wks` and does the drawing work.
-   Best option, but some details are different from what the GUI generates.
-   plot: uses KiCad Python API. Not available for KiCad 5.
+   This option selects a workaround strategy. |br|
+   gui: uses KiCad GUI to do it. Is slow but you get the correct frame. |br|
+   But it can't keep track of page numbers. |br|
+   internal: KiBot loads the `.kicad_wks` and does the drawing work. |br|
+   Best option, but some details are different from what the GUI generates. |br|
+   plot: uses KiCad Python API. Not available for KiCad 5. |br|
    You get the default frame and some substitutions doesn't work.
 -  ``hide_excluded`` :index:`: <pair: output - pcb_print - options; hide_excluded>` [:ref:`boolean <boolean>`] (default: ``false``) Hide components in the Fab layer that are marked as excluded by a variant.
    Affected by global options.
@@ -59,7 +59,7 @@ PCB_PrintOptions parameters
    A short-cut to use for simple cases where a variant is an overkill.
 
 -  ``realistic_solder_mask`` :index:`: <pair: output - pcb_print - options; realistic_solder_mask>` [:ref:`boolean <boolean>`] (default: ``true``) Try to draw the solder mask as a real solder mask, not the negative used for fabrication.
-   In order to get a good looking select a color with transparency, i.e. '#14332440'.
+   In order to get a good looking select a color with transparency, i.e. '#14332440'. |br|
    PcbDraw must be installed in order to use this option.
 -  ``sheet_reference_layout`` :index:`: <pair: output - pcb_print - options; sheet_reference_layout>` [:ref:`string <string>`] (default: ``''``) Worksheet file (.kicad_wks) to use. Leave empty to use the one specified in the project.
    
@@ -68,7 +68,7 @@ PCB_PrintOptions parameters
 ..
 
 -  ``svg_precision`` :index:`: <pair: output - pcb_print - options; svg_precision>` [:ref:`number <number>`] (default: ``4``) (range: 0 to 6) Scale factor used to represent 1 mm in the SVG (KiCad 6).
-   The value is how much zeros has the multiplier (1 mm = 10 power `svg_precision` units).
+   The value is how much zeros has the multiplier (1 mm = 10 power `svg_precision` units). |br|
    Note that for an A4 paper Firefox 91 and Chrome 105 can't handle more than 5.
 -  ``title`` :index:`: <pair: output - pcb_print - options; title>` [:ref:`string <string>`] (default: ``''``) Text used to replace the sheet title. %VALUE expansions are allowed.
    If it starts with `+` the text is concatenated.

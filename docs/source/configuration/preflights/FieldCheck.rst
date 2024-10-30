@@ -11,9 +11,9 @@ FieldCheck parameters
    to the *numeric_reference* value.
 -  ``numeric_reference`` :index:`: <pair: preflight - check_fields - check_fields; numeric_reference>` [:ref:`number <number>`] (default: ``0``) Value to compare using *numeric_condition*.
 -  ``severity`` :index:`: <pair: preflight - check_fields - check_fields; severity>` [:ref:`string <string>`] (default: ``'error'``) (choices: "error", "warning", "info", "skip", "continue") Default severity applied to various situations.
-   The *error* will stop execution.
-   The *warning* and *info* will generate a message and continue with the rest of the tests.
-   In the *skip* case we jump to the next component.
+   The *error* will stop execution. |br|
+   The *warning* and *info* will generate a message and continue with the rest of the tests. |br|
+   In the *skip* case we jump to the next component. |br|
    Use *continue* to just skip this test and apply the rest.
 -  ``severity_fail_condition`` :index:`: <pair: preflight - check_fields - check_fields; severity_fail_condition>` [:ref:`string <string>`] (default: ``'default'``) (choices: "error", "warning", "info", "skip", "continue", "default") What to do when the *numeric_condition* isn't met.
    Default means to use the *severity* option.

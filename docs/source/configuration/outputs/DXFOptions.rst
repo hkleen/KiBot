@@ -5,11 +5,11 @@ DXFOptions parameters
 ~~~~~~~~~~~~~~~~~~~~~
 
 -  **output** :index:`: <pair: output - dxf - options; output>` [:ref:`string <string>`] (default: ``'%f-%i%I%v.%x'``) Output file name, the default KiCad name if empty.
-   IMPORTANT! KiCad will always create the file using its own name and then we can rename it.
+   IMPORTANT! KiCad will always create the file using its own name and then we can rename it. |br|
    For this reason you must avoid generating two variants at the same directory when one of
    them uses the default KiCad name. Affected by global options.
 -  **plot_sheet_reference** :index:`: <pair: output - dxf - options; plot_sheet_reference>` [:ref:`boolean <boolean>`] (default: ``false``) Include the frame and title block. Only available for KiCad 6+ and you get a poor result
-   (i.e. always the default worksheet style, also problems expanding text variables).
+   (i.e. always the default worksheet style, also problems expanding text variables). |br|
    The `pcb_print` output can do a better job for PDF, SVG, PS, EPS and PNG outputs.
 -  **scaling** :index:`: <pair: output - dxf - options; scaling>` [:ref:`number <number>`] (default: ``1``) Scale factor (0 means autoscaling).
 -  ``custom_reports`` :index:`: <pair: output - dxf - options; custom_reports>`  [:ref:`CustomReport parameters <CustomReport>`] [:ref:`list(dict) <list(dict)>`] (default: ``[]``) A list of customized reports for the manufacturer.
@@ -24,7 +24,7 @@ DXFOptions parameters
 -  ``individual_page_scaling`` :index:`: <pair: output - dxf - options; individual_page_scaling>` [:ref:`boolean <boolean>`] (default: ``true``) Tell KiCad to apply the scaling for each layer as a separated entity.
    Disabling it the pages are coherent and can be superposed.
 -  ``inner_extension_pattern`` :index:`: <pair: output - dxf - options; inner_extension_pattern>` [:ref:`string <string>`] (default: ``''``) Used to change the Protel style extensions for inner layers.
-   The replacement pattern can contain %n for the inner layer number and %N for the layer number.
+   The replacement pattern can contain %n for the inner layer number and %N for the layer number. |br|
    Example '.g%n'.
 -  ``metric_units`` :index:`: <pair: output - dxf - options; metric_units>` [:ref:`boolean <boolean>`] (default: ``false``) Use mm instead of inches.
 -  ``plot_footprint_refs`` :index:`: <pair: output - dxf - options; plot_footprint_refs>` [:ref:`boolean <boolean>`] (default: ``true``) Include the footprint references.

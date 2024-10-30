@@ -27,7 +27,7 @@ BoMHTML parameters
 -  ``row_colors`` :index:`: <pair: output - bom - options - html; row_colors>`  [:ref:`RowColors parameters <RowColors>`] [:ref:`list(dict) <list(dict)>`] (default: ``[]``) Used to highlight rows using filters. Rows that match a filter can be colored.
    Note that these rows won't have colored columns.
 -  ``style`` :index:`: <pair: output - bom - options - html; style>` [:ref:`string <string>`] (default: ``'modern-blue'``) Page style. Internal styles: modern-blue, modern-green, modern-red and classic.
-   Or you can provide a CSS file name. Please use .css as file extension..
+   Or you can provide a CSS file name. Please use .css as file extension. |br|.
 
 .. toctree::
    :caption: Used dicts

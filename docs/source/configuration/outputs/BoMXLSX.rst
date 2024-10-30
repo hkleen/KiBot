@@ -27,7 +27,7 @@ BoMXLSX parameters
 -  ``kicost_api_enable`` :index:`: <pair: output - bom - options - xlsx; kicost_api_enable>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``''``) [:ref:`comma separated <comma_sep>`] List of KiCost APIs to enable.
 
 -  ``kicost_config`` :index:`: <pair: output - bom - options - xlsx; kicost_config>` [:ref:`string <string>`] (default: ``''``) KiCost configuration file. It contains the keys for the different distributors APIs.
-   The regular KiCost config is used when empty.
+   The regular KiCost config is used when empty. |br|
    Important for CI/CD environments: avoid exposing your API secrets!
    To understand how to achieve this, and also how to make use of the cache please visit the
    `kicost_ci_test <https://github.com/set-soft/kicost_ci_test>`__ repo.
@@ -43,9 +43,9 @@ BoMXLSX parameters
 -  ``row_colors`` :index:`: <pair: output - bom - options - xlsx; row_colors>`  [:ref:`RowColors parameters <RowColors>`] [:ref:`list(dict) <list(dict)>`] (default: ``[]``) Used to highlight rows using filters. Rows that match a filter can be colored.
    Note that these rows won't have colored columns.
 -  ``specs_columns`` :index:`: <pair: output - bom - options - xlsx; specs_columns>`  [:ref:`BoMColumns parameters <BoMColumns>`] [:ref:`list(dict) <list(dict)>` | :ref:`list(string) <list(string)>`] (default: ``[]``) Which columns are included in the Specs worksheet. Use `References` for the
-   references, 'Row' for the order and 'Sep' to separate groups at the same level. By default all are included.
+   references, 'Row' for the order and 'Sep' to separate groups at the same level. By default all are included. |br|
    Column names are distributor specific, the following aren't: '_desc', '_value', '_tolerance', '_footprint',
-   '_power', '_current', '_voltage', '_frequency', '_temp_coeff', '_manf', '_size'.
+   '_power', '_current', '_voltage', '_frequency', '_temp_coeff', '_manf', '_size'. |br|
    Note that an empty list means all available specs, use `specs` options to disable it.
 -  ``style`` :index:`: <pair: output - bom - options - xlsx; style>` [:ref:`string <string>`] (default: ``'modern-blue'``) Head style: modern-blue, modern-green, modern-red and classic.
 

@@ -939,6 +939,8 @@ def print_output_options(name, cl, indent, context=None, skip_keys=False, skip_o
             if (text.startswith('Important: ') or text.startswith('Warning: ')) and ln+1 < clines:
                 print(adapt_text(ind_help+text+'\n'+('\n'.join(lines[ln+1:]))+'.'))
                 break
+            if rst_mode and text[-1] == '.':
+                text += ' |br|'
             print(ind_help+adapt_text(text+('.' if ln+1 == clines else '')))
         num_opts = num_opts+1
         if isinstance(v, type):

@@ -5,8 +5,8 @@ PanelizeOptions parameters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 -  **configs** :index:`: <pair: output - panelize - options; configs>`  [:ref:`PanelizeConfig parameters <PanelizeConfig>`] [:ref:`list(dict) <list(dict)>` | :ref:`list(string) <list(string)>` | :ref:`string <string>`] (default: ``[]``) One or more configurations used to create the panel.
-   Use a string to include an external configuration, i.e. `myDefault.json`.
-   You can also include a preset using `:name`, i.e. `:vcuts`.
+   Use a string to include an external configuration, i.e. `myDefault.json`. |br|
+   You can also include a preset using `:name`, i.e. `:vcuts`. |br|
    Use a dict to specify the options using the KiBot YAML file.
 -  **output** :index:`: <pair: output - panelize - options; output>` [:ref:`string <string>`] (default: ``'%f-%i%I%v.%x'``) Filename for the output (%i=panel, %x=kicad_pcb). Affected by global options.
 -  ``copy_vias_on_mask`` :index:`: <pair: output - panelize - options; copy_vias_on_mask>` [:ref:`string <string>`] (default: ``'auto'``) (choices: "auto", "yes", "no") Copy the GUI option to plot vias on the mask layers from the original PCB to

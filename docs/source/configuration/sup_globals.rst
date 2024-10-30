@@ -5,10 +5,10 @@
    -  Valid keys:
 
       -  ``aliases_for_3d_models`` :index:`: <pair: global options; aliases_for_3d_models>` [:ref:`list(dict) <list(dict)>`] (default: ``[]``) List of aliases for the 3D models (KiCad 6).
-         KiCad stores 3D aliases with the user settings, not locally.
-         This makes impossible to create self contained projects.
-         You can define aliases here to workaround this problem.
-         The values defined here has precedence over the KiCad configuration.
+         KiCad stores 3D aliases with the user settings, not locally. |br|
+         This makes impossible to create self contained projects. |br|
+         You can define aliases here to workaround this problem. |br|
+         The values defined here has precedence over the KiCad configuration. |br|
          Related to https://gitlab.com/kicad/code/kicad/-/issues/3792.
 
          -  Valid keys:
@@ -39,11 +39,11 @@
       -  ``cross_using_kicad`` :index:`: <pair: global options; cross_using_kicad>` [:ref:`boolean <boolean>`] (default: ``true``) When using KiCad 7+ let KiCad cross the components.
       -  ``csv_accept_no_ref`` :index:`: <pair: global options; csv_accept_no_ref>` [:ref:`boolean <boolean>`] (default: ``false``) Accept aggregating CSV files without references (Experimental).
       -  ``date_format`` :index:`: <pair: global options; date_format>` [:ref:`string <string>`] (default: ``'%Y-%m-%d'``) Format used for the day we started the script.
-         Is also used for the PCB/SCH date formatting when `time_reformat` is enabled (default behavior).
+         Is also used for the PCB/SCH date formatting when `time_reformat` is enabled (default behavior). |br|
          Uses the `strftime` format.
       -  ``date_time_format`` :index:`: <pair: global options; date_time_format>` [:ref:`string <string>`] (default: ``'%Y-%m-%d_%H-%M-%S'``) Format used for the PCB and schematic date when using the file timestamp. Uses the `strftime` format.
       -  ``default_resistor_tolerance`` :index:`: <pair: global options; default_resistor_tolerance>` [:ref:`number <number>`] (default: ``20``) When no tolerance is specified we use this value.
-         Note that I know 5% is a common default, but technically speaking 20% is the default.
+         Note that I know 5% is a common default, but technically speaking 20% is the default. |br|
          Used while creating colored resistors.
       -  ``dir`` :index:`: <pair: global options; dir>` [:ref:`string <string>`] (default: ``''``) Default pattern for the output directories. It also applies to the preflights, unless
          `use_dir_for_preflights` is disabled.
@@ -51,19 +51,19 @@
       -  ``dnp_cross_bottom_layer`` :index:`: <pair: global options; dnp_cross_bottom_layer>` [:ref:`string <string>`] (default: ``'B.Fab'``) Layer on which to add DNP cross for the bottom components.
       -  ``dnp_cross_top_layer`` :index:`: <pair: global options; dnp_cross_top_layer>` [:ref:`string <string>`] (default: ``'F.Fab'``) Layer on which to add DNP cross for the top components.
       -  ``drc_exclusions_workaround`` :index:`: <pair: global options; drc_exclusions_workaround>` [:ref:`boolean <boolean>`] (default: ``false``) KiCad 6 introduced DRC exclusions. They are stored in the project but ignored by the Python API.
-         This problem affects KiCad 6 and 7.
-         If you really need exclusions enable this option, this will use the GUI version of the DRC (slower).
+         This problem affects KiCad 6 and 7. |br|
+         If you really need exclusions enable this option, this will use the GUI version of the DRC (slower). |br|
          Note that this isn't needed for KiCad 8 and the `drc` preflight.
       -  ``drill_size_increment`` :index:`: <pair: global options; drill_size_increment>` [:ref:`number <number>`] (default: ``0.05``) This is the difference between drill tools in millimeters.
-         A manufacturer with 0.05 of increment has drills for 0.1, 0.15, 0.2, 0.25, etc..
+         A manufacturer with 0.05 of increment has drills for 0.1, 0.15, 0.2, 0.25, etc. |br|.
       -  ``edge_connector`` :index:`: <pair: global options; edge_connector>` [:ref:`string <string>`] (default: ``'no'``) (choices: "yes", "no", "bevelled") Has the PCB edge connectors?
          KiCad 6: you should set this in the Board Setup -> Board Finish -> Edge card connectors.
       -  ``edge_plating`` :index:`: <pair: global options; edge_plating>` [:ref:`boolean <boolean>`] (default: ``false``) Has the PCB a plated board edge?
          KiCad 6: you should set this in the Board Setup -> Board Finish -> Plated board edge.
       -  ``environment`` :index:`: <pair: global options; environment>` [:ref:`dict <dict>`] (default: empty dict, default values used) Used to define environment variables used by KiCad.
          The values defined here are exported as environment variables and has
-         more precedence than KiCad paths defined in the GUI.
-         You can make reference to any OS environment variable using `${VARIABLE}`.
+         more precedence than KiCad paths defined in the GUI. |br|
+         You can make reference to any OS environment variable using `${VARIABLE}`. |br|
          The KIPRJMOD is also available for expansion.
 
          -  Valid keys:
@@ -87,36 +87,36 @@
             -  ``user_templates`` :index:`: <pair: global options - environment; user_templates>` [:ref:`string <string>`] (default: ``''``) User level templates dir. KiCad 5/6: KICAD_USER_TEMPLATE_DIR.
 
       -  ``erc_grid`` :index:`: <pair: global options; erc_grid>` [:ref:`number <number>`] (default: ``50``) Grid size used for the ERC. This value must be in mils.
-         This is needed for KiCad 7 in order to run the off grid check.
+         This is needed for KiCad 7 in order to run the off grid check. |br|
          This value is stored in the project for KiCad 8, no need to specify it.
       -  ``extra_pth_drill`` :index:`: <pair: global options; extra_pth_drill>` [:ref:`number <number>`] (default: ``0.1``) How many millimeters the manufacturer will add to plated holes.
-         This is because the plating reduces the hole, so you need to use a bigger drill.
+         This is because the plating reduces the hole, so you need to use a bigger drill. |br|
          For more information consult: https://www.eurocircuits.com/pcb-design-guidelines/drilled-holes/.
       -  ``field_3D_model`` :index:`: <pair: global options; field_3D_model>` [:ref:`string <string>`] (default: ``'_3D_model'``) Name for the field controlling the 3D models used for a component.
       -  ``field_current`` :index:`: <pair: global options; field_current>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``['current', 'i']``) Name/s of the field/s used for the current raiting.
          You can use `_field_current` as field name to use it in most places.
 
       -  ``field_lcsc_part`` :index:`: <pair: global options; field_lcsc_part>` [:ref:`string <string>`] (default: ``''``) The name of the schematic field that contains the part number for the LCSC/JLCPCB distributor.
-         When empty KiBot will try to discover it.
+         When empty KiBot will try to discover it. |br|
          You can use `_field_lcsc_part` as field name to use it in most places.
       -  ``field_package`` :index:`: <pair: global options; field_package>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``['package', 'pkg']``) Name/s of the field/s used for the package, not footprint.
-         I.e. 0805, SOT-23, etc. Used for the value split filter.
+         I.e. 0805, SOT-23, etc. Used for the value split filter. |br|
          You can use `_field_package` as field name to use it in most places.
 
       -  ``field_power`` :index:`: <pair: global options; field_power>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``['power', 'pow']``) Name/s of the field/s used for the power raiting.
-         Used for the value split filter.
+         Used for the value split filter. |br|
          You can use `_field_power` as field name to use it in most places.
 
       -  ``field_temp_coef`` :index:`: <pair: global options; field_temp_coef>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``['temp_coef', 'tmp_coef']``) Name/s of the field/s used for the temperature coefficient.
-         I.e. X7R, NP0, etc. Used for the value split filter.
+         I.e. X7R, NP0, etc. Used for the value split filter. |br|
          You can use `_field_temp_coef` as field name to use it in most places.
 
       -  ``field_tolerance`` :index:`: <pair: global options; field_tolerance>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``['tolerance', 'tol']``) Name/s of the field/s used for the tolerance.
-         Used while creating colored resistors and for the value split filter.
+         Used while creating colored resistors and for the value split filter. |br|
          You can use `_field_tolerance` as field name to use it in most places.
 
       -  ``field_voltage`` :index:`: <pair: global options; field_voltage>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``['voltage', 'v']``) Name/s of the field/s used for the voltage raiting.
-         Used for the value split filter.
+         Used for the value split filter. |br|
          You can use `_field_voltage` as field name to use it in most places.
 
       -  ``filters`` :index:`: <pair: global options; filters>` [:ref:`list(dict) <list(dict)>`] (default: ``[]``) KiBot warnings to be ignored.
@@ -132,7 +132,7 @@
             -  *regexp* :index:`: <pair: global options - filters; regexp>` Alias for regex.
 
       -  ``git_diff_strategy`` :index:`: <pair: global options; git_diff_strategy>` [:ref:`string <string>`] (default: ``'worktree'``) (choices: "worktree", "stash") When computing a PCB/SCH diff it configures how do we preserve the current
-         working state. The *worktree* mechanism creates a separated worktree, that then is just removed.
+         working state. The *worktree* mechanism creates a separated worktree, that then is just removed. |br|
          The *stash* mechanism uses *git stash push/pop* to save the current changes. Using *worktree*
          is the preferred mechanism.
       -  ``hide_excluded`` :index:`: <pair: global options; hide_excluded>` [:ref:`boolean <boolean>`] (default: ``false``) Default value for the `hide_excluded` option of various PCB outputs.
@@ -142,8 +142,8 @@
          Note that version 1.6.3 and older ignored them.
       -  ``invalidate_pcb_text_cache`` :index:`: <pair: global options; invalidate_pcb_text_cache>` [:ref:`string <string>`] (default: ``'auto'``) (choices: "auto", "yes", "no") Remove any cached text variable in the PCB. This is needed in order to force a text
          variables update when using `set_text_variables`. You might want to disable it when applying some
-         changes to the PCB and create a new copy to send to somebody without changing the cached values.
-         Note that it will save the PCB with the cache erased.
+         changes to the PCB and create a new copy to send to somebody without changing the cached values. |br|
+         Note that it will save the PCB with the cache erased. |br|
          The `auto` value will remove the cached values only when using `set_text_variables`.
       -  ``kiauto_time_out_scale`` :index:`: <pair: global options; kiauto_time_out_scale>` [:ref:`number <number>`] (default: ``0.0``) Time-out multiplier for KiAuto operations.
       -  ``kiauto_wait_start`` :index:`: <pair: global options; kiauto_wait_start>` [:ref:`number <number>`] (default: ``0``) Time to wait for KiCad in KiAuto operations.
@@ -165,7 +165,7 @@
       -  ``out_dir`` :index:`: <pair: global options; out_dir>` [:ref:`string <string>`] (default: ``''``) Base output dir, same as command line `--out-dir`.
       -  ``output`` :index:`: <pair: global options; output>` [:ref:`string <string>`] (default: ``'%f-%i%I%v.%x'``) Default pattern for output file names. Affected by global options.
       -  ``pcb_finish`` :index:`: <pair: global options; pcb_finish>` [:ref:`string <string>`] (default: ``'HAL'``) Finishing used to protect pads. Currently used for documentation and to choose default colors.
-         KiCad 6: you should set this in the Board Setup -> Board Finish -> Copper Finish option.
+         KiCad 6: you should set this in the Board Setup -> Board Finish -> Copper Finish option. |br|
          Currently known are None, HAL, HASL, HAL SnPb, HAL lead-free, ENIG, ENEPIG, Hard gold, ImAg, Immersion Silver,
          Immersion Ag, ImAu, Immersion Gold, Immersion Au, Immersion Tin, Immersion Nickel, OSP and HT_OSP.
       -  ``pcb_material`` :index:`: <pair: global options; pcb_material>` [:ref:`string <string>`] (default: ``'FR4'``) PCB core material. Currently used for documentation and to choose default colors.
@@ -175,25 +175,25 @@
       -  ``remove_solder_paste_for_dnp`` :index:`: <pair: global options; remove_solder_paste_for_dnp>` [:ref:`boolean <boolean>`] (default: ``true``) When applying filters and variants remove the solder paste for components that won't be included.
       -  ``resources_dir`` :index:`: <pair: global options; resources_dir>` [:ref:`string <string>`] (default: ``'kibot_resources'``) Directory where various resources are stored. Currently we support colors and fonts.
          They must be stored in sub-dirs. I.e. kibot_resources/fonts/MyFont.ttf
-         Note this is mainly useful for CI/CD, so you can store fonts and colors in your repo.
+         Note this is mainly useful for CI/CD, so you can store fonts and colors in your repo. |br|
          Also note that the fonts are installed using a mechanism known to work on Debian,
          which is used by the KiBot docker images, on other OSs *your mileage may vary*.
       -  ``restore_project`` :index:`: <pair: global options; restore_project>` [:ref:`boolean <boolean>`] (default: ``false``) Restore the KiCad project after execution.
-         Note that this option will undo operations like `set_text_variables`.
+         Note that this option will undo operations like `set_text_variables`. |br|
          Starting with 1.6.4 it also restores the PRL (Project Local Settings) and DRU (Design RUles) files.
       -  ``set_text_variables_before_output`` :index:`: <pair: global options; set_text_variables_before_output>` [:ref:`boolean <boolean>`] (default: ``false``) Run the `set_text_variables` preflight before running each output that involves variants.
          This can be used when a text variable uses the variant and you want to create more than
          one variant in the same run. Note that this could be slow because it forces a board
          reload each time you run an output that uses variants.
       -  ``silk_screen_color`` :index:`: <pair: global options; silk_screen_color>` [:ref:`string <string>`] (default: ``'white'``) Color for the markings. Currently used for documentation and to choose default colors.
-         KiCad 6: you should set this in the Board Setup -> Physical Stackup.
+         KiCad 6: you should set this in the Board Setup -> Physical Stackup. |br|
          Currently known are black and white.
       -  ``silk_screen_color_bottom`` :index:`: <pair: global options; silk_screen_color_bottom>` [:ref:`string <string>`] (default: ``''``) Color for the bottom silk screen. When not defined `silk_screen_color` is used.
          Read `silk_screen_color` help.
       -  ``silk_screen_color_top`` :index:`: <pair: global options; silk_screen_color_top>` [:ref:`string <string>`] (default: ``''``) Color for the top silk screen. When not defined `silk_screen_color` is used.
          Read `silk_screen_color` help.
       -  ``solder_mask_color`` :index:`: <pair: global options; solder_mask_color>` [:ref:`string <string>`] (default: ``'green'``) Color for the solder mask. Currently used for documentation and to choose default colors.
-         KiCad 6: you should set this in the Board Setup -> Physical Stackup.
+         KiCad 6: you should set this in the Board Setup -> Physical Stackup. |br|
          Currently known are green, black, white, yellow, purple, blue and red.
       -  ``solder_mask_color_bottom`` :index:`: <pair: global options; solder_mask_color_bottom>` [:ref:`string <string>`] (default: ``''``) Color for the bottom solder mask. When not defined `solder_mask_color` is used.
          Read `solder_mask_color` help.

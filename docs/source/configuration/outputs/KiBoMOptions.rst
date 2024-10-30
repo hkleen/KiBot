@@ -13,7 +13,7 @@ KiBoMOptions parameters
 -  ``variant`` :index:`: <pair: output - kibom - options; variant>` [:ref:`string <string>`] (default: ``''``) Board variant(s), used to determine which components
    are output to the BoM. To specify multiple variants,
    with a BOM file exported for each variant, separate
-   variants with the ';' (semicolon) character.
+   variants with the ';' (semicolon) character. |br|
    This isn't related to the KiBot concept of variants.
 
 .. toctree::

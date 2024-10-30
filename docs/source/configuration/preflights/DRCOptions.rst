@@ -7,8 +7,8 @@ DRCOptions parameters
 -  **output** :index:`: <pair: preflight - drc - drc; output>` [:ref:`string <string>`] (default: ``'%f-%i%I%v.%x'``) Name for the generated archive (%i=drc %x=according to format). Affected by global options.
 -  ``all_track_errors`` :index:`: <pair: preflight - drc - drc; all_track_errors>` [:ref:`boolean <boolean>`] (default: ``false``) Report all the errors for all the tracks, not just the first.
 -  ``category`` :index:`: <pair: preflight - drc - drc; category>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``''``) [:ref:`comma separated <comma_sep>`] The category for this preflight. If not specified an internally defined
-   category is used.
-   Categories looks like file system paths, i.e. **PCB/fabrication/gerber**.
+   category is used. |br|
+   Categories looks like file system paths, i.e. **PCB/fabrication/gerber**. |br|
    The categories are currently used for `navigate_results`.
 
 -  ``dir`` :index:`: <pair: preflight - drc - drc; dir>` [:ref:`string <string>`] (default: ``''``) Sub-directory for the report.

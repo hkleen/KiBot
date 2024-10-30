@@ -21,11 +21,11 @@ IBoMOptions parameters
 -  ``checkboxes`` :index:`: <pair: output - ibom - options; checkboxes>` [:ref:`string <string>`] (default: ``'Sourced,Placed'``) Comma separated list of checkbox columns.
 -  ``dark_mode`` :index:`: <pair: output - ibom - options; dark_mode>` [:ref:`boolean <boolean>`] (default: ``false``) Default to dark mode.
 -  ``dnf_filter`` :index:`: <pair: output - ibom - options; dnf_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to mark components as not fitted.
-   A short-cut to use for simple cases where a variant is an overkill.
+   A short-cut to use for simple cases where a variant is an overkill. |br|
    Avoid using it in conjunction with IBoM native filtering options.
 
 -  ``dnp_field`` :index:`: <pair: output - ibom - options; dnp_field>` [:ref:`string <string>`] (default: ``''``) Name of the extra field that indicates do not populate status.
-   Components with this field not empty will be blacklisted.
+   Components with this field not empty will be blacklisted. |br|
    IBoM option, avoid using in conjunction with KiBot variants/filters.
 -  ``extra_data_file`` :index:`: <pair: output - ibom - options; extra_data_file>` [:ref:`string <string>`] (default: ``''``) Path to netlist or xml file. You can use '%F.xml' to avoid specifying the project name.
    Leave it blank for most uses, data will be extracted from the PCB.
@@ -40,14 +40,14 @@ IBoMOptions parameters
 -  ``highlight_pin1`` :index:`: <pair: output - ibom - options; highlight_pin1>` [:ref:`boolean <boolean>` | :ref:`string <string>`] (default: ``false``) (choices: "none", "all", "selected") Highlight pin1 by default.
 -  ``include_nets`` :index:`: <pair: output - ibom - options; include_nets>` [:ref:`boolean <boolean>`] (default: ``false``) Include netlist information in output..
 -  ``name_format`` :index:`: <pair: output - ibom - options; name_format>` [:ref:`string <string>`] (default: ``'ibom'``) Output file name format supports substitutions:
-   %f : original pcb file name without extension.
-   %p : pcb/project title from pcb metadata.
-   %c : company from pcb metadata.
-   %r : revision from pcb metadata.
-   %d : pcb date from metadata if available, file modification date otherwise.
-   %D : bom generation date.
-   %T : bom generation time.
-   Extension .html will be added automatically.
+   %f : original pcb file name without extension. |br|
+   %p : pcb/project title from pcb metadata. |br|
+   %c : company from pcb metadata. |br|
+   %r : revision from pcb metadata. |br|
+   %d : pcb date from metadata if available, file modification date otherwise. |br|
+   %D : bom generation date. |br|
+   %T : bom generation time. |br|
+   Extension .html will be added automatically. |br|
    Note that this name is used only when output is ''.
 -  *netlist_file* :index:`: <pair: output - ibom - options; netlist_file>` Alias for extra_data_file.
 -  ``no_blacklist_virtual`` :index:`: <pair: output - ibom - options; no_blacklist_virtual>` [:ref:`boolean <boolean>`] (default: ``false``) Do not blacklist virtual components.

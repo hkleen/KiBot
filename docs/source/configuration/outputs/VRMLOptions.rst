@@ -5,18 +5,18 @@ VRMLOptions parameters
 ~~~~~~~~~~~~~~~~~~~~~~
 
 -  **download** :index:`: <pair: output - vrml - options; download>` [:ref:`boolean <boolean>`] (default: ``true``) Downloads missing 3D models from KiCad git.
-   Only applies to models in KISYS3DMOD and KICAD6_3DMODEL_DIR.
-   They are downloaded to a temporal directory and discarded.
+   Only applies to models in KISYS3DMOD and KICAD6_3DMODEL_DIR. |br|
+   They are downloaded to a temporal directory and discarded. |br|
    If you want to cache the downloaded files specify a directory using the
    KIBOT_3D_MODELS environment variable.
 -  **no_virtual** :index:`: <pair: output - vrml - options; no_virtual>` [:ref:`boolean <boolean>`] (default: ``false``) Used to exclude 3D models for components with 'virtual' attribute.
 -  **output** :index:`: <pair: output - vrml - options; output>` [:ref:`string <string>`] (default: ``'%f-%i%I%v.%x'``) Filename for the output (%i=vrml, %x=wrl). Affected by global options.
 -  **show_components** :index:`: <pair: output - vrml - options; show_components>` [:ref:`list(string) <list(string)>` | :ref:`string <string>`] (default: ``'all'``) (choices: "none", "all") (also accepts any string) List of components to draw, can be also a string for `none` or `all`.
-   Ranges like *R5-R10* are supported.
+   Ranges like *R5-R10* are supported. |br|
    Unlike the `pcbdraw` output, the default is `all`.
 
 -  ``dir_models`` :index:`: <pair: output - vrml - options; dir_models>` [:ref:`string <string>`] (default: ``'shapes3D'``) Subdirectory used to store the 3D models for the components.
-   If you want to create a monolithic file just use '' here.
+   If you want to create a monolithic file just use '' here. |br|
    Note that the WRL file will contain relative paths to the models.
 -  ``dnf_filter`` :index:`: <pair: output - vrml - options; dnf_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to mark components as not fitted.
    A short-cut to use for simple cases where a variant is an overkill.

@@ -24,15 +24,15 @@ PagesOptions parameters
 -  ``negative_plot`` :index:`: <pair: output - pcb_print - options - pages; negative_plot>` [:ref:`boolean <boolean>`] (default: ``false``) Invert black and white. Only useful for a single layer.
 -  ``page_id`` :index:`: <pair: output - pcb_print - options - pages; page_id>` [:ref:`string <string>`] (default: ``'%02d'``) Text to differentiate the pages. Use %d (like in C) to get the page number.
 -  ``repeat_for_layer`` :index:`: <pair: output - pcb_print - options - pages; repeat_for_layer>` [:ref:`string <string>`] (default: ``''``) Use this page as a pattern to create more pages.
-   The other pages will change the layer mentioned here.
-   This can be used to generate a page for each copper layer, here you put `F.Cu`.
+   The other pages will change the layer mentioned here. |br|
+   This can be used to generate a page for each copper layer, here you put `F.Cu`. |br|
    See `repeat_layers`.
 -  ``repeat_inherit`` :index:`: <pair: output - pcb_print - options - pages; repeat_inherit>` [:ref:`boolean <boolean>`] (default: ``true``) If we will inherit the options of the layer we are replacing.
    Disable it if you specify the options in `repeat_layers`, which is unlikely.
 -  ``repeat_layers`` :index:`: <pair: output - pcb_print - options - pages; repeat_layers>`  [:ref:`LayerOptions parameters <LayerOptions>`] [:ref:`list(dict) <list(dict)>` | :ref:`list(string) <list(string)>` | :ref:`string <string>`] (default: ``'inners'``) (choices: "all", "selected", "copper", "technical", "user", "inners", "outers") (also accepts any string).
 -  ``sheet`` :index:`: <pair: output - pcb_print - options - pages; sheet>` [:ref:`string <string>`] (default: ``'Assembly'``) Text to use for the `SHEET` in the title block.
-   Pattern (%*) and text variables are expanded.
-   The %ll is the list of layers included in this page.
+   Pattern (%*) and text variables are expanded. |br|
+   The %ll is the list of layers included in this page. |br|
    In addition when you use `repeat_for_layer` the following patterns are available:
    %ln layer name, %ls layer suffix and %ld layer description.
 -  ``sheet_reference_color`` :index:`: <pair: output - pcb_print - options - pages; sheet_reference_color>` [:ref:`string <string>`] (default: ``''``) Color to use for the frame and title block.

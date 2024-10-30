@@ -16,7 +16,7 @@ KiCostOptions parameters
 -  **output** :index:`: <pair: output - kicost - options; output>` [:ref:`string <string>`] (default: ``'%f-%i%I%v.%x'``) Filename for the output (%i=kicost, %x=xlsx). Affected by global options.
 -  ``aggregate`` :index:`: <pair: output - kicost - options; aggregate>`  [:ref:`Aggregate parameters <Aggregate>`] [:ref:`list(dict) <list(dict)>`] (default: ``[]``) Add components from other projects.
 -  ``dnf_filter`` :index:`: <pair: output - kicost - options; dnf_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to mark components as not fitted.
-   A short-cut to use for simple cases where a variant is an overkill.
+   A short-cut to use for simple cases where a variant is an overkill. |br|
    Don't use the `kicost_variant` when using internal variants/filters.
 
 -  ``fields`` :index:`: <pair: output - kicost - options; fields>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``[]``) [:ref:`comma separated <comma_sep>`] List of fields to be added to the global data section.
@@ -27,7 +27,7 @@ KiCostOptions parameters
 -  ``ignore_fields`` :index:`: <pair: output - kicost - options; ignore_fields>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``[]``) [:ref:`comma separated <comma_sep>`] List of fields to be ignored.
 
 -  ``kicost_config`` :index:`: <pair: output - kicost - options; kicost_config>` [:ref:`string <string>`] (default: ``''``) KiCost configuration file. It contains the keys for the different distributors APIs.
-   The regular KiCost config is used when empty.
+   The regular KiCost config is used when empty. |br|
    Important for CI/CD environments: avoid exposing your API secrets!
    To understand how to achieve this, and also how to make use of the cache please visit the
    `kicost_ci_test <https://github.com/set-soft/kicost_ci_test>`__ repo.

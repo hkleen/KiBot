@@ -6,8 +6,8 @@ ERCOptions parameters
 
 -  **output** :index:`: <pair: preflight - erc - erc; output>` [:ref:`string <string>`] (default: ``'%f-%i%I%v.%x'``) Name for the generated archive (%i=erc %x=according to format). Affected by global options.
 -  ``category`` :index:`: <pair: preflight - erc - erc; category>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``''``) [:ref:`comma separated <comma_sep>`] The category for this preflight. If not specified an internally defined
-   category is used.
-   Categories looks like file system paths, i.e. **PCB/fabrication/gerber**.
+   category is used. |br|
+   Categories looks like file system paths, i.e. **PCB/fabrication/gerber**. |br|
    The categories are currently used for `navigate_results`.
 
 -  ``dir`` :index:`: <pair: preflight - erc - erc; dir>` [:ref:`string <string>`] (default: ``''``) Sub-directory for the report.

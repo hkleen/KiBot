@@ -7,9 +7,9 @@ PanelizeLayout parameters
 -  **cols** :index:`: <pair: output - panelize - options - configs - layout; cols>` [:ref:`number <number>`] (default: ``1``) Specify the number of columns of boards in the grid pattern.
 -  **rows** :index:`: <pair: output - panelize - options - configs - layout; rows>` [:ref:`number <number>`] (default: ``1``) Specify the number of rows of boards in the grid pattern.
 -  ``alternation`` :index:`: <pair: output - panelize - options - configs - layout; alternation>` [:ref:`string <string>`] (default: ``'none'``) (choices: "none", "rows", "cols", "rowsCols") Specify alternations of board rotation.
-   none: Do not alternate.
-   rows: Rotate boards by 180° on every next row.
-   cols: Rotate boards by 180° on every next column.
+   none: Do not alternate. |br|
+   rows: Rotate boards by 180° on every next row. |br|
+   cols: Rotate boards by 180° on every next column. |br|
    rowsCols: Rotate boards by 180° based on a chessboard pattern.
 -  ``arg`` :index:`: <pair: output - panelize - options - configs - layout; arg>` [:ref:`string <string>`] (default: ``''``) Argument to pass to the plugin. Used for *plugin*.
 -  *bake_text* :index:`: <pair: output - panelize - options - configs - layout; bake_text>` Alias for baketext.

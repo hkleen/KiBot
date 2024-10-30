@@ -7,7 +7,7 @@ PopulateOptions parameters
 -  **format** :index:`: <pair: output - populate - options; format>` [:ref:`string <string>`] (default: ``'html'``) (choices: "html", "md") Format for the generated output.
 -  **input** :index:`: <pair: output - populate - options; input>` [:ref:`string <string>`] (default: ``''``) Name of the input file describing the assembly. Must be a markdown file.
    Note that the YAML section of the file will be skipped, all the needed information
-   comes from this output and the `renderer` output, not from the YAML section.
+   comes from this output and the `renderer` output, not from the YAML section. |br|
    When empty we use a dummy template, you should provide something better.
 -  **renderer** :index:`: <pair: output - populate - options; renderer>` [:ref:`string <string>`] (default: ``''``) Name of the output used to render the PCB steps.
    Currently this must be a `pcbdraw` or `render_3d` output.
@@ -23,7 +23,7 @@ PopulateOptions parameters
    A short-cut to use for simple cases where a variant is an overkill.
 
 -  ``template`` :index:`: <pair: output - populate - options; template>` [:ref:`string <string>`] The name of the handlebars template used for the HTML output.
-   The extension must be `.handlebars`, it will be added when missing.
+   The extension must be `.handlebars`, it will be added when missing. |br|
    The `simple.handlebars` template is a built-in template.
 -  ``variant`` :index:`: <pair: output - populate - options; variant>` [:ref:`string <string>`] (default: ``''``) Board variant to apply.
 

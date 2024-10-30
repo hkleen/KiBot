@@ -30,22 +30,22 @@ Parameters:
    Avoid using `_` as first character. These names are reserved for KiBot.
 -  **options** :index:`: <pair: output - pdf; options>`  [:ref:`PDFOptions parameters <PDFOptions>`] [:ref:`dict <dict>`] (default: empty dict, default values used) Options for the `pdf` output.
 -  **output** :index:`: <pair: output - pdf; output>` [:ref:`string <string>`] (default: ``'%f-%i%I%v.%x'``) Output file name, the default KiCad name if empty.
-   IMPORTANT! KiCad will always create the file using its own name and then we can rename it.
+   IMPORTANT! KiCad will always create the file using its own name and then we can rename it. |br|
    For this reason you must avoid generating two variants at the same directory when one of
    them uses the default KiCad name. Affected by global options.
 -  **plot_sheet_reference** :index:`: <pair: output - pdf; plot_sheet_reference>` [:ref:`boolean <boolean>`] (default: ``false``) Include the frame and title block. Only available for KiCad 6+ and you get a poor result
-   (i.e. always the default worksheet style, also problems expanding text variables).
+   (i.e. always the default worksheet style, also problems expanding text variables). |br|
    The `pcb_print` output can do a better job for PDF, SVG, PS, EPS and PNG outputs.
 -  **scaling** :index:`: <pair: output - pdf; scaling>` [:ref:`number <number>`] (default: ``1``) Scale factor (0 means autoscaling).
 -  **type** :index:`: <pair: output - pdf; type>` 'pdf'
 -  ``category`` :index:`: <pair: output - pdf; category>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``''``) [:ref:`comma separated <comma_sep>`] The category for this output. If not specified an internally defined
-   category is used.
-   Categories looks like file system paths, i.e. **PCB/fabrication/gerber**.
+   category is used. |br|
+   Categories looks like file system paths, i.e. **PCB/fabrication/gerber**. |br|
    The categories are currently used for `navigate_results`.
 
 -  ``custom_reports`` :index:`: <pair: output - pdf; custom_reports>`  [:ref:`CustomReport parameters <CustomReport>`] [:ref:`list(dict) <list(dict)>`] (default: ``[]``) A list of customized reports for the manufacturer.
 -  ``disable_run_by_default`` :index:`: <pair: output - pdf; disable_run_by_default>` [:ref:`string <string>` | :ref:`boolean <boolean>`] (default: ``''``) Use it to disable the `run_by_default` status of other output.
-   Useful when this output extends another and you don't want to generate the original.
+   Useful when this output extends another and you don't want to generate the original. |br|
    Use the boolean true value to disable the output you are extending.
 -  ``dnf_filter`` :index:`: <pair: output - pdf; dnf_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to mark components as not fitted.
    A short-cut to use for simple cases where a variant is an overkill.
@@ -64,7 +64,7 @@ Parameters:
 -  ``individual_page_scaling`` :index:`: <pair: output - pdf; individual_page_scaling>` [:ref:`boolean <boolean>`] (default: ``true``) Tell KiCad to apply the scaling for each layer as a separated entity.
    Disabling it the pages are coherent and can be superposed.
 -  ``inner_extension_pattern`` :index:`: <pair: output - pdf; inner_extension_pattern>` [:ref:`string <string>`] (default: ``''``) Used to change the Protel style extensions for inner layers.
-   The replacement pattern can contain %n for the inner layer number and %N for the layer number.
+   The replacement pattern can contain %n for the inner layer number and %N for the layer number. |br|
    Example '.g%n'.
 -  ``output_id`` :index:`: <pair: output - pdf; output_id>` [:ref:`string <string>`] (default: ``''``) Text to use for the %I expansion content. To differentiate variations of this output.
 -  ``plot_footprint_refs`` :index:`: <pair: output - pdf; plot_footprint_refs>` [:ref:`boolean <boolean>`] (default: ``true``) Include the footprint references.

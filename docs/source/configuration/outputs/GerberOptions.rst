@@ -7,11 +7,11 @@ GerberOptions parameters
 -  **create_gerber_job_file** :index:`: <pair: output - gerber - options; create_gerber_job_file>` [:ref:`boolean <boolean>`] (default: ``true``) Creates a file with information about all the generated gerbers.
    You can use it in gerbview to load all gerbers at once.
 -  **output** :index:`: <pair: output - gerber - options; output>` [:ref:`string <string>`] (default: ``'%f-%i%I%v.%x'``) Output file name, the default KiCad name if empty.
-   IMPORTANT! KiCad will always create the file using its own name and then we can rename it.
+   IMPORTANT! KiCad will always create the file using its own name and then we can rename it. |br|
    For this reason you must avoid generating two variants at the same directory when one of
    them uses the default KiCad name. Affected by global options.
 -  **plot_sheet_reference** :index:`: <pair: output - gerber - options; plot_sheet_reference>` [:ref:`boolean <boolean>`] (default: ``false``) Include the frame and title block. Only available for KiCad 6+ and you get a poor result
-   (i.e. always the default worksheet style, also problems expanding text variables).
+   (i.e. always the default worksheet style, also problems expanding text variables). |br|
    The `pcb_print` output can do a better job for PDF, SVG, PS, EPS and PNG outputs.
 -  **subtract_mask_from_silk** :index:`: <pair: output - gerber - options; subtract_mask_from_silk>` [:ref:`boolean <boolean>`] (default: ``false``) Subtract the solder mask from the silk screen.
 -  **use_gerber_net_attributes** :index:`: <pair: output - gerber - options; use_gerber_net_attributes>` [:ref:`boolean <boolean>`] (default: ``true``) Include netlist metadata.
@@ -29,7 +29,7 @@ GerberOptions parameters
 -  ``gerber_job_file`` :index:`: <pair: output - gerber - options; gerber_job_file>` [:ref:`string <string>`] (default: ``'%f-%i%I%v.%x'``) Name for the gerber job file (%i='job', %x='gbrjob'). Affected by global options.
 -  ``gerber_precision`` :index:`: <pair: output - gerber - options; gerber_precision>` [:ref:`number <number>`] (default: ``4.6``) (choices: 4.5, 4.6) This is the gerber coordinate format, can be 4.5 or 4.6.
 -  ``inner_extension_pattern`` :index:`: <pair: output - gerber - options; inner_extension_pattern>` [:ref:`string <string>`] (default: ``''``) Used to change the Protel style extensions for inner layers.
-   The replacement pattern can contain %n for the inner layer number and %N for the layer number.
+   The replacement pattern can contain %n for the inner layer number and %N for the layer number. |br|
    Example '.g%n'.
 -  ``line_width`` :index:`: <pair: output - gerber - options; line_width>` [:ref:`number <number>`] (default: ``0.1``) (range: 0.02 to 2) Line_width for objects without width [mm] (KiCad 5).
 -  ``plot_footprint_refs`` :index:`: <pair: output - gerber - options; plot_footprint_refs>` [:ref:`boolean <boolean>`] (default: ``true``) Include the footprint references.

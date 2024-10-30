@@ -5,11 +5,11 @@ PDFOptions parameters
 ~~~~~~~~~~~~~~~~~~~~~
 
 -  **output** :index:`: <pair: output - pdf - options; output>` [:ref:`string <string>`] (default: ``'%f-%i%I%v.%x'``) Output file name, the default KiCad name if empty.
-   IMPORTANT! KiCad will always create the file using its own name and then we can rename it.
+   IMPORTANT! KiCad will always create the file using its own name and then we can rename it. |br|
    For this reason you must avoid generating two variants at the same directory when one of
    them uses the default KiCad name. Affected by global options.
 -  **plot_sheet_reference** :index:`: <pair: output - pdf - options; plot_sheet_reference>` [:ref:`boolean <boolean>`] (default: ``false``) Include the frame and title block. Only available for KiCad 6+ and you get a poor result
-   (i.e. always the default worksheet style, also problems expanding text variables).
+   (i.e. always the default worksheet style, also problems expanding text variables). |br|
    The `pcb_print` output can do a better job for PDF, SVG, PS, EPS and PNG outputs.
 -  **scaling** :index:`: <pair: output - pdf - options; scaling>` [:ref:`number <number>`] (default: ``1``) Scale factor (0 means autoscaling).
 -  ``custom_reports`` :index:`: <pair: output - pdf - options; custom_reports>`  [:ref:`CustomReport parameters <CustomReport>`] [:ref:`list(dict) <list(dict)>`] (default: ``[]``) A list of customized reports for the manufacturer.
@@ -24,7 +24,7 @@ PDFOptions parameters
 -  ``individual_page_scaling`` :index:`: <pair: output - pdf - options; individual_page_scaling>` [:ref:`boolean <boolean>`] (default: ``true``) Tell KiCad to apply the scaling for each layer as a separated entity.
    Disabling it the pages are coherent and can be superposed.
 -  ``inner_extension_pattern`` :index:`: <pair: output - pdf - options; inner_extension_pattern>` [:ref:`string <string>`] (default: ``''``) Used to change the Protel style extensions for inner layers.
-   The replacement pattern can contain %n for the inner layer number and %N for the layer number.
+   The replacement pattern can contain %n for the inner layer number and %N for the layer number. |br|
    Example '.g%n'.
 -  ``line_width`` :index:`: <pair: output - pdf - options; line_width>` [:ref:`number <number>`] (default: ``0.1``) (range: 0.02 to 2) For objects without width [mm] (KiCad 5).
 -  ``mirror_plot`` :index:`: <pair: output - pdf - options; mirror_plot>` [:ref:`boolean <boolean>`] (default: ``false``) Plot mirrored.

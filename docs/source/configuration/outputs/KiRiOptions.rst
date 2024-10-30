@@ -5,7 +5,7 @@ KiRiOptions parameters
 ~~~~~~~~~~~~~~~~~~~~~~
 
 -  **color_theme** :index:`: <pair: output - kiri - options; color_theme>` [:ref:`string <string>`] (default: ``'_builtin_classic'``) Selects the color theme. Only applies to KiCad 6.
-   To use the KiCad 6 default colors select `_builtin_default`.
+   To use the KiCad 6 default colors select `_builtin_default`. |br|
    Usually user colors are stored as `user`, but you can give it another name.
 -  **keep_generated** :index:`: <pair: output - kiri - options; keep_generated>` [:ref:`boolean <boolean>`] (default: ``false``) Avoid PCB and SCH images regeneration. Useful for incremental usage.
 -  ``background_color`` :index:`: <pair: output - kiri - options; background_color>` [:ref:`string <string>`] (default: ``'#FFFFFF'``) Color used for the background of the diff canvas.
@@ -21,6 +21,6 @@ KiRiOptions parameters
 -  ``variant`` :index:`: <pair: output - kiri - options; variant>` [:ref:`string <string>`] (default: ``''``) Board variant to apply.
 -  ``zones`` :index:`: <pair: output - kiri - options; zones>` [:ref:`string <string>`] (default: ``'global'``) (choices: "global", "fill", "unfill", "none") How to handle PCB zones. The default is *global* and means that we
    fill zones if the *check_zone_fills* preflight is enabled. The *fill* option always forces
-   a refill, *unfill* forces a zone removal and *none* lets the zones unchanged.
+   a refill, *unfill* forces a zone removal and *none* lets the zones unchanged. |br|
    Be careful with the *keep_generated* option when changing this setting.
 

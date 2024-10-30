@@ -9,7 +9,7 @@ LayerOptions parameters
 -  ``description`` :index:`: <pair: output - pcb_print - options - pages - repeat_layers; description>` [:ref:`string <string>`] (default: ``''``) A description for the layer, for documentation purposes.
    A default can be specified using the `layer_defaults` global option.
 -  ``exclude_filter`` :index:`: <pair: output - pcb_print - options - pages - repeat_layers; exclude_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to exclude components before printing this layer.
-   This option affects only this layer.
+   This option affects only this layer. |br|
    You should also set `plot_footprint_values` and `sketch_pads_on_fab` to false.
 
 -  ``force_plot_invisible_refs_vals`` :index:`: <pair: output - pcb_print - options - pages - repeat_layers; force_plot_invisible_refs_vals>` [:ref:`boolean <boolean>`] (default: ``false``) Include references and values even when they are marked as invisible.
