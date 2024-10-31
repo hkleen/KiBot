@@ -661,6 +661,52 @@ And we’ll get:
 
 
 .. index::
+   pair: Bill of Materials; KiCad BoM options
+   pair: Bill of Materials; BoM options from KiCad
+
+.. _bom_kicad_options:
+
+Using KiCad's internal BoM options
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Modern KiCad allows editing the BoM generation using a dialog. You can select
+which fields are used, their order, how they are grouped, their sorting, etc.
+These options are stored in the project file. You can import them using
+something like this:
+
+.. code:: yaml
+
+   kibot:
+     version: 1
+
+   outputs:
+     - name: 'bom_kicad_test'
+       comment: "Bill of Materials using KiCad settings"
+       type: bom
+       options:
+         format: CSV
+         ignore_dnf: false
+         group_not_fitted: true
+         group_fields: []
+         sort_style: kicad_bom
+         columns:
+           - _kicad_bom_fields
+
+Here is what the options do:
+
+- **ignore_dnf**: Do Not Fit componets goes to the same list, not separated
+- **group_not_fitted**: Not fitted components are grouped with fitted components
+- **group_fields**: An empty list so they get imported from KiCad
+- **sort_style**: Use the sorting as specified by KiCad
+- **columns**: The *_kicad_bom_fields* will be replaced by the fields specified
+  in the project. The fields used for grouping will be added to the
+  **group_fields**, as we defined it empty we'll get the same grouping criteria.
+
+You can add any of the KiBot's options. So you could generate a nice HTML BoM
+but using the fields selected in KiCad's GUI.
+
+
+.. index::
    pair: Bill of Materials; columns internal
    pair: Bill of Materials; special columns
 
