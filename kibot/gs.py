@@ -73,6 +73,8 @@ class GS(object):
     pro_ext = '.pro'
     pro_variables = None  # KiCad 6 text variables defined in the project
     pro_bom_settings = None  # KiCad BoM settings from the project
+    pro_bom_fmt_settings = None  # KiCad BoM file format options
+    pro_bom_export_filename = ''  # KiCad BoM file name, for the extension
     vars_regex = re.compile(r'\$\{([^\}]+)\}')
     # Main output dir
     out_dir = None
@@ -281,8 +283,16 @@ class GS(object):
             GS.exit_with_error('Corrupted project {}'.format(GS.pro_file), CORRUPTED_PRO)
         schematic = data.get('schematic', {})
         GS.pro_bom_settings = schematic.get('bom_settings', {})
+        GS.pro_bom_fmt_settings = schematic.get('bom_fmt_settings', {})
+        GS.pro_bom_export_filename = schematic.get('bom_export_filename', '')
         logger.debug("Current bom_settings: {}".format(GS.pro_bom_settings))
         return GS.pro_bom_settings
+
+    @staticmethod
+    def load_pro_bom_fmt_settings():
+        if GS.pro_bom_fmt_settings is None:
+            GS.load_pro_bom_settings()
+        return GS.pro_bom_fmt_settings
 
     @staticmethod
     def read_pro():

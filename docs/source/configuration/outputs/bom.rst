@@ -8,14 +8,13 @@ BoM (Bill of Materials)
 
 Used to generate the BoM in CSV, HTML, TSV, TXT, XML or XLSX format using the internal BoM.
 This output can generate XYRS files (pick and place files). |br|
+You can import the options used in the KiCad internal BoM, consult :ref:`bom_kicad_options`. |br|
 Is compatible with KiBoM, but doesn't need to update the XML netlist because the components
 are loaded from the schematic. |br|
 Important differences with KiBoM output:
 
 - All options are in the main `options` section, not in `conf` subsection.
 - The `Component` column is named `Row` and works just like any other column.
-
-This output is what you get from the 'Tools/Generate Bill of Materials' menu in eeschema. |br|
 
 Type: ``bom``
 

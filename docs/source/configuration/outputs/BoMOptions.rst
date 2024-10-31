@@ -117,11 +117,13 @@ BoMOptions parameters
    This option is for simple cases, consider using a full variant for complex cases.
 
 -  ``ref_id`` :index:`: <pair: output - bom - options; ref_id>` [:ref:`string <string>`] (default: ``''``) A prefix to add to all the references from this project. Used for multiple projects.
+-  ``ref_range_separator`` :index:`: <pair: output - bom - options; ref_range_separator>` [:ref:`string <string>`] (default: ``'-'``) Separator used for ranges in the list of references. Used when `use_alt` is enabled.
 -  ``ref_separator`` :index:`: <pair: output - bom - options; ref_separator>` [:ref:`string <string>`] (default: ``' '``) Separator used for the list of references.
 -  ``sort_ascending`` :index:`: <pair: output - bom - options; sort_ascending>` [:ref:`boolean <boolean>`] (default: ``true``) Sort in ascending order.
 -  ``source_by_id`` :index:`: <pair: output - bom - options; source_by_id>` [:ref:`boolean <boolean>`] (default: ``false``) Generate the `Source BoM` column using the reference ID instead of the project name.
 -  ``use_alt`` :index:`: <pair: output - bom - options; use_alt>` [:ref:`boolean <boolean>`] (default: ``false``) Print grouped references in the alternate compressed style eg: R1-R7,R18.
 -  ``use_aux_axis_as_origin`` :index:`: <pair: output - bom - options; use_aux_axis_as_origin>` [:ref:`boolean <boolean>`] (default: ``true``) Use the auxiliary axis as origin for coordinates (KiCad default) (for XYRS).
+-  *use_ref_ranges* :index:`: <pair: output - bom - options; use_ref_ranges>` Alias for use_alt.
 -  ``variant`` :index:`: <pair: output - bom - options; variant>` [:ref:`string <string>`] (default: ``'_kibom_simple'``) Board variant, used to determine which components are output to the BoM.
    The `_kibom_simple` variant is a KiBoM variant without any filters and it provides some basic
    compatibility with KiBoM. Note that this output has default filters that behaves like KiBoM. |br|

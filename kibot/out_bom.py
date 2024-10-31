@@ -480,6 +480,12 @@ class BoMOptions(BaseOptions):
             """ {no_case} Field name used for internal filters (not for variants) """
             self.use_alt = False
             """ Print grouped references in the alternate compressed style eg: R1-R7,R18 """
+            self.use_ref_ranges = None
+            """ {use_alt} """
+            self.ref_separator = ' '
+            """ Separator used for the list of references """
+            self.ref_range_separator = '-'
+            """ Separator used for ranges in the list of references. Used when `use_alt` is enabled """
             self.columns = BoMColumns
             """ *[list(dict)|list(string)=?] List of columns to display.
                 One entry can be just the name of the field (a string).
@@ -493,8 +499,6 @@ class BoMOptions(BaseOptions):
             """ *Try to normalize the R, L and C values, producing uniform units and prefixes """
             self.normalize_locale = False
             """ When normalizing values use the locale decimal point """
-            self.ref_separator = ' '
-            """ Separator used for the list of references """
             self.html = BoMHTML
             """ *[dict={}] Options for the HTML format """
             self.xlsx = BoMXLSX
@@ -1043,12 +1047,12 @@ class BoM(BaseOutput):  # noqa: F821
     """ BoM (Bill of Materials)
         Used to generate the BoM in CSV, HTML, TSV, TXT, XML or XLSX format using the internal BoM.
         This output can generate XYRS files (pick and place files).
+        You can import the options used in the KiCad internal BoM, consult :ref:`bom_kicad_options`.
         Is compatible with KiBoM, but doesn't need to update the XML netlist because the components
         are loaded from the schematic.
         Important differences with KiBoM output:
         - All options are in the main `options` section, not in `conf` subsection.
-        - The `Component` column is named `Row` and works just like any other column.
-        This output is what you get from the 'Tools/Generate Bill of Materials' menu in eeschema. """
+        - The `Component` column is named `Row` and works just like any other column. """
     def __init__(self):
         super().__init__()
         with document:

@@ -425,12 +425,12 @@ outputs:
       variant: ''
   # BoM (Bill of Materials):
   # This output can generate XYRS files (pick and place files).
+  # You can import the options used in the KiCad internal BoM, consult :ref:`bom_kicad_options`.
   # Is compatible with KiBoM, but doesn't need to update the XML netlist because the components
   # are loaded from the schematic.
   # Important differences with KiBoM output:
   # - All options are in the main `options` section, not in `conf` subsection.
   # - The `Component` column is named `Row` and works just like any other column.
-  # This output is what you get from the 'Tools/Generate Bill of Materials' menu in eeschema.
   - name: 'bom_example'
     comment: 'Used to generate the BoM in CSV, HTML, TSV, TXT, XML or XLSX format using the internal BoM.'
     type: 'bom'
@@ -691,6 +691,8 @@ outputs:
       pre_transform: '_null'
       # [string=''] A prefix to add to all the references from this project. Used for multiple projects
       ref_id: ''
+      # [string='-'] Separator used for ranges in the list of references. Used when `use_alt` is enabled
+      ref_range_separator: '-'
       # [string=' '] Separator used for the list of references
       ref_separator: ' '
       # [boolean=true] Sort in ascending order
@@ -710,6 +712,7 @@ outputs:
       use_alt: false
       # [boolean=true] Use the auxiliary axis as origin for coordinates (KiCad default) (for XYRS)
       use_aux_axis_as_origin: true
+      # `use_ref_ranges` is an alias for `use_alt`
       # [string='_kibom_simple'] Board variant, used to determine which components are output to the BoM.
       # The `_kibom_simple` variant is a KiBoM variant without any filters and it provides some basic
       # compatibility with KiBoM. Note that this output has default filters that behaves like KiBoM.

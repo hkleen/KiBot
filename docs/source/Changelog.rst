@@ -33,6 +33,9 @@ Added
    -  New option ``sort_ascending`` to sort in reverse order
    -  New sort style: *kicad_bom*, uses the field an ascending used by
       KiCad’s BoM
+   -  ``ref_range_separator`` option to configure the character used for
+      reference ranges
+   -  ``use_ref_ranges`` alias for ``use_alt``
 
 -  PCB Print: a mechanism to filter components for a particular layer
    (#706)
