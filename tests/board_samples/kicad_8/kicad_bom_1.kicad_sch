@@ -271,7 +271,6 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "35f12b4e-947b-4404-8903-4549c6d86adb")
 		(property "Reference" "R1"
 			(at 38.1 63.4999 0)
@@ -309,13 +308,12 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Resistor"
-			(at 35.56 64.77 0)
+		(property "Description" "Resistor\"\n	Hola"
+			(at 35.814 70.612 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(hide yes)
 			)
 		)
 		(pin "1"
@@ -618,7 +616,7 @@
 		(at 45.72 64.77 0)
 		(unit 1)
 		(exclude_from_sim no)
-		(in_bom no)
+		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)

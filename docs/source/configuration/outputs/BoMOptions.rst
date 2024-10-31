@@ -10,9 +10,10 @@ BoMOptions parameters
    this will be replaced by the list from KiCad. |br|
    In addition to all user defined fields you have various special columns, consult :ref:`bom_columns`.
 -  **csv** :index:`: <pair: output - bom - options; csv>`  [:ref:`BoMCSV parameters <BoMCSV>`] [:ref:`dict <dict>`] (default: empty dict, default values used) Options for the CSV, TXT and TSV formats.
--  **format** :index:`: <pair: output - bom - options; format>` [:ref:`string <string>`] (default: ``'Auto'``) (choices: "HTML", "CSV", "TXT", "TSV", "XML", "XLSX", "HRTXT", "Auto") format for the BoM.
+-  **format** :index:`: <pair: output - bom - options; format>` [:ref:`string <string>`] (default: ``'Auto'``) (choices: "HTML", "CSV", "TXT", "TSV", "XML", "XLSX", "HRTXT", "KICAD", "Auto") format for the BoM.
    `Auto` defaults to CSV or a guess according to the options. |br|
-   HRTXT stands for Human Readable TeXT.
+   HRTXT stands for Human Readable TeXT. |br|
+   KICAD is used to get the options from KiCad project. In KiCad you can configure CSV like options.
 -  **group_fields** :index:`: <pair: output - bom - options; group_fields>` [:ref:`list(string) <list(string)>`] (default: ``['part', 'part lib', 'value', 'footprint', 'footprint lib', 'voltage', 'tolerance', 'current', 'power']``) [:ref:`case insensitive <no_case>`]List of fields used for sorting individual components into groups.
    Components which match (comparing *all* fields) will be grouped together. |br|
    Field names are case-insensitive. |br|
@@ -31,7 +32,9 @@ BoMOptions parameters
 -  **ignore_dnf** :index:`: <pair: output - bom - options; ignore_dnf>` [:ref:`boolean <boolean>`] (default: ``true``) Exclude DNF (Do Not Fit) components.
 -  **normalize_values** :index:`: <pair: output - bom - options; normalize_values>` [:ref:`boolean <boolean>`] (default: ``false``) Try to normalize the R, L and C values, producing uniform units and prefixes.
 -  **number** :index:`: <pair: output - bom - options; number>` [:ref:`number <number>`] (default: ``1``) Number of boards to build (components multiplier).
--  **output** :index:`: <pair: output - bom - options; output>` [:ref:`string <string>`] (default: ``'%f-%i%I%v.%x'``) filename for the output (%i=bom). Affected by global options.
+-  **output** :index:`: <pair: output - bom - options; output>` [:ref:`string <string>`] (default: ``'%f-%i%I%v.%x'``) filename for the output (%i=bom). The extension depends on the selected format.
+   In the case of the **KICAD** format the extension comes from the name you selected in KiCad's
+   internal BoM. Affected by global options.
 -  **sort_style** :index:`: <pair: output - bom - options; sort_style>` [:ref:`string <string>`] (default: ``'type_value'``) (choices: "type_value", "type_value_ref", "ref", "kicad_bom") Sorting criteria.
 
    - type_value: component kind (reference prefix), then by value
@@ -118,10 +121,12 @@ BoMOptions parameters
 
 -  ``ref_id`` :index:`: <pair: output - bom - options; ref_id>` [:ref:`string <string>`] (default: ``''``) A prefix to add to all the references from this project. Used for multiple projects.
 -  ``ref_range_separator`` :index:`: <pair: output - bom - options; ref_range_separator>` [:ref:`string <string>`] (default: ``'-'``) Separator used for ranges in the list of references. Used when `use_alt` is enabled.
--  ``ref_separator`` :index:`: <pair: output - bom - options; ref_separator>` [:ref:`string <string>`] (default: ``' '``) Separator used for the list of references.
+   Ignored when using the KICAD format.
+-  ``ref_separator`` :index:`: <pair: output - bom - options; ref_separator>` [:ref:`string <string>`] (default: ``' '``) Separator used for the list of references. Ignored when using the KICAD format.
 -  ``sort_ascending`` :index:`: <pair: output - bom - options; sort_ascending>` [:ref:`boolean <boolean>`] (default: ``true``) Sort in ascending order.
 -  ``source_by_id`` :index:`: <pair: output - bom - options; source_by_id>` [:ref:`boolean <boolean>`] (default: ``false``) Generate the `Source BoM` column using the reference ID instead of the project name.
 -  ``use_alt`` :index:`: <pair: output - bom - options; use_alt>` [:ref:`boolean <boolean>`] (default: ``false``) Print grouped references in the alternate compressed style eg: R1-R7,R18.
+   Ignored when using the KICAD format.
 -  ``use_aux_axis_as_origin`` :index:`: <pair: output - bom - options; use_aux_axis_as_origin>` [:ref:`boolean <boolean>`] (default: ``true``) Use the auxiliary axis as origin for coordinates (KiCad default) (for XYRS).
 -  *use_ref_ranges* :index:`: <pair: output - bom - options; use_ref_ranges>` Alias for use_alt.
 -  ``variant`` :index:`: <pair: output - bom - options; variant>` [:ref:`string <string>`] (default: ``'_kibom_simple'``) Board variant, used to determine which components are output to the BoM.

@@ -7,7 +7,7 @@ outputs:
     comment: "Bill of Materials test using KiCad settings"
     type: bom
     options:
-      format: CSV
+      format: KICAD
       ignore_dnf: false
       group_fields: []
       group_not_fitted: true

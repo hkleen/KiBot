@@ -6,9 +6,14 @@
 # Project: KiBot (formerly KiPlot)
 # Adapted from: https://github.com/SchrodingersGat/KiBoM
 """
-CSV Writer: Generates a CSV, TSV or TXT BoM file.
+CSV Writer: Generates a CSV, TSV, TXT or HRTXT BoM file.
+            Can also mimic KiCad BoM output
 """
+from ..gs import GS
 import csv
+from .. import log
+
+logger = log.get_logger()
 ALIGN_CODE = {'right': '>', 'left': '<', 'center': '^'}
 
 
@@ -127,6 +132,16 @@ def dummy():
     pass
 
 
+def process_special_chars(row, keep_line_breaks, keep_tabs):
+    if keep_line_breaks and keep_tabs:
+        return
+    for index in range(len(row)):
+        if not keep_line_breaks:
+            row[index] = row[index].replace('\n', '')
+        if not keep_tabs:
+            row[index] = row[index].replace('\t', '')
+
+
 def write_csv(filename, ext, groups, headings, head_names, cfg):
     """
     Write BoM out to a CSV file
@@ -137,11 +152,17 @@ def write_csv(filename, ext, groups, headings, head_names, cfg):
     cfg = BoMOptions object with all the configuration
     """
     is_hrtxt = ext == "hrtxt"
+    is_kicad = ext == "kicad"
+
     ops = cfg.hrtxt if is_hrtxt else cfg.csv
+    # KiCad BoM options
+    kops = GS.load_pro_bom_fmt_settings() if is_kicad else None
     # Delimiter is assumed from file extension
     # Override delimiter if separator specified
     if is_hrtxt or (ext == "csv" and ops.separator):
         delimiter = ops.separator
+    elif is_kicad:
+        delimiter = kops.get("field_delimiter", ",")
     else:
         if ext == "csv":
             delimiter = ","
@@ -149,17 +170,22 @@ def write_csv(filename, ext, groups, headings, head_names, cfg):
             delimiter = "\t"
 
     quoting = csv.QUOTE_MINIMAL
-    if hasattr(ops, 'quote_all') and ops.quote_all:
+    if is_kicad or (hasattr(ops, 'quote_all') and ops.quote_all):
         quoting = csv.QUOTE_ALL
+    quotechar = kops.get("string_delimiter", '"') if is_kicad else '"'
+
+    # KiCad has a couple of options to remove \t and \n
+    keep_line_breaks = kops.get("keep_line_breaks", False) if is_kicad else True
+    keep_tabs = kops.get("keep_tabs", False) if is_kicad else True
 
     with open(filename, "wt") as f:
         if is_hrtxt:
             writer = HRTXT(f, delimiter=delimiter, hsep=ops.header_sep, align=ops.justify)
         else:
-            writer = csv.writer(f, delimiter=delimiter, lineterminator="\n", quoting=quoting)
+            writer = csv.writer(f, delimiter=delimiter, lineterminator="\n", quoting=quoting, quotechar=quotechar)
         write_sep = writer.add_sep if is_hrtxt else dummy
         # Headers
-        if not ops.hide_header:
+        if not ops.hide_header or is_kicad:
             writer.writerow(head_names)
             write_sep()
         # Body
@@ -167,10 +193,11 @@ def write_csv(filename, ext, groups, headings, head_names, cfg):
             if cfg.ignore_dnf and not group.is_fitted():
                 continue
             row = group.get_row(headings)
+            process_special_chars(row, keep_line_breaks, keep_tabs)
             writer.writerow(row)
         write_sep()
         # PCB info
-        if not (ops.hide_pcb_info and ops.hide_stats_info):
+        if not (ops.hide_pcb_info and ops.hide_stats_info) and not is_kicad:
             # Add some blank rows
             for _ in range(5):
                 writer.writerow([])

@@ -264,7 +264,7 @@ class ComponentGroup(object):
 
     def get_refs(self):
         """ Return a list of the components """
-        return self.cfg.ref_separator.join([c.ref for c in self.components])
+        return self.cfg._ref_separator.join([c.ref for c in self.components])
 
     def get_alt_refs(self):
         """ Alternative list of references using ranges """
@@ -274,10 +274,10 @@ class ComponentGroup(object):
             for n in self.components:
                 if n.project == sch.name:
                     S.add(n.ref_id+n.ref_prefix, _suffix_to_num(n.ref_suffix))
-            result = S.flush(self.cfg.ref_separator, self.cfg.ref_range_separator)
+            result = S.flush(self.cfg._ref_separator, self.cfg._ref_range_separator)
             if result:
                 if refs:
-                    refs += self.cfg.ref_separator
+                    refs += self.cfg._ref_separator
                 refs += result
         return refs
 
@@ -496,7 +496,7 @@ def group_components(cfg, components):
         g.sort_components()
         # Fill the columns
         g.update_fields(cfg.conv_units, cfg.bottom_negative_x, x_origin, y_origin, cfg.angle_positive,
-                        cfg.footprint_populate_values, cfg.footprint_type_values, uses_fp_info, cfg.use_alt)
+                        cfg.footprint_populate_values, cfg.footprint_type_values, uses_fp_info, cfg._use_alt)
         if cfg.normalize_values:
             g.fields[ColumnList.COL_VALUE_L] = normalize_value(g.components[0], decimal_point)
     # Sort the groups

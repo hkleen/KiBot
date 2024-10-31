@@ -807,6 +807,20 @@
           null
         ],
         [
+          "ref_separator",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
+          "ref_range_separator",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
           "columns",
           [
             "DataTypeListDictOrString"
@@ -963,13 +977,6 @@
           "normalize_locale",
           [
             "DataTypeBoolean"
-          ],
-          null
-        ],
-        [
-          "ref_separator",
-          [
-            "DataTypeString"
           ],
           null
         ],

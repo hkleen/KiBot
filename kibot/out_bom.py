@@ -468,24 +468,29 @@ class BoMOptions(BaseOptions):
                 The combination between the default for this option and the defaults for the filters provides
                 a behavior that mimics KiBoM default behavior """
             self.output = GS.def_global_output
-            """ *filename for the output (%i=bom)"""
+            """ *filename for the output (%i=bom). The extension depends on the selected format.
+                In the case of the **KICAD** format the extension comes from the name you selected in KiCad's
+                internal BoM """
             self.format = 'Auto'
-            """ *[HTML,CSV,TXT,TSV,XML,XLSX,HRTXT,Auto] format for the BoM.
+            """ *[HTML,CSV,TXT,TSV,XML,XLSX,HRTXT,KICAD,Auto] format for the BoM.
                 `Auto` defaults to CSV or a guess according to the options.
-                HRTXT stands for Human Readable TeXT """
+                HRTXT stands for Human Readable TeXT.
+                KICAD is used to get the options from KiCad project. In KiCad you can configure CSV like options """
             # Equivalent to KiBoM INI:
             self.ignore_dnf = True
             """ *Exclude DNF (Do Not Fit) components """
             self.fit_field = 'config'
             """ {no_case} Field name used for internal filters (not for variants) """
             self.use_alt = False
-            """ Print grouped references in the alternate compressed style eg: R1-R7,R18 """
+            """ Print grouped references in the alternate compressed style eg: R1-R7,R18.
+                Ignored when using the KICAD format """
             self.use_ref_ranges = None
             """ {use_alt} """
             self.ref_separator = ' '
-            """ Separator used for the list of references """
+            """ Separator used for the list of references. Ignored when using the KICAD format """
             self.ref_range_separator = '-'
-            """ Separator used for ranges in the list of references. Used when `use_alt` is enabled """
+            """ Separator used for ranges in the list of references. Used when `use_alt` is enabled.
+                Ignored when using the KICAD format """
             self.columns = BoMColumns
             """ *[list(dict)|list(string)=?] List of columns to display.
                 One entry can be just the name of the field (a string).
@@ -636,6 +641,9 @@ class BoMOptions(BaseOptions):
     def _guess_format(self):
         """ Figure out the format """
         if self.format == 'Auto':
+            # If we use KiCad sorting assume we also want the format defined in KiCad
+            if self.sort_style == 'kicad_bom':
+                return 'kicad'
             # If we have HTML options generate an HTML
             if self.get_user_defined('html'):
                 return 'html'
@@ -753,7 +761,18 @@ class BoMOptions(BaseOptions):
         super().config(parent)
         self._format = self._guess_format()
         self._expand_id = 'bom'
-        self._expand_ext = 'txt' if self._format == 'hrtxt' else self._format
+        if self._format == 'kicad':
+            kops = GS.load_pro_bom_fmt_settings()
+            self._expand_ext = os.path.splitext(GS.pro_bom_export_filename)[1]
+            self._expand_ext = self._expand_ext[1:] if self._expand_ext else 'txt'
+            self._ref_separator = kops.get('ref_delimiter', ',')
+            self._ref_range_separator = kops.get('ref_range_delimiter', '')
+            self._use_alt = self._ref_range_separator != ''
+        else:
+            self._expand_ext = 'txt' if self._format == 'hrtxt' else self._format
+            self._ref_separator = self.ref_separator
+            self._ref_range_separator = self.ref_range_separator
+            self._use_alt = self.use_alt
         # Variants, make it an object. Do it early because is needed by other initializations (i.e. title)
         self._normalize_variant()
         # Do title %X and ${var} expansions on the BoMLinkable titles

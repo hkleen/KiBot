@@ -36,6 +36,7 @@ Added
    -  ``ref_range_separator`` option to configure the character used for
       reference ranges
    -  ``use_ref_ranges`` alias for ``use_alt``
+   -  New *kicad* format to mimic KiCad’s internal BoM.
 
 -  PCB Print: a mechanism to filter components for a particular layer
    (#706)
