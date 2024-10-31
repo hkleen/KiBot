@@ -1,0 +1,32 @@
+# Example KiBot config file
+kibot:
+  version: 1
+
+outputs:
+  - name: 'print_front'
+    comment: "Experiment"
+    type: pcb_print
+    options:
+      plot_sheet_reference: true
+      format: 'PDF'
+      keep_temporals: true
+      # frame_plot_mechanism: plot
+      pages:
+        - layers:
+            - layer: F.Cu
+            - layer: Edge.Cuts
+              color: "#FF4040"
+
+  - name: pcbdraw
+    comment: "PcbDraw test top"
+    type: pcbdraw
+    dir: PcbDraw
+    options:
+      format: png
+      no_drillholes: True
+      placeholder: True
+      mirror: True
+      vcuts: True
+      warnings: all
+      show_components: all
+

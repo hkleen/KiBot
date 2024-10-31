@@ -26,7 +26,6 @@ import subprocess
 import pprint
 from shutil import copy2
 from math import ceil
-from struct import unpack
 from .bom.kibot_logo import KIBOT_LOGO, KIBOT_LOGO_W, KIBOT_LOGO_H
 from .error import KiPlotConfigurationError
 from .gs import GS
@@ -254,15 +253,6 @@ def _run_command(cmd):
     return True
 
 
-def get_png_size(file):
-    with open(file, 'rb') as f:
-        s = f.read()
-    if not (s[:8] == b'\x89PNG\r\n\x1a\n' and (s[12:16] == b'IHDR')):
-        return 0, 0
-    w, h = unpack('>LL', s[16:24])
-    return int(w), int(h)
-
-
 class Navigate_ResultsOptions(BaseOptions):
     def __init__(self):
         with document:
@@ -301,9 +291,10 @@ class Navigate_ResultsOptions(BaseOptions):
             self.logo = os.path.abspath(self.logo)
             if not os.path.isfile(self.logo):
                 raise KiPlotConfigurationError('Missing logo file `{}`'.format(self.logo))
-            self._logo_data, self._logo_w, self._logo_h = read_png(self.logo)
-            if self._logo_data is None:
-                raise KiPlotConfigurationError('Only PNG images are supported for the logo')
+            try:
+                self._logo_data, self._logo_w, self._logo_h, _ = read_png(self.logo, logger)
+            except TypeError as e:
+                raise KiPlotConfigurationError(f'Only PNG images are supported for the logo ({e})')
         if self.logo == '':
             # Internal logo
             self._logo_w = int(KIBOT_LOGO_W/2)
@@ -453,7 +444,10 @@ class Navigate_ResultsOptions(BaseOptions):
                 # It was converted, replace the icon by the composited image
                 img = new_img
                 # Compute its size
-                width, height = get_png_size(fimg)
+                try:
+                    _, width, height, _ = read_png(fimg, logger)
+                except TypeError:
+                    width = height = 0
                 # We are using the big size
                 wide = True
         # Now add the image with its file name as caption

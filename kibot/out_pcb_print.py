@@ -29,7 +29,9 @@ Dependencies:
 #     version: '2.40'
 #     id: rsvg2
 from copy import deepcopy
+from dataclasses import dataclass
 import datetime
+import io
 import re
 import os
 import importlib
@@ -48,12 +50,14 @@ from .kicad.config import KiConf
 from .kicad.v5_sch import SchError
 from .kicad.pcb import PCB
 from .misc import (PDF_PCB_PRINT, W_PDMASKFAIL, W_MISSTOOL, PCBDRAW_ERR, W_PCBDRAW, VIATYPE_THROUGH, VIATYPE_BLIND_BURIED,
-                   VIATYPE_MICROVIA, FONT_HELP_TEXT, W_BUG16418, pretty_list, try_int, W_NOPAGES, W_NOLAYERS, W_NOTHREPE)
+                   VIATYPE_MICROVIA, FONT_HELP_TEXT, W_BUG16418, pretty_list, try_int, W_NOPAGES, W_NOLAYERS, W_NOTHREPE,
+                   RENDERERS, read_png)
 from .create_pdf import create_pdf_from_pages
 from .macros import macros, document, output_class  # noqa: F401
 from .drill_marks import DRILL_MARKS_MAP, add_drill_marks
 from .layer import Layer, get_priority
-from .kiplot import run_command, load_board, get_all_components
+from .kiplot import run_command, load_board, get_all_components, look_for_output, get_output_targets, run_output
+from .svgutils.transform import ImageElement, GroupElement
 from . import __version__
 from . import log
 
@@ -66,6 +70,14 @@ EXTRA_LAYERS = ['F.Fab', 'B.Fab', 'F.CrtYd', 'B.CrtYd']
 # They are just helpers and we solve their dependencies
 svgutils = None  # Will be loaded during dependency check
 kicad_worksheet = None  # Also needs svgutils
+
+
+@dataclass
+class ImageGroup:
+    name: str
+    layer: int
+    bbox: tuple
+    items: list
 
 
 def pcbdraw_warnings(tag, msg):
@@ -662,7 +674,7 @@ class PCB_PrintOptions(VariantOptions):
             # https://gitlab.com/kicad/code/kicad/-/issues/18959
             logger.debugl(1, '  - Fixing images')
             # Do a manual draw, just to collect any image
-            ws.draw(GS.board, GS.board.GetLayerID('Rescue'), page, self.pcb.paper_w, self.pcb.paper_h, tb_vars)
+            ws.draw(GS.board, GS.board.GetLayerID(GS.work_layer), page, self.pcb.paper_w, self.pcb.paper_h, tb_vars)
             ws.undraw(GS.board)
             # We need to plot the images in a separated pass
             self.last_worksheet = ws
@@ -926,6 +938,88 @@ class PCB_PrintOptions(VariantOptions):
                 # Process all text inside
                 self.search_text_for_g(e, texts)
 
+    def move_kibot_image_groups(self):
+        """ Look for KiBot image groups (_kibot_image_*)
+            Move them to the Rescue layer
+            Memorize them to restore and analysis """
+        self._image_groups = []
+        tmp_layer = GS.board.GetLayerID(GS.work_layer)
+        for g in GS.board.Groups():
+            name = g.GetName()
+            if not name.startswith('_kibot_image_'):
+                continue
+            x1, y1, x2, y2 = GS.compute_group_boundary(g)
+            moved = []
+            layer = None
+            for item in g.GetItems():
+                if layer is None:
+                    layer = item.GetLayer()
+                moved.append((item, item.GetLayer()))
+                item.SetLayer(tmp_layer)
+            self._image_groups.append(ImageGroup(name, layer, (x1, y1, x2, y2), moved))
+
+    def restore_kibot_image_groups(self):
+        """ Move the KiBot image groups (_kibot_image_*) to their original layers """
+        for g in self._image_groups:
+            for item in g.items:
+                item[0].SetLayer(item[1])
+        self._image_groups = []
+
+    def add_output_images(self, svg, page):
+        """ Look for groups named _kibot_image_OUTPUT and paste images from the referred OUTPUTs """
+        # Check which layers we printed
+        layers = {la._id for la in page._layers}
+        # Look for groups
+        logger.debug('Looking for image groups in the PCB')
+        for g in self._image_groups:
+            name = g.name
+            if not name.startswith('_kibot_image_'):
+                continue
+            logger.debugl(2, f'- Found {name}')
+            # Check if this group is for a layer we printed
+            if g.layer not in layers:
+                logger.debug('- {name} not in printed layers')
+                continue
+            # Look for the image from the output
+            output_name = name[13:]
+            output_obj = look_for_output(output_name, '`include image`', self._parent, RENDERERS)
+            targets, _, _ = get_output_targets(output_name, self._parent)
+            targets = [fn for fn in targets if fn.endswith('.png')]
+            if not targets:
+                raise KiPlotConfigurationError("PCB group `{name}` uses `{output_name}` which doesn't generate any PNG")
+            fname = targets[0]
+            logger.debugl(2, f'- Related image: {fname}')
+            if not os.path.exists(fname):
+                # The target doesn't exist
+                if not output_obj._done:
+                    # The output wasn't created in this run, try running it
+                    logger.debug('- Not yet generated, tying to generate it')
+                    run_output(output_obj)
+            if not os.path.exists(fname):
+                raise KiPlotConfigurationError("Failed to generate `{fname}` for PCB group `{name}`")
+            # Add the image to the SVG
+            try:
+                s, w, h, dpi = read_png(fname, logger, only_size=False)
+            except TypeError as e:
+                raise KiPlotConfigurationError(f'Error reading {fname} size: {e} for PCB group `{name}`')
+            logger.debugl(2, f'- PNG: {w}x{h} {dpi} PPIs')
+            x1, y1, x2, y2 = g.bbox
+            logger.debugl(2, f'- Box: {x1},{y1} {x2},{y2} IUs')
+            # Convert pixels to mm and then to KiCad units
+            # w = GS.from_mm(w/dpi*25.4)
+            # h = GS.from_mm(h/dpi*25.4)
+            # logger.error(f'{w}x{h} IUs')
+            scale = GS.iu_to_svg(1.0, self.svg_precision)  # This is the scale to convert IUs to SVG units
+            logger.debugl(2, f'- Scale {scale}')
+            #  Put the image at the box coordinates with its size
+            img = ImageElement(io.BytesIO(s), x2-x1, y2-y1)
+            img.moveto(x1, y1)
+            img.scale(scale)
+            #  Put the image in a group
+            g = GroupElement([img])
+            #  Add the group to the SVG
+            svg.append(g)
+
     def merge_svg(self, input_folder, input_files, output_folder, output_file, p):
         """ Merge all layers into one page """
         first = True
@@ -950,6 +1044,7 @@ class PCB_PrintOptions(VariantOptions):
                 first = False
                 self.process_background(svg_out, width, height)
                 self.add_frame_images(svg_out, p.monochrome)
+                self.add_output_images(svg_out, p)
             else:
                 root = new_layer.getroot()
                 # Adjust the coordinates of this section to the main width
@@ -1315,6 +1410,8 @@ class PCB_PrintOptions(VariantOptions):
         # Make visible only the layers we need
         # This is very important when scaling, otherwise the results are controlled by the .kicad_prl (See #407)
         self.set_visible(edge_id)
+        # Move KiBot image groups away
+        self.move_kibot_image_groups()
         # Generate the output, page by page
         pages = []
         for n, p in enumerate(self._pages):
@@ -1450,6 +1547,8 @@ class PCB_PrintOptions(VariantOptions):
                         # Use GS to create one PNG per page and then scale to the wanted width
                         self.pdf_to_png(pdf_file, out_file)
                     self.rename_pages(output_dir)
+        # Restore KiBot image groups away
+        self.restore_kibot_image_groups()
         # Remove the temporal files
         if not self.keep_temporal_files:
             rmtree(temp_dir_base)

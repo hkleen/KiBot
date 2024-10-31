@@ -553,13 +553,42 @@ def version_str2tuple(ver):
     return tuple(map(int, ver.split('.')))
 
 
-def read_png(file):
-    with open(file, 'rb') as f:
-        s = f.read()
-    if not (s[:8] == b'\x89PNG\r\n\x1a\n' and (s[12:16] == b'IHDR')):
-        return None, None, None
-    w, h = unpack('>LL', s[16:24])
-    return s, w, h
+def read_png(file, logger, only_size=True):
+    if isinstance(file, str):
+        with open(file, 'rb') as f:
+            s = f.read()
+    else:
+        # The data itself as bytes
+        s = file
+    offset = 8
+    ppi = 300
+    w = h = -1
+    if s[0:8] != b'\x89PNG\r\n\x1a\n':
+        raise TypeError('Image is not a PNG')
+    logger.debugl(2, 'Parsing PNG chunks')
+    while offset < len(s):
+        size, type = unpack('>L4s', s[offset:offset+8])
+        logger.debugl(2, f'- Chunk {type} ({size})')
+        if type == b'IHDR':
+            w, h = unpack('>LL', s[offset+8:offset+16])
+            logger.debugl(2, f'  - Size {w}x{h}')
+            if only_size:
+                return s, w, h, ppi
+        elif type == b'pHYs':
+            dpi_w, dpi_h, units = unpack('>LLB', s[offset+8:offset+17])
+            if dpi_w != dpi_h:
+                raise TypeError(f'PNG with different resolution for X and Y ({dpi_w} {dpi_h})')
+            if units != 1:
+                raise TypeError(f'PNG with unknown units ({units})')
+            ppi = dpi_w/(100/2.54)
+            logger.debugl(2, f'  - PPI {ppi} ({dpi_w} {dpi_h} {units})')
+            break
+        elif type == b'IEND':
+            break
+        offset += size+12
+    if w == -1:
+        raise TypeError('Broken PNG, no IHDR chunk')
+    return s, w, h, ppi
 
 
 def force_list(v):
