@@ -943,6 +943,9 @@ class PCB_PrintOptions(VariantOptions):
             Move them to the Rescue layer
             Memorize them to restore and analysis """
         self._image_groups = []
+        if GS.ki5:
+            # Groups were introduced in KiCad 6
+            return
         tmp_layer = GS.board.GetLayerID(GS.work_layer)
         for g in GS.board.Groups():
             name = g.GetName()
