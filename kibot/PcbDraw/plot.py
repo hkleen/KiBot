@@ -1361,6 +1361,11 @@ class PcbPlotter():
 
     def _setup_document(self, render_back: bool, mirror: bool) -> None:
         bb = self.board.ComputeBoundingBox(aBoardEdgesOnly=self.kicad_bb_only_edge)
+        # If the board doesn't have a contour just use the A4 landscape size. Better than 0x0
+        if not bb.GetWidth():
+            bb.SetWidth(mm2ki(297))
+        if not bb.GetHeight():
+            bb.SetHeight(mm2ki(210))
         self.boardsize = bb
         transform_string = ""
         # Let me briefly explain what's going on. KiCAD outputs SVG in user units,
