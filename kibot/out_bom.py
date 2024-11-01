@@ -764,7 +764,9 @@ class BoMOptions(BaseOptions):
         if self._format == 'kicad':
             kops = GS.load_pro_bom_fmt_settings()
             self._expand_ext = os.path.splitext(GS.pro_bom_export_filename)[1]
-            self._expand_ext = self._expand_ext[1:] if self._expand_ext else 'txt'
+            # Default to CSV, KiCad always saves some setting, if the user never used them the file name is empty and the
+            # format is just CSV
+            self._expand_ext = self._expand_ext[1:] if self._expand_ext else 'csv'
             self._ref_separator = kops.get('ref_delimiter', ',')
             self._ref_range_separator = kops.get('ref_range_delimiter', '')
             self._use_alt = self._ref_range_separator != ''
@@ -1196,4 +1198,13 @@ class BoM(BaseOutput):  # noqa: F821
             outs.append(gb)
         # Add the list of layers to the templates
         BoM.process_templates(mpn_fields, dists)
+        # Add an example that mimics KiCad internal BoM
+        kicad_fmt = GS.load_pro_bom_fmt_settings()
+        if kicad_fmt:
+            gb = {'name': 'kicad_internal_bom', 'type': name, 'dir': os.path.join('BoM', 'KiCad')}
+            gb['comment'] = 'BoM using KiCad settings'
+            ops = {'format': 'KICAD', 'ignore_dnf': False, 'group_not_fitted': True, 'group_fields': [],
+                   'sort_style': 'kicad_bom', 'columns': ['_kicad_bom_fields']}
+            gb['options'] = ops
+            outs.append(gb)
         return outs
