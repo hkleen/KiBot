@@ -763,11 +763,10 @@ class Draw_Fancy_Stackup(BasePreFlight):  # noqa: F821
         Draw the PCB stackup. Needs KiCad 7 or newer.
         To specify the position and size of the drawing you can use two methods.
         You can specify it using the *pos_x*, *pos_y*, *width* and *layer* options.
-        But you can also draw a rectangle in your PCB with the size and layer you want.
-        Then draw another thing inside the rectangle, select both and create a group
-        (right mouse button, then Grouping -> Group). Now edit the group and change its name
-        to *kibot_fancy_stackup*. After running this preflight the rectangle will contain the
-        stackup. Note that the height is not determined by the group height, but by the number
+        But you can also create a group called *kibot_fancy_stackup*. If you don't know how to
+        create a group consult :ref:`create_group`. After running this preflight the rectangle
+        will contain the stackup.
+        Note that the height is not determined by the group height, but by the number
         of layers and spacing between layers. """
     def __init__(self):
         super().__init__()

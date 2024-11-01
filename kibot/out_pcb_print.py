@@ -949,7 +949,7 @@ class PCB_PrintOptions(VariantOptions):
         tmp_layer = GS.board.GetLayerID(GS.work_layer)
         for g in GS.board.Groups():
             name = g.GetName()
-            if not name.startswith('_kibot_image_'):
+            if not name.startswith('kibot_image_'):
                 continue
             x1, y1, x2, y2 = GS.compute_group_boundary(g)
             moved = []
@@ -962,21 +962,21 @@ class PCB_PrintOptions(VariantOptions):
             self._image_groups.append(ImageGroup(name, layer, (x1, y1, x2, y2), moved))
 
     def restore_kibot_image_groups(self):
-        """ Move the KiBot image groups (_kibot_image_*) to their original layers """
+        """ Move the KiBot image groups (kibot_image_*) to their original layers """
         for g in self._image_groups:
             for item in g.items:
                 item[0].SetLayer(item[1])
         self._image_groups = []
 
     def add_output_images(self, svg, page):
-        """ Look for groups named _kibot_image_OUTPUT and paste images from the referred OUTPUTs """
+        """ Look for groups named kibot_image_OUTPUT and paste images from the referred OUTPUTs """
         # Check which layers we printed
         layers = {la._id for la in page._layers}
         # Look for groups
         logger.debug('Looking for image groups in the PCB')
         for g in self._image_groups:
             name = g.name
-            if not name.startswith('_kibot_image_'):
+            if not name.startswith('kibot_image_'):
                 continue
             logger.debugl(2, f'- Found {name}')
             # Check if this group is for a layer we printed
@@ -1576,6 +1576,7 @@ class PCB_Print(BaseOutput):  # noqa: F821
     """ PCB Print
         Prints the PCB using a mechanism that is more flexible than `pdf_pcb_print` and `svg_pcb_print`.
         Supports PDF, SVG, PNG, EPS and PS formats.
+        You can add images generated other outputs to your print, see :ref:`add_print_images`.
         Important: `colored_vias` and `colored_pads` usually involves a zones refill. To avoid side
         effects we reload the PCB, which might be slow. If refills are tolerable for your case and
         you want to make it faster just add a `check_zone_fills` preflight. This will skip the reload """

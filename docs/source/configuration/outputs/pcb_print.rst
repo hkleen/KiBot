@@ -8,6 +8,7 @@ PCB Print
 
 Prints the PCB using a mechanism that is more flexible than `pdf_pcb_print` and `svg_pcb_print`.
 Supports PDF, SVG, PNG, EPS and PS formats. |br|
+You can add images generated other outputs to your print, see :ref:`add_print_images`. |br|
 
 .. note::
    `colored_vias` and `colored_pads` usually involves a zones refill. To avoid side
