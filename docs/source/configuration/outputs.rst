@@ -707,6 +707,13 @@ Here is what the options do:
 You can add any of the KiBot's options. So you could generate a nice HTML BoM
 but using the fields selected in KiCad's GUI.
 
+.. note::
+   The string filter must be implemented using filters, we don't import it from
+   the project.
+
+   If you need to include DNP components (don't confuse it with "Excluded from BoM")
+   you should disable the `kicad_dnp_applied` global option.
+
 
 .. index::
    pair: Bill of Materials; columns internal
