@@ -56,6 +56,11 @@ DiffOptions parameters
 -  ``only_different`` :index:`: <pair: output - diff - options; only_different>` [:ref:`boolean <boolean>`] (default: ``false``) Only include the pages with differences in the output PDF.
    Note that when no differences are found we get a page saying *No diff*.
 -  ``only_first_sch_page`` :index:`: <pair: output - diff - options; only_first_sch_page>` [:ref:`boolean <boolean>`] (default: ``false``) Compare only the main schematic page (root page).
+   
+.. warning::
+   Make sure this page is the page **1** of your schematic.
+..
+
 -  ``pcb`` :index:`: <pair: output - diff - options; pcb>` [:ref:`boolean <boolean>`] (default: ``true``) Compare the PCB, otherwise compare the schematic.
 -  ``pre_transform`` :index:`: <pair: output - diff - options; pre_transform>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to transform fields before applying other filters.
    A short-cut to use for simple cases where a variant is an overkill.

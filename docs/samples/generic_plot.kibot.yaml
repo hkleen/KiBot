@@ -993,7 +993,8 @@ outputs:
       # [boolean=false] Only include the pages with differences in the output PDF.
       # Note that when no differences are found we get a page saying *No diff*
       only_different: false
-      # [boolean=false] Compare only the main schematic page (root page)
+      # [boolean=false] Compare only the main schematic page (root page).
+      # Warning: Make sure this page is the page **1** of your schematic
       only_first_sch_page: false
       # [string='%f-%i%I%v.%x'] Filename for the output (%i=diff_pcb/diff_sch, %x=pdf). Affected by global options
       output: '%f-%i%I%v.%x'

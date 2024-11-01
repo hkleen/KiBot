@@ -103,7 +103,8 @@ class DiffOptions(AnyDiffOptions):
             """ Only include the pages with differences in the output PDF.
                 Note that when no differences are found we get a page saying *No diff* """
             self.only_first_sch_page = False
-            """ Compare only the main schematic page (root page) """
+            """ Compare only the main schematic page (root page).
+                Warning: Make sure this page is the page **1** of your schematic """
             self.always_fail_if_missing = False
             """ Always fail if the old/new file doesn't exist. Currently we don't fail if they are from a repo.
                 So if you refer to a repo point where the file wasn't created KiBot will use an empty file.
