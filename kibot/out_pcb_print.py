@@ -939,7 +939,7 @@ class PCB_PrintOptions(VariantOptions):
                 self.search_text_for_g(e, texts)
 
     def move_kibot_image_groups(self):
-        """ Look for KiBot image groups (_kibot_image_*)
+        """ Look for KiBot image groups (kibot_image_*)
             Move them to the Rescue layer
             Memorize them to restore and analysis """
         self._image_groups = []
@@ -984,7 +984,7 @@ class PCB_PrintOptions(VariantOptions):
                 logger.debug('- {name} not in printed layers')
                 continue
             # Look for the image from the output
-            output_name = name[13:]
+            output_name = name[12:]
             output_obj = look_for_output(output_name, '`include image`', self._parent, RENDERERS)
             targets, _, _ = get_output_targets(output_name, self._parent)
             targets = [fn for fn in targets if fn.endswith('.png')]
