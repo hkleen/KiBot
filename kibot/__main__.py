@@ -312,6 +312,7 @@ def detect_kicad():
     # KICAD_PATH isn't good on my system.
     # The kicad-nightly package overwrites the regular package!!
     GS.kicad_share_path = '/usr/share/kicad'
+    GS.work_layer = 'Rescue'
     if GS.ki6:
         GS.kicad_conf_path = pcbnew.GetSettingsManager().GetUserSettingsPath()
         if nightly:
@@ -324,7 +325,8 @@ def detect_kicad():
             GS.kicad_dir = 'kicad-nightly'
         GS.pro_ext = '.kicad_pro'
         # KiCad 6 doesn't support the Rescue layer
-        GS.work_layer = 'User.9'
+        if not GS.ki7:
+            GS.work_layer = 'User.9'
     else:
         # Bug in KiCad (#6989), prints to stderr:
         # `../src/common/stdpbase.cpp(62): assert "traits" failed in Get(test_dir): create wxApp before calling this`
@@ -333,7 +335,6 @@ def detect_kicad():
         with hide_stderr():
             GS.kicad_conf_path = pcbnew.GetKicadConfigPath()
         GS.pro_ext = '.pro'
-        GS.work_layer = 'Rescue'
     # Dirs to look for plugins
     GS.kicad_plugins_dirs = []
     # /usr/share/kicad/*

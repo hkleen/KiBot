@@ -29,6 +29,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - BoM
   - The field name `Reference` was accepted, but didn't work
 
+### Changed
+- No longer using "User.9" layer for KiCad 7/8
+  Reverting to "Rescue" like we used for KiCad 5
+
+
 ## [1.8.2] - 2024-10-28
 ### Added
 - Experimental GUI
