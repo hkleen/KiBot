@@ -324,7 +324,6 @@ def detect_kicad():
             GS.kicad_dir = 'kicad-nightly'
         GS.pro_ext = '.kicad_pro'
         # KiCad 6+ doesn't support the Rescue layer, they can save it to disk, but can't load it
-        GS.work_layer = 'Margin'
     else:
         # Bug in KiCad (#6989), prints to stderr:
         # `../src/common/stdpbase.cpp(62): assert "traits" failed in Get(test_dir): create wxApp before calling this`
@@ -333,7 +332,6 @@ def detect_kicad():
         with hide_stderr():
             GS.kicad_conf_path = pcbnew.GetKicadConfigPath()
         GS.pro_ext = '.pro'
-        GS.work_layer = 'Rescue'
     # Dirs to look for plugins
     GS.kicad_plugins_dirs = []
     # /usr/share/kicad/*

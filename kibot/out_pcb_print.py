@@ -518,7 +518,7 @@ class PCB_PrintOptions(VariantOptions):
         return [self._parent.expand_filename(out_dir, self.output)]
 
     def clear_layer(self, layer):
-        tmp_layer = GS.board.GetLayerID(GS.work_layer)
+        tmp_layer = GS.board.GetLayerID(GS.global_work_layer)
         cleared_layer = GS.board.GetLayerID(layer)
         moved = []
         for g in GS.board.GetDrawings():
@@ -674,7 +674,7 @@ class PCB_PrintOptions(VariantOptions):
             # https://gitlab.com/kicad/code/kicad/-/issues/18959
             logger.debugl(1, '  - Fixing images')
             # Do a manual draw, just to collect any image
-            ws.draw(GS.board, GS.board.GetLayerID(GS.work_layer), page, self.pcb.paper_w, self.pcb.paper_h, tb_vars)
+            ws.draw(GS.board, GS.board.GetLayerID(GS.global_work_layer), page, self.pcb.paper_w, self.pcb.paper_h, tb_vars)
             ws.undraw(GS.board)
             # We need to plot the images in a separated pass
             self.last_worksheet = ws
@@ -686,7 +686,7 @@ class PCB_PrintOptions(VariantOptions):
         id = la._id
         logger.debug('- Plotting pads for layer {} ({})'.format(la.layer, id))
         # Make invisible anything but through-hole pads
-        tmp_layer = GS.board.GetLayerID(GS.work_layer)
+        tmp_layer = GS.board.GetLayerID(GS.global_work_layer)
         moved = []
         removed = []
         vias = []
@@ -750,7 +750,7 @@ class PCB_PrintOptions(VariantOptions):
         id = la._id
         logger.debug('- Plotting vias for layer {} ({})'.format(la.layer, id))
         # Make invisible anything but vias
-        tmp_layer = GS.board.GetLayerID(GS.work_layer)
+        tmp_layer = GS.board.GetLayerID(GS.global_work_layer)
         moved = []
         removed = []
         vias = []
@@ -946,7 +946,7 @@ class PCB_PrintOptions(VariantOptions):
         if GS.ki5:
             # Groups were introduced in KiCad 6
             return
-        tmp_layer = GS.board.GetLayerID(GS.work_layer)
+        tmp_layer = GS.board.GetLayerID(GS.global_work_layer)
         for g in GS.board.Groups():
             name = g.GetName()
             if not name.startswith('kibot_image_'):

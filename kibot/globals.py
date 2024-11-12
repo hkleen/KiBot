@@ -387,6 +387,8 @@ class Globals(FiltersOptions):
             self.layer_defaults = Layer
             """ [list(dict)=[]] Used to indicate the default suffix and description for the layers.
                 Note that the name for the layer must match exactly, no aliases """
+            self.work_layer = 'Margin'
+            """ Layer used for temporal tasks, choose a layer you are not using in your design """
             self.include_components_from_pcb = True
             """ Include components that are only in the PCB, not in the schematic, for filter and variants processing.
                 Note that version 1.6.3 and older ignored them """

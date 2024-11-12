@@ -213,6 +213,10 @@ def load_board(pcb_file=None, forced=False):
     try:
         with hide_stderr():
             board = pcbnew.LoadBoard(pcb_file)
+        if board.GetLayerID(GS.global_work_layer) < 0:
+            raise KiPlotConfigurationError(f"Unknown layer used for the global `work_layer` option"
+                                           f" (`{GS.global_work_layer}`)")
+
         if GS.global_invalidate_pcb_text_cache == 'yes' and GS.ki6:
             # Workaround for unexpected KiCad behavior:
             # https://gitlab.com/kicad/code/kicad/-/issues/14360
@@ -532,14 +536,14 @@ def get_output_dir(o_dir, obj, dry=False):
 def config_output(out, dry=False, dont_stop=False):
     if out._configured:
         return True
-    # Should we load the PCB?
-    if not dry:
-        if out.is_pcb():
-            load_board()
-        if out.is_sch():
-            load_sch()
-    ok = True
     try:
+        # Should we load the PCB?
+        if not dry:
+            if out.is_pcb():
+                load_board()
+            if out.is_sch():
+                load_sch()
+        ok = True
         out.config(None)
     except (KiPlotConfigurationError, PlotError) as e:
         msg = "In section '"+out.name+"' ("+out.type+"): "+str(e)

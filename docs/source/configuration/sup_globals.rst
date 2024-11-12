@@ -211,4 +211,5 @@
       -  ``use_pcb_fields`` :index:`: <pair: global options; use_pcb_fields>` [:ref:`boolean <boolean>`] (default: ``true``) When a PCB is processed also use fields defined in the PCB, for filter and variants processing.
          This is available for KiCad 8 and newer.
       -  ``variant`` :index:`: <pair: global options; variant>` [:ref:`string <string>`] (default: ``''``) Default variant to apply to all outputs.
+      -  ``work_layer`` :index:`: <pair: global options; work_layer>` [:ref:`string <string>`] (default: ``'Margin'``) Layer used for temporal tasks, choose a layer you are not using in your design.
 

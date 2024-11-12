@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.8.3] - UNRELEASED
 ### Added
+- Global options:
+  - `work_layer`: to choose the temporal layer for internal operations (#713)
 - BoM:
   - Field aliases ${QUANTITY} and ${ITEM_NUMBER} for compatibility with
     KiCad's internal BoM.
@@ -28,6 +30,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - BoM
   - The field name `Reference` was accepted, but didn't work
+
+### Changed
+- Default temporal layer for internal use is now "Margin", instead of "User.9"
+
 
 ## [1.8.2] - 2024-10-28
 ### Added

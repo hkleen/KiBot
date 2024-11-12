@@ -95,7 +95,6 @@ class GS(object):
     kicad_share_path = None
     kicad_dir = 'kicad'
     kicad_plugins_dirs = []
-    work_layer = 'Rescue'
     # KiCad version: major*1e6+minor*1e3+patch
     kicad_version_n = 0
     kicad_version_major = 0
@@ -138,7 +137,7 @@ class GS(object):
     cli_global_defs = {}
     # The variant value, but already solved
     solved_global_variant = None
-    #  This is used as default value for classes supporting "output" option
+    # This is used as default value for classes supporting "output" option
     def_global_output = '%f-%i%I%v.%x'
     # The class that controls the global options
     class_for_global_opts = None
@@ -216,6 +215,7 @@ class GS(object):
     global_kicad_dnp_applied = None
     global_kicad_dnp_applies_to_3D = None
     global_cross_using_kicad = None
+    global_work_layer = None
     pasteable_cmd = shlex.join if hasattr(shlex, 'join') else lambda x: str(x)   # novermin
 
     @staticmethod

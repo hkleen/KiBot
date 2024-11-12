@@ -433,7 +433,7 @@ class VariantOptions(BaseOptions):
         old_badhes = []
         old_fmask = []
         old_bmask = []
-        rescue = board.GetLayerID(GS.work_layer)
+        rescue = board.GetLayerID(GS.global_work_layer)
         fmask = board.GetLayerID('F.Mask')
         bmask = board.GetLayerID('B.Mask')
         if GS.global_remove_solder_mask_for_dnp:
@@ -538,7 +538,7 @@ class VariantOptions(BaseOptions):
         logger.debug(f'Removing from {layer_name}')
         layer_id = board.GetLayerID(layer_name)
         old_graphs = []
-        rescue = board.GetLayerID(GS.work_layer)
+        rescue = board.GetLayerID(GS.global_work_layer)
         for m in GS.get_modules_board(board):
             ref = m.GetReference()
             c = comps_hash.get(ref, None)
