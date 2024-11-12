@@ -3,6 +3,7 @@
 # Copyright (c) 2020-2024 Instituto Nacional de Tecnología Industrial
 # License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
+from base64 import b64encode
 from copy import deepcopy
 import math
 import os
@@ -11,8 +12,10 @@ from shutil import rmtree
 from .bom.columnlist import ColumnList
 from .gs import GS
 from .kicad.pcb import replace_footprints
-from .kiplot import get_all_components
-from .misc import Rect, W_WRONGPASTE, DISABLE_3D_MODEL_TEXT, W_NOCRTYD, MOD_ALLOW_MISSING_COURTYARD, W_MISSDIR, W_KEEPTMP
+from .kicad.v6_sch import SchematicBitmapV6, Stroke, Color
+from .kiplot import get_all_components, look_for_output, get_output_targets, run_output
+from .misc import (Rect, W_WRONGPASTE, DISABLE_3D_MODEL_TEXT, W_NOCRTYD, MOD_ALLOW_MISSING_COURTYARD, W_MISSDIR, W_KEEPTMP,
+                   RENDERERS, read_png)
 if not GS.kicad_version_n:
     # When running the regression tests we need it
     from kibot.__main__ import detect_kicad
@@ -1145,6 +1148,110 @@ class VariantOptions(BaseOptions):
         for c in self._comps:
             if c.ref in self.undo_show:
                 c.fitted = True
+
+    def sch_replace_one_image(self, sheet, box, output_name, box_index):
+        """ Replace one image in the schematic, see sch_replace_images """
+        # Get the image file name
+        logger.debugl(2, f"- Looking for output {output_name} images")
+        output_obj = look_for_output(output_name, '`sch print image`', self._parent, RENDERERS)
+        targets, _, _ = get_output_targets(output_name, self._parent)
+        targets = [fn for fn in targets if fn.endswith('.png')]
+        if not targets:
+            raise KiPlotConfigurationError("{self.desc_box(box)} uses `{output_name}` which doesn't"
+                                           " generate any PNG")
+        fname = targets[0]
+        logger.debugl(2, f"- Related image: {fname}")
+        if not os.path.exists(fname):
+            # The target doesn't exist
+            if not output_obj._done:
+                # The output wasn't created in this run, try running it
+                logger.debug('- Not yet generated, tying to generate it')
+                run_output(output_obj)
+        if not os.path.exists(fname):
+            raise KiPlotConfigurationError("Failed to generate `{fname}` for {self.desc_box(box)}`")
+        logger.debugl(2, "- Reading image")
+        # Add the image to the SCH
+        try:
+            s, w, h, dpi = read_png(fname, logger, only_size=False)
+        except TypeError as e:
+            raise KiPlotConfigurationError(f'Error reading {fname} size: {e} for {self.desc_box(box)}')
+        # Check if we already have an image there
+        old_img_index = -1
+        old_img = None
+        new_images = []
+        for index, img in enumerate(sheet.bitmaps):
+            if abs(img.pos_x-box.size.x/2-box.pos_x) < 0.1 and abs(img.pos_y-box.size.y/2-box.pos_y) < 0.1:
+                old_img_index = index
+                old_img = img
+            else:
+                new_images.append(img)
+        sheet.bitmaps = new_images
+        if old_img_index > 0:
+            logger.debugl(2, "- Replacing existing image")
+        # Put the image
+        img_w = w/dpi*25.4
+        img_h = h/dpi*25.4
+        logger.debugl(2, f'- PNG: {w}x{h} px {dpi} PPIs {img_w}x{img_h} mm')
+        logger.debugl(2, f'- Box: {box.pos_x},{box.pos_y} +{box.size.x},{box.size.y} mm')
+        scale = box.size.x/img_w
+        logger.debugl(2, f'- Scale {scale}')
+        bmp = SchematicBitmapV6()
+        bmp.pos_x = box.pos_x + box.size.x/2
+        bmp.pos_y = box.pos_y + box.size.x/2
+        bmp.scale = scale
+        bmp.uuid = ''
+        data = b64encode(s).decode('ascii')
+        bmp.data = [data[i:i+76] for i in range(0, len(data), 76)]
+        # Append the new image
+        sheet.bitmaps.append(bmp)
+        old_box = deepcopy(box)
+        sheet._replaced_images.append((old_img_index, old_box, old_img, box_index))
+        # Ensure the box is invisible
+        transparent = Color()
+        transparent.r = 255
+        transparent.a = 0
+        new_stroke = Stroke()
+        new_stroke.color = transparent
+        box.stroke = new_stroke
+        box.effects.color = transparent
+        box.effects.w = box.effects.h = 0
+        # Adjust the box height
+        box.size.y = img_h*scale
+        return True
+
+    def sch_replace_images(self, sch):
+        """ Used by outputs that support replacing 'kibot_image_OUTPUT' in schematics """
+        if not GS.global_sch_image_prefix:
+            return False
+        logger.debug("Replacing images in schematic")
+        res = False
+        key = GS.global_sch_image_prefix+'_'
+        key_l = len(key)
+        for s in GS.sch.all_sheets:
+            s._replaced_images = []
+            for index, b in enumerate(s.text_boxes):
+                text = b.text.strip()
+                if text.startswith(key):
+                    res |= self.sch_replace_one_image(s, b, text[key_l:], index)
+        return res
+
+    def sch_restore_images(self, sch):
+        """ Used to undo sch_replace_images """
+        if not GS.global_sch_image_prefix:
+            return False
+        logger.debug("Restoring images in schematic")
+        key = GS.global_sch_image_prefix+'_'
+        len(key)
+        for s in GS.sch.all_sheets:
+            for (index, box, img, box_index) in reversed(s._replaced_images):
+                s.text_boxes[box_index] = box
+                if index < 0:
+                    # Was appended
+                    s.bitmaps.pop()
+                else:
+                    # Put the original image back
+                    s.bitmaps[index] = img
+            s._replaced_images = None
 
 
 class PcbMargin(Optionable):

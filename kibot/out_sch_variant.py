@@ -30,8 +30,11 @@ class Sch_Variant_Options(VariantOptions):
         super().run(output_dir)
         # Create the schematic
         self.set_title(self.title, sch=True)
+        replaced_images = self.sch_replace_images(GS.sch)
         GS.sch.save_variant(output_dir)
         self.restore_title(sch=True)
+        if replaced_images:
+            self.sch_restore_images(GS.sch)
         if self.copy_project:
             GS.copy_project(os.path.join(output_dir, GS.sch_basename+'.kicad_pcb'))
 
@@ -41,7 +44,8 @@ class Sch_Variant(BaseOutput):  # noqa: F821
     """ Schematic with variant generator
         Creates a copy of the schematic with all the filters and variants applied.
         This copy isn't intended for development.
-        Is just a tweaked version of the original where you can look at the results. """
+        Is just a tweaked version of the original where you can look at the results.
+        Supports the image replacement using the prefix indicated by the `sch_image_prefix` global variable """
     def __init__(self):
         super().__init__()
         with document:

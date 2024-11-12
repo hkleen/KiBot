@@ -139,6 +139,7 @@ class GS(object):
     solved_global_variant = None
     # This is used as default value for classes supporting "output" option
     def_global_output = '%f-%i%I%v.%x'
+    def_work_layer = 'Margin'
     # The class that controls the global options
     class_for_global_opts = None
     # The last tree we used to configure it
@@ -193,6 +194,7 @@ class GS(object):
     global_remove_adhesive_for_dnp = None
     global_resources_dir = None
     global_restore_project = None
+    global_sch_image_prefix = None
     global_set_text_variables_before_output = None
     global_silk_screen_color = None
     global_silk_screen_color_bottom = None

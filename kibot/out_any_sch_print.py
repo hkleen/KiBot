@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2020-2023 Salvador E. Tropea
-# Copyright (c) 2020-2023 Instituto Nacional de Tecnología Industrial
-# License: GPL-3.0
+# Copyright (c) 2020-2024 Salvador E. Tropea
+# Copyright (c) 2020-2024 Instituto Nacional de Tecnología Industrial
+# License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
 import os
 from .error import KiPlotConfigurationError
@@ -42,6 +42,9 @@ class Any_SCH_PrintOptions(VariantOptions):
             return [self._parent.expand_filename(out_dir, self.output)]
         return [self._parent.expand_filename(out_dir, '%f.%x')]
 
+    def desc_box(self, box):
+        return f"SCH text box @{box.pos_x},{box.pos_y}"
+
     def run(self, name):
         super().run(name)
         command = self.ensure_tool('KiAuto')
@@ -75,10 +78,11 @@ class Any_SCH_PrintOptions(VariantOptions):
         elif self.sheet_reference_layout:
             raise KiPlotConfigurationError('Using `sheet_reference_layout` but no project available')
 
+        replaced_images = self.sch_replace_images(GS.sch)
         try:
             if self.title:
                 self.set_title(self.title, sch=True)
-            if self._comps or self.title:
+            if self._comps or self.title or replaced_images:
                 # Save it to a temporal dir
                 sch_dir = GS.mkdtemp(self._expand_ext+'_sch_print')
                 GS.copy_project_sch(sch_dir)
@@ -107,6 +111,9 @@ class Any_SCH_PrintOptions(VariantOptions):
             self.exec_with_retry(self.add_extra_options(cmd), self._exit_error)
             if self.title:
                 self.restore_title(sch=True)
+            if replaced_images:
+                logger.error("Restore")
+                self.sch_restore_images(GS.sch)
         finally:
             if prj:
                 GS.write_pro(prj)

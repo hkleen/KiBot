@@ -387,7 +387,7 @@ class Globals(FiltersOptions):
             self.layer_defaults = Layer
             """ [list(dict)=[]] Used to indicate the default suffix and description for the layers.
                 Note that the name for the layer must match exactly, no aliases """
-            self.work_layer = 'Margin'
+            self.work_layer = GS.def_work_layer
             """ Layer used for temporal tasks, choose a layer you are not using in your design """
             self.include_components_from_pcb = True
             """ Include components that are only in the PCB, not in the schematic, for filter and variants processing.
@@ -402,6 +402,12 @@ class Globals(FiltersOptions):
             """ String used for *yes*. Currently used by the **update_pcb_characteristics** preflight """
             self.str_no = 'no'
             """ String used for *no*. Currently used by the **update_pcb_characteristics** preflight """
+            self.sch_image_prefix = 'kibot_image'
+            """ Prefix used to paste images from outputs. Used by some outputs.
+                You must place a text box at the coordinates where you want to paste the image.
+                The width of the text box will be the width of the image.
+                The text box must contain *kibot_image_X* where X is the output name.
+                This option configures the prefix used. If this option is empty no images will be pasted """
         self.set_doc('filters', " [list(dict)=[]] KiBot warnings to be ignored ")
         self._filter_what = 'KiBot warnings'
         self.filters = FilterOptionsKiBot

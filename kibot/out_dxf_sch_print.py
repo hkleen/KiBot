@@ -33,7 +33,8 @@ class DXF_SCH_PrintOptions(Any_SCH_PrintOptions):
 class DXF_SCH_Print(BaseOutput):  # noqa: F821
     """ DXF Schematic Print (Drawing Exchange Format)
         Exports the schematic to a format commonly used for CAD software.
-        This output is what you get from the 'File/Plot' menu in eeschema. """
+        This output is what you get from the 'File/Plot' menu in eeschema.
+        Supports the image replacement using the prefix indicated by the `sch_image_prefix` global variable """
     __doc__ += FONT_HELP_TEXT
 
     def __init__(self):

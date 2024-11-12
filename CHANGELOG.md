@@ -26,6 +26,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `use_ref_ranges` alias for `use_alt`
   - New *kicad* format to mimic KiCad's internal BoM.
 - PCB Print: a mechanism to filter components for a particular layer (#706)
+- SCH Variant and *SCH Print:
+  - A mechanism to paste images from outputs (#714)
 
 ### Fixed
 - BoM

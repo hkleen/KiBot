@@ -181,6 +181,11 @@
       -  ``restore_project`` :index:`: <pair: global options; restore_project>` [:ref:`boolean <boolean>`] (default: ``false``) Restore the KiCad project after execution.
          Note that this option will undo operations like `set_text_variables`. |br|
          Starting with 1.6.4 it also restores the PRL (Project Local Settings) and DRU (Design RUles) files.
+      -  ``sch_image_prefix`` :index:`: <pair: global options; sch_image_prefix>` [:ref:`string <string>`] (default: ``'kibot_image'``) Prefix used to paste images from outputs. Used by some outputs.
+         You must place a text box at the coordinates where you want to paste the image. |br|
+         The width of the text box will be the width of the image. |br|
+         The text box must contain *kibot_image_X* where X is the output name. |br|
+         This option configures the prefix used. If this option is empty no images will be pasted.
       -  ``set_text_variables_before_output`` :index:`: <pair: global options; set_text_variables_before_output>` [:ref:`boolean <boolean>`] (default: ``false``) Run the `set_text_variables` preflight before running each output that involves variants.
          This can be used when a text variable uses the variant and you want to create more than
          one variant in the same run. Note that this could be slow because it forces a board

@@ -45,6 +45,9 @@ Added
 
 -  PCB Print: a mechanism to filter components for a particular layer
    (#706)
+-  SCH Variant and \*SCH Print:
+
+   -  A mechanism to paste images from outputs (#714)
 
 Fixed
 ~~~~~

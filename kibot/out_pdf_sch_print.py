@@ -34,7 +34,8 @@ class PDF_SCH_Print(BaseOutput):  # noqa: F821
     """ PDF Schematic Print (Portable Document Format)
         Exports the schematic to the most common exchange format. Suitable for printing.
         This is the main format to document your schematic.
-        This output is what you get from the 'File/Plot' menu in eeschema. """
+        This output is what you get from the 'File/Plot' menu in eeschema.
+        Supports the image replacement using the prefix indicated by the `sch_image_prefix` global variable """
     __doc__ += FONT_HELP_TEXT
 
     def __init__(self):

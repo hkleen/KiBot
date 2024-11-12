@@ -1121,6 +1121,7 @@ outputs:
     layers: all
   # DXF Schematic Print (Drawing Exchange Format):
   # This output is what you get from the 'File/Plot' menu in eeschema.
+  # Supports the image replacement using the prefix indicated by the `sch_image_prefix` global variable
   # Important: If you use custom fonts and/or colors please consult the `resources_dir` global variable.
   - name: 'dxf_sch_print_example'
     comment: 'Exports the schematic to a format commonly used for CAD software.'
@@ -1432,6 +1433,7 @@ outputs:
     layers: all
   # HPGL Schematic Print (Hewlett & Packard Graphics Language):
   # This output is what you get from the 'File/Plot' menu in eeschema.
+  # Supports the image replacement using the prefix indicated by the `sch_image_prefix` global variable
   # Important: If you use custom fonts and/or colors please consult the `resources_dir` global variable.
   - name: 'hpgl_sch_print_example'
     comment: 'Exports the schematic to the most common plotter format.'
@@ -3117,6 +3119,7 @@ outputs:
   # PDF Schematic Print (Portable Document Format):
   # This is the main format to document your schematic.
   # This output is what you get from the 'File/Plot' menu in eeschema.
+  # Supports the image replacement using the prefix indicated by the `sch_image_prefix` global variable
   # Important: If you use custom fonts and/or colors please consult the `resources_dir` global variable.
   - name: 'pdf_sch_print_example'
     comment: 'Exports the schematic to the most common exchange format. Suitable for printing.'
@@ -3345,6 +3348,7 @@ outputs:
     layers: all
   # PS Schematic Print (Postscript):
   # This output is what you get from the 'File/Plot' menu in eeschema.
+  # Supports the image replacement using the prefix indicated by the `sch_image_prefix` global variable
   # Important: If you use custom fonts and/or colors please consult the `resources_dir` global variable.
   - name: 'ps_sch_print_example'
     comment: 'Exports the schematic in postscript. Suitable for printing.'
@@ -3629,6 +3633,7 @@ outputs:
   # Schematic with variant generator:
   # This copy isn't intended for development.
   # Is just a tweaked version of the original where you can look at the results.
+  # Supports the image replacement using the prefix indicated by the `sch_image_prefix` global variable
   - name: 'sch_variant_example'
     comment: 'Creates a copy of the schematic with all the filters and variants applied.'
     type: 'sch_variant'
@@ -3952,6 +3957,7 @@ outputs:
   # SVG Schematic Print:
   # This is a format to document your schematic.
   # This output is what you get from the 'File/Plot' menu in eeschema.
+  # Supports the image replacement using the prefix indicated by the `sch_image_prefix` global variable
   # Important: If you use custom fonts and/or colors please consult the `resources_dir` global variable.
   - name: 'svg_sch_print_example'
     comment: 'Exports the schematic in a vectorized graphics format.'
