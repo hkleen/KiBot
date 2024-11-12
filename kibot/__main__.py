@@ -323,8 +323,8 @@ def detect_kicad():
             GS.kicad_share_path = GS.kicad_share_path.replace('/kicad/', '/kicad-nightly/')
             GS.kicad_dir = 'kicad-nightly'
         GS.pro_ext = '.kicad_pro'
-        # KiCad 6 doesn't support the Rescue layer
-        GS.work_layer = 'User.9'
+        # KiCad 6+ doesn't support the Rescue layer, they can save it to disk, but can't load it
+        GS.work_layer = 'Margin'
     else:
         # Bug in KiCad (#6989), prints to stderr:
         # `../src/common/stdpbase.cpp(62): assert "traits" failed in Get(test_dir): create wxApp before calling this`
