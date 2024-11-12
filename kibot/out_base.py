@@ -1221,7 +1221,7 @@ class VariantOptions(BaseOptions):
 
     def sch_replace_images(self, sch):
         """ Used by outputs that support replacing 'kibot_image_OUTPUT' in schematics """
-        if not GS.global_sch_image_prefix:
+        if not GS.global_sch_image_prefix or GS.ki5:
             return False
         logger.debug("Replacing images in schematic")
         res = False
@@ -1237,7 +1237,7 @@ class VariantOptions(BaseOptions):
 
     def sch_restore_images(self, sch):
         """ Used to undo sch_replace_images """
-        if not GS.global_sch_image_prefix:
+        if not GS.global_sch_image_prefix or GS.ki5:
             return False
         logger.debug("Restoring images in schematic")
         key = GS.global_sch_image_prefix+'_'
