@@ -268,7 +268,7 @@ def update_table(ops, parent):
             index = int(group_suffix[-2])-1
             group_suffix = group_suffix[:-3]
             logger.debug(f'    - {group_suffix} index: {index}')
-        out, csv = out_to_csv_mapping.get(group_suffix)
+        out, csv = out_to_csv_mapping.get(group_suffix, (None, None))
         if not csv:
             logger.warning(W_NOMATCHGRP+f'No output to handle `{group_name}` found')
             continue
