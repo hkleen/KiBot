@@ -112,7 +112,6 @@ class Any_SCH_PrintOptions(VariantOptions):
             if self.title:
                 self.restore_title(sch=True)
             if replaced_images:
-                logger.error("Restore")
                 self.sch_restore_images(GS.sch)
         finally:
             if prj:
