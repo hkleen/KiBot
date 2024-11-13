@@ -1197,7 +1197,7 @@ class VariantOptions(BaseOptions):
         logger.debugl(2, f'- Scale {scale}')
         bmp = SchematicBitmapV6()
         bmp.pos_x = box.pos_x + box.size.x/2
-        bmp.pos_y = box.pos_y + box.size.x/2
+        bmp.pos_y = box.pos_y + (img_h*scale)/2
         bmp.scale = scale
         bmp.uuid = ''
         data = b64encode(s).decode('ascii')
