@@ -268,12 +268,10 @@ def update_table(ops, parent):
             index = int(group_suffix[-2])-1
             group_suffix = group_suffix[:-3]
             logger.debug(f'    - {group_suffix} index: {index}')
-        res = out_to_csv_mapping.get(group_suffix)
-        if res is None:
+        out, csv = out_to_csv_mapping.get(group_suffix, (None, None))
+        if not csv:
             logger.warning(W_NOMATCHGRP+f'No output to handle `{group_name}` found')
             continue
-        else:
-            out, csv = res
         if index < 0 or index >= len(csv):
             msg = f'index {index+1} is out of range, '+('only one CSV available' if len(csv) == 1 else
                                                         f'must be in the [1,{len(csv)}] range')
