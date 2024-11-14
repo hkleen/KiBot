@@ -81,6 +81,8 @@ def parse_len_str(val):
 
 
 def fix_windows(name):
+    if not name:
+        return name
     if not os.path.isfile(name):
         fixed = name.replace('\\', '/')
         if os.path.isfile(fixed):
