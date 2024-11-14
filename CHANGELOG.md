@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.8.3] - UNRELEASED
 ### Added
+- Workaround for people using backslashes (i.e. Windows+WSL) (#719) (#607)
+  More general than in previous versions.
 - Global options:
   - `work_layer`: to choose the temporal layer for internal operations (#713)
 - BoM:

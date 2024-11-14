@@ -80,6 +80,15 @@ def parse_len_str(val):
     return value
 
 
+def fix_windows(name):
+    if not os.path.isfile(name):
+        fixed = name.replace('\\', '/')
+        if os.path.isfile(fixed):
+            logger.debug(f'Fixing windows path: {name} -> {fixed}')
+            return fixed
+    return name
+
+
 def expand_env(val, env, extra_env, used_extra=None):
     """ Expand KiCad environment variables """
     if used_extra is None:
@@ -630,7 +639,7 @@ class KiConf(object):
             section = data[key]
             pl = section.get('page_layout_descr_file', None) if not forced else forced
             if pl:
-                fname = KiConf.expand_env(pl)
+                fname = fix_windows(KiConf.expand_env(pl))
                 if os.path.isfile(fname):
                     dest = os.path.join(dest_dir, key+'.kicad_wks')
                     logger.debug('Copying {} -> {}'.format(fname, dest))
@@ -658,10 +667,10 @@ class KiConf(object):
         else:
             aux = data.get('schematic', None)
             if aux:
-                layouts[0] = KiConf.expand_env(aux.get('page_layout_descr_file', None), ref_dir=dest_dir)
+                layouts[0] = fix_windows(KiConf.expand_env(aux.get('page_layout_descr_file', None), ref_dir=dest_dir))
             aux = data.get('pcbnew', None)
             if aux:
-                layouts[1] = KiConf.expand_env(aux.get('page_layout_descr_file', None), ref_dir=dest_dir)
+                layouts[1] = fix_windows(KiConf.expand_env(aux.get('page_layout_descr_file', None), ref_dir=dest_dir))
         return layouts
 
     def fix_page_layout_k5(project, dry, force_sch, force_pcb):
@@ -683,7 +692,7 @@ class KiConf(object):
                 elif force_pcb and is_pcb_new:
                     dest = force_pcb
                 elif fname:
-                    fname = KiConf.expand_env(fname)
+                    fname = fix_windows(KiConf.expand_env(fname))
                     if os.path.isfile(fname):
                         dest = os.path.join(dest_dir, str(order)+'.kicad_wks')
                         if not dry:

@@ -66,11 +66,7 @@ class Any_SCH_PrintOptions(VariantOptions):
             else:
                 ori_wks = new_wks = wks[0]
                 if ori_wks and not os.path.isfile(new_wks):
-                    # Try replacing backslashes
-                    try_wks = new_wks.replace('\\', '/')
-                    if not os.path.isfile(try_wks):
-                        raise KiPlotConfigurationError(f'Missing `{new_wks}` worksheet')
-                    new_wks = try_wks
+                    raise KiPlotConfigurationError(f'Missing `{new_wks}` worksheet')
             if ori_wks != new_wks:
                 prj = GS.read_pro()
                 GS.fix_page_layout(GS.pro_file, dry=False, force_sch=os.path.relpath(new_wks, GS.pro_dir),

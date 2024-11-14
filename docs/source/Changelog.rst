@@ -19,6 +19,8 @@ Versioning <https://semver.org/spec/v2.0.0.html>`__.
 Added
 ~~~~~
 
+-  Workaround for people using backslashes (i.e. Windows+WSL) (#719)
+   (#607) More general than in previous versions.
 -  Global options:
 
    -  ``work_layer``: to choose the temporal layer for internal
@@ -42,6 +44,11 @@ Added
       reference ranges
    -  ``use_ref_ranges`` alias for ``use_alt``
    -  New *kicad* format to mimic KiCad’s internal BoM.
+
+-  Drill:
+
+   -  Option to don’t generate the drill files, so you can generate only
+      the maps (#720)
 
 -  PCB Print: a mechanism to filter components for a particular layer
    (#706)
