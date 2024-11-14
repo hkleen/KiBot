@@ -4,6 +4,7 @@
 ExcellonOptions parameters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+-  **generate_drill_files** :index:`: <pair: output - excellon - options; generate_drill_files>` [:ref:`boolean <boolean>`] (default: ``true``) Generate drill files. Set to False and choose map format if only map is to be generated.
 -  **metric_units** :index:`: <pair: output - excellon - options; metric_units>` [:ref:`boolean <boolean>`] (default: ``true``) Use metric units instead of inches.
 -  **mirror_y_axis** :index:`: <pair: output - excellon - options; mirror_y_axis>` [:ref:`boolean <boolean>`] (default: ``false``) Invert the Y axis.
 -  **output** :index:`: <pair: output - excellon - options; output>` [:ref:`string <string>`] (default: ``'%f-%i%I%v.%x'``) name for the drill file, KiCad defaults if empty (%i='PTH_drill'). Affected by global options.

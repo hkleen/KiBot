@@ -42,6 +42,8 @@ class AnyDrill(VariantOptions):
     def __init__(self):
         # Options
         with document:
+            self.generate_drill_files = True
+            """ Generate drill files. Set to False and choose map format if only map is to be generated """
             self.use_aux_axis_as_origin = False
             """ Use the auxiliary axis as origin for coordinates """
             self.map = DrillMap
@@ -143,11 +145,12 @@ class AnyDrill(VariantOptions):
                 kicad_id_main += '-drl'
                 if not GS.ki8:
                     kicad_id_map = kicad_id_main
-            k_file = self.expand_filename(output_dir, '%f'+kicad_id_main+'.%x', '', self._ext)
-            file = ''
-            if self.output:
-                file = self.expand_filename(output_dir, self.output, kibot_id, self._ext)
-            filenames[k_file] = file
+            if self.generate_drill_files:
+                k_file = self.expand_filename(output_dir, '%f'+kicad_id_main+'.%x', '', self._ext)
+                file = ''
+                if self.output:
+                    file = self.expand_filename(output_dir, self.output, kibot_id, self._ext)
+                filenames[k_file] = file
             if self._map is not None:
                 k_file = self.expand_filename(output_dir, '%f'+kicad_id_map+'-drl_map.%x', '', self._map_ext)
                 file = ''
@@ -173,8 +176,7 @@ class AnyDrill(VariantOptions):
         if gen_map:
             drill_writer.SetMapFileFormat(self._map)
             logger.debug("Generating drill map type {} in {}".format(self._map, output_dir))
-        # We always generate the drill file
-        drill_writer.CreateDrillandMapFilesSet(output_dir, True, gen_map)
+        drill_writer.CreateDrillandMapFilesSet(output_dir, self.generate_drill_files, gen_map)
         # Rename the files
         files = self.get_file_names(output_dir)
         for k_f, f in files.items():

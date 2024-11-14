@@ -18,6 +18,8 @@ class ExcellonOptions(AnyDrill):
     def __init__(self):
         super().__init__()
         with document:
+            self.generate_drill_files = True
+            """ Generate drill files. Set to False and choose map format if only map is to be generated """
             self.metric_units = True
             """ *Use metric units instead of inches """
             self.pth_and_npth_single_file = True
