@@ -5,10 +5,10 @@ Gerb_DrillOptions parameters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 -  **output** :index:`: <pair: output - gerb_drill - options; output>` [:ref:`string <string>`] (default: ``'%f-%i%I%v.%x'``) name for the drill file, KiCad defaults if empty (%i='PTH_drill'). Affected by global options.
--  **generate_drill_files** :index:`: <pair: output - gerb_drill - options; generate_drill_files>` [:ref:`boolean <boolean>`] (default: ``true``) Generate drill files. Set to False and choose map format if only map is to be generated.
 -  ``dnf_filter`` :index:`: <pair: output - gerb_drill - options; dnf_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to mark components as not fitted.
    A short-cut to use for simple cases where a variant is an overkill.
 
+-  ``generate_drill_files`` :index:`: <pair: output - gerb_drill - options; generate_drill_files>` [:ref:`boolean <boolean>`] (default: ``true``) Generate drill files. Set to False and choose map format if only map is to be generated.
 -  ``map`` :index:`: <pair: output - gerb_drill - options; map>`  [:ref:`DrillMap parameters <DrillMap>`] [:ref:`dict <dict>` | :ref:`string <string>`] (default: ``'None'``) (choices: "hpgl", "ps", "gerber", "dxf", "svg", "pdf", "None") Format for a graphical drill map.
    Not generated unless a format is specified.
 -  ``npth_id`` :index:`: <pair: output - gerb_drill - options; npth_id>` [:ref:`string <string>`] Force this replacement for %i when generating NPTH files.

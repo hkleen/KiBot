@@ -1167,6 +1167,8 @@ outputs:
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
       # A short-cut to use for simple cases where a variant is an overkill
       dnf_filter: '_null'
+      # [boolean=true] Generate drill files. Set to False and choose map format if only map is to be generated
+      generate_drill_files: true
       # [number=0] number of digits for integer part of coordinates (0 is auto)
       left_digits: 0
       # [dict|string='None'] [hpgl,ps,gerber,dxf,svg,pdf,None] Format for a graphical drill map.
@@ -1249,6 +1251,8 @@ outputs:
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
       # A short-cut to use for simple cases where a variant is an overkill
       dnf_filter: '_null'
+      # [boolean=true] Generate drill files. Set to False and choose map format if only map is to be generated
+      generate_drill_files: true
       # [dict|string='None'] [hpgl,ps,gerber,dxf,svg,pdf,None] Format for a graphical drill map.
       # Not generated unless a format is specified
       map:

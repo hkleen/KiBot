@@ -1,5 +1,5 @@
-48 outputs types with a total of 1881 different parameters
-Single type parameters: 1707 (91 %)
+48 outputs types with a total of 1883 different parameters
+Single type parameters: 1709 (91 %)
 Multi type parameters: 174 (9 %)
 Average parameters: 39
 Maximum number of parameters: 214
@@ -43,8 +43,8 @@ Outputs sorted by parameters:
 - pdf_sch_print: 23
 - ps_sch_print: 23
 - svg_sch_print: 23
-- gerb_drill: 24
 - compress: 25
+- gerb_drill: 25
 - hpgl_sch_print: 25
 - kiri: 25
 - qr_lib: 25
@@ -57,9 +57,9 @@ Outputs sorted by parameters:
 - position: 29
 - pcb2blender_tools: 30
 - pdf_pcb_print: 30
-- excellon: 32
 - svg_pcb_print: 32
 - vrml: 32
+- excellon: 33
 - kicost: 36
 - diff: 39
 - dxf: 42
@@ -138,7 +138,7 @@ Outputs sorted by depth:
 --------------------------------------------------------------------------------
 14 different data types
 -             String:  844
--            Boolean:  473
+-            Boolean:  475
 -             Number:  266
 - ListStringSingular:  224
 -             Choice:   95
@@ -154,7 +154,7 @@ Outputs sorted by depth:
 --------------------------------------------------------------------------------
 Used as single data type:
 -             String:  690 
--            Boolean:  417 
+-            Boolean:  419 
 - ListStringSingular:  221 
 -             Number:  172 
 -             Choice:   92 
@@ -390,8 +390,8 @@ Used as single data type:
 -              Number,String:   15 
 ================================================================================
 ================================================================================
-86 totals types with a total of 2249 different parameters
-Single type parameters: 2051 (91 %)
+86 totals types with a total of 2251 different parameters
+Single type parameters: 2053 (91 %)
 Multi type parameters: 198 (9 %)
 Average parameters: 26
 Maximum number of parameters: 214
@@ -470,10 +470,10 @@ Totals sorted by parameters:
 - ps_sch_print: 23
 - svg_sch_print: 23
 - kibom: 23
-- gerb_drill: 24
 - ibom: 24
 - kicost: 24
 - compress: 25
+- gerb_drill: 25
 - hpgl_sch_print: 25
 - kiri: 25
 - qr_lib: 25
@@ -486,9 +486,9 @@ Totals sorted by parameters:
 - position: 29
 - pcb2blender_tools: 30
 - pdf_pcb_print: 30
-- excellon: 32
 - svg_pcb_print: 32
 - vrml: 32
+- excellon: 33
 - generic: 34
 - kicost: 36
 - diff: 39
@@ -606,7 +606,7 @@ Totals sorted by depth:
 --------------------------------------------------------------------------------
 14 different data types
 -             String:  995
--            Boolean:  571
+-            Boolean:  573
 -             Number:  314
 - ListStringSingular:  253
 -             Choice:  127
@@ -622,7 +622,7 @@ Totals sorted by depth:
 --------------------------------------------------------------------------------
 Used as single data type:
 -             String:  825 
--            Boolean:  507 
+-            Boolean:  509 
 - ListStringSingular:  250 
 -             Number:  205 
 -             Choice:  124 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2020-2022 Salvador E. Tropea
-# Copyright (c) 2020-2022 Instituto Nacional de Tecnología Industrial
-# License: GPL-3.0
+# Copyright (c) 2020-2024 Salvador E. Tropea
+# Copyright (c) 2020-2024 Instituto Nacional de Tecnología Industrial
+# License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
 import os
 import re
@@ -11,6 +11,7 @@ from .optionable import Optionable
 from .out_base import VariantOptions
 from .gs import GS
 from .layer import Layer
+from .misc import W_NODRILL
 from .macros import macros, document  # noqa: F401
 from . import log
 
@@ -176,6 +177,8 @@ class AnyDrill(VariantOptions):
         if gen_map:
             drill_writer.SetMapFileFormat(self._map)
             logger.debug("Generating drill map type {} in {}".format(self._map, output_dir))
+        if not self.generate_drill_files and not gen_map and not self._report:
+            logger.warning(W_NODRILL+f"Not generating drill files nor drill maps nor report on `{self._parent.name}`")
         drill_writer.CreateDrillandMapFilesSet(output_dir, self.generate_drill_files, gen_map)
         # Rename the files
         files = self.get_file_names(output_dir)

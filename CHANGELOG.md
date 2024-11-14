@@ -25,6 +25,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     ranges
   - `use_ref_ranges` alias for `use_alt`
   - New *kicad* format to mimic KiCad's internal BoM.
+- Drill:
+  - Option to don't generate the drill files, so you can generate only the maps
+    (#720)
 - PCB Print: a mechanism to filter components for a particular layer (#706)
 - SCH Variant and *SCH Print:
   - A mechanism to paste images from outputs (#714)

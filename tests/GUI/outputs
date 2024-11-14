@@ -3102,6 +3102,13 @@
       ],
       [
         [
+          "generate_drill_files",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
           "use_aux_axis_as_origin",
           [
             "DataTypeBoolean"
@@ -3484,6 +3491,13 @@
         "DataTypeDict"
       ],
       [
+        [
+          "generate_drill_files",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
         [
           "use_aux_axis_as_origin",
           [
