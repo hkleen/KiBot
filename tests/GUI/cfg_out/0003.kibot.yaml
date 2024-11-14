@@ -139,7 +139,7 @@ outputs:
   type: excellon
   comment: This is the main format for the drilling machine
   options:
-    use_aux_axis_as_origin: true
+    generate_drill_files: false
     map: None
     report: ''
 - name: output.gencad
@@ -151,7 +151,7 @@ outputs:
   type: gerb_drill
   comment: This is the information for the drilling machine in gerber format
   options:
-    use_aux_axis_as_origin: true
+    generate_drill_files: false
     map: None
     report: ''
 - name: output.gerber
