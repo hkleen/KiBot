@@ -21,12 +21,17 @@ IBoMOptions parameters
 -  ``checkboxes`` :index:`: <pair: output - ibom - options; checkboxes>` [:ref:`string <string>`] (default: ``'Sourced,Placed'``) Comma separated list of checkbox columns.
 -  ``dark_mode`` :index:`: <pair: output - ibom - options; dark_mode>` [:ref:`boolean <boolean>`] (default: ``false``) Default to dark mode.
 -  ``dnf_filter`` :index:`: <pair: output - ibom - options; dnf_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to mark components as not fitted.
-   A short-cut to use for simple cases where a variant is an overkill. |br|
+   Is a short-cut to use for simple cases where a variant is an overkill. |br|
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant. |br|
    Avoid using it in conjunction with IBoM native filtering options.
 
 -  ``dnp_field`` :index:`: <pair: output - ibom - options; dnp_field>` [:ref:`string <string>`] (default: ``''``) Name of the extra field that indicates do not populate status.
    Components with this field not empty will be blacklisted. |br|
    IBoM option, avoid using in conjunction with KiBot variants/filters.
+-  ``exclude_filter`` :index:`: <pair: output - ibom - options; exclude_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to exclude components from processing.
+   Is a short-cut to use for simple cases where a variant is an overkill. |br|
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
+
 -  ``extra_data_file`` :index:`: <pair: output - ibom - options; extra_data_file>` [:ref:`string <string>`] (default: ``''``) Path to netlist or xml file. You can use '%F.xml' to avoid specifying the project name.
    Leave it blank for most uses, data will be extracted from the PCB.
 -  ``forced_name`` :index:`: <pair: output - ibom - options; forced_name>` [:ref:`string <string>`] (default: ``''``) Name to be used for the PCB/project (no file extension).
@@ -56,7 +61,8 @@ IBoMOptions parameters
 -  ``no_redraw_on_drag`` :index:`: <pair: output - ibom - options; no_redraw_on_drag>` [:ref:`boolean <boolean>`] (default: ``false``) Do not redraw pcb on drag by default.
 -  ``offset_back_rotation`` :index:`: <pair: output - ibom - options; offset_back_rotation>` [:ref:`boolean <boolean>`] (default: ``false``) Offset the back of the pcb by 180 degrees.
 -  ``pre_transform`` :index:`: <pair: output - ibom - options; pre_transform>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to transform fields before applying other filters.
-   A short-cut to use for simple cases where a variant is an overkill.
+   Is a short-cut to use for simple cases where a variant is an overkill. |br|
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
 
 -  ``show_fabrication`` :index:`: <pair: output - ibom - options; show_fabrication>` [:ref:`boolean <boolean>`] (default: ``false``) Show fabrication layer by default.
 -  ``sort_order`` :index:`: <pair: output - ibom - options; sort_order>` [:ref:`string <string>`] (default: ``'C,R,L,D,U,Y,X,F,SW,A,~,HS,CNN,J,P,NT,MH'``) Default sort order for components. Must contain '~' once.

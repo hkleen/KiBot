@@ -21,7 +21,12 @@ DiffOptions parameters
    changes are red, but you can abort if the difference is bigger than certain threshold. |br|
    The '2color' mode is like 'red_green', but you can customize the colors.
 -  ``dnf_filter`` :index:`: <pair: output - diff - options; dnf_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to mark components as not fitted.
-   A short-cut to use for simple cases where a variant is an overkill.
+   Is a short-cut to use for simple cases where a variant is an overkill. |br|
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
+
+-  ``exclude_filter`` :index:`: <pair: output - diff - options; exclude_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to exclude components from processing.
+   Is a short-cut to use for simple cases where a variant is an overkill. |br|
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
 
 -  ``force_checkout`` :index:`: <pair: output - diff - options; force_checkout>` [:ref:`boolean <boolean>`] (default: ``false``) When `old_type` and/or `new_type` are `git` KiBot will checkout the indicated point.
    Before doing it KiBot will stash any change. Under some circumstances git could fail
@@ -63,7 +68,8 @@ DiffOptions parameters
 
 -  ``pcb`` :index:`: <pair: output - diff - options; pcb>` [:ref:`boolean <boolean>`] (default: ``true``) Compare the PCB, otherwise compare the schematic.
 -  ``pre_transform`` :index:`: <pair: output - diff - options; pre_transform>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to transform fields before applying other filters.
-   A short-cut to use for simple cases where a variant is an overkill.
+   Is a short-cut to use for simple cases where a variant is an overkill. |br|
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
 
 -  ``threshold`` :index:`: <pair: output - diff - options; threshold>` [:ref:`number <number>`] (default: ``0``) (range: 0 to 1000000) Error threshold for the `stats` mode, 0 is no error. When specified a
    difference bigger than the indicated value will make the diff fail. |br|

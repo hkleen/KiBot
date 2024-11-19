@@ -11,9 +11,14 @@ PDF_PCB_PrintOptions parameters
    To use the KiCad 6 default colors select `_builtin_default`. |br|
    Usually user colors are stored as `user`, but you can give it another name.
 -  ``dnf_filter`` :index:`: <pair: output - pdf_pcb_print - options; dnf_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to mark components as not fitted.
-   A short-cut to use for simple cases where a variant is an overkill.
+   Is a short-cut to use for simple cases where a variant is an overkill. |br|
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
 
 -  ``drill_marks`` :index:`: <pair: output - pdf_pcb_print - options; drill_marks>` [:ref:`string <string>`] (default: ``'full'``) (choices: "none", "small", "full") What to use to indicate the drill places, can be none, small or full (for real scale).
+-  ``exclude_filter`` :index:`: <pair: output - pdf_pcb_print - options; exclude_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to exclude components from processing.
+   Is a short-cut to use for simple cases where a variant is an overkill. |br|
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
+
 -  ``force_edge_cuts`` :index:`: <pair: output - pdf_pcb_print - options; force_edge_cuts>` [:ref:`boolean <boolean>`] (default: ``true``) Only useful for KiCad 6 when printing in one page, you can disable the edge here.
    KiCad 5 forces it by default, and you can't control it from config files. |br|
    Same for KiCad 6 when printing to separated pages.
@@ -24,7 +29,8 @@ PDF_PCB_PrintOptions parameters
 -  ``output`` :index:`: <pair: output - pdf_pcb_print - options; output>` [:ref:`string <string>`] (default: ``'%f-%i%I%v.%x'``) Filename for the output PDF (%i=layers, %x=pdf). Affected by global options.
 -  *output_name* :index:`: <pair: output - pdf_pcb_print - options; output_name>` Alias for output.
 -  ``pre_transform`` :index:`: <pair: output - pdf_pcb_print - options; pre_transform>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to transform fields before applying other filters.
-   A short-cut to use for simple cases where a variant is an overkill.
+   Is a short-cut to use for simple cases where a variant is an overkill. |br|
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
 
 -  ``title`` :index:`: <pair: output - pdf_pcb_print - options; title>` [:ref:`string <string>`] (default: ``''``) Text used to replace the sheet title. %VALUE expansions are allowed.
    If it starts with `+` the text is concatenated.

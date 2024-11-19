@@ -28,7 +28,7 @@ else:
     FP_3DMODEL = MODULE_3D_SETTINGS
 from .registrable import RegOutput
 from .optionable import Optionable, BaseOptions
-from .fil_base import BaseFilter, apply_fitted_filter, reset_filters, apply_pre_transform
+from .fil_base import BaseFilter, apply_fitted_filter, reset_filters, apply_pre_transform, apply_exclude_filter
 from .kicad.config import KiConf
 from .macros import macros, document  # noqa: F401
 from .error import KiPlotConfigurationError
@@ -253,12 +253,21 @@ class VariantOptions(BaseOptions):
         with document:
             self.variant = ''
             """ Board variant to apply """
-            self.dnf_filter = Optionable
-            """ [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-                A short-cut to use for simple cases where a variant is an overkill """
             self.pre_transform = Optionable
             """ [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-                A short-cut to use for simple cases where a variant is an overkill """
+                Is a short-cut to use for simple cases where a variant is an overkill.
+                Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+                variant """
+            self.exclude_filter = Optionable
+            """ [string|list(string)='_null'] Name of the filter to exclude components from processing.
+                Is a short-cut to use for simple cases where a variant is an overkill.
+                Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+                variant """
+            self.dnf_filter = Optionable
+            """ [string|list(string)='_null'] Name of the filter to mark components as not fitted.
+                Is a short-cut to use for simple cases where a variant is an overkill.
+                Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+                variant """
         super().__init__()
         self._comps = None
         self._sub_pcb = None
@@ -272,11 +281,13 @@ class VariantOptions(BaseOptions):
         self.variant = RegOutput.check_variant(self.variant)
         self.dnf_filter = BaseFilter.solve_filter(self.dnf_filter, 'dnf_filter')
         self.pre_transform = BaseFilter.solve_filter(self.pre_transform, 'pre_transform', is_transform=True)
+        self.exclude_filter = BaseFilter.solve_filter(self.exclude_filter, 'exclude_filter')
 
     def copy_options(self, ref):
         self.variant = ref.variant
         self.dnf_filter = ref.dnf_filter
         self.pre_transform = ref.pre_transform
+        self.exclude_filter = ref.exclude_filter
 
     def get_refs_hash(self):
         if not self._comps:
@@ -1077,13 +1088,14 @@ class VariantOptions(BaseOptions):
     def load_list_components(self):
         """ Makes the list of components available """
         self._files_to_remove = []
-        if not self.dnf_filter and not self.variant and not self.pre_transform:
+        if not self.dnf_filter and not self.variant and not self.pre_transform and not self.exclude_filter:
             return
         # Get the components list from the schematic
         comps = get_all_components()
         # Apply the filter
         reset_filters(comps)
         comps = apply_pre_transform(comps, self.pre_transform)
+        apply_exclude_filter(comps, self.exclude_filter)
         apply_fitted_filter(comps, self.dnf_filter)
         # Apply the variant
         if self.variant:

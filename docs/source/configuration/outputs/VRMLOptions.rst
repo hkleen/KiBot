@@ -19,12 +19,17 @@ VRMLOptions parameters
    If you want to create a monolithic file just use '' here. |br|
    Note that the WRL file will contain relative paths to the models.
 -  ``dnf_filter`` :index:`: <pair: output - vrml - options; dnf_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to mark components as not fitted.
-   A short-cut to use for simple cases where a variant is an overkill.
+   Is a short-cut to use for simple cases where a variant is an overkill. |br|
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
 
 -  ``download_lcsc`` :index:`: <pair: output - vrml - options; download_lcsc>` [:ref:`boolean <boolean>`] (default: ``true``) In addition to try to download the 3D models from KiCad git also try to get
    them from LCSC database. In order to work you'll need to provide the LCSC
    part number. The field containing the LCSC part number is defined by the
    `field_lcsc_part` global variable.
+-  ``exclude_filter`` :index:`: <pair: output - vrml - options; exclude_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to exclude components from processing.
+   Is a short-cut to use for simple cases where a variant is an overkill. |br|
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
+
 -  ``highlight`` :index:`: <pair: output - vrml - options; highlight>` [:ref:`list(string) <list(string)>`] (default: ``[]``) List of components to highlight. Ranges like *R5-R10* are supported.
 
 -  ``highlight_on_top`` :index:`: <pair: output - vrml - options; highlight_on_top>` [:ref:`boolean <boolean>`] (default: ``false``) Highlight over the component (not under).
@@ -34,7 +39,8 @@ VRMLOptions parameters
    Can be used to pass variables to the GET request, i.e. ?VAR1=VAL1&VAR2=VAL2.
 -  ``model_units`` :index:`: <pair: output - vrml - options; model_units>` [:ref:`string <string>`] (default: ``'millimeters'``) (choices: "millimeters", "meters", "deciinches", "inches") Units used for the VRML (1 deciinch = 0.1 inches).
 -  ``pre_transform`` :index:`: <pair: output - vrml - options; pre_transform>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to transform fields before applying other filters.
-   A short-cut to use for simple cases where a variant is an overkill.
+   Is a short-cut to use for simple cases where a variant is an overkill. |br|
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
 
 -  ``ref_units`` :index:`: <pair: output - vrml - options; ref_units>` [:ref:`string <string>`] (default: ``'millimeters'``) (choices: "millimeters", "inches'") Units for `ref_x` and `ref_y`.
 -  ``ref_x`` :index:`: <pair: output - vrml - options; ref_x>` [:ref:`number <number>`] (default: ``0``) X coordinate to use as reference when `use_pcb_center_as_ref` and `use_pcb_center_as_ref` are disabled.

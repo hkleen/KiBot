@@ -26,11 +26,16 @@ PCB_PrintOptions parameters
 -  ``colored_pads`` :index:`: <pair: output - pcb_print - options; colored_pads>` [:ref:`boolean <boolean>`] (default: ``true``) Plot through-hole in a different color. Like KiCad GUI does.
 -  ``colored_vias`` :index:`: <pair: output - pcb_print - options; colored_vias>` [:ref:`boolean <boolean>`] (default: ``true``) Plot vias in a different color. Like KiCad GUI does.
 -  ``dnf_filter`` :index:`: <pair: output - pcb_print - options; dnf_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to mark components as not fitted.
-   A short-cut to use for simple cases where a variant is an overkill.
+   Is a short-cut to use for simple cases where a variant is an overkill. |br|
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
 
 -  ``dpi`` :index:`: <pair: output - pcb_print - options; dpi>` [:ref:`number <number>`] (default: ``360``) (range: 36 to 1200) Resolution (Dots Per Inch) for the output file. Most objects are vectors, but thing
    like the the solder mask are handled as images by the conversion tools.
 -  ``drill_marks`` :index:`: <pair: output - pcb_print - options; drill_marks>` [:ref:`string <string>`] (default: ``'full'``) (choices: "none", "small", "full") What to use to indicate the drill places, can be none, small or full (for real scale).
+-  ``exclude_filter`` :index:`: <pair: output - pcb_print - options; exclude_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to exclude components from processing.
+   Is a short-cut to use for simple cases where a variant is an overkill. |br|
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
+
 -  ``forced_edge_cuts_color`` :index:`: <pair: output - pcb_print - options; forced_edge_cuts_color>` [:ref:`string <string>`] (default: ``''``) Color used for the `force_edge_cuts` option.
 -  ``forced_edge_cuts_use_for_center`` :index:`: <pair: output - pcb_print - options; forced_edge_cuts_use_for_center>` [:ref:`boolean <boolean>`] (default: ``true``) Used when enabling the `force_edge_cuts`, in this case this is the `use_for_center` option of the forced
    layer.
@@ -56,7 +61,8 @@ PCB_PrintOptions parameters
    Note: page numbers can be customized using the `page_id` option for each page.
 -  ``png_width`` :index:`: <pair: output - pcb_print - options; png_width>` [:ref:`number <number>`] (default: ``1280``) (range: 0 to 7680) Width of the PNG in pixels. Use 0 to use as many pixels as the DPI needs for the page size.
 -  ``pre_transform`` :index:`: <pair: output - pcb_print - options; pre_transform>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to transform fields before applying other filters.
-   A short-cut to use for simple cases where a variant is an overkill.
+   Is a short-cut to use for simple cases where a variant is an overkill. |br|
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
 
 -  ``realistic_solder_mask`` :index:`: <pair: output - pcb_print - options; realistic_solder_mask>` [:ref:`boolean <boolean>`] (default: ``true``) Try to draw the solder mask as a real solder mask, not the negative used for fabrication.
    In order to get a good looking select a color with transparency, i.e. '#14332440'. |br|

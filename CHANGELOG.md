@@ -7,10 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.8.3] - UNRELEASED
 ### Added
-- Workaround for people using backslashes (i.e. Windows+WSL) (#719) (#607)
-  More general than in previous versions.
+- Variants and filters:
+  - Outputs with variants can now specify an `exclude_filter` in addition to the
+    variant. Like it was possible for transform and dnf
 - Global options:
   - `work_layer`: to choose the temporal layer for internal operations (#713)
+- Workaround for people using backslashes (i.e. Windows+WSL) (#719) (#607)
+  More general than in previous versions.
 - BoM:
   - Field aliases ${QUANTITY} and ${ITEM_NUMBER} for compatibility with
     KiCad's internal BoM.

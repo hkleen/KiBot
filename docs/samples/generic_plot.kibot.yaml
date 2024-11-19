@@ -288,7 +288,8 @@ outputs:
       # See the `PCB2Blender_2_1`, `PCB2Blender_2_7` and `PCB2Blender_2_1_haschtl` templates
       pcb3d:
         # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-        # A short-cut to use for simple cases where a variant is an overkill
+        # Is a short-cut to use for simple cases where a variant is an overkill.
+        # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
         dnf_filter: '_null'
         # [boolean=true] Downloads missing 3D models from KiCad git.
         # Only applies to models in KISYS3DMOD and KICAD6_3DMODEL_DIR.
@@ -301,6 +302,10 @@ outputs:
         # part number. The field containing the LCSC part number is defined by the
         # `field_lcsc_part` global variable
         download_lcsc: true
+        # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+        # Is a short-cut to use for simple cases where a variant is an overkill.
+        # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+        exclude_filter: '_null'
         # [list(string)=[]] List of components to highlight. Ranges like *R5-R10* are supported
         highlight: []
         # [boolean=false] Highlight over the component (not under)
@@ -317,7 +322,8 @@ outputs:
         # [string='%f-%i%I%v.%x'] Name for the generated PCB3D file (%i='blender_export' %x='pcb3d'). Affected by global options
         output: '%f-%i%I%v.%x'
         # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-        # A short-cut to use for simple cases where a variant is an overkill
+        # Is a short-cut to use for simple cases where a variant is an overkill.
+        # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
         pre_transform: '_null'
         # [list(string)|string='all'] [none,all,*] List of components to draw, can be also a string for `none` or `all`.
         # Ranges like *R5-R10* are supported.
@@ -401,15 +407,21 @@ outputs:
     dir: 'Example/boardview_dir'
     options:
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       dnf_filter: '_null'
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [string='BRD'] [BRD,BVR] Format used for the generated file. The BVR file format is bigger but keeps
       # more information, like alphanumeric pin names
       format: 'BRD'
       # [string='%f-%i%I%v.%x'] Filename for the output (%i=boardview, %x=brd/brv). Affected by global options
       output: '%f-%i%I%v.%x'
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [boolean=true] Sort components by reference. Disable this option to get a file closer to what
       # kicad-boardview generates
@@ -863,7 +875,8 @@ outputs:
     dir: 'Example/copy_files_dir'
     options:
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       dnf_filter: '_null'
       # [boolean=true] Downloads missing 3D models from KiCad git.
       # Only applies to models in KISYS3DMOD and KICAD6_3DMODEL_DIR.
@@ -876,6 +889,10 @@ outputs:
       # part number. The field containing the LCSC part number is defined by the
       # `field_lcsc_part` global variable
       download_lcsc: true
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [list(dict)=[]] Which files will be included
       files:
         # [string=''] Destination directory inside the output dir, empty means the same of the file
@@ -916,7 +933,8 @@ outputs:
       # [boolean=false] Used to exclude 3D models for components with 'virtual' attribute
       no_virtual: false
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [string=''] Board variant to apply
       variant: ''
@@ -950,8 +968,13 @@ outputs:
       # The '2color' mode is like 'red_green', but you can customize the colors
       diff_mode: 'red_green'
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       dnf_filter: '_null'
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [boolean=false] When `old_type` and/or `new_type` are `git` KiBot will checkout the indicated point.
       # Before doing it KiBot will stash any change. Under some circumstances git could fail
       # to do a checkout, even after stashing, this option can workaround the problem.
@@ -995,7 +1018,8 @@ outputs:
       # [boolean=true] Compare the PCB, otherwise compare the schematic
       pcb: true
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [number=0] [0,1000000] Error threshold for the `stats` mode, 0 is no error. When specified a
       # difference bigger than the indicated value will make the diff fail.
@@ -1027,8 +1051,13 @@ outputs:
       # [boolean=false] Include the DNF components
       dnf: false
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       dnf_filter: '_null'
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [string='Datasheet'] Name of the field containing the URL
       field: 'Datasheet'
       # [boolean=true] Instead of download things we already downloaded use symlinks
@@ -1037,7 +1066,8 @@ outputs:
       # `${FIELD}` will be replaced by the FIELD content
       output: '${VALUE}.pdf'
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [boolean=false] Download URLs that we already downloaded.
       # It only makes sense if the `output` field makes their output different
@@ -1060,7 +1090,8 @@ outputs:
           # [string='Custom_report.txt'] File name for the custom report
           output: 'Custom_report.txt'
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       dnf_filter: '_null'
       # [string='full'] [none,small,full] What to use to indicate the drill places, can be none, small or full (for real scale)
       drill_marks: 'full'
@@ -1068,6 +1099,10 @@ outputs:
       edge_cut_extension: ''
       # [boolean=true] Do not include the PCB edge layer
       exclude_edge_layer: true
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [boolean=false] Do not plot the component pads in the silk screen (KiCad 5.x only)
       exclude_pads_from_silkscreen: false
       # [boolean=false] Include references and values even when they are marked as invisible
@@ -1098,7 +1133,8 @@ outputs:
       # You must disable it to get the dimensions (See https://gitlab.com/kicad/code/kicad/-/issues/11901)
       polygon_mode: true
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [number=1] Scale factor (0 means autoscaling)
       scaling: 1
@@ -1135,8 +1171,13 @@ outputs:
       # [string=''] Color theme used, this must exist in the KiCad config (KiCad 6)
       color_theme: ''
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       dnf_filter: '_null'
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [boolean=true] Include the frame and title block
       frame: true
       # [boolean=false] Generate a monochromatic output
@@ -1144,7 +1185,8 @@ outputs:
       # [string='%f-%i%I%v.%x'] Filename for the output DXF (%i=schematic, %x=dxf). Affected by global options
       output: '%f-%i%I%v.%x'
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [string=''] Worksheet file (.kicad_wks) to use. Leave empty to use the one specified in the project.
       # This option works only when you print the toplevel sheet of a project and the project
@@ -1165,8 +1207,13 @@ outputs:
     dir: 'Example/excellon_dir'
     options:
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       dnf_filter: '_null'
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [boolean=true] Generate drill files. Set to False and choose map format if only map is to be generated
       generate_drill_files: true
       # [number=0] number of digits for integer part of coordinates (0 is auto)
@@ -1189,7 +1236,8 @@ outputs:
       # [string='%f-%i%I%v.%x'] name for the drill file, KiCad defaults if empty (%i='PTH_drill'). Affected by global options
       output: '%f-%i%I%v.%x'
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [boolean=true] Generate one file for both, plated holes and non-plated holes, instead of two separated files
       pth_and_npth_single_file: true
@@ -1222,8 +1270,13 @@ outputs:
       # [boolean=false] Use auxiliary axis as origin
       aux_origin: false
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       dnf_filter: '_null'
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [boolean=false] Flip bottom footprint padstacks
       flip_bottom_padstacks: false
       # [boolean=false] Generate a new shape for each footprint instance (Do not reuse shapes)
@@ -1231,7 +1284,8 @@ outputs:
       # [string='%f-%i%I%v.%x'] Filename for the output (%i=gencad, %x=cad). Affected by global options
       output: '%f-%i%I%v.%x'
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [boolean=false] Save the origin coordinates in the file
       save_origin: false
@@ -1249,8 +1303,13 @@ outputs:
     dir: 'Example/gerb_drill_dir'
     options:
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       dnf_filter: '_null'
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [boolean=true] Generate drill files. Set to False and choose map format if only map is to be generated
       generate_drill_files: true
       # [dict|string='None'] [hpgl,ps,gerber,dxf,svg,pdf,None] Format for a graphical drill map.
@@ -1265,7 +1324,8 @@ outputs:
       # [string='%f-%i%I%v.%x'] name for the drill file, KiCad defaults if empty (%i='PTH_drill'). Affected by global options
       output: '%f-%i%I%v.%x'
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [string] Force this replacement for %i when generating PTH and unified files
       pth_id: null
@@ -1300,12 +1360,17 @@ outputs:
       # [boolean=false] Disable aperture macros (workaround for buggy CAM software) (KiCad 6)
       disable_aperture_macros: false
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       dnf_filter: '_null'
       # [string=''] Used to configure the edge cuts layer extension for Protel mode. Include the dot
       edge_cut_extension: ''
       # [boolean=true] Do not include the PCB edge layer
       exclude_edge_layer: true
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [boolean=false] Do not plot the component pads in the silk screen (KiCad 5.x only)
       exclude_pads_from_silkscreen: false
       # [boolean=false] Include references and values even when they are marked as invisible
@@ -1334,7 +1399,8 @@ outputs:
       # The `pcb_print` output can do a better job for PDF, SVG, PS, EPS and PNG outputs
       plot_sheet_reference: false
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [number=0.1] Line width for the sketched pads [mm], see `sketch_pads_on_fab_layers` (KiCad 6+)
       # Note that this value is currently ignored by KiCad (6.0.9)
@@ -1375,7 +1441,8 @@ outputs:
           # [string='Custom_report.txt'] File name for the custom report
           output: 'Custom_report.txt'
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       dnf_filter: '_null'
       # [string='full'] [none,small,full] What to use to indicate the drill places, can be none, small or full (for real scale)
       drill_marks: 'full'
@@ -1383,6 +1450,10 @@ outputs:
       edge_cut_extension: ''
       # [boolean=true] Do not include the PCB edge layer
       exclude_edge_layer: true
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [boolean=false] Do not plot the component pads in the silk screen (KiCad 5.x only)
       exclude_pads_from_silkscreen: false
       # [boolean=false] Include references and values even when they are marked as invisible
@@ -1416,7 +1487,8 @@ outputs:
       # The `pcb_print` output can do a better job for PDF, SVG, PS, EPS and PNG outputs
       plot_sheet_reference: false
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [number=0] Scale factor (0 means autoscaling)
       scaling: 0
@@ -1451,8 +1523,13 @@ outputs:
       # [string=''] Color theme used, this must exist in the KiCad config (KiCad 6)
       color_theme: ''
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       dnf_filter: '_null'
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [boolean=true] Include the frame and title block
       frame: true
       # [boolean=false] Generate a monochromatic output
@@ -1464,7 +1541,8 @@ outputs:
       # [number=0.4826] Pen size (diameter) [mm]
       pen_size: 0.4826
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [string=''] Worksheet file (.kicad_wks) to use. Leave empty to use the one specified in the project.
       # This option works only when you print the toplevel sheet of a project and the project
@@ -1499,13 +1577,18 @@ outputs:
       # [boolean=false] Default to dark mode
       dark_mode: false
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
       # Avoid using it in conjunction with IBoM native filtering options
       dnf_filter: '_null'
       # [string=''] Name of the extra field that indicates do not populate status.
       # Components with this field not empty will be blacklisted.
       # IBoM option, avoid using in conjunction with KiBot variants/filters
       dnp_field: ''
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [string=''] Path to netlist or xml file. You can use '%F.xml' to avoid specifying the project name.
       # Leave it blank for most uses, data will be extracted from the PCB
       extra_data_file: ''
@@ -1559,7 +1642,8 @@ outputs:
       # [string='%f-%i%I%v.%x'] Filename for the output, use '' to use the IBoM filename (%i=ibom, %x=html). Affected by global options
       output: '%f-%i%I%v.%x'
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [boolean=false] Show fabrication layer by default
       show_fabrication: false
@@ -1735,16 +1819,22 @@ outputs:
       # [string='full'] [full,basic,none] Which controls are displayed
       controls: 'full'
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       dnf_filter: '_null'
       # [boolean=true] Show the download button
       download: true
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [boolean=true] Download the script and use a copy
       local_script: true
       # [boolean=true] Show the overlay asking to click
       overlay: true
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [string|list(string)] [schematic,pcb,project] Source to display
       source: 'schematic'
@@ -1779,9 +1869,14 @@ outputs:
       # [string|list(string)=[]] Include this distributors list. Default is all the available
       distributors: []
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
       # Don't use the `kicost_variant` when using internal variants/filters
       dnf_filter: '_null'
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [string|list(string)=[]] {comma_sep} List of fields to be added to the global data section
       fields: []
       # [string|list(string)=[]] {comma_sep} List of fields that can be different for a group.
@@ -1808,7 +1903,8 @@ outputs:
       # [string='%f-%i%I%v.%x'] Filename for the output (%i=kicost, %x=xlsx). Affected by global options
       output: '%f-%i%I%v.%x'
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [boolean=false] Include the catalogue links in the catalogue code
       show_cat_url: false
@@ -1925,14 +2021,20 @@ outputs:
       # Usually user colors are stored as `user`, but you can give it another name
       color_theme: '_builtin_classic'
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       dnf_filter: '_null'
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [boolean=false] Avoid PCB and SCH images regeneration. Useful for incremental usage
       keep_generated: false
       # [number=0] Maximum number of commits to include. Use 0 for all available commits
       max_commits: 0
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [string='HEAD'] Starting point for the commits, can be a branch, a hash, etc.
       # Note that this can be a revision-range, consult the gitrevisions manual for more information
@@ -1982,8 +2084,13 @@ outputs:
     dir: 'Example/netlist_dir'
     options:
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       dnf_filter: '_null'
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [string='classic'] [classic,ipc] The `classic` format is the KiCad internal format, and is generated
       # from the schematic. The `ipc` format is the IPC-D-356 format, useful for PCB
       # testing, is generated from the PCB
@@ -1991,7 +2098,8 @@ outputs:
       # [string='%f-%i%I%v.%x'] Filename for the output (%i=netlist/IPC-D-356, %x=net/d356). Affected by global options
       output: '%f-%i%I%v.%x'
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [string=''] Board variant to apply.
       # Used for sub-PCBs
@@ -2538,12 +2646,18 @@ outputs:
       # [string='deg'] [deg,°,rad] Angles used when omitted
       default_angles: 'deg'
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       dnf_filter: '_null'
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [string='%f-%i%I%v.%x'] Filename for the output (%i=panel, %x=kicad_pcb). Affected by global options
       output: '%f-%i%I%v.%x'
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [string=''] Text used to replace the sheet title. %VALUE expansions are allowed.
       # If it starts with `+` the text is concatenated
@@ -2572,8 +2686,13 @@ outputs:
       # [string='bounds'] Name of the bounds file
       board_bounds_file: 'bounds'
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       dnf_filter: '_null'
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [string='%f-%i%I%v.%x'] Filename for the output (%i=pcb2blender, %x=pcb3d). Affected by global options
       output: '%f-%i%I%v.%x'
       # [boolean=true] Create the files containing the PCB pads information
@@ -2581,7 +2700,8 @@ outputs:
       # [string='pads'] Sub-directory where the pads info files are stored
       pads_info_dir: 'pads'
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [list(string)|string='all'] [none,all,*] List of components to include in the pads list,
       # can be also a string for `none` or `all`. Ranges like *R5-R10* are supported
@@ -2637,13 +2757,18 @@ outputs:
       # [boolean=true] Plot vias in a different color. Like KiCad GUI does
       colored_vias: true
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       dnf_filter: '_null'
       # [number=360] [36,1200] Resolution (Dots Per Inch) for the output file. Most objects are vectors, but thing
       # like the the solder mask are handled as images by the conversion tools
       dpi: 360
       # [string='full'] [none,small,full] What to use to indicate the drill places, can be none, small or full (for real scale)
       drill_marks: 'full'
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [boolean=false] Add the `Edge.Cuts` to all the pages
       force_edge_cuts: false
       # [string=''] Color used for the `force_edge_cuts` option
@@ -2816,7 +2941,8 @@ outputs:
       # [number=1280] [0,7680] Width of the PNG in pixels. Use 0 to use as many pixels as the DPI needs for the page size
       png_width: 1280
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [boolean=true] Try to draw the solder mask as a real solder mask, not the negative used for fabrication.
       # In order to get a good looking select a color with transparency, i.e. '#14332440'.
@@ -2849,15 +2975,21 @@ outputs:
       # [boolean=true] Copy the KiCad project to the destination directory
       copy_project: true
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       dnf_filter: '_null'
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [boolean=false] Hide components in the Fab layer that are marked as excluded by a variant.
       # Affected by global options
       hide_excluded: false
       # [string='%f-%i%I%v.%x'] Filename for the output (%i=variant, %x=kicad_pcb). Affected by global options
       output: '%f-%i%I%v.%x'
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [string=''] Text used to replace the sheet title. %VALUE expansions are allowed.
       # If it starts with `+` the text is concatenated
@@ -2886,10 +3018,15 @@ outputs:
       # [boolean=false] Render the bottom side of the board (default is top side)
       bottom: false
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       dnf_filter: '_null'
       # [number=300] [10,1200] Dots per inch (resolution) of the generated image
       dpi: 300
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [string='svg'] [svg,png,jpg,bmp] Output format. Only used if no `output` is specified
       format: 'svg'
       # [list(string)=[]] List of components to highlight. Filter expansion is also allowed here,
@@ -2920,7 +3057,8 @@ outputs:
       # [boolean=false] Show placeholder for missing components
       placeholder: false
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [string_dict|string='None'] (DEPRECATED) Replacements for PCB references using specified components
       # (lib:component). Use `remap_components` instead
@@ -3016,7 +3154,8 @@ outputs:
           # [string='Custom_report.txt'] File name for the custom report
           output: 'Custom_report.txt'
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       dnf_filter: '_null'
       # [string='full'] [none,small,full] What to use to indicate the drill places, can be none, small or full (for real scale)
       drill_marks: 'full'
@@ -3024,6 +3163,10 @@ outputs:
       edge_cut_extension: ''
       # [boolean=true] Do not include the PCB edge layer
       exclude_edge_layer: true
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [boolean=false] Do not plot the component pads in the silk screen (KiCad 5.x only)
       exclude_pads_from_silkscreen: false
       # [boolean=false] Include references and values even when they are marked as invisible
@@ -3055,7 +3198,8 @@ outputs:
       # The `pcb_print` output can do a better job for PDF, SVG, PS, EPS and PNG outputs
       plot_sheet_reference: false
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [number=1] Scale factor (0 means autoscaling)
       scaling: 1
@@ -3087,10 +3231,15 @@ outputs:
       # Usually user colors are stored as `user`, but you can give it another name
       color_theme: '_builtin_classic'
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       dnf_filter: '_null'
       # [string='full'] [none,small,full] What to use to indicate the drill places, can be none, small or full (for real scale)
       drill_marks: 'full'
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [boolean=true] Only useful for KiCad 6 when printing in one page, you can disable the edge here.
       # KiCad 5 forces it by default, and you can't control it from config files.
       # Same for KiCad 6 when printing to separated pages
@@ -3108,7 +3257,8 @@ outputs:
       # [boolean=true] Include the title-block
       plot_sheet_reference: true
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [number=1.0] Scale factor (0 means autoscaling). You should disable `plot_sheet_reference` when using it
       scaling: 1.0
@@ -3137,8 +3287,13 @@ outputs:
       # [string=''] Color theme used, this must exist in the KiCad config (KiCad 6)
       color_theme: ''
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       dnf_filter: '_null'
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [boolean=true] Include the frame and title block
       frame: true
       # [boolean=false] Generate a monochromatic output
@@ -3146,7 +3301,8 @@ outputs:
       # [string='%f-%i%I%v.%x'] Filename for the output PDF (%i=schematic, %x=pdf). Affected by global options
       output: '%f-%i%I%v.%x'
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [string=''] Worksheet file (.kicad_wks) to use. Leave empty to use the one specified in the project.
       # This option works only when you print the toplevel sheet of a project and the project
@@ -3193,8 +3349,13 @@ outputs:
     dir: 'Example/populate_dir'
     options:
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       dnf_filter: '_null'
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [string='html'] [html,md] Format for the generated output
       format: 'html'
       # [string='img/populating_%d.%x'] Pattern used for the image names. The `%d` is replaced by the image number.
@@ -3209,7 +3370,8 @@ outputs:
       # When empty we use a dummy template, you should provide something better
       input: ''
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [string=''] Name of the output used to render the PCB steps.
       # Currently this must be a `pcbdraw` or `render_3d` output
@@ -3233,8 +3395,13 @@ outputs:
       # [list(dict)|list(string)] Which columns are included in the output
       columns: ['Ref', 'Val', 'Package', 'PosX', 'PosY', 'Rot', 'Side']
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       dnf_filter: '_null'
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [string='ASCII'] [ASCII,CSV,GBR] Format for the position file.
       # Note that the gerber format (GBR) needs KiCad 7+ and doesn't support most of the options.
       # Only the options that explicitly say the format is supported
@@ -3251,7 +3418,8 @@ outputs:
       # Important: when using separate files you must use `%i` to differentiate them. Affected by global options
       output: '%f-%i%I%v.%x'
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [boolean=false] When generating the CSV quote all values, even numbers
       quote_all: false
@@ -3285,7 +3453,8 @@ outputs:
           # [string='Custom_report.txt'] File name for the custom report
           output: 'Custom_report.txt'
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       dnf_filter: '_null'
       # [string='full'] [none,small,full] What to use to indicate the drill places, can be none, small or full (for real scale)
       drill_marks: 'full'
@@ -3293,6 +3462,10 @@ outputs:
       edge_cut_extension: ''
       # [boolean=true] Do not include the PCB edge layer
       exclude_edge_layer: true
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [boolean=false] Do not plot the component pads in the silk screen (KiCad 5.x only)
       exclude_pads_from_silkscreen: false
       # [boolean=false] Include references and values even when they are marked as invisible
@@ -3324,7 +3497,8 @@ outputs:
       # The `pcb_print` output can do a better job for PDF, SVG, PS, EPS and PNG outputs
       plot_sheet_reference: false
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [number=1.0] Fine grain adjust for the X scale (floating point multiplier)
       scale_adjust_x: 1.0
@@ -3366,8 +3540,13 @@ outputs:
       # [string=''] Color theme used, this must exist in the KiCad config (KiCad 6)
       color_theme: ''
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       dnf_filter: '_null'
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [boolean=true] Include the frame and title block
       frame: true
       # [boolean=false] Generate a monochromatic output
@@ -3375,7 +3554,8 @@ outputs:
       # [string='%f-%i%I%v.%x'] Filename for the output postscript (%i=schematic, %x=ps). Affected by global options
       output: '%f-%i%I%v.%x'
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [string=''] Worksheet file (.kicad_wks) to use. Leave empty to use the one specified in the project.
       # This option works only when you print the toplevel sheet of a project and the project
@@ -3448,7 +3628,8 @@ outputs:
       # [string='#8b898c'] Color for the copper
       copper: '#8b898c'
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       dnf_filter: '_null'
       # [boolean=true] Downloads missing 3D models from KiCad git.
       # Only applies to models in KISYS3DMOD and KICAD6_3DMODEL_DIR.
@@ -3464,6 +3645,10 @@ outputs:
       # [boolean=false] Some versions of Image Magick (i.e. the one in Debian 11) needs two passes to crop.
       # Enable it to force a double pass. It was the default in KiBot 1.7.0 and older
       enable_crop_workaround: false
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [boolean=false] Tell KiCad to use the colors from the stackup. They are better than the unified KiBot colors.
       # Needs KiCad 6 or newer
       force_stackup_colors: false
@@ -3497,7 +3682,8 @@ outputs:
       # [string='%f-%i%I%v.%x'] Name for the generated image file (%i='3D_$VIEW' %x='png'). Affected by global options
       output: '%f-%i%I%v.%x'
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [boolean=false] Enable the ray tracing. Much better result, but slow, and you'll need to adjust `wait_rt`
       ray_tracing: false
@@ -3601,7 +3787,8 @@ outputs:
       # Note that the extension should match the `convert_to` value. Affected by global options
       converted_output: '%f-%i%I%v.%x'
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       dnf_filter: '_null'
       # [boolean=false] Run `Pandoc` to convert the report. Note that Pandoc must be installed.
       # The conversion is done assuming the report is in `convert_from` format.
@@ -3616,12 +3803,17 @@ outputs:
       # diameter can be reduced to accommodate the correct annular ring values.
       # Use 0 to disable it
       eurocircuits_reduce_holes: 0.45
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [number=1.0] Specific gravity of the flux used for the solder paste, in g/cm3. Used to compute solder paste usage
       flux_specific_gravity: 1.0
       # [string='%f-%i%I%v.%x'] Output file name (%i='report', %x='txt'). Affected by global options
       output: '%f-%i%I%v.%x'
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [number=87.75] [0,100] Amount of metal in the solder paste (percentage). Used to compute solder paste usage
       solder_paste_metal_amount: 87.75
@@ -3647,10 +3839,16 @@ outputs:
       # Disabled by default for compatibility with older versions
       copy_project: false
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       dnf_filter: '_null'
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [string=''] Text used to replace the sheet title. %VALUE expansions are allowed.
       # If it starts with `+` the text is concatenated
@@ -3676,11 +3874,16 @@ outputs:
       # components
       cutout: ''
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       dnf_filter: '_null'
       # `enlarge_holes` is an alias for `enlarge_holes`
       # [number=0] Enlarge pad holes by x mm
       enlargeholes: 0
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # `frame_clearance` is an alias for `frameclearance`
       # `frame_width` is an alias for `framewidth`
       # [number=0] Clearance for the stencil register [mm]
@@ -3697,7 +3900,8 @@ outputs:
       # [number=0] PCB thickness [mm]. If 0 we will ask KiCad
       pcbthickness: 0
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [string='auto'] [top,bottom,auto,both] Which side of the PCB we want. Using `auto` will detect which
       # side contains solder paste
@@ -3723,8 +3927,13 @@ outputs:
       # components
       cutout: ''
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       dnf_filter: '_null'
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [boolean=true] Include the generated OpenSCAD files
       include_scad: true
       # `jig_height` is an alias for `jigheight`
@@ -3743,7 +3952,8 @@ outputs:
       # [number=0] PCB thickness [mm]. If 0 we will ask KiCad
       pcbthickness: 0
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # `register_border_inner` is an alias for `registerborderinner`
       # `register_border_outer` is an alias for `registerborderouter`
@@ -3767,7 +3977,8 @@ outputs:
     dir: 'Example/step_dir'
     options:
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       dnf_filter: '_null'
       # [boolean=true] Downloads missing 3D models from KiCad git.
       # Only applies to models in KISYS3DMOD and KICAD6_3DMODEL_DIR.
@@ -3780,6 +3991,10 @@ outputs:
       # part number. The field containing the LCSC part number is defined by the
       # `field_lcsc_part` global variable
       download_lcsc: true
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [string='https://gitlab.com/kicad/libraries/kicad-packages3D/-/raw/master/'] Base URL for the KiCad 3D models
       kicad_3d_url: 'https://gitlab.com/kicad/libraries/kicad-packages3D/-/raw/master/'
       # [string=''] Text added to the end of the download URL.
@@ -3799,7 +4014,8 @@ outputs:
       # [string='%f-%i%I%v.%x'] Name for the generated STEP file (%i='3D' %x='step'). Affected by global options
       output: '%f-%i%I%v.%x'
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [boolean=true] Substitute STEP or IGS models with the same name in place of VRML models
       subst_models: true
@@ -3823,7 +4039,8 @@ outputs:
           # [string='Custom_report.txt'] File name for the custom report
           output: 'Custom_report.txt'
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       dnf_filter: '_null'
       # [string='full'] [none,small,full] What to use to indicate the drill places, can be none, small or full (for real scale)
       drill_marks: 'full'
@@ -3831,6 +4048,10 @@ outputs:
       edge_cut_extension: ''
       # [boolean=true] Do not include the PCB edge layer
       exclude_edge_layer: true
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [boolean=false] Do not plot the component pads in the silk screen (KiCad 5.x only)
       exclude_pads_from_silkscreen: false
       # [boolean=false] Include references and values even when they are marked as invisible
@@ -3877,7 +4098,8 @@ outputs:
       # The `pcb_print` output can do a better job for PDF, SVG, PS, EPS and PNG outputs
       plot_sheet_reference: false
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [number=1] Scale factor (0 means autoscaling)
       scaling: 1
@@ -3921,7 +4143,8 @@ outputs:
       # Usually user colors are stored as `user`, but you can give it another name
       color_theme: '_builtin_classic'
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       dnf_filter: '_null'
       # [string='full'] [none,small,full] What to use to indicate the drill places, can be none, small or full (for real scale)
       drill_marks: 'full'
@@ -3929,6 +4152,10 @@ outputs:
       enable_ki5_page_fix: true
       # [boolean=true] Enable workaround for KiCad 6 bug #11033
       enable_ki6_page_fix: true
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [boolean=true] Only useful for KiCad 6 when printing in one page, you can disable the edge here.
       # KiCad 5 forces it by default, and you can't control it from config files.
       # Same for KiCad 6 when printing to separated pages
@@ -3946,7 +4173,8 @@ outputs:
       # [boolean=true] Include the title-block
       plot_sheet_reference: true
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [number=1.0] Scale factor (0 means autoscaling). You should disable `plot_sheet_reference` when using it
       scaling: 1.0
@@ -3975,8 +4203,13 @@ outputs:
       # [string=''] Color theme used, this must exist in the KiCad config (KiCad 6)
       color_theme: ''
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       dnf_filter: '_null'
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [boolean=true] Include the frame and title block
       frame: true
       # [boolean=false] Generate a monochromatic output
@@ -3984,7 +4217,8 @@ outputs:
       # [string='%f-%i%I%v.%x'] Filename for the output SVG (%i=schematic, %x=svg). Affected by global options
       output: '%f-%i%I%v.%x'
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [string=''] Worksheet file (.kicad_wks) to use. Leave empty to use the one specified in the project.
       # This option works only when you print the toplevel sheet of a project and the project
@@ -4009,7 +4243,8 @@ outputs:
       # Note that the WRL file will contain relative paths to the models
       dir_models: 'shapes3D'
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       dnf_filter: '_null'
       # [boolean=true] Downloads missing 3D models from KiCad git.
       # Only applies to models in KISYS3DMOD and KICAD6_3DMODEL_DIR.
@@ -4022,6 +4257,10 @@ outputs:
       # part number. The field containing the LCSC part number is defined by the
       # `field_lcsc_part` global variable
       download_lcsc: true
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
+      exclude_filter: '_null'
       # [list(string)=[]] List of components to highlight. Ranges like *R5-R10* are supported
       highlight: []
       # [boolean=false] Highlight over the component (not under)
@@ -4040,7 +4279,8 @@ outputs:
       # [string='%f-%i%I%v.%x'] Filename for the output (%i=vrml, %x=wrl). Affected by global options
       output: '%f-%i%I%v.%x'
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-      # A short-cut to use for simple cases where a variant is an overkill
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant
       pre_transform: '_null'
       # [string='millimeters'] [millimeters,inches'] Units for `ref_x` and `ref_y`
       ref_units: 'millimeters'

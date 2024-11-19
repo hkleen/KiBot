@@ -1,15 +1,15 @@
-48 outputs types with a total of 1883 different parameters
-Single type parameters: 1709 (91 %)
+48 outputs types with a total of 1924 different parameters
+Single type parameters: 1750 (91 %)
 Multi type parameters: 174 (9 %)
-Average parameters: 39
-Maximum number of parameters: 214
+Average parameters: 40
+Maximum number of parameters: 215
 Minimum number of parameters: 14
 Histogram:
   0-  9: 
- 10- 19: ******
+ 10- 19: *****
  20- 29: *********************
  30- 39: *******
- 40- 49: ******
+ 40- 49: *******
  50- 59: **
  60- 69: **
  70- 79: *
@@ -29,53 +29,53 @@ Histogram:
 210-219: *
 Outputs sorted by parameters:
 - info: 14
-- netlist: 17
-- sch_variant: 17
-- boardview: 18
-- pcb_variant: 19
+- netlist: 18
+- sch_variant: 18
+- boardview: 19
 - pdfunite: 19
-- gencad: 21
+- pcb_variant: 20
 - navigate_results: 21
-- populate: 21
-- download_datasheets: 22
-- dxf_sch_print: 23
-- kicanvas: 23
-- pdf_sch_print: 23
-- ps_sch_print: 23
-- svg_sch_print: 23
+- gencad: 22
+- populate: 22
+- download_datasheets: 23
+- dxf_sch_print: 24
+- kicanvas: 24
+- pdf_sch_print: 24
+- ps_sch_print: 24
+- svg_sch_print: 24
 - compress: 25
-- gerb_drill: 25
-- hpgl_sch_print: 25
-- kiri: 25
 - qr_lib: 25
-- stencil_3d: 25
-- step: 25
+- gerb_drill: 26
+- hpgl_sch_print: 26
+- kiri: 26
+- stencil_3d: 26
+- step: 26
 - kikit_present: 27
-- report: 27
-- stencil_for_jig: 27
-- copy_files: 28
-- position: 29
-- pcb2blender_tools: 30
-- pdf_pcb_print: 30
-- svg_pcb_print: 32
-- vrml: 32
-- excellon: 33
-- kicost: 36
-- diff: 39
-- dxf: 42
-- hpgl: 43
-- gerber: 45
+- report: 28
+- stencil_for_jig: 28
+- copy_files: 29
+- position: 30
+- pcb2blender_tools: 31
+- pdf_pcb_print: 31
+- svg_pcb_print: 33
+- vrml: 33
+- excellon: 34
+- kicost: 37
+- diff: 40
+- dxf: 43
+- hpgl: 44
 - kibom: 45
-- ibom: 46
-- ps: 46
-- svg: 50
-- pcbdraw: 58
-- pdf: 63
-- render_3d: 66
-- blender_export: 75
-- pcb_print: 93
+- gerber: 46
+- ibom: 47
+- ps: 47
+- svg: 51
+- pcbdraw: 59
+- pdf: 65
+- render_3d: 67
+- blender_export: 76
+- pcb_print: 94
 - bom: 148
-- panelize: 214
+- panelize: 215
 Average depth: 2.5416666666666665
 Maximum depth: 5
 Minimum depth: 2
@@ -140,7 +140,7 @@ Outputs sorted by depth:
 -             String:  844
 -            Boolean:  475
 -             Number:  266
-- ListStringSingular:  224
+- ListStringSingular:  265
 -             Choice:   95
 -               Dict:   79
 -   ListDictOrString:   21
@@ -155,7 +155,7 @@ Outputs sorted by depth:
 Used as single data type:
 -             String:  690 
 -            Boolean:  419 
-- ListStringSingular:  221 
+- ListStringSingular:  262 
 -             Number:  172 
 -             Choice:   92 
 -               Dict:   70 
@@ -390,18 +390,18 @@ Used as single data type:
 -              Number,String:   15 
 ================================================================================
 ================================================================================
-86 totals types with a total of 2251 different parameters
-Single type parameters: 2053 (91 %)
+86 totals types with a total of 2292 different parameters
+Single type parameters: 2094 (91 %)
 Multi type parameters: 198 (9 %)
-Average parameters: 26
-Maximum number of parameters: 214
+Average parameters: 27
+Maximum number of parameters: 215
 Minimum number of parameters: 1
 Histogram:
   0-  9: ***********************
- 10- 19: ***************
+ 10- 19: **************
  20- 29: **************************
  30- 39: ********
- 40- 49: ******
+ 40- 49: *******
  50- 59: **
  60- 69: **
  70- 79: *
@@ -451,61 +451,61 @@ Totals sorted by parameters:
 - draw_stackup: 15
 - erc: 15
 - subparts: 16
-- netlist: 17
-- sch_variant: 17
 - include_table: 17
-- boardview: 18
+- netlist: 18
+- sch_variant: 18
 - drc: 18
-- pcb_variant: 19
+- boardview: 19
 - pdfunite: 19
-- gencad: 21
+- pcb_variant: 20
 - navigate_results: 21
-- populate: 21
-- download_datasheets: 22
+- gencad: 22
+- populate: 22
 - draw_fancy_stackup: 22
 - rot_footprint: 22
-- dxf_sch_print: 23
-- kicanvas: 23
-- pdf_sch_print: 23
-- ps_sch_print: 23
-- svg_sch_print: 23
+- download_datasheets: 23
 - kibom: 23
+- dxf_sch_print: 24
+- kicanvas: 24
+- pdf_sch_print: 24
+- ps_sch_print: 24
+- svg_sch_print: 24
 - ibom: 24
 - kicost: 24
 - compress: 25
-- gerb_drill: 25
-- hpgl_sch_print: 25
-- kiri: 25
 - qr_lib: 25
-- stencil_3d: 25
-- step: 25
+- gerb_drill: 26
+- hpgl_sch_print: 26
+- kiri: 26
+- stencil_3d: 26
+- step: 26
 - kikit_present: 27
-- report: 27
-- stencil_for_jig: 27
-- copy_files: 28
-- position: 29
-- pcb2blender_tools: 30
-- pdf_pcb_print: 30
-- svg_pcb_print: 32
-- vrml: 32
-- excellon: 33
+- report: 28
+- stencil_for_jig: 28
+- copy_files: 29
+- position: 30
+- pcb2blender_tools: 31
+- pdf_pcb_print: 31
+- svg_pcb_print: 33
+- vrml: 33
+- excellon: 34
 - generic: 34
-- kicost: 36
-- diff: 39
-- dxf: 42
-- hpgl: 43
-- gerber: 45
+- kicost: 37
+- diff: 40
+- dxf: 43
+- hpgl: 44
 - kibom: 45
-- ibom: 46
-- ps: 46
-- svg: 50
-- pcbdraw: 58
-- pdf: 63
-- render_3d: 66
-- blender_export: 75
-- pcb_print: 93
+- gerber: 46
+- ibom: 47
+- ps: 47
+- svg: 51
+- pcbdraw: 59
+- pdf: 65
+- render_3d: 67
+- blender_export: 76
+- pcb_print: 94
 - bom: 148
-- panelize: 214
+- panelize: 215
 Average depth: 2.186046511627907
 Maximum depth: 5
 Minimum depth: 1
@@ -608,7 +608,7 @@ Totals sorted by depth:
 -             String:  995
 -            Boolean:  573
 -             Number:  314
-- ListStringSingular:  253
+- ListStringSingular:  294
 -             Choice:  127
 -               Dict:   90
 -           ListDict:   30
@@ -623,7 +623,7 @@ Totals sorted by depth:
 Used as single data type:
 -             String:  825 
 -            Boolean:  509 
-- ListStringSingular:  250 
+- ListStringSingular:  291 
 -             Number:  205 
 -             Choice:  124 
 -               Dict:   73 

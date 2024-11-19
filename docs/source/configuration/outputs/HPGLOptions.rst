@@ -13,11 +13,16 @@ HPGLOptions parameters
    The `pcb_print` output can do a better job for PDF, SVG, PS, EPS and PNG outputs.
 -  ``custom_reports`` :index:`: <pair: output - hpgl - options; custom_reports>`  [:ref:`CustomReport parameters <CustomReport>`] [:ref:`list(dict) <list(dict)>`] (default: ``[]``) A list of customized reports for the manufacturer.
 -  ``dnf_filter`` :index:`: <pair: output - hpgl - options; dnf_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to mark components as not fitted.
-   A short-cut to use for simple cases where a variant is an overkill.
+   Is a short-cut to use for simple cases where a variant is an overkill. |br|
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
 
 -  ``drill_marks`` :index:`: <pair: output - hpgl - options; drill_marks>` [:ref:`string <string>`] (default: ``'full'``) (choices: "none", "small", "full") What to use to indicate the drill places, can be none, small or full (for real scale).
 -  ``edge_cut_extension`` :index:`: <pair: output - hpgl - options; edge_cut_extension>` [:ref:`string <string>`] (default: ``''``) Used to configure the edge cuts layer extension for Protel mode. Include the dot.
 -  ``exclude_edge_layer`` :index:`: <pair: output - hpgl - options; exclude_edge_layer>` [:ref:`boolean <boolean>`] (default: ``true``) Do not include the PCB edge layer.
+-  ``exclude_filter`` :index:`: <pair: output - hpgl - options; exclude_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to exclude components from processing.
+   Is a short-cut to use for simple cases where a variant is an overkill. |br|
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
+
 -  ``exclude_pads_from_silkscreen`` :index:`: <pair: output - hpgl - options; exclude_pads_from_silkscreen>` [:ref:`boolean <boolean>`] (default: ``false``) Do not plot the component pads in the silk screen (KiCad 5.x only).
 -  ``force_plot_invisible_refs_vals`` :index:`: <pair: output - hpgl - options; force_plot_invisible_refs_vals>` [:ref:`boolean <boolean>`] (default: ``false``) Include references and values even when they are marked as invisible.
 -  ``individual_page_scaling`` :index:`: <pair: output - hpgl - options; individual_page_scaling>` [:ref:`boolean <boolean>`] (default: ``true``) Tell KiCad to apply the scaling for each layer as a separated entity.
@@ -32,7 +37,8 @@ HPGLOptions parameters
 -  ``plot_footprint_refs`` :index:`: <pair: output - hpgl - options; plot_footprint_refs>` [:ref:`boolean <boolean>`] (default: ``true``) Include the footprint references.
 -  ``plot_footprint_values`` :index:`: <pair: output - hpgl - options; plot_footprint_values>` [:ref:`boolean <boolean>`] (default: ``true``) Include the footprint values.
 -  ``pre_transform`` :index:`: <pair: output - hpgl - options; pre_transform>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to transform fields before applying other filters.
-   A short-cut to use for simple cases where a variant is an overkill.
+   Is a short-cut to use for simple cases where a variant is an overkill. |br|
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
 
 -  ``scaling`` :index:`: <pair: output - hpgl - options; scaling>` [:ref:`number <number>`] (default: ``0``) Scale factor (0 means autoscaling).
 -  ``sketch_pad_line_width`` :index:`: <pair: output - hpgl - options; sketch_pad_line_width>` [:ref:`number <number>`] (default: ``0.1``) Line width for the sketched pads [mm], see `sketch_pads_on_fab_layers` (KiCad 6+)
