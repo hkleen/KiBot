@@ -57,7 +57,7 @@ def merge_pcbs(base, added):
             if kind not in NOT_MERGABLE:
                 base.append(e)
         else:
-            raise KiPlotConfigurationError(f"Mal formed PCB ({e})")
+            raise KiPlotConfigurationError(f"Malformed PCB ({e})")
 
 
 @pre_class
