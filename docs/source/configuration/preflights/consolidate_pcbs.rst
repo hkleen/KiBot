@@ -10,7 +10,8 @@ Paste one or more PCBs into an existing PCB.
 This is experimental and isn't intended for generating a PCB to work, just for 3D modeling and/or printing. |br|
 In the main PCB you just draw text boxes containing a name. Here you map this name to a PCB file name. |br|
 After executing this preflight the current PCB contains the references PCBs at the text boxes coordinates. |br|
-Only the top left corner of the text box is relevant
+Only the top left corner of the text box is relevant. |br|
+An example can be found `here <https://github.com/INTI-CMNB/KiBot/tree/dev/docs/samples/Consolidate_PCBs>`__
 
    -  **consolidate_pcbs** :index:`: <pair: preflight - consolidate_pcbs; consolidate_pcbs>`  [:ref:`PCB_Reference parameters <PCB_Reference>`] [:ref:`dict <dict>` | :ref:`list(dict) <list(dict)>`] (default: ``[]``) One or more PCBs to include.
 
