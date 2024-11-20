@@ -1209,7 +1209,7 @@ def setup_fonts(source):
         return
     dest = os.path.expanduser('~/.fonts/')
     installed = False
-    for f in glob(os.path.join(source, '*.ttf')):
+    for f in glob(os.path.join(source, '*.[to][tf]f')):
         fname = os.path.basename(f)
         fdest = os.path.join(dest, fname)
         if os.path.isfile(fdest):
