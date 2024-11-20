@@ -14,14 +14,16 @@ SVG_PCB_PrintOptions parameters
    Usually user colors are stored as `user`, but you can give it another name.
 -  ``dnf_filter`` :index:`: <pair: output - svg_pcb_print - options; dnf_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to mark components as not fitted.
    Is a short-cut to use for simple cases where a variant is an overkill. |br|
-   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+   variant.
 
 -  ``drill_marks`` :index:`: <pair: output - svg_pcb_print - options; drill_marks>` [:ref:`string <string>`] (default: ``'full'``) (choices: "none", "small", "full") What to use to indicate the drill places, can be none, small or full (for real scale).
 -  ``enable_ki5_page_fix`` :index:`: <pair: output - svg_pcb_print - options; enable_ki5_page_fix>` [:ref:`boolean <boolean>`] (default: ``true``) Enable workaround for KiCad 5 bug.
 -  ``enable_ki6_page_fix`` :index:`: <pair: output - svg_pcb_print - options; enable_ki6_page_fix>` [:ref:`boolean <boolean>`] (default: ``true``) Enable workaround for KiCad 6 bug #11033.
 -  ``exclude_filter`` :index:`: <pair: output - svg_pcb_print - options; exclude_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to exclude components from processing.
    Is a short-cut to use for simple cases where a variant is an overkill. |br|
-   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+   variant.
 
 -  ``force_edge_cuts`` :index:`: <pair: output - svg_pcb_print - options; force_edge_cuts>` [:ref:`boolean <boolean>`] (default: ``true``) Only useful for KiCad 6 when printing in one page, you can disable the edge here.
    KiCad 5 forces it by default, and you can't control it from config files. |br|
@@ -32,7 +34,8 @@ SVG_PCB_PrintOptions parameters
 -  ``monochrome`` :index:`: <pair: output - svg_pcb_print - options; monochrome>` [:ref:`boolean <boolean>`] (default: ``false``) Print in black and white.
 -  ``pre_transform`` :index:`: <pair: output - svg_pcb_print - options; pre_transform>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to transform fields before applying other filters.
    Is a short-cut to use for simple cases where a variant is an overkill. |br|
-   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+   variant.
 
 -  ``title`` :index:`: <pair: output - svg_pcb_print - options; title>` [:ref:`string <string>`] (default: ``''``) Text used to replace the sheet title. %VALUE expansions are allowed.
    If it starts with `+` the text is concatenated.

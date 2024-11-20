@@ -10,11 +10,13 @@ ExcellonOptions parameters
 -  **pth_and_npth_single_file** :index:`: <pair: output - excellon - options; pth_and_npth_single_file>` [:ref:`boolean <boolean>`] (default: ``true``) Generate one file for both, plated holes and non-plated holes, instead of two separated files.
 -  ``dnf_filter`` :index:`: <pair: output - excellon - options; dnf_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to mark components as not fitted.
    Is a short-cut to use for simple cases where a variant is an overkill. |br|
-   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+   variant.
 
 -  ``exclude_filter`` :index:`: <pair: output - excellon - options; exclude_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to exclude components from processing.
    Is a short-cut to use for simple cases where a variant is an overkill. |br|
-   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+   variant.
 
 -  ``generate_drill_files`` :index:`: <pair: output - excellon - options; generate_drill_files>` [:ref:`boolean <boolean>`] (default: ``true``) Generate drill files. Set to False and choose map format if only map is to be generated.
 -  ``left_digits`` :index:`: <pair: output - excellon - options; left_digits>` [:ref:`number <number>`] (default: ``0``) number of digits for integer part of coordinates (0 is auto).
@@ -24,7 +26,8 @@ ExcellonOptions parameters
 -  ``npth_id`` :index:`: <pair: output - excellon - options; npth_id>` [:ref:`string <string>`] Force this replacement for %i when generating NPTH files.
 -  ``pre_transform`` :index:`: <pair: output - excellon - options; pre_transform>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to transform fields before applying other filters.
    Is a short-cut to use for simple cases where a variant is an overkill. |br|
-   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+   variant.
 
 -  ``pth_id`` :index:`: <pair: output - excellon - options; pth_id>` [:ref:`string <string>`] Force this replacement for %i when generating PTH and unified files.
 -  ``report`` :index:`: <pair: output - excellon - options; report>`  [:ref:`DrillReport parameters <DrillReport>`] [:ref:`dict <dict>` | :ref:`string <string>`] (default: ``''``) Name of the drill report. Not generated unless a name is specified.

@@ -17,12 +17,14 @@ KiCostOptions parameters
 -  ``aggregate`` :index:`: <pair: output - kicost - options; aggregate>`  [:ref:`Aggregate parameters <Aggregate>`] [:ref:`list(dict) <list(dict)>`] (default: ``[]``) Add components from other projects.
 -  ``dnf_filter`` :index:`: <pair: output - kicost - options; dnf_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to mark components as not fitted.
    Is a short-cut to use for simple cases where a variant is an overkill. |br|
-   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant. |br|
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+   variant. |br|
    Don't use the `kicost_variant` when using internal variants/filters.
 
 -  ``exclude_filter`` :index:`: <pair: output - kicost - options; exclude_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to exclude components from processing.
    Is a short-cut to use for simple cases where a variant is an overkill. |br|
-   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+   variant.
 
 -  ``fields`` :index:`: <pair: output - kicost - options; fields>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``[]``) [:ref:`comma separated <comma_sep>`] List of fields to be added to the global data section.
 
@@ -40,7 +42,8 @@ KiCostOptions parameters
 -  ``no_collapse`` :index:`: <pair: output - kicost - options; no_collapse>` [:ref:`boolean <boolean>`] (default: ``false``) Do not collapse the part references (collapse=R1-R4).
 -  ``pre_transform`` :index:`: <pair: output - kicost - options; pre_transform>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to transform fields before applying other filters.
    Is a short-cut to use for simple cases where a variant is an overkill. |br|
-   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+   variant.
 
 -  ``show_cat_url`` :index:`: <pair: output - kicost - options; show_cat_url>` [:ref:`boolean <boolean>`] (default: ``false``) Include the catalogue links in the catalogue code.
 -  ``split_extra_fields`` :index:`: <pair: output - kicost - options; split_extra_fields>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``[]``) [:ref:`comma separated <comma_sep>`] Declare part fields to include in multipart split process.

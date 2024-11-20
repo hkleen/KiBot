@@ -23,12 +23,14 @@ PcbDrawOptions parameters
    Also `all` will be what the variant says.
 -  ``dnf_filter`` :index:`: <pair: output - pcbdraw - options; dnf_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to mark components as not fitted.
    Is a short-cut to use for simple cases where a variant is an overkill. |br|
-   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+   variant.
 
 -  ``dpi`` :index:`: <pair: output - pcbdraw - options; dpi>` [:ref:`number <number>`] (default: ``300``) (range: 10 to 1200) Dots per inch (resolution) of the generated image.
 -  ``exclude_filter`` :index:`: <pair: output - pcbdraw - options; exclude_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to exclude components from processing.
    Is a short-cut to use for simple cases where a variant is an overkill. |br|
-   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+   variant.
 
 -  ``highlight`` :index:`: <pair: output - pcbdraw - options; highlight>` [:ref:`list(string) <list(string)>`] (default: ``[]``) List of components to highlight. Filter expansion is also allowed here,
    see `show_components`.
@@ -43,7 +45,8 @@ PcbDrawOptions parameters
 -  ``placeholder`` :index:`: <pair: output - pcbdraw - options; placeholder>` [:ref:`boolean <boolean>`] (default: ``false``) Show placeholder for missing components.
 -  ``pre_transform`` :index:`: <pair: output - pcbdraw - options; pre_transform>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to transform fields before applying other filters.
    Is a short-cut to use for simple cases where a variant is an overkill. |br|
-   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+   variant.
 
 -  ``remap`` :index:`: <pair: output - pcbdraw - options; remap>` [:ref:`string_dict <string_dict>` | :ref:`string <string>`] (default: ``'None'``) (DEPRECATED) Replacements for PCB references using specified components
    (lib:component). Use `remap_components` instead.

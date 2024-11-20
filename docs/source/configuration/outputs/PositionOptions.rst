@@ -20,11 +20,13 @@ PositionOptions parameters
 -  ``columns`` :index:`: <pair: output - position - options; columns>`  [:ref:`PosColumns parameters <PosColumns>`] [:ref:`list(dict) <list(dict)>` | :ref:`list(string) <list(string)>`] (default: ``['Ref', 'Val', 'Package', 'PosX', 'PosY', 'Rot', 'Side']``) Which columns are included in the output.
 -  ``dnf_filter`` :index:`: <pair: output - position - options; dnf_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to mark components as not fitted.
    Is a short-cut to use for simple cases where a variant is an overkill. |br|
-   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+   variant.
 
 -  ``exclude_filter`` :index:`: <pair: output - position - options; exclude_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to exclude components from processing.
    Is a short-cut to use for simple cases where a variant is an overkill. |br|
-   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+   variant.
 
 -  ``gerber_board_edge`` :index:`: <pair: output - position - options; gerber_board_edge>` [:ref:`boolean <boolean>`] (default: ``false``) Include the board edge in the gerber output.
 -  ``include_virtual`` :index:`: <pair: output - position - options; include_virtual>` [:ref:`boolean <boolean>`] (default: ``false``) Include virtual components. For special purposes, not pick & place.
@@ -32,7 +34,8 @@ PositionOptions parameters
    For KiCad 6+ we replace this concept by the option to exclude from position file.
 -  ``pre_transform`` :index:`: <pair: output - position - options; pre_transform>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to transform fields before applying other filters.
    Is a short-cut to use for simple cases where a variant is an overkill. |br|
-   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+   variant.
 
 -  ``quote_all`` :index:`: <pair: output - position - options; quote_all>` [:ref:`boolean <boolean>`] (default: ``false``) When generating the CSV quote all values, even numbers.
 -  ``right_digits`` :index:`: <pair: output - position - options; right_digits>` [:ref:`number <number>`] (default: ``4``) number of digits for mantissa part of coordinates (0 is auto).

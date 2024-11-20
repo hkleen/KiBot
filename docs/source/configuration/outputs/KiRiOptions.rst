@@ -11,16 +11,19 @@ KiRiOptions parameters
 -  ``background_color`` :index:`: <pair: output - kiri - options; background_color>` [:ref:`string <string>`] (default: ``'#FFFFFF'``) Color used for the background of the diff canvas.
 -  ``dnf_filter`` :index:`: <pair: output - kiri - options; dnf_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to mark components as not fitted.
    Is a short-cut to use for simple cases where a variant is an overkill. |br|
-   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+   variant.
 
 -  ``exclude_filter`` :index:`: <pair: output - kiri - options; exclude_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to exclude components from processing.
    Is a short-cut to use for simple cases where a variant is an overkill. |br|
-   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+   variant.
 
 -  ``max_commits`` :index:`: <pair: output - kiri - options; max_commits>` [:ref:`number <number>`] (default: ``0``) Maximum number of commits to include. Use 0 for all available commits.
 -  ``pre_transform`` :index:`: <pair: output - kiri - options; pre_transform>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to transform fields before applying other filters.
    Is a short-cut to use for simple cases where a variant is an overkill. |br|
-   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+   variant.
 
 -  ``revision`` :index:`: <pair: output - kiri - options; revision>` [:ref:`string <string>`] (default: ``'HEAD'``) Starting point for the commits, can be a branch, a hash, etc.
    Note that this can be a revision-range, consult the gitrevisions manual for more information.

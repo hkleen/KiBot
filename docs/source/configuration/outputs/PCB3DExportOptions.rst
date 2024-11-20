@@ -16,7 +16,8 @@ PCB3DExportOptions parameters
 
 -  ``dnf_filter`` :index:`: <pair: output - blender_export - options - pcb3d; dnf_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to mark components as not fitted.
    Is a short-cut to use for simple cases where a variant is an overkill. |br|
-   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+   variant.
 
 -  ``download_lcsc`` :index:`: <pair: output - blender_export - options - pcb3d; download_lcsc>` [:ref:`boolean <boolean>`] (default: ``true``) In addition to try to download the 3D models from KiCad git also try to get
    them from LCSC database. In order to work you'll need to provide the LCSC
@@ -24,7 +25,8 @@ PCB3DExportOptions parameters
    `field_lcsc_part` global variable.
 -  ``exclude_filter`` :index:`: <pair: output - blender_export - options - pcb3d; exclude_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to exclude components from processing.
    Is a short-cut to use for simple cases where a variant is an overkill. |br|
-   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+   variant.
 
 -  ``highlight`` :index:`: <pair: output - blender_export - options - pcb3d; highlight>` [:ref:`list(string) <list(string)>`] (default: ``[]``) List of components to highlight. Ranges like *R5-R10* are supported.
 
@@ -36,7 +38,8 @@ PCB3DExportOptions parameters
 -  ``output`` :index:`: <pair: output - blender_export - options - pcb3d; output>` [:ref:`string <string>`] (default: ``'%f-%i%I%v.%x'``) Name for the generated PCB3D file (%i='blender_export' %x='pcb3d'). Affected by global options.
 -  ``pre_transform`` :index:`: <pair: output - blender_export - options - pcb3d; pre_transform>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to transform fields before applying other filters.
    Is a short-cut to use for simple cases where a variant is an overkill. |br|
-   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+   variant.
 
 -  ``solder_paste_for_populated`` :index:`: <pair: output - blender_export - options - pcb3d; solder_paste_for_populated>` [:ref:`boolean <boolean>`] (default: ``true``) Add solder paste only for the populated components.
    Populated components are the ones listed in `show_components`.

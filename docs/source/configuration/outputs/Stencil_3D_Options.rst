@@ -13,13 +13,15 @@ Stencil_3D_Options parameters
    components.
 -  ``dnf_filter`` :index:`: <pair: output - stencil_3d - options; dnf_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to mark components as not fitted.
    Is a short-cut to use for simple cases where a variant is an overkill. |br|
-   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+   variant.
 
 -  *enlarge_holes* :index:`: <pair: output - stencil_3d - options; enlarge_holes>` Alias for enlarge_holes.
 -  ``enlargeholes`` :index:`: <pair: output - stencil_3d - options; enlargeholes>` [:ref:`number <number>`] (default: ``0``) Enlarge pad holes by x mm.
 -  ``exclude_filter`` :index:`: <pair: output - stencil_3d - options; exclude_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to exclude components from processing.
    Is a short-cut to use for simple cases where a variant is an overkill. |br|
-   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+   variant.
 
 -  *frame_clearance* :index:`: <pair: output - stencil_3d - options; frame_clearance>` Alias for frameclearance.
 -  *frame_width* :index:`: <pair: output - stencil_3d - options; frame_width>` Alias for framewidth.
@@ -31,7 +33,8 @@ Stencil_3D_Options parameters
 -  ``pcbthickness`` :index:`: <pair: output - stencil_3d - options; pcbthickness>` [:ref:`number <number>`] (default: ``0``) PCB thickness [mm]. If 0 we will ask KiCad.
 -  ``pre_transform`` :index:`: <pair: output - stencil_3d - options; pre_transform>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to transform fields before applying other filters.
    Is a short-cut to use for simple cases where a variant is an overkill. |br|
-   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+   variant.
 
 -  ``side`` :index:`: <pair: output - stencil_3d - options; side>` [:ref:`string <string>`] (default: ``'auto'``) (choices: "top", "bottom", "auto", "both") Which side of the PCB we want. Using `auto` will detect which
    side contains solder paste.

@@ -39,7 +39,8 @@ Render3DOptions parameters
 -  ``copper`` :index:`: <pair: output - render_3d - options; copper>` [:ref:`string <string>`] (default: ``'#8b898c'``) Color for the copper.
 -  ``dnf_filter`` :index:`: <pair: output - render_3d - options; dnf_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to mark components as not fitted.
    Is a short-cut to use for simple cases where a variant is an overkill. |br|
-   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+   variant.
 
 -  ``download_lcsc`` :index:`: <pair: output - render_3d - options; download_lcsc>` [:ref:`boolean <boolean>`] (default: ``true``) In addition to try to download the 3D models from KiCad git also try to get
    them from LCSC database. In order to work you'll need to provide the LCSC
@@ -49,7 +50,8 @@ Render3DOptions parameters
    Enable it to force a double pass. It was the default in KiBot 1.7.0 and older.
 -  ``exclude_filter`` :index:`: <pair: output - render_3d - options; exclude_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to exclude components from processing.
    Is a short-cut to use for simple cases where a variant is an overkill. |br|
-   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+   variant.
 
 -  ``force_stackup_colors`` :index:`: <pair: output - render_3d - options; force_stackup_colors>` [:ref:`boolean <boolean>`] (default: ``false``) Tell KiCad to use the colors from the stackup. They are better than the unified KiBot colors.
    Needs KiCad 6 or newer.
@@ -66,7 +68,8 @@ Render3DOptions parameters
 -  ``orthographic`` :index:`: <pair: output - render_3d - options; orthographic>` [:ref:`boolean <boolean>`] (default: ``false``) Enable the orthographic projection mode (top view looks flat).
 -  ``pre_transform`` :index:`: <pair: output - render_3d - options; pre_transform>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to transform fields before applying other filters.
    Is a short-cut to use for simple cases where a variant is an overkill. |br|
-   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+   variant.
 
 -  ``realistic`` :index:`: <pair: output - render_3d - options; realistic>` [:ref:`boolean <boolean>`] (default: ``true``) When disabled we use the colors of the layers used by the GUI. Needs KiCad 6 or 7.
    Is emulated on KiCad 8.

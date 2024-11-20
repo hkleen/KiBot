@@ -10,6 +10,7 @@ Supported preflights
    preflights/annotate_power
    preflights/check_fields
    preflights/check_zone_fills
+   preflights/consolidate_pcbs
    preflights/draw_fancy_stackup
    preflights/draw_stackup
    preflights/drc

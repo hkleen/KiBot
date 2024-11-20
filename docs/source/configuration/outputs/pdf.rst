@@ -49,14 +49,16 @@ Parameters:
    Use the boolean true value to disable the output you are extending.
 -  ``dnf_filter`` :index:`: <pair: output - pdf; dnf_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to mark components as not fitted.
    Is a short-cut to use for simple cases where a variant is an overkill. |br|
-   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+   variant.
 
 -  ``drill_marks`` :index:`: <pair: output - pdf; drill_marks>` [:ref:`string <string>`] (default: ``'full'``) (choices: "none", "small", "full") What to use to indicate the drill places, can be none, small or full (for real scale).
 -  ``edge_cut_extension`` :index:`: <pair: output - pdf; edge_cut_extension>` [:ref:`string <string>`] (default: ``''``) Used to configure the edge cuts layer extension for Protel mode. Include the dot.
 -  ``exclude_edge_layer`` :index:`: <pair: output - pdf; exclude_edge_layer>` [:ref:`boolean <boolean>`] (default: ``true``) Do not include the PCB edge layer.
 -  ``exclude_filter`` :index:`: <pair: output - pdf; exclude_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to exclude components from processing.
    Is a short-cut to use for simple cases where a variant is an overkill. |br|
-   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+   variant.
 
 -  ``exclude_pads_from_silkscreen`` :index:`: <pair: output - pdf; exclude_pads_from_silkscreen>` [:ref:`boolean <boolean>`] (default: ``false``) Do not plot the component pads in the silk screen (KiCad 5.x only).
 -  ``extends`` :index:`: <pair: output - pdf; extends>` [:ref:`string <string>`] (default: ``''``) Copy the `options` section from the indicated output.
@@ -76,7 +78,8 @@ Parameters:
 -  ``plot_footprint_values`` :index:`: <pair: output - pdf; plot_footprint_values>` [:ref:`boolean <boolean>`] (default: ``true``) Include the footprint values.
 -  ``pre_transform`` :index:`: <pair: output - pdf; pre_transform>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to transform fields before applying other filters.
    Is a short-cut to use for simple cases where a variant is an overkill. |br|
-   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the variant.
+   Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+   variant.
 
 -  ``priority`` :index:`: <pair: output - pdf; priority>` [:ref:`number <number>`] (default: ``50``) (range: 0 to 100) Priority for this output. High priority outputs are created first.
    Internally we use 10 for low priority, 90 for high priority and 50 for most outputs.
