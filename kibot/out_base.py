@@ -312,11 +312,14 @@ class VariantOptions(BaseOptions):
             return []
         return [c.ref for c in self._comps if c.fitted and c.included]
 
-    def get_not_fitted_refs(self):
+    def get_not_fitted_refs(self, parent=False):
         """ List of 'not fitted' components, also includes 'not included' """
         if not self._comps:
             return []
-        return [c.ref for c in self._comps if not c.fitted or not c.included]
+        if not parent:
+            return [c.ref for c in self._comps if not c.fitted or not c.included]
+        # Here we want only parent components
+        return list({c.get_parent_ref() for c in self._comps if not c.fitted or not c.included})
 
     def help_only_sub_pcbs(self):
         self.add_to_doc('variant', 'Used for sub-PCBs')
@@ -1149,7 +1152,7 @@ class VariantOptions(BaseOptions):
         self.undo_show = set()
         for c in self._comps:
             if c.ref not in show_components and c.fitted:
-                c.fitted = False
+                c.set_fitted(False)
                 self.undo_show.add(c.ref)
                 logger.debugl(2, '- Removing '+c.ref)
 
@@ -1159,7 +1162,7 @@ class VariantOptions(BaseOptions):
             return
         for c in self._comps:
             if c.ref in self.undo_show:
-                c.fitted = True
+                c.set_fitted(True)
 
     def sch_replace_one_image(self, sheet, box, output_name, box_index):
         """ Replace one image in the schematic, see sch_replace_images """

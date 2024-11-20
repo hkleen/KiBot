@@ -38,6 +38,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - A mechanism to paste images from outputs (#714)
 
 ### Fixed
+- SubParts filter:
+  - iBoM and Schematic print didn't take it into account (#716)
 - BoM
   - The field name `Reference` was accepted, but didn't work
 

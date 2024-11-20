@@ -208,7 +208,7 @@ class IBoMOptions(VariantOptions):
             # Plugin could be installed without execute flags
             cmd.insert(0, 'python3')
         # Apply variants/filters
-        to_remove = ','.join(self.get_not_fitted_refs())
+        to_remove = ','.join(self.get_not_fitted_refs(parent=True))
         if self.blacklist and to_remove:
             self.blacklist += ','
         self.blacklist += to_remove

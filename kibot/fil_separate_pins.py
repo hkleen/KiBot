@@ -65,6 +65,7 @@ class Separate_Pins(BaseFilter):  # noqa: F821
         for name, v in comp.pad_properties.items():
             if v.fab_property in self._attribute:
                 c = deepcopy(comp)
+                c.parent_component = comp
                 c.ref += self.ref_sep+name
                 # Adjust the suffix to be "sort friendly"
                 # Currently useless, but could help in the future

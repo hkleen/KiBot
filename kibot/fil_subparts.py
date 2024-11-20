@@ -155,6 +155,7 @@ class Subparts(BaseFilter):  # noqa: F821
         alt_values_len = len(alt_values)
         for i in range(max_num_subparts):
             new_comp = deepcopy(comp)
+            new_comp.parent_component = comp
             if multi_part:
                 # Adjust the reference name
                 if self.use_ref_sep_for_first:

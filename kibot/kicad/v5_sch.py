@@ -895,6 +895,8 @@ class SchematicComponent(object):
         self.qty = 1
         self.annotation_error = False
         self.net_name = self.net_class = ''
+        # The following is used by transform variants that creates components derived from another
+        self.parent_component = None
         # Position offset i.e. from the rotation filter
         self.pos_offset_x = self.pos_offset_y = None
         # KiCad 5 PCB flags (mutually exclusive)
@@ -987,6 +989,19 @@ class SchematicComponent(object):
             # No back-up. Make one for the next reset
             self.fields_bkp = deepcopy(self.fields)
             self.dfields_bkp = {f.name.lower(): f for f in self.fields_bkp}
+
+    def set_fitted(self, status):
+        self.fitted = status
+        if self.parent_component:
+            self.parent_component.set_fitted(status)
+
+    def set_fixed(self, status):
+        self.fixed = status
+        if self.parent_component:
+            self.parent_component.set_fixed(status)
+
+    def get_parent_ref(self):
+        return self.ref if not self.parent_component else self.parent_component.get_parent_ref()
 
     def _solve_ref(self, path):
         """ Look for the correct reference for this path.

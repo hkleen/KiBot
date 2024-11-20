@@ -67,7 +67,7 @@ class IBoM(BaseVariant):  # noqa: F821
             if not (c.fitted and c.included):
                 # Don't check if we already discarded it
                 continue
-            c.fitted = not self.skip_component(c)
+            c.set_fitted(not self.skip_component(c))
             if not c.fitted and GS.debug_level > 2:
                 logger.debug(f'  fitted -> False (value: {c.value})')
         return comps

@@ -90,7 +90,7 @@ class KiBoM(BaseVariant):  # noqa: F821
                 # Don't check if we already discarded it
                 continue
             config = c.get_field_value(self.config_field)
-            c.fitted = self.matches_variant(config)
+            c.set_fitted(self.matches_variant(config))
             if not c.fitted and GS.debug_level > 2:
                 logger.debug('ref: {} config: {} variant: {} -> False'.
                              format(c.ref, config, self.variant))
