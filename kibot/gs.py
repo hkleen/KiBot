@@ -42,6 +42,8 @@ elif hasattr(pcbnew, 'PCB_PLOT_PARAMS'):
 # KiCad 5 uses a very different scale based on inches
 # KiCad 7 uses mm
 KICAD5_SVG_SCALE = 116930/297002200
+# Characters we don't want in a file name
+INVALID_CHARS = r'[?%*:|"<>]'
 
 
 class GS(object):
@@ -468,7 +470,8 @@ class GS(object):
     @staticmethod
     def make_bkp(fname):
         bkp = fname+'-bak'
-        os.replace(fname, bkp)
+        if os.path.isfile(fname):
+            os.replace(fname, bkp)
 
     @staticmethod
     def zones():
@@ -1057,3 +1060,25 @@ class GS(object):
     @staticmethod
     def get_stop_flag():
         return GS.stop_flag
+
+    @staticmethod
+    def move_board_items(vector):
+        any((x.Move(vector) for x in GS.get_modules()))
+        any((x.Move(vector) for x in GS.board.GetDrawings()))
+        any((x.Move(vector) for x in GS.board.GetTracks()))
+        any((x.Move(vector) for x in GS.board.Zones()))
+
+    @staticmethod
+    def sanitize_file_name(name):
+        # sanitize the name to avoid characters illegal in file systems
+        if GS.on_windows:
+            # Here \ *is* valid
+            if len(name) >= 2 and name[0].isalpha() and name[1] == ':':
+                # This name starts with a drive letter, : is valid in the first 2
+                name = name[:2]+re.sub(INVALID_CHARS, '_', name[2:])
+            else:
+                name = re.sub(INVALID_CHARS, '_', name)
+        else:
+            name = name.replace('\\', '/')
+            name = re.sub(INVALID_CHARS, '_', name)
+        return name

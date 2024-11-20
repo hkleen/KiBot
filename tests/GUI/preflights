@@ -170,6 +170,30 @@
       null
     ]
   ],
+  "consolidate_pcbs": [
+    [
+      "consolidate_pcbs",
+      [
+        "DataTypeListDictSingular"
+      ],
+      [
+        [
+          "name",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
+          "file",
+          [
+            "DataTypeString"
+          ],
+          null
+        ]
+      ]
+    ]
+  ],
   "draw_fancy_stackup": [
     [
       "draw_fancy_stackup",

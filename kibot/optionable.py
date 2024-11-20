@@ -15,7 +15,6 @@ from . import log
 
 logger = log.get_logger()
 HEX_DIGIT = '[A-Fa-f0-9]{2}'
-INVALID_CHARS = r'[?%*:|"<>]'
 PATTERNS_DEP = ['%c', '%d', '%F', '%f', '%M', '%p', '%r']
 for n in range(1, 10):
     PATTERNS_DEP.append('%C'+str(n))
@@ -535,17 +534,7 @@ class Optionable(object):
         # Also replace KiCad 6 variables after it
         name = GS.expand_text_variables(name)
         if make_safe:
-            # sanitize the name to avoid characters illegal in file systems
-            if GS.on_windows:
-                # Here \ *is* valid
-                if len(name) >= 2 and name[0].isalpha() and name[1] == ':':
-                    # This name starts with a drive letter, : is valid in the first 2
-                    name = name[:2]+re.sub(INVALID_CHARS, '_', name[2:])
-                else:
-                    name = re.sub(INVALID_CHARS, '_', name)
-            else:
-                name = name.replace('\\', '/')
-                name = re.sub(INVALID_CHARS, '_', name)
+            name = GS.sanitize_file_name(name)
         if GS.debug_level > 3:
             logger.debug('Expanded `{}`'.format(name))
         return name

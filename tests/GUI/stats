@@ -181,14 +181,14 @@ Used as single data type:
 -          String,StringDict:    1 ['pcbdraw.options.remap']
 ================================================================================
 ================================================================================
-23 preflights types with a total of 159 different parameters
-Single type parameters: 150 (94 %)
+24 preflights types with a total of 162 different parameters
+Single type parameters: 153 (94 %)
 Multi type parameters: 9 (6 %)
 Average parameters: 7
 Maximum number of parameters: 22
 Minimum number of parameters: 1
 Histogram:
-  0-  9: ****************
+  0-  9: *****************
  10- 19: ******
  20- 29: *
 Preflights sorted by parameters:
@@ -201,6 +201,7 @@ Preflights sorted by parameters:
 - update_pcb_characteristics: 1
 - update_qr: 1
 - update_stackup: 1
+- consolidate_pcbs: 3
 - run_drc: 4
 - run_erc: 4
 - update_xml: 4
@@ -215,13 +216,13 @@ Preflights sorted by parameters:
 - include_table: 17
 - drc: 18
 - draw_fancy_stackup: 22
-Average depth: 1.9130434782608696
+Average depth: 1.9166666666666667
 Maximum depth: 3
 Minimum depth: 1
 Histogram:
 0: 
 1: *********
-2: *******
+2: ********
 3: *******
 Preflights sorted by depth:
 - annotate_power: 1
@@ -236,6 +237,7 @@ Preflights sorted by depth:
 - filters: 2
 - annotate_pcb: 2
 - check_fields: 2
+- consolidate_pcbs: 2
 - run_drc: 2
 - run_erc: 2
 - set_text_variables: 2
@@ -249,23 +251,23 @@ Preflights sorted by depth:
 - sch_replace: 3
 --------------------------------------------------------------------------------
 9 different data types
+-             String:   49
 -            Boolean:   48
--             String:   47
 -             Number:   30
 -             Choice:   17
 -               Dict:   11
+-   ListDictSingular:    5
 - ListStringSingular:    5
--   ListDictSingular:    4
 -           ListDict:    3
 -   ListDictOrString:    3
 --------------------------------------------------------------------------------
 Used as single data type:
--             String:   46 
+-             String:   48 
 -            Boolean:   40 
 -             Number:   30 
 -             Choice:   17 
+-   ListDictSingular:    5 ['check_fields.check_fields', 'consolidate_pcbs.consolidate_pcbs', 'pcb_replace.pcb_replace.replace_tags', 'sch_replace.sch_replace.replace_tags', 'set_text_variables.set_text_variables']
 - ListStringSingular:    5 ['drc.drc.format', 'drc.drc.category', 'erc.erc.format', 'erc.erc.category', 'update_footprint.update_footprint']
--   ListDictSingular:    4 ['check_fields.check_fields', 'pcb_replace.pcb_replace.replace_tags', 'sch_replace.sch_replace.replace_tags', 'set_text_variables.set_text_variables']
 -           ListDict:    3 ['filters.filters', 'drc.drc.filters', 'erc.erc.filters']
 -               Dict:    3 ['annotate_pcb.annotate_pcb', 'pcb_replace.pcb_replace', 'sch_replace.sch_replace']
 -   ListDictOrString:    2 ['draw_fancy_stackup.draw_fancy_stackup.columns', 'draw_stackup.draw_stackup.columns']
@@ -390,14 +392,14 @@ Used as single data type:
 -              Number,String:   15 
 ================================================================================
 ================================================================================
-86 totals types with a total of 2292 different parameters
-Single type parameters: 2094 (91 %)
+87 totals types with a total of 2295 different parameters
+Single type parameters: 2097 (91 %)
 Multi type parameters: 198 (9 %)
-Average parameters: 27
+Average parameters: 26
 Maximum number of parameters: 215
 Minimum number of parameters: 1
 Histogram:
-  0-  9: ***********************
+  0-  9: ************************
  10- 19: **************
  20- 29: **************************
  30- 39: ********
@@ -429,6 +431,7 @@ Totals sorted by parameters:
 - update_pcb_characteristics: 1
 - update_qr: 1
 - update_stackup: 1
+- consolidate_pcbs: 3
 - run_drc: 4
 - run_erc: 4
 - update_xml: 4
@@ -506,13 +509,13 @@ Totals sorted by parameters:
 - pcb_print: 94
 - bom: 148
 - panelize: 215
-Average depth: 2.186046511627907
+Average depth: 2.1839080459770117
 Maximum depth: 5
 Minimum depth: 1
 Histogram:
 0: 
 1: *****************
-2: *****************************************
+2: ******************************************
 3: ************************
 4: ***
 5: *
@@ -564,6 +567,7 @@ Totals sorted by depth:
 - filters: 2
 - annotate_pcb: 2
 - check_fields: 2
+- consolidate_pcbs: 2
 - run_drc: 2
 - run_erc: 2
 - set_text_variables: 2
@@ -605,7 +609,7 @@ Totals sorted by depth:
 - bom: 5
 --------------------------------------------------------------------------------
 14 different data types
--             String:  995
+-             String:  997
 -            Boolean:  573
 -             Number:  314
 - ListStringSingular:  294
@@ -615,13 +619,13 @@ Totals sorted by depth:
 -   ListDictOrString:   24
 -              Combo:   14
 -         ListString:   12
--   ListDictSingular:   10
+-   ListDictSingular:   11
 -     ListListString:    4
 -         StringDict:    2
 -       NumberChoice:    1
 --------------------------------------------------------------------------------
 Used as single data type:
--             String:  825 
+-             String:  827 
 -            Boolean:  509 
 - ListStringSingular:  291 
 -             Number:  205 
@@ -629,7 +633,7 @@ Used as single data type:
 -               Dict:   73 
 -           ListDict:   30 
 -         ListString:   12 
--   ListDictSingular:   10 ['blender_export.options.outputs', 'blender_export.options.light', 'blender_export.options.point_of_view', 'kikit_present.options.boards', 'qr_lib.options.qrs', 'check_fields.check_fields', 'pcb_replace.pcb_replace.replace_tags', 'sch_replace.sch_replace.replace_tags', 'set_text_variables.set_text_variables', 'spec_to_field.specs']
+-   ListDictSingular:   11 
 -   ListDictOrString:    7 ['bom.options.columns', 'bom.options.cost_extra_columns', 'bom.options.xlsx.specs_columns', 'kibom.options.conf.columns', 'position.options.columns', 'draw_fancy_stackup.draw_fancy_stackup.columns', 'draw_stackup.draw_stackup.columns']
 -     ListListString:    4 ['bom.options.component_aliases', 'kibom.options.conf.component_aliases', 'rot_footprint.rotations', 'rot_footprint.offsets']
 -              Combo:    2 ['report.options.template', 'step.options.origin']

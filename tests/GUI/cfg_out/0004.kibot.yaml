@@ -7,6 +7,9 @@ preflight:
   check_fields:
     field: References
   check_zone_fills: false
+  consolidate_pcbs:
+    name: preflight.consolidate_pcbs.consolidate_pcbs.dict
+    file: first_pcb.kicad_pcb
   draw_fancy_stackup:
     pos_x: 20
     columns:

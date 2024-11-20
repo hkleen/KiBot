@@ -25,6 +25,11 @@ Added
       addition to the variant. Like it was possible for transform and
       dnf
 
+-  Preflights:
+
+   -  ``consolidate_pcbs``: Used to merge PCBs before creating 3D
+      stacked renders (#728)
+
 -  Global options:
 
    -  ``work_layer``: to choose the temporal layer for internal
@@ -64,6 +69,10 @@ Added
 
 Fixed
 ~~~~~
+
+-  SubParts filter:
+
+   -  iBoM and Schematic print didn’t take it into account (#716)
 
 -  BoM
 
