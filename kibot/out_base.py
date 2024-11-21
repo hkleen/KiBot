@@ -335,12 +335,13 @@ class VariantOptions(BaseOptions):
             The rect is a Rect object with the size.
             The layer is which layer id will be used.
             The angle is the cross angle, which matches the footprint. """
+        center = GS.p2v_k7(m.GetCenter())
         seg1 = GS.create_module_element(m)
         seg1.SetWidth(120000)
         seg1.SetStart(GS.p2v_k7(wxPoint(rect.x1, rect.y1)))
         seg1.SetEnd(GS.p2v_k7(wxPoint(rect.x2, rect.y2)))
         seg1.SetLayer(layer)
-        seg1.Rotate(GS.p2v_k7(seg1.GetCenter()), GS.angle(angle))
+        seg1.Rotate(center, GS.angle(angle))
         GS.footprint_update_local_coords(seg1)
         m.Add(seg1)
         seg2 = GS.create_module_element(m)
@@ -348,7 +349,7 @@ class VariantOptions(BaseOptions):
         seg2.SetStart(GS.p2v_k7(wxPoint(rect.x1, rect.y2)))
         seg2.SetEnd(GS.p2v_k7(wxPoint(rect.x2, rect.y1)))
         seg2.SetLayer(layer)
-        seg2.Rotate(GS.p2v_k7(seg2.GetCenter()), GS.angle(angle))
+        seg2.Rotate(center, GS.angle(angle))
         GS.footprint_update_local_coords(seg2)
         m.Add(seg2)
         return [seg1, seg2]
@@ -375,7 +376,8 @@ class VariantOptions(BaseOptions):
             if c and c.included and not c.fitted:
                 # Measure the component BBox (only graphics)
                 fp_angle = m.GetOrientationDegrees()
-                m.Rotate(GS.p2v_k7(m.GetCenter()), GS.angle(-fp_angle))
+                center = GS.p2v_k7(m.GetCenter())
+                m.Rotate(center, GS.angle(-fp_angle))
                 for gi in m.GraphicalItems():
                     if gi.GetClass() == GS.footprint_gr_type:
                         l_gi = gi.GetLayer()
@@ -383,8 +385,8 @@ class VariantOptions(BaseOptions):
                             frect.Union(GS.get_rect_for(gi.GetBoundingBox()))
                         if l_gi == bfab:
                             brect.Union(GS.get_rect_for(gi.GetBoundingBox()))
-                # Rotate the footprint back
-                m.Rotate(GS.p2v_k7(m.GetCenter()), GS.angle(fp_angle))
+                # Rotate the footprint back (using the same center)
+                m.Rotate(center, GS.angle(fp_angle))
                 # Cross the graphics in *.Fab
                 if frect.x1 is not None:
                     extra_tlay_lines.append(self.cross_module(m, frect, tlay, fp_angle))

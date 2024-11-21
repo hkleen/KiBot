@@ -78,6 +78,11 @@ Fixed
 
    -  The field name ``Reference`` was accepted, but didn’t work
 
+-  Do Not Fit footprint crosses:
+
+   -  Problems with footprints where the center isn’t the geometric
+      center (#725)
+
 Changed
 ~~~~~~~
 
