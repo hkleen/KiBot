@@ -860,6 +860,18 @@ class VariantOptions(BaseOptions):
         logger.debug(f'Replacing footprints from variant change {to_change}')
         replace_footprints(GS.pcb_file, to_change, logger, replace_pcb=False)
 
+    def add_parent_comps(self, c, comps):
+        if c.parent_component and c.parent_component.ref not in comps:
+            comps[c.parent_component.ref] = c.parent_component
+            self.add_parent_comps(c.parent_component, comps)
+
+    def include_parents(self, comps):
+        new_comps = {}
+        for ref, c in comps.items():
+            new_comps[ref] = c
+            self.add_parent_comps(c, new_comps)
+        return new_comps
+
     def filter_pcb_components(self, do_3D=False, do_2D=True, highlight=None):
         if not self.will_filter_pcb_components():
             return False
@@ -881,7 +893,8 @@ class VariantOptions(BaseOptions):
                 # Disable the models that aren't for this variant
                 self.apply_3D_variant_aspect(GS.board)
                 # Remove the 3D models for not fitted components (also rename)
-                self.remove_3D_models(GS.board, self._comps_hash)
+                comps_hash = self.include_parents(self._comps_hash)
+                self.remove_3D_models(GS.board, comps_hash)
                 # Highlight selected components
                 self.highlight_3D_models(GS.board, highlight)
         return True
@@ -898,7 +911,8 @@ class VariantOptions(BaseOptions):
             self.restore_sch_fields_to_pcb(GS.board)
         if do_3D and self._comps_hash:
             # Undo the removing (also rename)
-            self.restore_3D_models(GS.board, self._comps_hash)
+            comps_hash = self.include_parents(self._comps_hash)
+            self.restore_3D_models(GS.board, comps_hash)
             # Re-enable the modules that aren't for this variant
             self.apply_3D_variant_aspect(GS.board, enable=True)
             # Remove the highlight 3D object
