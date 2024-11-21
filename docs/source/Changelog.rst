@@ -73,7 +73,7 @@ Fixed
 -  SubParts filter:
 
    -  iBoM and Schematic print didn’t take it into account (#716)
-   -  3D outputs also ignored them (#729)
+   -  Any output filtering by reference ignored them (#729)
 
 -  BoM
 

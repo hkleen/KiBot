@@ -43,7 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - SubParts filter:
   - iBoM and Schematic print didn't take it into account (#716)
-  - 3D outputs also ignored them (#729)
+  - Any output filtering by reference ignored them (#729)
 - BoM
   - The field name `Reference` was accepted, but didn't work
 - Do Not Fit footprint crosses:

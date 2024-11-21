@@ -876,6 +876,8 @@ class VariantOptions(BaseOptions):
         if not self.will_filter_pcb_components():
             return False
         self._comps_hash = self.get_refs_hash()
+        # As we will be comparing the reference split components won't match, so include their parents
+        self._comps_hash = self.include_parents(self._comps_hash)
         if self._sub_pcb:
             self._sub_pcb.apply(self._comps_hash)
         if self._comps:
@@ -893,8 +895,7 @@ class VariantOptions(BaseOptions):
                 # Disable the models that aren't for this variant
                 self.apply_3D_variant_aspect(GS.board)
                 # Remove the 3D models for not fitted components (also rename)
-                comps_hash = self.include_parents(self._comps_hash)
-                self.remove_3D_models(GS.board, comps_hash)
+                self.remove_3D_models(GS.board, self._comps_hash)
                 # Highlight selected components
                 self.highlight_3D_models(GS.board, highlight)
         return True
@@ -911,8 +912,7 @@ class VariantOptions(BaseOptions):
             self.restore_sch_fields_to_pcb(GS.board)
         if do_3D and self._comps_hash:
             # Undo the removing (also rename)
-            comps_hash = self.include_parents(self._comps_hash)
-            self.restore_3D_models(GS.board, comps_hash)
+            self.restore_3D_models(GS.board, self._comps_hash)
             # Re-enable the modules that aren't for this variant
             self.apply_3D_variant_aspect(GS.board, enable=True)
             # Remove the highlight 3D object
