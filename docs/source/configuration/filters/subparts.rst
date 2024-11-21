@@ -12,6 +12,8 @@ Subparts (**Deprecated**)
    `KiCost docs <https://hildogjr.github.io/KiCost/docs/_build/singlehtml/index.html>`__. |br|
    Its use is discouraged, if you want to include extra stuff in your BoM there are much better
    mechanisms. You can consolidate extra information from a CSV or complementary schematic. |br|
+   Also consider specifying this filter as a local filter for particular outputs (like `bom`),
+   use the `pre_transform` option. |br|
    You can also explicitly add extra components in the schematic and mark them as not for the
    PCB. |br|
 
