@@ -51,7 +51,7 @@ filters:
   - _temp_coeff
 - name: filter.subparts
   type: subparts
-  comment: Subparts
+  comment: Subparts (**Deprecated**)
 - name: filter.urlify
   type: urlify
   comment: URLify
