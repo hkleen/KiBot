@@ -1,0 +1,4 @@
+Type,Front Side,Back Side,Total
+THT,${top_tht},${bot_tht},${total_tht}
+SMD,${top_smd},${bot_smd},${total_smd}
+Total,${top_total},${bot_total},${total_all}
