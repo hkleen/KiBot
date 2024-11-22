@@ -12,8 +12,11 @@ ReportOptions parameters
    In CI/CD environments: the `kicad_auto_test` docker image contains it. |br|
    In Debian/Ubuntu environments: install `pandoc`, `texlive`, `texlive-latex-base` and `texlive-latex-recommended`.
 -  **output** :index:`: <pair: output - report - options; output>` [:ref:`string <string>`] (default: ``'%f-%i%I%v.%x'``) Output file name (%i='report', %x='txt'). Affected by global options.
--  **template** :index:`: <pair: output - report - options; template>` [:ref:`string <string>`] (default: ``'full'``) (choices: "full", "full_svg", "simple", "testpoints") (also accepts any string) Name for one of the internal templates or a custom template file.
+-  **template** :index:`: <pair: output - report - options; template>` [:ref:`string <string>`] (default: ``'full'``) (choices: "full", "full_svg", "simple", "testpoints", "total_components") (also accepts any string) Name for one of the internal templates or a custom
+   template file. |br|
    Environment variables and ~ are allowed. |br|
+   The `total_components` template can be used to include a table containing components count
+   in your PCB. Take a look at the `docs/samples/Component_Count_Table/` in the repo. |br|
    Note: when converting to PDF PanDoc can fail on some Unicode values (use `simple_ASCII`). |br|
    Note: the testpoint variables uses the `testpoint` fabrication attribute of pads.
 -  ``alloy_specific_gravity`` :index:`: <pair: output - report - options; alloy_specific_gravity>` [:ref:`number <number>`] (default: ``7.4``) Specific gravity of the alloy used for the solder paste, in g/cm3. Used to compute solder paste usage.

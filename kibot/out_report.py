@@ -186,8 +186,11 @@ class ReportOptions(VariantOptions):
             self.output = GS.def_global_output
             """ *Output file name (%i='report', %x='txt') """
             self.template = 'full'
-            """ *[full,full_svg,simple,testpoints,*] Name for one of the internal templates or a custom template file.
+            """ *[full,full_svg,simple,testpoints,total_components,*] Name for one of the internal templates or a custom
+                template file.
                 Environment variables and ~ are allowed.
+                The `total_components` template can be used to include a table containing components count
+                in your PCB. Take a look at the `docs/samples/Component_Count_Table/` in the repo.
                 Note: when converting to PDF PanDoc can fail on some Unicode values (use `simple_ASCII`).
                 Note: the testpoint variables uses the `testpoint` fabrication attribute of pads """
             self.convert_from = 'markdown'
@@ -234,7 +237,7 @@ class ReportOptions(VariantOptions):
         if self.template.endswith('_ASCII'):
             self.template = self.template[:-6]
             self.to_ascii = True
-        if self.template.lower() in ('full', 'simple', 'full_svg', 'testpoints'):
+        if self.template.lower() in ('full', 'simple', 'full_svg', 'testpoints', 'total_components'):
             self.template = os.path.abspath(os.path.join(GS.get_resource_path('report_templates'),
                                             'report_'+self.template.lower()+'.txt'))
         if not os.path.isabs(self.template):
@@ -718,6 +721,11 @@ class ReportOptions(VariantOptions):
         self.drill_real_ec_min = min(self.via_drill_real_ec_min, self.pad_drill_real_ec_min)
         self.top_comp_type = to_smd_tht(self.top_smd, self.top_tht)
         self.bot_comp_type = to_smd_tht(self.bot_smd, self.bot_tht)
+        self.top_total = self.top_smd + self.top_tht
+        self.bot_total = self.bot_smd + self.bot_tht
+        self.total_smd = self.top_smd + self.bot_smd
+        self.total_tht = self.top_tht + self.bot_tht
+        self.total_all = self.total_tht + self.total_smd
         ###########################################################
         # Vias
         ###########################################################
@@ -1051,6 +1059,10 @@ class Report(BaseOutput):  # noqa: F821
             self.options = ReportOptions
             """ *[dict={}] Options for the `report` output """
         self._category = 'PCB/docs'
+
+    def get_csv_separator(self):
+        """ This is only true for `total_components` template """
+        return ','
 
     @staticmethod
     def get_conf_examples(name, layers):

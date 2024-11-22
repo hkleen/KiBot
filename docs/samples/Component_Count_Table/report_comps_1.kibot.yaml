@@ -1,0 +1,15 @@
+# Example of how to include a table with the top/bottom SMD/THT count
+kibot:
+  version: 1
+
+preflight:
+  include_table: true
+
+outputs:
+  - name: 'report_components'
+    comment: "CSV containing THT/SMD count"
+    type: report
+    output_id: _components
+    options:
+      output: '%f-%i%I%v.csv'
+      template: total_components

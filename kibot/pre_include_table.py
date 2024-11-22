@@ -22,7 +22,7 @@ logger = log.get_logger()
 ALIGNMENT = {'left': GR_TEXT_HJUSTIFY_LEFT,
              'center': GR_TEXT_HJUSTIFY_CENTER,
              'right': GR_TEXT_HJUSTIFY_RIGHT}
-VALID_OUTPUT_TYPES = {'bom', 'kibom', 'position'}
+VALID_OUTPUT_TYPES = {'bom', 'kibom', 'position', 'report'}
 
 
 class IncTableOutputOptions(Optionable):

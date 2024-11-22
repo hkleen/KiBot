@@ -37,6 +37,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Option to don't generate the drill files, so you can generate only the maps
     (#720)
 - PCB Print: a mechanism to filter components for a particular layer (#706)
+- Report:
+  - `top_total`, `bot_total`, `total_smd`, `total_tht` and `total_all`
+    component counts (See #730)
+  - `total_components` template, intended to generate CSV files with component
+    counts (See #730)
 - SCH Variant and *SCH Print:
   - A mechanism to paste images from outputs (#714)
 
