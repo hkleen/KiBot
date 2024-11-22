@@ -145,6 +145,7 @@ class ColumnList:
         COL_FP_YS,
         COL_ITEM_NUMBER,
         COL_NET_NAME,
+        COL_NET_LABEL,
         COL_NET_CLASS,
         COL_QUANTITY,
     ]
@@ -174,6 +175,9 @@ class ColumnList:
         COL_DNP_L,
         COL_EXCLUDE_FROM_BOARD_L,
         COL_EXCLUDE_FROM_SIM_L,
+        COL_NET_NAME,
+        COL_NET_LABEL,
+        COL_NET_CLASS,
     }
 
     # Default fields used to group components
