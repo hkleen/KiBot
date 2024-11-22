@@ -750,6 +750,7 @@ In addition to all the user defined fields you also have the following columns:
 -  **Footprint Y-Size**: The footprint height, no rotation computed.
 -  **${ITEM_NUMBER}**: Same as **Row**, for compatibility with KiCad BoM.
 -  **Net Name**: Name of the nets associated with the footprint. Useful for testpoints.
+-  **Net Label**: Name of the nets associated with the footprint without the path. Useful for testpoints.
 -  **Net Class**: Name of the net classes associated with the footprint. Useful for testpoints.
 -  **Part**: The name of the symbol for the component, without the library name.
 -  **Part Lib**: The name of the library for the symbol.
