@@ -929,6 +929,12 @@ create a group.
 - Draw a rectangle with the size and position you desire.
 - Draw another thing inside the rectangle, i.e. a text describing the group
 - Select both and create a group (right mouse button, then *Grouping* -> *Group*).
+
+.. note::
+
+   You might also just create a text box and select it, KiCad allows creating a
+   group with just one element
+
 - Now edit the group and change its name according to the name specified by
   the output or preflight.
 
