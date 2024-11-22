@@ -365,6 +365,7 @@ class ComponentGroup(object):
         if not self.fields[ColumnList.COL_DESCRIPTION_L]:
             self.fields[ColumnList.COL_DESCRIPTION_L] = comp.desc
         self.fields[ColumnList.COL_NET_NAME_L] = comp.net_name
+        self.fields[ColumnList.COL_NET_LABEL_L] = comp.net_name.split('/')[-1]
         self.fields[ColumnList.COL_NET_CLASS_L] = comp.net_class
         # KiCad attributes
         self.fields[ColumnList.COL_DNP_L] = self.solve_multiple_attributes('kicad_dnp', 'DNP')

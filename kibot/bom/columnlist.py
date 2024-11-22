@@ -66,6 +66,8 @@ class ColumnList:
     COL_STATUS_L = COL_STATUS.lower()
     COL_NET_NAME = 'Net Name'
     COL_NET_NAME_L = COL_NET_NAME.lower()
+    COL_NET_LABEL = 'Net Label'
+    COL_NET_LABEL_L = COL_NET_LABEL.lower()
     COL_NET_CLASS = 'Net Class'
     COL_NET_CLASS_L = COL_NET_CLASS.lower()
     # KiCad attributes
