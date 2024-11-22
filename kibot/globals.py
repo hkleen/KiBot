@@ -408,7 +408,8 @@ class Globals(FiltersOptions):
                 The width of the text box will be the width of the image.
                 The text box must contain *kibot_image_X* where X is the output name.
                 This option configures the prefix used. If this option is empty no images will be pasted """
-        self.set_doc('filters', " [list(dict)=[]] KiBot warnings to be ignored ")
+        self.set_doc('filters', " [list(dict)=[]] KiBot and KiCost warnings to be ignored."
+                                " Add 1000 to KiCost warnings (WCnnn) ")
         self._filter_what = 'KiBot warnings'
         self.filters = FilterOptionsKiBot
         self._unknown_is_error = True
