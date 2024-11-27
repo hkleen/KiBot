@@ -254,6 +254,7 @@ class ReportOptions(VariantOptions):
 
     def do_replacements(self, line, defined):
         """ Replace `${VAR}` patterns """
+        context = {k: getattr(self, k) for k in dir(self) if k[0] != '_' and not callable(getattr(self, k))}
         for var in re.findall(r'\$\{([^\s\}]+)\}', line):
             if var[0] == '_':
                 # Prevent access to internal data
@@ -277,8 +278,18 @@ class ReportOptions(VariantOptions):
                 units = to_mils
                 digits = self._mils_digits
                 var = var[:-5]
+            val = None
             if var in defined:
                 val = defined[var]
+            else:
+                try:
+                    val = eval(var, {}, context)
+                except NameError:
+                    # Don't stop on undefined values, report and go on
+                    pass
+                except Exception as e:
+                    raise KiPlotConfigurationError('wrong expression: `{}`\nPython says: `{}`'.format(var, str(e)))
+            if val is not None:
                 if val == INF:
                     val = 'N/A'
                 elif units is not None and isinstance(val, (int, float)):
@@ -621,6 +632,9 @@ class ReportOptions(VariantOptions):
         self.oar_pads = self.oar_pads_ec = self.pad_drill = self.pad_drill_real = self.pad_drill_real_ec = INF
         self.slot = INF
         self.top_smd = self.top_tht = self.bot_smd = self.bot_tht = 0
+        self.top_smd_dnp = self.top_tht_dnp = self.bot_smd_dnp = self.bot_tht_dnp = 0
+        self.top_smd_dnc = self.top_tht_dnc = self.bot_smd_dnc = self.bot_tht_dnc = 0
+        self.top_smd_exc = self.top_tht_exc = self.bot_smd_exc = self.bot_tht_exc = 0
         top_layer = board.GetLayerID('F.Cu')
         bottom_layer = board.GetLayerID('B.Cu')
         is_pure_smd, is_not_virtual = self.get_attr_tests()
@@ -629,17 +643,50 @@ class ReportOptions(VariantOptions):
         pad_properties = []
         for m in modules:
             ref = m.GetReference()
+            comp = self._comps_hash.get(ref, None) if self._comps and self._comps_hash else None
             layer = m.GetLayer()
             if layer == top_layer:
                 if is_pure_smd(m):
                     self.top_smd += 1
+                    if comp:
+                        if not comp.included:
+                            self.top_smd_exc += 1
+                        else:
+                            if not comp.fitted:
+                                self.top_smd_dnp += 1
+                            if comp.fixed:
+                                self.top_smd_dnc += 1
                 elif is_not_virtual(m):
                     self.top_tht += 1
+                    if comp:
+                        if not comp.included:
+                            self.top_tht_exc += 1
+                        else:
+                            if not comp.fitted:
+                                self.top_tht_dnp += 1
+                            if comp.fixed:
+                                self.top_tht_dnc += 1
             elif layer == bottom_layer:
                 if is_pure_smd(m):
                     self.bot_smd += 1
+                    if comp:
+                        if not comp.included:
+                            self.bot_smd_exc += 1
+                        else:
+                            if not comp.fitted:
+                                self.bot_smd_dnp += 1
+                            if comp.fixed:
+                                self.bot_smd_dnc += 1
                 elif is_not_virtual(m):
                     self.bot_tht += 1
+                    if comp:
+                        if not comp.included:
+                            self.bot_tht_exc += 1
+                        else:
+                            if not comp.fitted:
+                                self.bot_tht_dnp += 1
+                            if comp.fixed:
+                                self.bot_tht_dnc += 1
             pads = m.Pads()
             for pad in pads:
                 # Pad properties
@@ -722,10 +769,25 @@ class ReportOptions(VariantOptions):
         self.top_comp_type = to_smd_tht(self.top_smd, self.top_tht)
         self.bot_comp_type = to_smd_tht(self.bot_smd, self.bot_tht)
         self.top_total = self.top_smd + self.top_tht
+        self.top_total_dnp = self.top_smd_dnp + self.top_tht_dnp
+        self.top_total_dnc = self.top_smd_dnc + self.top_tht_dnc
+        self.top_total_exc = self.top_smd_exc + self.top_tht_exc
         self.bot_total = self.bot_smd + self.bot_tht
+        self.bot_total_dnp = self.bot_smd_dnp + self.bot_tht_dnp
+        self.bot_total_dnc = self.bot_smd_dnc + self.bot_tht_dnc
+        self.bot_total_exc = self.bot_smd_exc + self.bot_tht_exc
         self.total_smd = self.top_smd + self.bot_smd
+        self.total_smd_dnp = self.top_smd_dnp + self.bot_smd_dnp
+        self.total_smd_dnc = self.top_smd_dnc + self.bot_smd_dnc
+        self.total_smd_exc = self.top_smd_exc + self.bot_smd_exc
         self.total_tht = self.top_tht + self.bot_tht
+        self.total_tht_dnp = self.top_tht_dnp + self.bot_tht_dnp
+        self.total_tht_dnc = self.top_tht_dnc + self.bot_tht_dnc
+        self.total_tht_exc = self.top_tht_exc + self.bot_tht_exc
         self.total_all = self.total_tht + self.total_smd
+        self.total_all_dnp = self.total_tht_dnp + self.total_smd_dnp
+        self.total_all_dnc = self.total_tht_dnc + self.total_smd_dnc
+        self.total_all_exc = self.total_tht_exc + self.total_smd_exc
         ###########################################################
         # Vias
         ###########################################################
@@ -1052,7 +1114,8 @@ class Report(BaseOutput):  # noqa: F821
         Generates a report about the design.
         Mainly oriented to be sent to the manufacturer or check PCB details.
         You can expand internal values, KiCad text variables and environment
-        variables using `${VARIABLE}` """
+        variables using `${VARIABLE}`.
+        You can also use `${V1+V2}` or similar using Python operators """
     def __init__(self):
         super().__init__()
         with document:

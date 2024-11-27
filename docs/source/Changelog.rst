@@ -67,8 +67,11 @@ Added
 
    -  ``top_total``, ``bot_total``, ``total_smd``, ``total_tht`` and
       ``total_all`` component counts (See #730)
+   -  Also versions of the counters for excluded (exc), not fitted (dnp)
+      and not changed (dnc) (See #730)
    -  ``total_components`` template, intended to generate CSV files with
       component counts (See #730)
+   -  Now you can use expressions like ${V1+V2}
 
 -  SCH Variant and \*SCH Print:
 

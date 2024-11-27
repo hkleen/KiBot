@@ -9,7 +9,8 @@ Design report
 Generates a report about the design.
 Mainly oriented to be sent to the manufacturer or check PCB details. |br|
 You can expand internal values, KiCad text variables and environment
-variables using `${VARIABLE}`
+variables using `${VARIABLE}`. |br|
+You can also use `${V1+V2}` or similar using Python operators
 
 Type: ``report``
 
