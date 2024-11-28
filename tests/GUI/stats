@@ -1,8 +1,8 @@
-48 outputs types with a total of 1924 different parameters
-Single type parameters: 1750 (91 %)
+48 outputs types with a total of 1926 different parameters
+Single type parameters: 1752 (91 %)
 Multi type parameters: 174 (9 %)
 Average parameters: 40
-Maximum number of parameters: 215
+Maximum number of parameters: 217
 Minimum number of parameters: 14
 Histogram:
   0-  9: 
@@ -75,7 +75,7 @@ Outputs sorted by parameters:
 - blender_export: 76
 - pcb_print: 94
 - bom: 148
-- panelize: 215
+- panelize: 217
 Average depth: 2.5416666666666665
 Maximum depth: 5
 Minimum depth: 2
@@ -137,7 +137,7 @@ Outputs sorted by depth:
 - bom: 5
 --------------------------------------------------------------------------------
 14 different data types
--             String:  844
+-             String:  846
 -            Boolean:  475
 -             Number:  266
 - ListStringSingular:  265
@@ -153,7 +153,7 @@ Outputs sorted by depth:
 -       NumberChoice:    1
 --------------------------------------------------------------------------------
 Used as single data type:
--             String:  690 
+-             String:  692 
 -            Boolean:  419 
 - ListStringSingular:  262 
 -             Number:  172 
@@ -392,11 +392,11 @@ Used as single data type:
 -              Number,String:   15 
 ================================================================================
 ================================================================================
-87 totals types with a total of 2295 different parameters
-Single type parameters: 2097 (91 %)
+87 totals types with a total of 2297 different parameters
+Single type parameters: 2099 (91 %)
 Multi type parameters: 198 (9 %)
 Average parameters: 26
-Maximum number of parameters: 215
+Maximum number of parameters: 217
 Minimum number of parameters: 1
 Histogram:
   0-  9: ************************
@@ -508,7 +508,7 @@ Totals sorted by parameters:
 - blender_export: 76
 - pcb_print: 94
 - bom: 148
-- panelize: 215
+- panelize: 217
 Average depth: 2.1839080459770117
 Maximum depth: 5
 Minimum depth: 1
@@ -609,7 +609,7 @@ Totals sorted by depth:
 - bom: 5
 --------------------------------------------------------------------------------
 14 different data types
--             String:  997
+-             String:  999
 -            Boolean:  573
 -             Number:  314
 - ListStringSingular:  294
@@ -625,7 +625,7 @@ Totals sorted by depth:
 -       NumberChoice:    1
 --------------------------------------------------------------------------------
 Used as single data type:
--             String:  827 
+-             String:  829 
 -            Boolean:  509 
 - ListStringSingular:  291 
 -             Number:  205 
@@ -652,4 +652,4 @@ Used as single data type:
 -                Dict,Number:    2 ['pcbdraw.options.margin', 'svg.options.margin']
 -             Boolean,Choice:    1 ['ibom.options.highlight_pin1']
 -          String,StringDict:    1 ['pcbdraw.options.remap']
-Found 3 unique warning/s (4 total)
+Found 2 unique warning/s (3 total)
