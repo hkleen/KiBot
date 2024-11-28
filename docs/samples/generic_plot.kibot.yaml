@@ -2278,6 +2278,10 @@ outputs:
           extends: ''
           # [dict=null] Used to add fiducial marks to the (rail/frame of) the panel
           fiducials:
+            # [string=''] Argument to pass to the plugin. Used for *plugin*
+            arg: ''
+            # [string=''] Plugin specification (PACKAGE.FUNCTION or PYTHON_FILE.FUNCTION). Used for *plugin*
+            code: ''
             # `copper_size` is an alias for `coppersize`
             # [number|string=1] Diameter of the copper spot
             coppersize: 1

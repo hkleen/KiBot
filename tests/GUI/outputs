@@ -7182,6 +7182,20 @@
                     "DataTypeBoolean"
                   ],
                   null
+                ],
+                [
+                  "code",
+                  [
+                    "DataTypeString"
+                  ],
+                  null
+                ],
+                [
+                  "arg",
+                  [
+                    "DataTypeString"
+                  ],
+                  null
                 ]
               ]
             ],
