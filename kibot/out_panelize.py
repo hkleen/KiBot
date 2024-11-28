@@ -385,6 +385,10 @@ class PanelizeFiducials(PanelOptions):
             """ [number|string=1] Diameter of the solder mask opening """
             self.paste = False
             """ Include the fiducials in the paste layer (therefore they appear on the stencil) """
+            self.code = ''
+            """ Plugin specification (PACKAGE.FUNCTION or PYTHON_FILE.FUNCTION). Used for *plugin* """
+            self.arg = ''
+            """ Argument to pass to the plugin. Used for *plugin* """
         super().__init__()
 
     def config(self, parent):
