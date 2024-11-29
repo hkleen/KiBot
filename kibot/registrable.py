@@ -177,6 +177,11 @@ class RegOutput(Optionable, Registrable):
     def is_output_or_group(name):
         return name in RegOutput._def_outputs or name in RegOutput._def_groups
 
+    @staticmethod
+    def reset_done():
+        for o in RegOutput._def_outputs.values():
+            o._done = False
+
     # ###################################
     #  Variants operations
     # ###################################
