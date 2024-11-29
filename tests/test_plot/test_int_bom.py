@@ -1348,6 +1348,7 @@ def test_int_bom_variant_t1(test_dir):
     ctx.clean_up()
 
 
+@pytest.mark.skipif(not context.ki8(), reason="Target is v8+")
 def test_int_bom_variant_t4(test_dir):
     """ Just like test_int_bom_variant_t1 but using the command line to specify all variants instead of repeating the
         outputs """
