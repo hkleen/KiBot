@@ -304,7 +304,8 @@ class Globals(FiltersOptions):
             self.use_dir_for_preflights = True
             """ Use the global `dir` as subdir for the preflights """
             self.variant = ''
-            """ Default variant to apply to all outputs """
+            """ Default variant to apply to all outputs. You can also use the `--variant` command line option to specify
+                one or more variants to be generated """
             self.out_dir = ''
             """ Base output dir, same as command line `--out-dir` """
             self.environment = Environment

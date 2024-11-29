@@ -1,0 +1,44 @@
+# Example KiBot config file
+kibot:
+  version: 1
+
+
+variants:
+  - name: 't1_v1'
+    comment: 'Test 1 Variant V1'
+    type: kibom
+    file_id: '_(V1)'
+    variant: V1
+
+  - name: 't1_v2'
+    comment: 'Test 1 Variant V2'
+    type: kibom
+    file_id: '_(V2)'
+    variant: V2
+
+  - name: 't1_v3'
+    comment: 'Test 1 Variant V3'
+    type: kibom
+    file_id: '_V3'
+    variant: V3
+
+  - name: 'bla bla'
+    comment: 'Test 1 Variant V1+V3'
+    type: kibom
+    file_id: '_bla_bla'
+    variant: ['V1', 'V3']
+
+
+preflight:
+  drc: true
+
+
+outputs:
+  - name: 'bom_internal'
+    comment: "Bill of Materials in CSV format"
+    type: bom
+    dir: BoM
+
+  - name: 'report'
+    comment: "Report"
+    type: report

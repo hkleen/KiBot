@@ -4,7 +4,8 @@ Usage:
   kibot [-b BOARD] [-e SCHEMA] [-c CONFIG] [-d OUT_DIR] [-s PRE]
          [-q | -v...] [-L LOGFILE] [-C | -i | -n] [-m MKFILE] [-A] [-g DEF] ...
          [-E DEF] ... [--defs-from-env] [-w LIST] [-D | -W] [--warn-ci-cd]
-         [--banner N] [--gui | --internal-check] [-I INJECT] [TARGET...]
+         [--banner N] [--gui | --internal-check] [-I INJECT] [--variant VAR] ...
+         [TARGET...]
   kibot [-v...] [-b BOARD] [-e SCHEMA] [-c PLOT_CONFIG] [--banner N]
          [-E DEF] ... [--defs-from-env] [--config-outs]
          [--only-pre|--only-groups] [--only-names] [--output-name-first] --list
@@ -33,6 +34,7 @@ Arguments:
 
 Options:
   -A, --no-auto-download           Disable dependencies auto-download
+  --all-variants                   Iterate for all variants
   -b BOARD, --board-file BOARD     The PCB .kicad-pcb board file
   --banner N                       Display banner number N (-1 == random)
   -c CONFIG, --plot-config CONFIG  The plotting config file to use
@@ -71,6 +73,13 @@ Options:
   --sub-pcbs                       When listing variants also include sub-PCBs
   -v, --verbose                    Show debugging information
   -V, --version                    Show program's version number and exit
+  --variant VAR                    Generate the VAR variant. Can be specified
+                                   multiple times to generate more than one
+                                   variant. Specifying ALL (uppercase) will
+                                   generate all available variants.
+                                   If you also want to generate the default
+                                   case, no variant, include NONE in the
+                                   list of variants
   -w, --no-warn LIST               Exclude the mentioned warnings (comma sep)
   -W, --stop-on-warnings           Stop on warnings
   --warn-ci-cd                     Don't disable warnings expected on CI/CD

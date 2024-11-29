@@ -1348,6 +1348,47 @@ def test_int_bom_variant_t1(test_dir):
     ctx.clean_up()
 
 
+def test_int_bom_variant_t4(test_dir):
+    """ Just like test_int_bom_variant_t1 but using the command line to specify all variants instead of repeating the
+        outputs """
+    prj = 'kibom-variante'
+    ctx = context.TestContextSCH(test_dir, prj, 'int_bom_var_t4_csv', BOM_DIR)
+    ctx.run(extra=['--variant', 'NONE', '--variant', 'ALL'])
+    # No variant
+    logging.debug("* No variant")
+    rows, header, info = ctx.load_csv(prj+'-bom.csv')
+    ref_column = header.index(REF_COLUMN_NAME)
+    check_kibom_test_netlist(rows, ref_column, 2, ['R4'], ['R1', 'R2', 'R3'])
+    VARIANTE_PRJ_INFO[1] = 'default'
+    check_csv_info(info, VARIANTE_PRJ_INFO, [4, 20, 3, 1, 3])
+    # V1
+    logging.debug("* t1_v1 variant")
+    rows, header, info = ctx.load_csv(prj+'-bom_(V1).csv')
+    check_kibom_test_netlist(rows, ref_column, 2, ['R3', 'R4'], ['R1', 'R2'])
+    ctx.search_err(r'Field Config of component (.*) contains extra spaces')
+    VARIANTE_PRJ_INFO[1] = 't1_v1'
+    check_csv_info(info, VARIANTE_PRJ_INFO, [4, 20, 2, 1, 2])
+    # V2
+    logging.debug("* t1_v2 variant")
+    rows, header, info = ctx.load_csv(prj+'-bom_(V2).csv')
+    check_kibom_test_netlist(rows, ref_column, 1, ['R2', 'R4'], ['R1', 'R3'])
+    VARIANTE_PRJ_INFO[1] = 't1_v2'
+    check_csv_info(info, VARIANTE_PRJ_INFO, [3, 20, 2, 1, 2])
+    # V3
+    logging.debug("* t1_v3 variant")
+    rows, header, info = ctx.load_csv(prj+'-bom_V3.csv')
+    check_kibom_test_netlist(rows, ref_column, 1, ['R2', 'R3'], ['R1', 'R4'])
+    VARIANTE_PRJ_INFO[1] = 't1_v3'
+    check_csv_info(info, VARIANTE_PRJ_INFO, [3, 20, 2, 1, 2])
+    # V1,V3
+    logging.debug("* `bla bla` variant")
+    rows, header, info = ctx.load_csv(prj+'-bom_bla_bla.csv')
+    check_kibom_test_netlist(rows, ref_column, 1, ['R2', 'R3'], ['R1', 'R4'])
+    VARIANTE_PRJ_INFO[1] = 'bla bla'
+    check_csv_info(info, VARIANTE_PRJ_INFO, [3, 20, 2, 1, 2])
+    ctx.clean_up()
+
+
 def check_value(rows, r_col, ref, v_col, val):
     for r in rows:
         refs = r[r_col].split(' ')

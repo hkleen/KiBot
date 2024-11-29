@@ -19,6 +19,11 @@ Versioning <https://semver.org/spec/v2.0.0.html>`__.
 Added
 ~~~~~
 
+-  CLI:
+
+   -  ``--variant`` to specify which variants will be generated (See
+      #737)
+
 -  Variants and filters:
 
    -  Outputs with variants can now specify an ``exclude_filter`` in

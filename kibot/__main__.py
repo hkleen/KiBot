@@ -11,7 +11,8 @@ Usage:
   kibot [-b BOARD] [-e SCHEMA] [-c CONFIG] [-d OUT_DIR] [-s PRE]
          [-q | -v...] [-L LOGFILE] [-C | -i | -n] [-m MKFILE] [-A] [-g DEF] ...
          [-E DEF] ... [--defs-from-env] [-w LIST] [-D | -W] [--warn-ci-cd]
-         [--banner N] [--gui | --internal-check] [-I INJECT] [TARGET...]
+         [--banner N] [--gui | --internal-check] [-I INJECT] [--variant VAR] ...
+         [TARGET...]
   kibot [-v...] [-b BOARD] [-e SCHEMA] [-c PLOT_CONFIG] [--banner N]
          [-E DEF] ... [--defs-from-env] [--config-outs]
          [--only-pre|--only-groups] [--only-names] [--output-name-first] --list
@@ -78,6 +79,13 @@ Options:
   --sub-pcbs                       When listing variants also include sub-PCBs
   -v, --verbose                    Show debugging information
   -V, --version                    Show program's version number and exit
+  --variant VAR                    Generate the VAR variant. Can be specified
+                                   multiple times to generate more than one
+                                   variant. Specifying ALL (uppercase) will
+                                   generate all available variants.
+                                   If you also want to generate the default
+                                   case, no variant, include NONE in the
+                                   list of variants
   -w, --no-warn LIST               Exclude the mentioned warnings (comma sep)
   -W, --stop-on-warnings           Stop on warnings
   --warn-ci-cd                     Don't disable warnings expected on CI/CD
@@ -592,9 +600,46 @@ def main():
         from .GUI.analyze import analyze
         analyze()
     else:
-        # Do all the job (preflight + outputs)
-        generate_outputs(args.target, args.invert_sel, args.skip_pre, args.cli_order, args.no_priority,
-                         dont_stop=args.dont_stop)
+        if args.variant:
+            # One or more variants specified at the CLI
+            if 'ALL' in args.variant:
+                variants = list(RegOutput.get_variants().keys())
+                if 'NONE' in args.variant:
+                    variants.insert(0, 'NONE')
+                if not variants:
+                    GS.exit_with_error('Asking to generate ALL variants, but no variant defined', EXIT_BAD_ARGS)
+                args.variant = variants
+            logger.debug(f'Generating variants: {args.variant}')
+            # Check the list of variants is valid and find their objects
+            solved_variants = {}
+            for variant in args.variant:
+                if variant == 'NONE':
+                    solved_variants[''] = None
+                else:
+                    solved_variants[variant] = RegOutput.check_variant(variant)
+            # Now iterate all of them
+            first = True
+            for var_name, var_obj in solved_variants.items():
+                logger.info(f'Variant `{var_name}`:')
+                GS.variant = GS.global_variant = var_name
+                GS.solved_global_variant = var_obj
+                if first:
+                    first = False
+                else:
+                    # Reset all outputs
+                    for o in RegOutput.get_outputs():
+                        old_tree = o._tree
+                        o.__init__()
+                        o.set_tree(old_tree)
+                    # Preflights aren't "variantic", so skip all of them for the rest of variants
+                    args.skip_pre = 'all'
+                generate_outputs(args.target, args.invert_sel, args.skip_pre, args.cli_order, args.no_priority,
+                                 dont_stop=args.dont_stop)
+            return 0
+        else:
+            # Do all the job (preflight + outputs)
+            generate_outputs(args.target, args.invert_sel, args.skip_pre, args.cli_order, args.no_priority,
+                             dont_stop=args.dont_stop)
     # Print total warnings
     logger.log_totals()
 

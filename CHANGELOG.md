@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.8.3] - UNRELEASED
 ### Added
+- CLI:
+  - `--variant` to specify which variants will be generated (See #737)
 - Variants and filters:
   - Outputs with variants can now specify an `exclude_filter` in addition to the
     variant. Like it was possible for transform and dnf
