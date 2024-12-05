@@ -524,7 +524,7 @@ class PanelizePost(PanelOptions):
             self.script_arg = None
             """ {scriptarg} """
             self.origin = 'tl'
-            """ [tl,tr,bl,br,mt,mb,ml,mr,c] Specify if the auxiliary origin an grid origin should be placed.
+            """ [tl,tr,bl,br,mt,mb,ml,mr,c] Specify if the auxiliary origin and grid origin should be replaced.
                 Can be one of tl, tr, bl, br (corners), mt, mb, ml, mr (middle of sides), c (center).
                 Empty string does not changes the origin """
             self.dimensions = False
