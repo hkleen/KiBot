@@ -42,3 +42,5 @@ ojo/
 .cache
 .cache_3d
 log
+.*~
+*.dst
