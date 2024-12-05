@@ -304,7 +304,7 @@ class ComponentGroup(object):
             self.fields[field] += " " + value
 
     def update_fields(self, conv, bottom_negative_x, x_origin, y_origin, angle_positive, footprint_populate_values,
-                      footprint_type_values, uses_fp_info, usealt=False):
+                      footprint_type_values, uses_fp_info, usealt=False, right_digits=4):
         for c in self.components:
             for f, v in c.get_user_fields():
                 self.update_field(f, v, c.ref)
@@ -337,12 +337,13 @@ class ComponentGroup(object):
         pos_x = (comp.footprint_x - x_origin) * conv
         if bottom_negative_x and comp.bottom:
             pos_x = -pos_x
-        self.fields[ColumnList.COL_FP_X_L] = "{:.4f}".format(pos_x)
-        self.fields[ColumnList.COL_FP_Y_L] = "{:.4f}".format(-(comp.footprint_y - y_origin) * conv)
+        float_format = "{{:.{}f}}".format(right_digits) if right_digits else "{}"
+        self.fields[ColumnList.COL_FP_X_L] = float_format.format(pos_x)
+        self.fields[ColumnList.COL_FP_Y_L] = float_format.format(-(comp.footprint_y - y_origin) * conv)
         rot = comp.footprint_rot
         if angle_positive:
             rot = rot % 360
-        self.fields[ColumnList.COL_FP_ROT_L] = "{:.4f}".format(rot)
+        self.fields[ColumnList.COL_FP_ROT_L] = float_format.format(rot)
         self.fields[ColumnList.COL_FP_SIDE_L] = "bottom" if comp.bottom else "top"
         type = 0
         if comp.tht:
@@ -358,8 +359,8 @@ class ComponentGroup(object):
             type = ''
         self.fields[ColumnList.COL_FP_TYPE_NV_L] = type
         self.fields[ColumnList.COL_FP_FIT_L] = footprint_populate_values[comp.fitted]
-        self.fields[ColumnList.COL_FP_XS_L] = "{:.4f}".format(comp.footprint_w * conv)
-        self.fields[ColumnList.COL_FP_YS_L] = "{:.4f}".format(comp.footprint_h * conv)
+        self.fields[ColumnList.COL_FP_XS_L] = float_format.format(comp.footprint_w * conv)
+        self.fields[ColumnList.COL_FP_YS_L] = float_format.format(comp.footprint_h * conv)
         self.fields[ColumnList.COL_FP_LIB_L] = comp.footprint_lib
         self.fields[ColumnList.COL_SHEETPATH_L] = comp.sheet_path_h
         if not self.fields[ColumnList.COL_DESCRIPTION_L]:
@@ -497,7 +498,7 @@ def group_components(cfg, components):
         g.sort_components()
         # Fill the columns
         g.update_fields(cfg.conv_units, cfg.bottom_negative_x, x_origin, y_origin, cfg.angle_positive,
-                        cfg.footprint_populate_values, cfg.footprint_type_values, uses_fp_info, cfg._use_alt)
+                        cfg.footprint_populate_values, cfg.footprint_type_values, uses_fp_info, cfg._use_alt, cfg.right_digits)
         if cfg.normalize_values:
             g.fields[ColumnList.COL_VALUE_L] = normalize_value(g.components[0], decimal_point)
     # Sort the groups

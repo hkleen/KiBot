@@ -35,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     ranges
   - `use_ref_ranges` alias for `use_alt`
   - New *kicad* format to mimic KiCad's internal BoM.
+  - `right_digits` option to control the decimals for position fields (#739)
 - Drill:
   - Option to don't generate the drill files, so you can generate only the maps
     (#720)

@@ -1674,6 +1674,13 @@
           null
         ],
         [
+          "right_digits",
+          [
+            "DataTypeNumber"
+          ],
+          null
+        ],
+        [
           "bottom_negative_x",
           [
             "DataTypeBoolean"

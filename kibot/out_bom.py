@@ -596,8 +596,12 @@ class BoMOptions(BaseOptions):
             self.count_smd_tht = False
             """ Show the stats about how many of the components are SMD/THT. You must provide the PCB """
             self.units = 'millimeters'
-            """ *[millimeters,inches,mils] Units used for the positions ('Footprint X' and 'Footprint Y' columns).
+            """ *[millimeters,inches,mils] Units used for the positions ('Footprint X', 'Footprint Y', 'Footprint X-Size' and
+                'Footprint Y-Size' columns).
                 Affected by global options """
+            self.right_digits = 4
+            """ Number of digits for mantissa part of coordinates ('Footprint X', 'Footprint Y', 'Footprint X-Size',
+                'Footprint Y-Size' and 'Footprint Rot' columns) (0 is auto) """
             self.bottom_negative_x = False
             """ Use negative X coordinates for footprints on bottom layer (for XYRS) """
             self.use_aux_axis_as_origin = True

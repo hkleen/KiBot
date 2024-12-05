@@ -14,7 +14,7 @@ PanelizePost parameters
    Specify mill radius (usually 1 mm). 0 radius disables the functionality.
 -  ``millradiusouter`` :index:`: <pair: output - panelize - options - configs - post; millradiusouter>` [:ref:`number <number>` | :ref:`string <string>`] (default: ``0``) Like `millradius`, but modifies only board outer counter.
    No internal features of the board are affected.
--  ``origin`` :index:`: <pair: output - panelize - options - configs - post; origin>` [:ref:`string <string>`] (default: ``'tl'``) (choices: "tl", "tr", "bl", "br", "mt", "mb", "ml", "mr", "c") Specify if the auxiliary origin an grid origin should be placed.
+-  ``origin`` :index:`: <pair: output - panelize - options - configs - post; origin>` [:ref:`string <string>`] (default: ``'tl'``) (choices: "tl", "tr", "bl", "br", "mt", "mb", "ml", "mr", "c") Specify if the auxiliary origin and grid origin should be replaced.
    Can be one of tl, tr, bl, br (corners), mt, mb, ml, mr (middle of sides), c (center). |br|
    Empty string does not changes the origin.
 -  *reconstruct_arcs* :index:`: <pair: output - panelize - options - configs - post; reconstruct_arcs>` Alias for reconstructarcs.

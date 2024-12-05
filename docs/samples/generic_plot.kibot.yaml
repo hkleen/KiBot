@@ -721,6 +721,9 @@ outputs:
       ref_range_separator: '-'
       # [string=' '] Separator used for the list of references. Ignored when using the KICAD format
       ref_separator: ' '
+      # [number=4] Number of digits for mantissa part of coordinates ('Footprint X', 'Footprint Y', 'Footprint X-Size',
+      # 'Footprint Y-Size' and 'Footprint Rot' columns) (0 is auto)
+      right_digits: 4
       # [boolean=true] Sort in ascending order
       sort_ascending: true
       # [string='type_value'] [type_value,type_value_ref,ref,kicad_bom] Sorting criteria.
@@ -731,7 +734,8 @@ outputs:
       sort_style: 'type_value'
       # [boolean=false] Generate the `Source BoM` column using the reference ID instead of the project name
       source_by_id: false
-      # [string='millimeters'] [millimeters,inches,mils] Units used for the positions ('Footprint X' and 'Footprint Y' columns).
+      # [string='millimeters'] [millimeters,inches,mils] Units used for the positions ('Footprint X', 'Footprint Y', 'Footprint X-Size' and
+      # 'Footprint Y-Size' columns).
       # Affected by global options
       units: 'millimeters'
       # [boolean=false] Print grouped references in the alternate compressed style eg: R1-R7,R18.
@@ -2453,7 +2457,7 @@ outputs:
             # [number|string=0] Like `millradius`, but modifies only board outer counter.
             # No internal features of the board are affected
             millradiusouter: 0
-            # [string='tl'] [tl,tr,bl,br,mt,mb,ml,mr,c] Specify if the auxiliary origin an grid origin should be placed.
+            # [string='tl'] [tl,tr,bl,br,mt,mb,ml,mr,c] Specify if the auxiliary origin and grid origin should be replaced.
             # Can be one of tl, tr, bl, br (corners), mt, mb, ml, mr (middle of sides), c (center).
             # Empty string does not changes the origin
             origin: 'tl'

@@ -34,7 +34,6 @@ Arguments:
 
 Options:
   -A, --no-auto-download           Disable dependencies auto-download
-  --all-variants                   Iterate for all variants
   -b BOARD, --board-file BOARD     The PCB .kicad-pcb board file
   --banner N                       Display banner number N (-1 == random)
   -c CONFIG, --plot-config CONFIG  The plotting config file to use

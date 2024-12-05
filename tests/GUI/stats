@@ -1,5 +1,5 @@
-48 outputs types with a total of 1926 different parameters
-Single type parameters: 1752 (91 %)
+48 outputs types with a total of 1927 different parameters
+Single type parameters: 1753 (91 %)
 Multi type parameters: 174 (9 %)
 Average parameters: 40
 Maximum number of parameters: 217
@@ -74,7 +74,7 @@ Outputs sorted by parameters:
 - render_3d: 67
 - blender_export: 76
 - pcb_print: 94
-- bom: 148
+- bom: 149
 - panelize: 217
 Average depth: 2.5416666666666665
 Maximum depth: 5
@@ -139,7 +139,7 @@ Outputs sorted by depth:
 14 different data types
 -             String:  846
 -            Boolean:  475
--             Number:  266
+-             Number:  267
 - ListStringSingular:  265
 -             Choice:   95
 -               Dict:   79
@@ -156,7 +156,7 @@ Used as single data type:
 -             String:  692 
 -            Boolean:  419 
 - ListStringSingular:  262 
--             Number:  172 
+-             Number:  173 
 -             Choice:   92 
 -               Dict:   70 
 -           ListDict:   20 
@@ -392,8 +392,8 @@ Used as single data type:
 -              Number,String:   15 
 ================================================================================
 ================================================================================
-87 totals types with a total of 2297 different parameters
-Single type parameters: 2099 (91 %)
+87 totals types with a total of 2298 different parameters
+Single type parameters: 2100 (91 %)
 Multi type parameters: 198 (9 %)
 Average parameters: 26
 Maximum number of parameters: 217
@@ -507,7 +507,7 @@ Totals sorted by parameters:
 - render_3d: 67
 - blender_export: 76
 - pcb_print: 94
-- bom: 148
+- bom: 149
 - panelize: 217
 Average depth: 2.1839080459770117
 Maximum depth: 5
@@ -611,7 +611,7 @@ Totals sorted by depth:
 14 different data types
 -             String:  999
 -            Boolean:  573
--             Number:  314
+-             Number:  315
 - ListStringSingular:  294
 -             Choice:  127
 -               Dict:   90
@@ -628,7 +628,7 @@ Used as single data type:
 -             String:  829 
 -            Boolean:  509 
 - ListStringSingular:  291 
--             Number:  205 
+-             Number:  206 
 -             Choice:  124 
 -               Dict:   73 
 -           ListDict:   30 
@@ -652,4 +652,4 @@ Used as single data type:
 -                Dict,Number:    2 ['pcbdraw.options.margin', 'svg.options.margin']
 -             Boolean,Choice:    1 ['ibom.options.highlight_pin1']
 -          String,StringDict:    1 ['pcbdraw.options.remap']
-Found 2 unique warning/s (3 total)
+Found 3 unique warning/s (4 total)
