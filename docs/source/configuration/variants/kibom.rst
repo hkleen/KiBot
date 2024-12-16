@@ -10,6 +10,13 @@
    -VARIANT excludes a component from VARIANT. |br|
    +VARIANT includes the component only if we are using this variant
 
+.. note::
+      Don't confuse this variant style with the `kibom` output. In fact variants
+      doesn't apply to `kibom` output because it just uses the internal mechanism of
+      KiBom. Use the `bom` output instead, in this case you can use this variant style to
+      get similar results to what you get from `kibom`
+.. 
+
    -  ``comment`` :index:`: <pair: variant - kibom; comment>` [:ref:`string <string>`] (default: ``''``) A comment for documentation purposes.
    -  ``config_field`` :index:`: <pair: variant - kibom; config_field>` [:ref:`string <string>`] (default: ``'Config'``) Name of the field used to classify components.
    -  ``dnc_filter`` :index:`: <pair: variant - kibom; dnc_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_kibom_dnc_CONFIG_FIELD'``) Name of the filter to mark components as 'Do Not Change'.
