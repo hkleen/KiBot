@@ -101,6 +101,10 @@ Fixed
    -  Problems with footprints where the center isn’t the geometric
       center (#725)
 
+-  Navigate Results:
+
+   -  Problems when using ``erc: true`` or ``drc: true`` (#742)
+
 Changed
 ~~~~~~~
 

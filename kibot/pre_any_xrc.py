@@ -106,9 +106,8 @@ class XRC(BasePreFlight):
         ops = self.erc if self._sch_related else self.drc
         if isinstance(ops, bool):
             new_ops = self._opts_cls()
+            new_ops.config(self)  # Get the defaults
             new_ops.enabled = ops
-            new_ops.format = ['HTML']
-            new_ops.filters = []
             ops = new_ops
         # Transfer the options to this class
         for k, v in dict(ops.get_attrs_gen()).items():

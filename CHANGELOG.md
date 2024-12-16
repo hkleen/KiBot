@@ -59,6 +59,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The field name `Reference` was accepted, but didn't work
 - Do Not Fit footprint crosses:
   - Problems with footprints where the center isn't the geometric center (#725)
+- Navigate Results:
+  - Problems when using `erc: true` or `drc: true` (#742)
 
 ### Changed
 - Default temporal layer for internal use is now "Margin", instead of "User.9"
