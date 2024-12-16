@@ -262,30 +262,40 @@ def update_table(ops, parent):
         group_found = True
         logger.debug('  - ' + group_name)
 
+        # Extract the group suffix and parse optional brackets
         group_suffix = group_name[group_prefix_l:]
-        index, slice_str = None, None
+        slice_str = None
+        index = None
 
-        # Check if slicing information exists
-        slice_match = re.search(r'\[.*?]$', group_suffix)
-        if slice_match:
-            slice_str = slice_match.group(0)
-            group_suffix = re.sub(r'\[.*?]$', '', group_suffix)
+        # Check for number of brackets in the group name
+        bracket_matches = re.findall(r'\[.*?\]', group_suffix)
 
-        if group_suffix[-1] == ']':
-            index = int(group_suffix[-2]) - 1
-            group_suffix = group_suffix[:-3]
-            logger.debug(f'    - {group_suffix} index: {index}')
+        if len(bracket_matches) == 2:
+            # Two brackets: second is slicing expression
+            slice_str = bracket_matches[1]
+            index = int(bracket_matches[0][1:-1]) - 1  # First bracket is the index
+            group_suffix = re.sub(r'\[.*?\]', '', group_suffix, count=2)  # Remove both brackets
+        elif len(bracket_matches) == 1:
+            # One bracket: determine if it's an index or a slice
+            if len(csv_targets) == 1:
+                slice_str = bracket_matches[0]  # Single CSV means it must be a slice
+            else:
+                index = int(bracket_matches[0][1:-1]) - 1  # Multiple CSVs mean it's an index
+            group_suffix = re.sub(r'\[.*?\]', '', group_suffix, count=1)  # Remove the bracket
+
+        logger.debug(f'    - Parsed group_suffix: {group_suffix}, index: {index}, slice_str: {slice_str}')
 
         out, csv = out_to_csv_mapping.get(group_suffix, (None, None))
         if not csv:
             logger.warning(W_NOMATCHGRP + f'No output to handle `{group_name}` found')
             continue
 
+        # Default index to 0 if csv has only one element
         if index is None:
             index = 0
 
         if index < 0 or index >= len(csv):
-            msg = f'index {index + 1} is out of range, '
+            msg = f'Index {index + 1} is out of range, '
             raise KiPlotConfigurationError(msg)
 
         x1, y1, x2, y2 = GS.compute_group_boundary(g)
