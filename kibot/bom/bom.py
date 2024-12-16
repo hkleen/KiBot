@@ -334,6 +334,8 @@ class ComponentGroup(object):
         self.fields[ColumnList.COL_FP_L] = comp.footprint
         if uses_fp_info and not comp.has_pcb_info:
             logger.warning(W_MISSFPINFO+'Missing footprint information for {}'.format(comp.ref))
+            if not GS.pcb_file:
+                logger.warning(W_MISSFPINFO+'Please provide a PCB file')
         pos_x = (comp.footprint_x - x_origin) * conv
         if bottom_negative_x and comp.bottom:
             pos_x = -pos_x
