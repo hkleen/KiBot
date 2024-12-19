@@ -57,6 +57,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Any output filtering by reference ignored them (#729)
 - BoM
   - The field name `Reference` was accepted, but didn't work
+  - Missing footprint information for sub-units (#741)
 - Do Not Fit footprint crosses:
   - Problems with footprints where the center isn't the geometric center (#725)
 - Navigate Results:

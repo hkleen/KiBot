@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2020-2022 Salvador E. Tropea
-# Copyright (c) 2020-2022 Instituto Nacional de Tecnología Industrial
-# License: GPL-3.0
+# Copyright (c) 2020-2024 Salvador E. Tropea
+# Copyright (c) 2020-2024 Instituto Nacional de Tecnología Industrial
+# License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
 """
 KiCad v5 (and older) Schematic format.
@@ -21,7 +21,7 @@ from .error import SchError, SchFileError, SchLibError
 from ..gs import GS
 from ..misc import (W_BADPOLI, W_POLICOORDS, W_BADSQUARE, W_BADCIRCLE, W_BADARC, W_BADTEXT, W_BADPIN, W_BADCOMP, W_BADDRAW,
                     W_UNKDCM, W_UNKAR, W_ARNOPATH, W_ARNOREF, W_MISCFLD, W_EXTRASPC, W_NOLIB, W_INCPOS, W_NOANNO, W_MISSLIB,
-                    W_MISSDCM, W_MISSCMP, W_MISFLDNAME, W_NOENDLIB, try_decode_utf8)
+                    W_MISSDCM, W_MISSCMP, W_MISFLDNAME, W_NOENDLIB, W_VALMISMATCH, W_MULTIREF, try_decode_utf8)
 from .. import log
 
 logger = log.get_logger()
@@ -1680,7 +1680,16 @@ class Schematic(object):
             files.update(sch.sheet.get_files())
         return sorted(files)
 
-    def get_components(self, exclude_power=True):
+    def check_repeated_ref(self, base_c, c):
+        """ Check the base and the new component are coherent.
+            Note that KiCad enforces it, fields for sub-units are the same.
+            This is an integrity check """
+        if base_c.value != c.value:
+            logger.warning(f"{W_VALMISMATCH}Two components with `{c.ref}` but different value")
+        if base_c.footprint != c.footprint:
+            logger.warning(f"{W_VALMISMATCH}Two components with `{c.ref}` but different footprint")
+
+    def get_components(self, exclude_power=True, collapse=True):
         """ A list of all the components. """
         if exclude_power:
             components = [c for c in self.components if not c.is_power]
@@ -1688,6 +1697,57 @@ class Schematic(object):
             components = list(self.components)
         for sch in self.sheets:
             components.extend(sch.sheet.get_components(exclude_power))
+        if collapse:
+            # Here we handle: repeated references and sub-units
+            # For sub-units we keep one of them
+            # For repeated references we increase the "qty"
+            if GS.debug_level > 3:
+                logger.debug('Before collapse:')
+                for c in components:
+                    fields = {f.name: f.value for f in c.fields}
+                    logger.debug(f'{c}: {c.qty} {fields}')
+
+            new_comps = []
+            found_comps = {}
+            found_comps_u = {}
+            for c in components:
+                unit = c.unit or 0
+                if c.ref not in found_comps:
+                    # First time we see it
+                    found_comps_u[c.ref] = {unit: 1}
+                    found_comps[c.ref] = c
+                    new_comps.append(c)
+                    continue
+                # We already got this reference, increment the counter for this unit
+                known_units = found_comps_u[c.ref]
+                known_units[unit] = known_units.get(unit, 0)+1
+                self.check_repeated_ref(found_comps[c.ref], c)
+            # Adjust the qty member and keep the smaller unit number
+            components = []
+            for c in new_comps:
+                # Reset the PCB info, note that deepcopy of it is really slow
+                c.has_pcb_info = False
+                c.pad_properties = {}
+                units = found_comps_u[c.ref]
+                qty = max(units.values())
+                if len(units) == 1 and qty == 1:
+                    # No need to adjust details
+                    components.append(c)
+                    continue
+                # Adjust details using a copy
+                c = deepcopy(c)
+                c.qty = qty
+                logger.debug(c.qty)
+                if c.qty > 1:
+                    logger.warning(W_MULTIREF+f'multiple `{c.ref}` components, not all operations will work')
+                c.unit = min(units.keys())
+                components.append(c)
+
+            if GS.debug_level > 3:
+                logger.debug('After collapse:')
+                for c in components:
+                    fields = {f.name: f.value for f in c.fields}
+                    logger.debug(f'{c}: {c.qty} {fields}')
         components.sort(key=lambda g: g.ref)
         return components
 

@@ -1882,3 +1882,59 @@ def test_int_bom_simple_sub_pcb(test_dir):
     ref_column = header.index("Designator")
     check_kibom_test_netlist(rows, ref_column, 1, ['R1', 'R2', 'R3', 'R4', 'R5'], ['R6', 'R7', 'R8', 'R9', 'R10'], ref_sep=',')
     ctx.clean_up()
+
+
+@pytest.mark.skipif(not context.ki8(), reason="Just checking with modern KiCad")
+def test_bom_panel_C1x4_base(test_dir):
+    """ This tests a 4 boards panel with just one component C1 """
+    prj = 'panel_C1x4'
+    ctx = context.TestContext(test_dir, prj, 'int_bom_csv_no_extra', 'BoM')
+    ctx.run()
+    rows, header, info = ctx.load_csv(prj+'-bom.csv')
+    # All in 1 group
+    assert len(rows) == 1
+    # Qty 1
+    assert rows[0][6] == '1'
+    ctx.clean_up()
+
+
+@pytest.mark.skipif(not context.ki8(), reason="Just checking with modern KiCad")
+def test_bom_panel_C1x4_rep(test_dir):
+    """ This tests a 4 boards panel with just one component C1, SCH repeats """
+    prj = 'panel_C1x4_rep'
+    ctx = context.TestContext(test_dir, prj, 'int_bom_csv_no_extra', 'BoM')
+    ctx.run()
+    rows, header, info = ctx.load_csv(prj+'-bom.csv')
+    # All in 1 group
+    assert len(rows) == 1
+    # Qty 4
+    assert rows[0][6] == '4'
+    ctx.clean_up()
+
+
+@pytest.mark.skipif(not context.ki8(), reason="Just checking with modern KiCad")
+def test_bom_panel_U1x4_base(test_dir):
+    """ This tests a 4 boards panel with just one component U1 """
+    prj = 'panel_U1x4'
+    ctx = context.TestContext(test_dir, prj, 'int_bom_csv_no_extra', 'BoM')
+    ctx.run()
+    rows, header, info = ctx.load_csv(prj+'-bom.csv')
+    # All in 1 group
+    assert len(rows) == 1
+    # Qty 1
+    assert rows[0][6] == '1'
+    ctx.clean_up()
+
+
+@pytest.mark.skipif(not context.ki8(), reason="Just checking with modern KiCad")
+def test_bom_panel_U1x4_rep(test_dir):
+    """ This tests a 4 boards panel with just one component U1, SCH repeats """
+    prj = 'panel_U1x4_rep'
+    ctx = context.TestContext(test_dir, prj, 'int_bom_csv_no_extra', 'BoM')
+    ctx.run()
+    rows, header, info = ctx.load_csv(prj+'-bom.csv')
+    # All in 1 group
+    assert len(rows) == 1
+    # Qty 4
+    assert rows[0][6] == '4'
+    ctx.clean_up()

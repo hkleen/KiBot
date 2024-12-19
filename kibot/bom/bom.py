@@ -182,7 +182,7 @@ class ComponentGroup(object):
     def add_component(self, c):
         """ Add a component to the group.
             Avoid repetition, checks if suitable.
-            Note: repeated components happens when a component contains more than one unit """
+            Note: repeated components happens when the PCB is a panel """
         if not self.components:
             self.components.append(c)
             self.refs[c.ref+c.project] = c

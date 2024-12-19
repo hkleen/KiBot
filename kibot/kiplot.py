@@ -26,7 +26,7 @@ from .misc import (PLOT_ERROR, CORRUPTED_PCB, EXIT_BAD_ARGS, CORRUPTED_SCH, vers
                    MOD_VIRTUAL, W_PCBNOSCH, W_NONEEDSKIP, W_WRONGCHAR, name2make, W_TIMEOUT, W_KIAUTO, W_VARSCH,
                    NO_SCH_FILE, NO_PCB_FILE, W_VARPCB, NO_YAML_MODULE, WRONG_ARGUMENTS, FAILED_EXECUTE, W_VALMISMATCH,
                    MOD_EXCLUDE_FROM_POS_FILES, MOD_EXCLUDE_FROM_BOM, MOD_BOARD_ONLY, hide_stderr, W_MAXDEPTH, DONT_STOP,
-                   W_BADREF, W_MULTIREF, try_decode_utf8)
+                   W_BADREF, try_decode_utf8)
 from .error import PlotError, KiPlotConfigurationError, config_error, KiPlotError
 from .config_reader import CfgYamlReader
 from .pre_base import BasePreFlight
@@ -371,23 +371,14 @@ def get_board_comps_data(comps):
     if not GS.pcb_file:
         return
     load_board()
-    # Each reference could be more than one sub-units
-    # So this hash is ref -> [List of units]
-    comps_hash = {}
-    for c in comps:
-        cur_list = comps_hash.get(c.ref, [])
-        cur_list.append(c)
-        comps_hash[c.ref] = cur_list
+    comps_hash = {c.ref: c for c in comps}
     for m in GS.get_modules():
         ref = m.GetReference()
         attrs = m.GetAttributes()
-        ref_in_hash = ref in comps_hash
-        if not ref_in_hash or not len(comps_hash[ref]):
+        c = comps_hash.get(ref)
+        if c is None:
             if not (attrs & MOD_BOARD_ONLY) and not ref.startswith('KiKit_'):
-                if not ref_in_hash:
-                    logger.warning(W_PCBNOSCH+f'`{ref}` component in board, but not in schematic')
-                else:
-                    logger.warning(W_MULTIREF+f'multiple `{ref}` components, not all operations will work')
+                logger.warning(W_PCBNOSCH+f'`{ref}` component in board, but not in schematic')
             if not GS.global_include_components_from_pcb:
                 # v1.6.3 behavior
                 continue
@@ -396,9 +387,10 @@ def get_board_comps_data(comps):
             if c is None:
                 continue
             comps.append(c)
-        else:
-            # Take one with this ref. Note that more than one is not a normal situation
-            c = comps_hash[ref].pop()
+        if c.has_pcb_info:
+            # We already got this reference and filled the PCB info, this is another copy
+            c = deepcopy(c)
+            comps.append(c)
         new_value = m.GetValue()
         if new_value != c.value and '${' not in c.value:
             logger.warning(f"{W_VALMISMATCH}Value field mismatch for `{ref}` (SCH: `{c.value}` PCB: `{new_value}`)")
