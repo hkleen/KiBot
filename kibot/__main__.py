@@ -638,8 +638,18 @@ def main():
             return 0
         else:
             # Do all the job (preflight + outputs)
-            generate_outputs(args.target, args.invert_sel, args.skip_pre, args.cli_order, args.no_priority,
-                             dont_stop=args.dont_stop)
+            if False:
+                import cProfile
+                logger.error('Start')
+                with cProfile.Profile() as pr:
+                    generate_outputs(args.target, args.invert_sel, args.skip_pre, args.cli_order, args.no_priority,
+                                     dont_stop=args.dont_stop)
+                    pr.print_stats(sort='time')
+                    pr.print_stats(sort='cumulative')
+                logger.error('End')
+            else:
+                generate_outputs(args.target, args.invert_sel, args.skip_pre, args.cli_order, args.no_priority,
+                                 dont_stop=args.dont_stop)
     # Print total warnings
     logger.log_totals()
 
