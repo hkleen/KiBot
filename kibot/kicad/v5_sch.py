@@ -1696,7 +1696,7 @@ class Schematic(object):
         else:
             components = list(self.components)
         for sch in self.sheets:
-            components.extend(sch.sheet.get_components(exclude_power))
+            components.extend(sch.sheet.get_components(exclude_power, collapse))
         if collapse:
             # Here we handle: repeated references and sub-units
             # For sub-units we keep one of them
