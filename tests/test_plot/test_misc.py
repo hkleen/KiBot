@@ -1517,7 +1517,7 @@ def test_diff_kiri_1(test_dir):
     # Copy the "new" file
     shutil.copy2(ctx.board_file.replace(prj, prj+'_diff'), file)
     # Run the test
-    ctx.run(extra=['-b', file], no_board_file=True)
+    ctx.run(extra=['-b', file], no_board_file=True, extra_debug=True)
     ctx.expect_out_file(['_local_/_KIRI_/pcb_layers', hash+'/_KIRI_/pcb_layers',
                          '_local_/_KIRI_/sch_sheets', hash+'/_KIRI_/sch_sheets',
                          'index.html', 'commits', 'project'])
