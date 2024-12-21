@@ -593,9 +593,9 @@ class ReportOptions(VariantOptions):
         # Clearance
         ###########################################################
         self.clearance = ds.GetSmallestClearanceValue()
-        self.h2h = ds.m_HoleToHoleMin
-        self.c2h = ds.m_HoleClearance
-        self.c2e = ds.m_CopperEdgeClearance
+        self.h2h = ds.m_HoleToHoleMin if GS.ki5 else None
+        self.c2h = ds.m_HoleClearance if GS.ki5 else None
+        self.c2e = ds.m_CopperEdgeClearance if GS.ki5 else None
         ###########################################################
         # Track width (min)
         ###########################################################
