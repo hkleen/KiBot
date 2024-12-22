@@ -195,13 +195,10 @@ def update_table_group(g, pos_x, pos_y, width, tlayer, ops, out, csv_file, slice
     table_h = 0
     for c in cols:
         row_y = int(y + row_h / 2)
-        text_list = []
         for d in c.data:
             txt, _ = draw_text(g, c.x + c.xoffset, int(row_y - font_w), d, font_w, font_w,
                                tlayer, alignment=out._text_alignment, font=font)
-
             row_y += row_h
-            text_list.append(txt)
         table_h = int(max(table_h, row_y - pos_y) - row_h / 2)
 
     draw_line(g, pos_x, pos_y, pos_x + width, pos_y, tlayer, line_w=GS.from_mm(out.top_rule_width))
