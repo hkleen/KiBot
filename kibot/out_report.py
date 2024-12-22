@@ -336,7 +336,7 @@ class ReportOptions(VariantOptions):
             parts = line.split(separator)
             parts = [part.lstrip(' \t') for part in parts]
             line = separator.join(parts)
-                
+
         return line
 
     def context_defined_tracks(self, line):
