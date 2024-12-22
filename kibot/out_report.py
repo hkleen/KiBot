@@ -227,6 +227,8 @@ class ReportOptions(VariantOptions):
             """ Number of digits for values expressed in inches """
             self.display_trailing_zeros = False
             """ Set to True if trailing zeros should be displayed. """
+            self.csv_remove_leading_spaces = False
+            """ If set to True, will remove any leading spaces/tabs at the end of each separator. """
         super().__init__()
         self._expand_id = 'report'
         self._expand_ext = 'txt'
@@ -328,6 +330,13 @@ class ReportOptions(VariantOptions):
                 if not self._shown_defined:
                     self._shown_defined = True
                     logger.non_critical_error('Defined values: {}'.format([v for v in defined.keys() if v[0] != '_']))
+
+        if self.csv_remove_leading_spaces:
+            separator = self._parent.get_csv_separator()
+            parts = line.split(separator)
+            parts = [part.lstrip(' \t') for part in parts]
+            line = separator.join(parts)
+                
         return line
 
     def context_defined_tracks(self, line):
