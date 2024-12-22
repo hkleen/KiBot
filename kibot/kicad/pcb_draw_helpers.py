@@ -6,6 +6,7 @@
 # Helper functions to draw on a BOARD object
 from ..gs import GS
 import pcbnew
+import re
 if GS.ki7:
     # Is this change really needed??!!! People doesn't have much to do ...
     GR_TEXT_HJUSTIFY_LEFT = pcbnew.GR_TEXT_H_ALIGN_LEFT
@@ -64,10 +65,10 @@ def draw_line(g, x1, y1, x2, y2, layer, line_w=10000):
     GS.board.Add(nl)
 
 
-def draw_text(g, x, y, text, h, w, layer, bold=False, alignment=GR_TEXT_HJUSTIFY_LEFT):
+def draw_text(g, x, y, text, h, w, layer, bold=False, alignment=GR_TEXT_HJUSTIFY_LEFT, font=None):
     nt = pcbnew.PCB_TEXT(GS.board)
     nt.SetText(text)
-    nt.SetBold(bold)
+
     nt.SetTextX(x)
     nt.SetTextY(y+h)
     nt.SetLayer(layer)
@@ -75,9 +76,25 @@ def draw_text(g, x, y, text, h, w, layer, bold=False, alignment=GR_TEXT_HJUSTIFY
     nt.SetTextHeight(h)
     nt.SetHorizJustify(alignment)
     nt.SetVertJustify(GR_TEXT_VJUSTIFY_CENTER)
+    if font:
+        # segfault if overbars (~{text}) with custom fonts
+        remove_overbars(nt)
+        nt.SetFont(font)
+    if bold:
+        nt.SetBold(bold)
+
     g.AddItem(nt)
     GS.board.Add(nt)
+
     return nt, nt.GetTextBox().GetWidth()
+
+
+def remove_overbars(txt):
+    current_text = txt.GetText()
+
+    if current_text:
+        cleaned_text = re.sub(r'~\{(.*?)\}', r'\1', current_text)
+        txt.SetText(cleaned_text)
 
 
 def draw_poly(g, points, layer, filled=False, line_w=10000):
@@ -97,10 +114,12 @@ def draw_poly(g, points, layer, filled=False, line_w=10000):
     GS.board.Add(ps)
 
 
-def get_text_width(text, w=10000, bold=False):
+def get_text_width(text, w=10000, bold=False, font=None):
     nt = pcbnew.PCB_TEXT(GS.board)
     nt.SetText(text)
     nt.SetBold(bold)
+    if font:
+        nt.SetFont(font)
     nt.SetTextWidth(w)
     width = nt.GetTextBox().GetWidth()
     return width

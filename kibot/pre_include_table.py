@@ -8,6 +8,7 @@
 import os
 import csv
 import re
+import pcbnew
 from .error import KiPlotConfigurationError
 from .gs import GS
 from .kicad.pcb_draw_helpers import (draw_rect, draw_line, draw_text, get_text_width,
@@ -117,8 +118,13 @@ def update_table_group(g, pos_x, pos_y, width, tlayer, ops, out, csv_file, slice
     if not os.path.isfile(csv_file):
         raise KiPlotConfigurationError(f'Missing `{csv_file}`, create it first using the `{out.name}` output')
 
+    font = None
+
     for item in g.GetItems():
-        GS.board.Delete(item)
+        if not isinstance(item, pcbnew.PCB_TEXTBOX):
+            GS.board.Delete(item)
+        else:
+            font = item.GetFont()
 
     cols = []
 
@@ -151,7 +157,7 @@ def update_table_group(g, pos_x, pos_y, width, tlayer, ops, out, csv_file, slice
     if out.invert_columns_order:
         cols.reverse()
 
-    measure_table(cols, out)
+    measure_table(cols, out, font=font)
 
     total_char_w = sum(c.width_char for c in cols)
     total_rel_w = sum((c.width for c in cols))
@@ -179,8 +185,8 @@ def update_table_group(g, pos_x, pos_y, width, tlayer, ops, out, csv_file, slice
         y += int(row_h)
         draw_line(g, pos_x, y, pos_x + width, y, tlayer, line_w=GS.from_mm(out.header_rule_width))
         for c in cols:
-            draw_text(g, c.x + c.xoffset, int(pos_y + 0.5 * row_h - font_w), c.header, font_w, font_w,
-                      tlayer, bold=out.bold_headers, alignment=out._text_alignment)
+            txt, _ = draw_text(g, c.x + c.xoffset, int(pos_y + 0.5 * row_h - font_w), c.header, font_w, font_w,
+                               tlayer, bold=out.bold_headers, alignment=out._text_alignment, font=font)
 
     for i in range(max_row_data - 1):
         rule_y = int(y + (i + 1) * row_h)
@@ -189,9 +195,13 @@ def update_table_group(g, pos_x, pos_y, width, tlayer, ops, out, csv_file, slice
     table_h = 0
     for c in cols:
         row_y = int(y + row_h / 2)
+        text_list = []
         for d in c.data:
-            draw_text(g, c.x + c.xoffset, int(row_y - font_w), d, font_w, font_w, tlayer, alignment=out._text_alignment)
+            txt, _ = draw_text(g, c.x + c.xoffset, int(row_y - font_w), d, font_w, font_w,
+                               tlayer, alignment=out._text_alignment, font=font)
+
             row_y += row_h
+            text_list.append(txt)
         table_h = int(max(table_h, row_y - pos_y) - row_h / 2)
 
     draw_line(g, pos_x, pos_y, pos_x + width, pos_y, tlayer, line_w=GS.from_mm(out.top_rule_width))
@@ -205,13 +215,13 @@ def update_table_group(g, pos_x, pos_y, width, tlayer, ops, out, csv_file, slice
     draw_rect(g, pos_x, pos_y, width, table_h, tlayer, line_w=GS.from_mm(out.border_width))
 
 
-def measure_table(cols, out):
-    col_spacing_width = get_text_width('o')*out.column_spacing
+def measure_table(cols, out, font=None):
+    col_spacing_width = get_text_width('o', font=font)*out.column_spacing
 
     for c in cols:
-        max_data_len = max(get_text_width(d) for d in c.data) if c.data else 0
+        max_data_len = max(get_text_width(d, font=font) for d in c.data) if c.data else 0
         max_data_width_char = max(len(d) for d in c.data) if c.data else 0
-        c.max_len = max(get_text_width(c.header), max_data_len) + col_spacing_width
+        c.max_len = max(get_text_width(c.header, font=font), max_data_len) + col_spacing_width
         c.width_char = max(len(c.header), max_data_width_char) + out.column_spacing
 
     tot_len = sum(c.max_len for c in cols)
@@ -306,6 +316,7 @@ def update_table(ops, parent):
                      f' with name {g.GetName()}')
 
         update_table_group(g, x1, y1, x2 - x1, layer, ops, out, csv[index], slice_str)
+
         updated = True
 
     if not group_found:
