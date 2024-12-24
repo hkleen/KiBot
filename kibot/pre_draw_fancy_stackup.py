@@ -385,15 +385,15 @@ def analyze_stackup(ops, gerber):
     return stackup
 
 
-def meassure_table(ops, gerber, via_layer_pairs, stackup):
+def measure_table(ops, gerber, via_layer_pairs, stackup, font=None):
     # Set the maximum length of each column to the column title for now
     for c in ops._columns:
         c.title = TITLES[c.type]
-        c.max_len = get_text_width(c.title)
+        c.max_len = get_text_width(c.title, font=font)
         if c.type == 'gerber' and gerber == {}:
             c.max_len = 0
 
-    col_spacing_width = get_text_width('o')*ops.column_spacing
+    col_spacing_width = get_text_width('o', font=font)*ops.column_spacing
 
     # Compute maximum width of each column according to stackup data
     for c in ops._columns:
@@ -434,12 +434,18 @@ def meassure_table(ops, gerber, via_layer_pairs, stackup):
 
 
 def update_drawing_group(g, pos_x, pos_y, width, tlayer, ops, gerber, via_layer_pairs):
-    # Purge all content
+
+    font = None
+
     for item in g.GetItems():
-        GS.board.Delete(item)
+        if not isinstance(item, pcbnew.PCB_TEXTBOX):
+            GS.board.Delete(item)
+        else:
+            font = item.GetFont()
+
     # Analyze the stackup
     stackup = analyze_stackup(ops, gerber)
-    meassure_table(ops, gerber, via_layer_pairs, stackup)
+    measure_table(ops, gerber, via_layer_pairs, stackup, font)
 
     # Draw the stackup
     total_char_w = sum(c.width_char for c in ops._columns) + ops.column_spacing
@@ -480,17 +486,17 @@ def update_drawing_group(g, pos_x, pos_y, width, tlayer, ops, gerber, via_layer_
         for c in ops._columns:
             bold = (layer.material == "Copper")
             if c.type == 'material':
-                draw_text(g, c.x, y, layer.material, font_w, font_w, tlayer, bold)
+                draw_text(g, c.x, y, layer.material, font_w, font_w, tlayer, bold, font=font)
             elif c.type == 'layer':
-                draw_text(g, c.x, y, layer.layer, font_w, font_w, tlayer, bold)
+                draw_text(g, c.x, y, layer.layer, font_w, font_w, tlayer, bold, font=font)
             elif c.type == 'thickness':
-                draw_text(g, c.x, y, layer.thickness, font_w, font_w, tlayer, bold)
+                draw_text(g, c.x, y, layer.thickness, font_w, font_w, tlayer, bold, font=font)
             elif c.type == 'dielectric':
-                draw_text(g, c.x, y, layer.dielectric, font_w, font_w, tlayer, bold)
+                draw_text(g, c.x, y, layer.dielectric, font_w, font_w, tlayer, bold, font=font)
             elif c.type == 'layer_type':
-                draw_text(g, c.x, y, layer.layer_type, font_w, font_w, tlayer, bold)
+                draw_text(g, c.x, y, layer.layer_type, font_w, font_w, tlayer, bold, font=font)
             elif c.type == 'gerber':
-                draw_text(g, c.x, y, layer.gerber, font_w, font_w, tlayer, bold)
+                draw_text(g, c.x, y, layer.gerber, font_w, font_w, tlayer, bold, font=font)
         y += row_h
         if layer.material == "Core":
             y += core_extra_padding
@@ -508,16 +514,16 @@ def update_drawing_group(g, pos_x, pos_y, width, tlayer, ops, gerber, via_layer_
 
     # Draw text titles
     for c in ops._columns:
-        draw_text(g, c.x, int(pos_y + font_w/2), c.title, font_w, font_w, tlayer)
+        draw_text(g, c.x, int(pos_y + font_w/2), c.title, font_w, font_w, tlayer, font=font)
 
     # Draw thickness
     ds = GS.board.GetDesignSettings()
     draw_text(g, table_x, int(pos_y + table_h + font_w/2), f"Total thickness: {GS.to_mm(ds.GetBoardThickness())}mm",
-              font_w, font_w, tlayer)
+              font_w, font_w, tlayer, font=font)
 
     # Draw note
     if ops.note != '':
-        draw_text(g, table_x, int(pos_y + table_h + font_w/2 + row_h), "Note: " + ops.note, font_w, font_w, tlayer)
+        draw_text(g, table_x, int(pos_y + table_h + font_w/2 + row_h), "Note: " + ops.note, font_w, font_w, tlayer, font=font)
 
     if not ops.draw_stackup:
         return True

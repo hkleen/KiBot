@@ -921,7 +921,7 @@ the image aspect ratio.
 Creating a group in your PCB
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Variuos outputs and preflights uses a PCB group to specify the position and
+Various outputs and preflights uses a PCB group to specify the position and
 size of the target object to be placed in your PCB. Here we explain how to
 create a group.
 
@@ -938,3 +938,8 @@ create a group.
 - Now edit the group and change its name according to the name specified by
   the output or preflight.
 
+.. note::
+
+  For the `Draw Fancy Stackup` and `Include Table` preflights, the font can be
+  set by adding to the group a textbox with the desired font. You can leave the
+  textbox empty and hide the borders.
