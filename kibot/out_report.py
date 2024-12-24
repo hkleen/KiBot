@@ -219,12 +219,19 @@ class ReportOptions(VariantOptions):
             """ [0,100] Amount of metal in the solder paste (percentage). Used to compute solder paste usage """
             self.stencil_thickness = 0.12
             """ Stencil thickness in mm. Used to compute solder paste usage """
+            self.mm_digits = 2
+            """ Number of digits for values expressed in mm """
+            self.mils_digits = 0
+            """ Number of digits for values expressed in mils """
+            self.in_digits = 2
+            """ Number of digits for values expressed in inches """
+            self.display_trailing_zeros = False
+            """ Set to True if trailing zeros should be displayed. """
+            self.csv_remove_leading_spaces = False
+            """ If set to True, will remove any leading spaces/tabs at the end of each separator. """
         super().__init__()
         self._expand_id = 'report'
         self._expand_ext = 'txt'
-        self._mm_digits = 2
-        self._mils_digits = 0
-        self._in_digits = 2
         # Extra help for PanDoc
         dep = get_dep_data('report', 'PanDoc')
         deb_text = 'In Debian/Ubuntu environments: install '+list_nice([dep.deb_package]+dep.extra_deb)
@@ -263,21 +270,25 @@ class ReportOptions(VariantOptions):
             var_ori = var
             m = re.match(r'^(%[^,]+),(.*)$', var)
             pattern = None
+            capitalize = False
             if m:
                 pattern = m.group(1)
                 var = m.group(2)
             if var.endswith('_mm'):
                 units = to_mm
-                digits = self._mm_digits
+                digits = self.mm_digits
                 var = var[:-3]
             elif var.endswith('_in'):
                 units = to_inches
-                digits = self._in_digits
+                digits = self.in_digits
                 var = var[:-3]
             elif var.endswith('_mils'):
                 units = to_mils
-                digits = self._mils_digits
+                digits = self.mils_digits
                 var = var[:-5]
+            elif var.endswith('_cap'):
+                capitalize = True
+                var = var[:-4]
             val = None
             if var in defined:
                 val = defined[var]
@@ -294,6 +305,10 @@ class ReportOptions(VariantOptions):
                     val = 'N/A'
                 elif units is not None and isinstance(val, (int, float)):
                     val = units(val, digits)
+                    if self.display_trailing_zeros:
+                        val = f"{val:.{digits}f}"
+                if capitalize and isinstance(val, str):
+                    val = val.upper()
                 if pattern is not None:
                     clear = False
                     if 's' in pattern:
@@ -315,6 +330,13 @@ class ReportOptions(VariantOptions):
                 if not self._shown_defined:
                     self._shown_defined = True
                     logger.non_critical_error('Defined values: {}'.format([v for v in defined.keys() if v[0] != '_']))
+
+        if self.csv_remove_leading_spaces:
+            separator = self._parent.get_csv_separator()
+            parts = line.split(separator)
+            parts = [part.lstrip(' \t') for part in parts]
+            line = separator.join(parts)
+
         return line
 
     def context_defined_tracks(self, line):
@@ -580,8 +602,9 @@ class ReportOptions(VariantOptions):
         # Clearance
         ###########################################################
         self.clearance = ds.GetSmallestClearanceValue()
-        # This seems to be bogus:
-        # h2h = ds.m_HoleToHoleMin
+        self.h2h = ds.m_HoleToHoleMin if not GS.ki5 else None
+        self.c2h = ds.m_HoleClearance if not GS.ki5 else None
+        self.c2e = ds.m_CopperEdgeClearance if not GS.ki5 else None
         ###########################################################
         # Track width (min)
         ###########################################################
@@ -630,6 +653,8 @@ class ReportOptions(VariantOptions):
         self._drills = {}
         self._drills_oval = {}
         self.oar_pads = self.oar_pads_ec = self.pad_drill = self.pad_drill_real = self.pad_drill_real_ec = INF
+        self.pad_drill_pth = self.pad_drill_pth_real = INF
+        self.pad_drill_npth = self.pad_drill_npth_real = INF
         self.slot = INF
         self.top_smd = self.top_tht = self.bot_smd = self.bot_tht = 0
         self.top_smd_dnp = self.top_tht_dnp = self.bot_smd_dnp = self.bot_tht_dnp = 0
@@ -703,10 +728,25 @@ class ReportOptions(VariantOptions):
                 self.pad_drill = min(dr.y, self.pad_drill)
                 # Compute the drill size to get it after plating
                 is_pth = pad.GetAttribute() != npth_attrib
+                if is_pth:
+                    self.pad_drill_pth = min(dr.x, self.pad_drill_pth)
+                    self.pad_drill_pth = min(dr.y, self.pad_drill_pth)
+                else:
+                    self.pad_drill_npth = min(dr.x, self.pad_drill_npth)
+                    self.pad_drill_npth = min(dr.y, self.pad_drill_npth)
+
                 dr_x_real = adjust_drill(dr.x, is_pth, pad)
                 dr_y_real = adjust_drill(dr.y, is_pth, pad)
                 self.pad_drill_real = min(dr_x_real, self.pad_drill_real)
                 self.pad_drill_real = min(dr_y_real, self.pad_drill_real)
+
+                if is_pth:
+                    self.pad_drill_pth_real = min(dr_x_real, self.pad_drill_pth_real)
+                    self.pad_drill_pth_real = min(dr_y_real, self.pad_drill_pth_real)
+                else:
+                    self.pad_drill_npth_real = min(dr_x_real, self.pad_drill_npth_real)
+                    self.pad_drill_npth_real = min(dr_y_real, self.pad_drill_npth_real)
+
                 if dr.x == dr.y:
                     self._drills[dr.x] = self._drills.get(dr.x, 0) + 1
                     self._drills_real[dr_x_real] = self._drills_real.get(dr_x_real, 0) + 1
@@ -753,16 +793,30 @@ class ReportOptions(VariantOptions):
         # Pad Drill
         # No minimum defined (so no _d)
         self.pad_drill_min = self.pad_drill if GS.ki5 else ds.m_MinThroughDrill
+        self.pad_drill_pth_min = self.pad_drill_pth if GS.ki5 else ds.m_MinThroughDrill
+        self.pad_drill_npth_min = self.pad_drill_npth if GS.ki5 else ds.m_MinThroughDrill
         self.pad_drill_real_min = self.pad_drill_real if GS.ki5 else adjust_drill(ds.m_MinThroughDrill, False)
+        self.pad_drill_pth_real_min = self.pad_drill_pth_real if GS.ki5 else adjust_drill(ds.m_MinThroughDrill, True)
+        self.pad_drill_npth_real_min = self.pad_drill_npth_real if GS.ki5 else adjust_drill(ds.m_MinThroughDrill, False)
         self.pad_drill_real_ec_min = self.pad_drill_real_ec if GS.ki5 else adjust_drill(ds.m_MinThroughDrill, False)
         # Drill overall
         self.drill_d = min(self.via_drill_d, self.pad_drill)
+        self.drill_pth_d = min(self.via_drill_d, self.pad_drill_pth)
         self.drill = min(self.via_drill, self.pad_drill)
+        self.drill_pth = min(self.via_drill, self.pad_drill_pth)
+        self.drill_npth = self.pad_drill_npth
         self.drill_min = min(self.via_drill_min, self.pad_drill_min)
+        self.drill_pth_min = min(self.via_drill_min, self.pad_drill_pth_min)
+        self.drill_npth_min = self.pad_drill_npth_min
         # Drill overall size minus 0.1 mm
         self.drill_real_d = min(self.via_drill_real_d, self.pad_drill_real)
+        self.drill_pth_real_d = min(self.via_drill_real_d, self.pad_drill_pth_real)
         self.drill_real = min(self.via_drill_real, self.pad_drill_real)
+        self.drill_pth_real = min(self.via_drill_real, self.pad_drill_pth_real)
+        self.drill_npth_real = self.pad_drill_npth_real
         self.drill_real_min = min(self.via_drill_real_min, self.pad_drill_real_min)
+        self.drill_pth_real_min = min(self.via_drill_real_min, self.pad_drill_pth_real_min)
+        self.drill_npth_real_min = self.pad_drill_npth_real_min
         self.drill_real_ec_d = min(self.via_drill_real_d, self.pad_drill_real_ec)
         self.drill_real_ec = min(self.via_drill_real_ec, self.pad_drill_real_ec)
         self.drill_real_ec_min = min(self.via_drill_real_ec_min, self.pad_drill_real_ec_min)
