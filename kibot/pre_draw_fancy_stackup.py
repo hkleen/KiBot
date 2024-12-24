@@ -103,6 +103,8 @@ class DrawFancyStackupOptions(Optionable):
             """ Space (in number of characters) between layers on the stackup table/drawing. """
             self.column_spacing = 2
             """ Blank space (in number of characters) between columns in the stackup table. """
+            self.border_thickness = 0.15
+            """ Thickness of the borders of stackup drawing and stackup table. """
             self.note = ''
             """ Note to write at the bottom of the stackup table. Leave empty if no note is to be written. """
         super().__init__()
@@ -145,10 +147,10 @@ class SULayer:
         self.gerber = ''
 
 
-def draw_core(g, x, y, w, h, layer, offset):
+def draw_core(g, x, y, w, h, layer, offset, border_w=10000):
     y = y-int(h*0.5)+offset
     h = int(h)
-    draw_rect(g, x, y, w, h, layer)
+    draw_rect(g, x, y, w, h, layer, line_w=border_w)
     # 45 degrees /
     xend = x+w
     while x < xend:
@@ -161,10 +163,10 @@ def draw_core(g, x, y, w, h, layer, offset):
         x += h
 
 
-def draw_prepreg(g, x, y, w, h, layer, offset):
+def draw_prepreg(g, x, y, w, h, layer, offset, border_w=10000):
     y = y-int(h*0.5)+offset
     h = int(h)
-    draw_rect(g, x, y, w, h, layer)
+    draw_rect(g, x, y, w, h, layer, line_w=border_w)
     # 45 degrees \.
     xstart = x
     x += w
@@ -184,10 +186,10 @@ def draw_copper(g, x, y, w, h, layer, offset):
     draw_rect(g, x, y, w, h, layer, filled=True)
 
 
-def draw_mask_paste_silk(g, x, y, w, h, layer, offset):
+def draw_mask_paste_silk(g, x, y, w, h, layer, offset, border_w=10000):
     y = y-int(h*0.5)+offset
     h = int(h)
-    draw_rect(g, x, y, w, h, layer, filled=False)
+    draw_rect(g, x, y, w, h, layer, filled=False, line_w=border_w)
 
 
 def draw_normal_buried_via(g, x, y, w, h, tlayer, clearance, hole_size):
@@ -502,7 +504,7 @@ def update_drawing_group(g, pos_x, pos_y, width, tlayer, ops, gerber, via_layer_
     draw_rect(g, pos_x, pos_y, width, table_h, tlayer, line_w=0)
 
     # Draw table box
-    draw_rect(g, table_x, pos_y + row_h, table_w, table_h - row_h, tlayer)
+    draw_rect(g, table_x, pos_y + row_h, table_w, table_h - row_h, tlayer, line_w=GS.from_mm(ops.border_thickness))
 
     # Draw text titles
     for c in ops._columns:
@@ -570,15 +572,16 @@ def update_drawing_group(g, pos_x, pos_y, width, tlayer, ops, gerber, via_layer_
                     if layer.type == 'copper':
                         layer.draw(g, int(x), int(layer.y), int(w), font_w, tlayer, font_w)
                     elif layer.type == 'core':
-                        layer.draw(g, int(x), int(layer.y), int(w), 2*ops.core_extra_spacing_ratio*font_w, tlayer, font_w)
+                        layer.draw(g, int(x), int(layer.y), int(w), 2*ops.core_extra_spacing_ratio*font_w, tlayer, font_w,
+                                   GS.from_mm(ops.border_thickness))
                     elif layer.type == 'prepreg':
-                        layer.draw(g, int(x), int(layer.y), int(w), 2*font_w, tlayer, font_w)
+                        layer.draw(g, int(x), int(layer.y), int(w), 2*font_w, tlayer, font_w, GS.from_mm(ops.border_thickness))
                     elif layer.id in (pcbnew.F_SilkS, pcbnew.B_SilkS):
-                        layer.draw(g, int(x), int(layer.y), int(w), font_w/2, tlayer, font_w)
+                        layer.draw(g, int(x), int(layer.y), int(w), font_w/2, tlayer, font_w, GS.from_mm(ops.border_thickness))
                     elif layer.id in (pcbnew.F_Mask, pcbnew.B_Mask):
-                        layer.draw(g, int(x), int(layer.y), int(w), font_w/2, tlayer, font_w)
+                        layer.draw(g, int(x), int(layer.y), int(w), font_w/2, tlayer, font_w, GS.from_mm(ops.border_thickness))
                     elif layer.id in (pcbnew.F_Paste, pcbnew.B_Paste):
-                        layer.draw(g, int(x), int(layer.y), int(w), font_w/2, tlayer, font_w)
+                        layer.draw(g, int(x), int(layer.y), int(w), font_w/2, tlayer, font_w, GS.from_mm(ops.border_thickness))
                     x += w + offset
                     w = -offset/2
                     if j < len(mat[i])-1:
