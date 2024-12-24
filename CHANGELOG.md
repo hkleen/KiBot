@@ -48,6 +48,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `total_components` template, intended to generate CSV files with component
     counts (See #730)
   - Now you can use expressions like ${V1+V2}
+  - `mm_digits`, `mils_digits` and `in_digits` to change the number of digits
+    for unit conversions (#745)
+  - `display_trailing_zeros` to show trailing zeros (#745)
+  - *_cap* sufix to capitalize strings (#745)
+  - *h2h*, *c2h* and *c2e* Hole to Hole, Hole to Copper and Copper to Edge
+    info (KiCad 6+) (#745)
+  - *pad_drill_pth*, *pad_drill_npth* (and similars) for PTH/NPTH specific
+    drill dimensions (#745)
+  - `csv_remove_leading_spaces` to remove leading spaces/tabs after CSV
+    separator (useful to generate CSV from a .txt template where elements are
+    aligned for easier reading) (#745)
 - SCH Variant and *SCH Print:
   - A mechanism to paste images from outputs (#714)
 

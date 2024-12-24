@@ -23,6 +23,9 @@ ReportOptions parameters
 -  ``convert_from`` :index:`: <pair: output - report - options; convert_from>` [:ref:`string <string>`] (default: ``'markdown'``) Original format for the report conversion. Current templates are `markdown`. See `do_convert`.
 -  ``converted_output`` :index:`: <pair: output - report - options; converted_output>` [:ref:`string <string>`] (default: ``'%f-%i%I%v.%x'``) Converted output file name (%i='report', %x=`convert_to`).
    Note that the extension should match the `convert_to` value. Affected by global options.
+-  ``csv_remove_leading_spaces`` :index:`: <pair: output - report - options; csv_remove_leading_spaces>` [:ref:`boolean <boolean>`] (default: ``false``) Remove any leading spaces/tabs at the end of each separator.
+   Used por templates that generates CSV files where elements are aligned for easier reading.
+-  ``display_trailing_zeros`` :index:`: <pair: output - report - options; display_trailing_zeros>` [:ref:`boolean <boolean>`] (default: ``false``) Display trailing zeros.
 -  ``dnf_filter`` :index:`: <pair: output - report - options; dnf_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to mark components as not fitted.
    Is a short-cut to use for simple cases where a variant is an overkill. |br|
    Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
@@ -38,6 +41,9 @@ ReportOptions parameters
    variant.
 
 -  ``flux_specific_gravity`` :index:`: <pair: output - report - options; flux_specific_gravity>` [:ref:`number <number>`] (default: ``1.0``) Specific gravity of the flux used for the solder paste, in g/cm3. Used to compute solder paste usage.
+-  ``in_digits`` :index:`: <pair: output - report - options; in_digits>` [:ref:`number <number>`] (default: ``2``) Number of digits for values expressed in inches.
+-  ``mils_digits`` :index:`: <pair: output - report - options; mils_digits>` [:ref:`number <number>`] (default: ``0``) Number of digits for values expressed in mils.
+-  ``mm_digits`` :index:`: <pair: output - report - options; mm_digits>` [:ref:`number <number>`] (default: ``2``) Number of digits for values expressed in mm.
 -  ``pre_transform`` :index:`: <pair: output - report - options; pre_transform>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to transform fields before applying other filters.
    Is a short-cut to use for simple cases where a variant is an overkill. |br|
    Can be used to fine-tune a variant for a particular output that needs extra filtering done before the

@@ -12141,6 +12141,41 @@
           null
         ],
         [
+          "mm_digits",
+          [
+            "DataTypeNumber"
+          ],
+          null
+        ],
+        [
+          "mils_digits",
+          [
+            "DataTypeNumber"
+          ],
+          null
+        ],
+        [
+          "in_digits",
+          [
+            "DataTypeNumber"
+          ],
+          null
+        ],
+        [
+          "display_trailing_zeros",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "csv_remove_leading_spaces",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
           "variant",
           [
             "DataTypeString"

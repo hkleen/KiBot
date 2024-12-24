@@ -226,9 +226,10 @@ class ReportOptions(VariantOptions):
             self.in_digits = 2
             """ Number of digits for values expressed in inches """
             self.display_trailing_zeros = False
-            """ Set to True if trailing zeros should be displayed. """
+            """ Display trailing zeros """
             self.csv_remove_leading_spaces = False
-            """ If set to True, will remove any leading spaces/tabs at the end of each separator. """
+            """ Remove any leading spaces/tabs at the end of each separator.
+                Used por templates that generates CSV files where elements are aligned for easier reading """
         super().__init__()
         self._expand_id = 'report'
         self._expand_ext = 'txt'

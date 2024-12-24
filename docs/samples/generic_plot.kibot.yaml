@@ -3898,6 +3898,11 @@ outputs:
       # [string='%f-%i%I%v.%x'] Converted output file name (%i='report', %x=`convert_to`).
       # Note that the extension should match the `convert_to` value. Affected by global options
       converted_output: '%f-%i%I%v.%x'
+      # [boolean=false] Remove any leading spaces/tabs at the end of each separator.
+      # Used por templates that generates CSV files where elements are aligned for easier reading
+      csv_remove_leading_spaces: false
+      # [boolean=false] Display trailing zeros
+      display_trailing_zeros: false
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
       # Is a short-cut to use for simple cases where a variant is an overkill.
       # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
@@ -3923,6 +3928,12 @@ outputs:
       exclude_filter: '_null'
       # [number=1.0] Specific gravity of the flux used for the solder paste, in g/cm3. Used to compute solder paste usage
       flux_specific_gravity: 1.0
+      # [number=2] Number of digits for values expressed in inches
+      in_digits: 2
+      # [number=0] Number of digits for values expressed in mils
+      mils_digits: 0
+      # [number=2] Number of digits for values expressed in mm
+      mm_digits: 2
       # [string='%f-%i%I%v.%x'] Output file name (%i='report', %x='txt'). Affected by global options
       output: '%f-%i%I%v.%x'
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
