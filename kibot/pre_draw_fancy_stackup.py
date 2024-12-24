@@ -88,25 +88,25 @@ class DrawFancyStackupOptions(Optionable):
                 Available columns are *drawing*, *material*, *layer*, *thickness*, *dielectric*, *layer_type*, *gerber*.
                 When empty KiBot will add them in the above order, skipping the *gerber* if not available """
             self.draw_vias = True
-            """ Enable drawing vias (thru, blind, buried) in the stackup table."""
+            """ Enable drawing vias (thru, blind, buried) in the stackup table"""
             self.drawing_border_spacing = 10
-            """ Space (in number of characters) between stackup drawing borders and via drawings. """
+            """ Space (in number of characters) between stackup drawing borders and via drawings """
             self.stackup_to_text_lines_spacing = 3
-            """ Space (in number of characters) between stackup drawing and stackup table. """
+            """ Space (in number of characters) between stackup drawing and stackup table """
             self.via_width = 4
-            """ Width (in number of characters) of a via in the stackup drawing. """
+            """ Width (in number of characters) of a via in the stackup drawing """
             self.via_spacing = 8
-            """ Space (in number of characters) between vias in the stackup drawing. """
+            """ Space (in number of characters) between vias in the stackup drawing """
             self.core_extra_spacing_ratio = 2
-            """ Extra vertical space given to the core layers. """
+            """ Extra vertical space given to the core layers """
             self.layer_spacing = 3
-            """ Space (in number of characters) between layers on the stackup table/drawing. """
+            """ Space (in number of characters) between layers on the stackup table/drawing """
             self.column_spacing = 2
-            """ Blank space (in number of characters) between columns in the stackup table. """
+            """ Blank space (in number of characters) between columns in the stackup table """
             self.border_thickness = 0.15
-            """ Thickness of the borders of stackup drawing and stackup table. """
+            """ Thickness of the borders of stackup drawing and stackup table """
             self.note = ''
-            """ Note to write at the bottom of the stackup table. Leave empty if no note is to be written. """
+            """ Note to write at the bottom of the stackup table. Leave empty if no note is to be written """
         super().__init__()
         self._unknown_is_error = True
 

@@ -344,6 +344,13 @@
           null
         ],
         [
+          "border_thickness",
+          [
+            "DataTypeNumber"
+          ],
+          null
+        ],
+        [
           "note",
           [
             "DataTypeString"

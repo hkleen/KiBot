@@ -63,6 +63,11 @@ Added
    -  ``right_digits`` option to control the decimals for position
       fields (#739)
 
+-  Draw Fancy Stackup:
+
+   -  ``border_thickness``: Thickness of the borders of stackup drawing
+      and stackup table (#747)
+
 -  Drill:
 
    -  Option to don’t generate the drill files, so you can generate only
