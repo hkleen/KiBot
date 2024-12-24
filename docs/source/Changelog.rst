@@ -67,11 +67,16 @@ Added
 
    -  ``border_thickness``: Thickness of the borders of stackup drawing
       and stackup table (#747)
+   -  A mechanism to set the font, using a text box (#748)
 
 -  Drill:
 
    -  Option to don’t generate the drill files, so you can generate only
       the maps (#720)
+
+-  Include table:
+
+   -  A mechanism to set the font, using a text box (#748)
 
 -  PCB Print: a mechanism to filter components for a particular layer
    (#706)

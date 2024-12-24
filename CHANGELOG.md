@@ -39,9 +39,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Draw Fancy Stackup:
   - `border_thickness`: Thickness of the borders of stackup drawing and stackup
     table (#747)
+  - A mechanism to set the font, using a text box (#748)
 - Drill:
   - Option to don't generate the drill files, so you can generate only the maps
     (#720)
+- Include table:
+  - A mechanism to set the font, using a text box (#748)
 - PCB Print: a mechanism to filter components for a particular layer (#706)
 - Report:
   - `top_total`, `bot_total`, `total_smd`, `total_tht` and `total_all`
