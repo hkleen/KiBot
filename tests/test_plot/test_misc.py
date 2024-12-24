@@ -1496,6 +1496,8 @@ def test_diff_git_1(test_dir):
     ctx.clean_up(keep_project=True)
 
 
+@pytest.mark.slow
+@pytest.mark.eeschema
 def test_diff_kiri_1(test_dir):
     """ Difference between the current PCB and the git HEAD """
     prj = 'light_control'
