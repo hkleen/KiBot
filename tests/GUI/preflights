@@ -1147,6 +1147,13 @@
             "DataTypeBoolean"
           ],
           null
+        ],
+        [
+          "expand_in_command",
+          [
+            "DataTypeBoolean"
+          ],
+          null
         ]
       ]
     ]

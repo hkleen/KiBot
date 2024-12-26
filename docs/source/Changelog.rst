@@ -34,6 +34,8 @@ Added
 
    -  ``consolidate_pcbs``: Used to merge PCBs before creating 3D
       stacked renders (#728)
+   -  ``expand_in_command`` option to ``set_text_variables``, used to
+      expand %X patterns in the command (#746)
 
 -  Global options:
 
@@ -117,7 +119,7 @@ Fixed
 
    -  The field name ``Reference`` was accepted, but didn’t work
    -  Missing footprint information for sub-units (#741)
-   -  XLSX default logo scale (#750)
+   -  XLSX logo scale (#750)
 
 -  Do Not Fit footprint crosses:
 

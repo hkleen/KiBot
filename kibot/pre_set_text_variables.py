@@ -41,7 +41,7 @@ class KiCadVariable(Optionable):
             self.command = ''
             """ Command to execute to get the text, will be used only if `text` is empty.
                 This command will be executed using the Bash shell.
-                Be careful about spaces in file names (i.e. use "$KIBOT_PCB_NAME").
+                Be careful about spaces in file names (i.e. use quotes like this "$KIBOT_PCB_NAME").
                 The `KIBOT_PCB_NAME` environment variable is the PCB file and the
                 `KIBOT_SCH_NAME` environment variable is the schematic file """
             self.before = ''
@@ -49,7 +49,9 @@ class KiCadVariable(Optionable):
             self.after = ''
             """ Text to add after the output of `command` """
             self.expand_kibot_patterns = True
-            """ Expand %X patterns. The context is `schematic` """
+            """ Expand %X patterns in the value to assign to the variable. The context is `schematic` """
+            self.expand_in_command = False
+            """ Expand %X patterns in the command. The context is `schematic` """
         self._name_example = 'version'
 
     def __str__(self):
@@ -121,13 +123,15 @@ class Set_Text_Variables(BasePreFlight):  # noqa: F821
                 if re_git.search(command):
                     git_command = self.ensure_tool('git')
                     command = re_git.sub(r'\1'+git_command.replace('\\', r'\\')+' ', command)
+                if r.expand_in_command:
+                    command = Optionable.expand_filename_both(self, command, make_safe=False)
                 if not bash_command:
                     bash_command = self.ensure_tool('Bash')
                 cmd = [bash_command, '-c', command]
-                logger.debug('Executing: '+GS.pasteable_cmd(command))
+                logger.debug('Executing: '+GS.pasteable_cmd(cmd))
                 result = run(cmd, stdout=PIPE, stderr=PIPE, universal_newlines=True)
                 if result.returncode:
-                    msgs = [f'Failed to execute:\n{r.command}\nreturn code {result.returncode}']
+                    msgs = [f'Failed to execute:\n{command}\nreturn code {result.returncode}']
                     if result.stdout:
                         msgs.append(f'stdout:\n{result.stdout}')
                     if result.stderr:

@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Preflights:
   - `consolidate_pcbs`: Used to merge PCBs before creating 3D stacked renders
     (#728)
+  - `expand_in_command` option to `set_text_variables`, used to expand %X
+    patterns in the command (#746)
 - Global options:
   - `work_layer`: to choose the temporal layer for internal operations (#713)
 - Workaround for people using backslashes (i.e. Windows+WSL) (#719) (#607)
