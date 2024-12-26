@@ -117,6 +117,7 @@ Fixed
 
    -  The field name ``Reference`` was accepted, but didn’t work
    -  Missing footprint information for sub-units (#741)
+   -  XLSX default logo scale (#750)
 
 -  Do Not Fit footprint crosses:
 

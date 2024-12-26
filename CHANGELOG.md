@@ -75,6 +75,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - BoM
   - The field name `Reference` was accepted, but didn't work
   - Missing footprint information for sub-units (#741)
+  - XLSX logo scale (#750)
 - Do Not Fit footprint crosses:
   - Problems with footprints where the center isn't the geometric center (#725)
 - Navigate Results:
