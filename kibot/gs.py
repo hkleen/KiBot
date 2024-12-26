@@ -1082,3 +1082,8 @@ class GS(object):
             name = name.replace('\\', '/')
             name = re.sub(INVALID_CHARS, '_', name)
         return name
+
+    @staticmethod
+    def module_position(m):
+        pos = GS.get_center(m)
+        return f'({GS.to_mm(pos.x)}, {GS.to_mm(pos.y)}) mm'

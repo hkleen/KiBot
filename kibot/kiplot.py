@@ -335,7 +335,8 @@ def create_component_from_footprint(m, ref):
         c.split_ref()
     except SchError:
         # Unusable ref, discard it
-        logger.warning(f'{W_BADREF}Not including component `{ref}` in filters because it has a malformed reference')
+        logger.warning(f'{W_BADREF}Not including component `{ref}` in filters because it has a malformed reference '
+                       f'@ PCB {GS.module_position(m)}')
         c = None
     return c
 
