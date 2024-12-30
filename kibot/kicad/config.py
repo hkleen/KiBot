@@ -319,7 +319,7 @@ class KiConf(object):
         home = os.environ.get('HOME')
         if home is None:
             return None
-        return os.path.join(home, '.local', 'share', 'kicad', '6.0', '3rdparty')
+        return os.path.join(home, '.local', 'share', 'kicad', str(GS.kicad_version_major)+'.0', '3rdparty')
 
     def load_ki5_env(cfg):
         """ Environment vars from KiCad 5 configuration """
