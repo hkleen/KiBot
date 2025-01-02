@@ -318,8 +318,6 @@ class TestContext(object):
     def get_npth_csv_drl_filename(self):
         return os.path.join(self.sub_dir, self.board_name+'-(L1 - L4)_NPTH_drill_table.csv')
 
-
-
     def expect_out_file(self, filename, sub=False):
         if isinstance(filename, str):
             filename = [filename]
