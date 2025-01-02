@@ -77,6 +77,9 @@ def update_dict(d, u):
 def do_replace(k, v, content, replaced):
     key = '@'+k+'@'
     if key in content:
+        # Handle empty definitions keeping YAML's "null"
+        if v is None:
+            v = 'null'
         logger.debugl(2, '- Replacing {} -> {}'.format(key, v))
         content = content.replace(key, str(v))
         replaced = True

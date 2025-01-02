@@ -111,6 +111,8 @@ Added
 Fixed
 ~~~~~
 
+-  Definitions: avoid interpreting empty definitions as the “None”
+   string (See #757)
 -  Guess for 3rd party dir: not just for v6
 -  SubParts filter:
 
