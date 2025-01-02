@@ -14,6 +14,8 @@ outputs:
       use_aux_axis_as_origin: false
       minimal_header: false
       mirror_y_axis: false
+      pth_id: PTH_drill
+      npth_id: NPTH_drill
       report: '%f-%i.%x'
       map: 'pdf'
 
@@ -23,4 +25,6 @@ outputs:
     dir: Drill
     options:
       use_aux_axis_as_origin: false
+      pth_id: PTH_drill
+      npth_id: NPTH_drill
       map: 'pdf'

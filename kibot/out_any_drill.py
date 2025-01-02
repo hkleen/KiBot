@@ -96,8 +96,11 @@ class AnyDrill(VariantOptions):
         if d[0] == 'N':
             # NPTH
             return self.npth_id if self.npth_id is not None else d+'_drill'
-        # PTH
-        return self.pth_id if self.pth_id is not None else d+'_drill'
+        elif d[0] == 'P':
+            # PTH
+            return self.pth_id if self.pth_id is not None else d+'_drill'
+        # Other drill pairs
+        return d+'_drill'
 
     @staticmethod
     def _get_layer_name(id):
