@@ -900,3 +900,11 @@ def test_line_width_max(test_dir):
     ctx.run(EXIT_BAD_CONFIG)
     assert ctx.search_err(r"`line_width` outside its range ")
     ctx.clean_up(keep_project=True)
+
+
+@pytest.mark.indep
+def test_error_empty_pth_id(test_dir):
+    ctx = context.TestContext(test_dir, PRJ, 'error_empty_pth_id')
+    ctx.run(EXIT_BAD_CONFIG)
+    assert ctx.search_err("Empty option .pth_id.")
+    ctx.clean_up(keep_project=True)
