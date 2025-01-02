@@ -12,7 +12,6 @@ pytest-3 --log-cli-level debug
 
 import os
 import sys
-import logging
 from . import context
 
 DRILL_DIR = 'Drill'
@@ -110,7 +109,6 @@ def do_3Rs(test_dir, conf, modern, single=False):
     ctx.expect_gerber_has_apertures(npth_gbr_drl, ['C,2.100000'])
     # Verify the generated drill tables
     rows_pth, header_pth, _ = ctx.load_csv(pth_csv_drl.replace(DRILL_DIR+'/', ''))
-    logging.debug(f"rows pth {rows_pth}")
     rows_npth, header_npth, _ = ctx.load_csv(npth_csv_drl.replace(DRILL_DIR+'/', ''))
     rows_f1, header_f1, _ = ctx.load_csv(f1_csv_drl.replace(DRILL_DIR+'/', ''))
     rows_12, header_12, _ = ctx.load_csv(i12_csv_drl.replace(DRILL_DIR+'/', ''))

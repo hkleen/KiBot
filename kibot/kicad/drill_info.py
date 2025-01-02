@@ -191,10 +191,10 @@ def build_holes_list(layer_pair, merge_PTH_NPTH, generate_NPTH_list=True,
             for pad in footprint.Pads():
 
                 if not merge_PTH_NPTH:
-                    if not generate_NPTH_list and pad.GetAttribute() == pcbnew.PAD_ATTRIB_NPTH:
+                    if not generate_NPTH_list and pad.GetAttribute() == (3 if GS.ki5 else pcbnew.PAD_ATTRIB_NPTH):
                         continue
 
-                    if generate_NPTH_list and pad.GetAttribute() != pcbnew.PAD_ATTRIB_NPTH:
+                    if generate_NPTH_list and pad.GetAttribute() != (3 if GS.ki5 else pcbnew.PAD_ATTRIB_NPTH):
                         continue
 
                 if pad.GetDrillSize().x == 0:
@@ -203,7 +203,7 @@ def build_holes_list(layer_pair, merge_PTH_NPTH, generate_NPTH_list=True,
                 new_hole = pcbnew.HOLE_INFO()
 
                 new_hole.m_ItemParent = pad
-                new_hole.m_Hole_NotPlated = pad.GetAttribute() == pcbnew.PAD_ATTRIB_NPTH
+                new_hole.m_Hole_NotPlated = pad.GetAttribute() == (3 if GS.ki5 else pcbnew.PAD_ATTRIB_NPTH)
                 if GS.ki5:
                     new_hole.m_HoleAttribute = 0
                 else:
