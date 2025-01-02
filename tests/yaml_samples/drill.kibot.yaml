@@ -16,6 +16,8 @@ outputs:
       mirror_y_axis: false
       report: '%f-%i.%x'
       map: 'pdf'
+      table:
+        pth_and_npth_single_file: false
 
   - name: gerber_drills
     comment: "Gerber drill files"
