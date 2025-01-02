@@ -30,7 +30,10 @@ if not GS.ki5:
 
 def get_unique_layer_pairs():
     # Collect all vias on the board
-    vias = [item for item in GS.board.GetTracks() if isinstance(item, pcbnew.PCB_VIA)]
+    via_type_key = 'VIA' if GS.ki5 else 'PCB_VIA'
+
+    # Collect all vias on the board
+    vias = [item for item in GS.board.GetTracks() if item.GetClass() == via_type_key]
 
     # Use a set to store unique layer pairs
     unique_layer_pairs = set()
@@ -140,9 +143,12 @@ def build_holes_list(layer_pair, merge_PTH_NPTH, generate_NPTH_list=True,
     # Add plated vias to hole_list_layer_pair
     if not generate_NPTH_list:
         for via in GS.board.GetTracks():
-            # Check if the current track is a via
-            if not isinstance(via, pcbnew.PCB_VIA):
-                continue
+            if GS.ki5:
+                if via.GetClass() != 'VIA':
+                    continue
+            else:
+                if not isinstance(via, pcbnew.PCB_VIA):
+                    continue
 
             hole_sz = via.GetDrillValue()
 
