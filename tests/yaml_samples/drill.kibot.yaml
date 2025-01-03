@@ -16,13 +16,13 @@ outputs:
       mirror_y_axis: false
       report: '%f-%i.%x'
       map: 'pdf'
-      table:
-        pth_and_npth_single_file: false
 
   - name: gerber_drills
     comment: "Gerber drill files"
     type: gerb_drill
     dir: Drill
     options:
+      table:
+        unify_pth_and_npth: 'auto'
       use_aux_axis_as_origin: false
       map: 'pdf'

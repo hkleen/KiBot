@@ -66,8 +66,10 @@ class DrillOptions(Optionable):
     def __init__(self):
         super().__init__()
         with document:
-            self.pth_and_npth_single_file = True
-            """ Generate one file for both, plated holes and non-plated holes, instead of two separated files """
+            self.unify_pth_and_npth = 'auto'
+            """ [yes,no,auto]. Choose whether to unify plated and non-plated
+                holes in the same table. If 'auto' is chosen, the setting is copied
+                from the `excellon` output's `pth_and_npth_single_file`"""
             self.group_slots_and_round_holes = True
             """ By default KiCad groups slots and rounded holes if they can be cut from the same tool (same diameter) """
         self._unknown_is_error = True
@@ -140,12 +142,22 @@ class AnyDrill(VariantOptions):
         # Solve the table for both cases
         if isinstance(self.table, str):
             self._table_output = self.table
-            self._table_pth_npth_single_file = True
+            if hasattr(self, 'pth_and_npth_single_file'):
+                self._table_unify_pth_and_npth = self.pth_and_npth_single_file
+            else:
+                self._table_unify_pth_and_npth = False
             self._table_group_slots_and_round_holes = True
             self._table_units = 'millimeters_mils'
         else:
             self._table_output = self.table.output
-            self._table_pth_npth_single_file = self.table.pth_and_npth_single_file
+            if hasattr(self, 'pth_and_npth_single_file') and self.table.unify_pth_and_npth == 'auto':
+                self._table_unify_pth_and_npth = self.pth_and_npth_single_file
+            else:
+                logger.debug(f"unify {self.table.unify_pth_and_npth}")
+                if self.table.unify_pth_and_npth in ["no", "auto"]:
+                    self._table_unify_pth_and_npth = False
+                else:
+                    self._table_unify_pth_and_npth = True
             self._table_group_slots_and_round_holes = self.table.group_slots_and_round_holes
             self._table_units = self.table.units
         self._expand_id = 'drill'
@@ -324,7 +336,7 @@ class AnyDrill(VariantOptions):
         # Generate the drill table
         if self._table_output:
 
-            hole_list, tool_list, hole_sets, npth = get_full_holes_list(self._table_pth_npth_single_file,
+            hole_list, tool_list, hole_sets, npth = get_full_holes_list(self._table_unify_pth_and_npth,
                                                                         self._table_group_slots_and_round_holes)
 
             # Get column configuration
@@ -398,7 +410,7 @@ class AnyDrill(VariantOptions):
         if self._report:
             targets.append(self.expand_filename(out_dir, self._report, 'drill_report', 'txt'))
         if self._table_output:
-            _, _, hole_sets, npth = get_full_holes_list(self._table_pth_npth_single_file,
+            _, _, hole_sets, npth = get_full_holes_list(self._table_unify_pth_and_npth,
                                                         self._table_group_slots_and_round_holes)
             for i, layer_pair in enumerate(hole_sets):
                 layer_pair_name = AnyDrill._get_layer_pair_names(layer_pair)
