@@ -947,7 +947,9 @@ class ReportOptions(VariantOptions):
                     continue
                 shape = pad.GetShape()
                 size = pad.GetSize()
-                if GS.ki6:
+                if GS.ki9:
+                    area = GS.to_mm(GS.to_mm(pad.GetEffectivePolygon(pcbnew.F_Cu if on_top else pcbnew.B_Cu).Area()))
+                elif GS.ki6:
                     area = GS.to_mm(GS.to_mm(pad.GetEffectivePolygon().Area()))
                 elif shape == pcbnew.PAD_SHAPE_CIRCLE:
                     radius = GS.to_mm(size.x/2)
