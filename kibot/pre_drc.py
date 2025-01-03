@@ -168,7 +168,15 @@ class DRC(XRC):  # noqa: F821
             cmd.append('--schematic-parity')
         if self._all_track_errors:
             cmd.append('--all-track-errors')
-        cmd.append(GS.pcb_file)
+        if BasePreFlight.get_option('check_zone_fills') and not BasePreFlight.get_option('fill_zones'):  # noqa: F821
+            # We need to fill zones, but not change the current PCB
+            fname = GS.tmp_file(suffix='.kicad_pcb', dir=GS.pcb_dir, what='modified PCB', a_logger=logger)
+            GS.board.Save(fname)
+            GS.copy_project(fname)
+            self._files_to_remove.extend(GS.get_pcb_and_pro_names(fname))
+        else:
+            fname = GS.pcb_file
+        cmd.append(fname)
         return cmd
 
     @staticmethod

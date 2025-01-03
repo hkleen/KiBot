@@ -19,8 +19,11 @@ class Fill_Zones(BasePreFlight):  # noqa: F821
         with document:
             self.fill_zones = False
             """ Enable this preflight """
+        # Do it after
+        self._priority = 10
 
     def apply(self):
         load_board()
         pcbnew.ZONE_FILLER(GS.board).Fill(GS.board.Zones())
         GS.save_pcb()
+        BasePreFlight._set_option('fill_zones', True)  # noqa: F821

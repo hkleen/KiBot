@@ -97,6 +97,7 @@ class XRC(BasePreFlight):
     def __init__(self, cls):
         super().__init__()
         self._opts_cls = cls
+        self._files_to_remove = []
 
     def __str__(self):
         return f'{self.type}: {self._enabled} ({self._format})'
@@ -306,6 +307,12 @@ class XRC(BasePreFlight):
         run_command(cmd)
         if self._force_english and old_lang:
             os.environ['LANG'] = old_lang
+        # Remove temporals
+        logger.debug('Removing temporal files')
+        for f in self._files_to_remove:
+            if os.path.isfile(f):
+                logger.debug('- File `{}`'.format(f))
+                os.remove(f)
         # Read the result
         with open(output, 'rt') as f:
             raw = f.read()
