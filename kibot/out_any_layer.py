@@ -286,7 +286,7 @@ class AnyLayerOptions(VariantOptions):
         # plotinvisibletext
         self.force_plot_invisible_refs_vals = po.GetPlotInvisibleText()
         # viasonmask
-        self.tent_vias = not po.GetPlotViaOnMaskLayer()
+        self.tent_vias = True if GS.ki9 else not po.GetPlotViaOnMaskLayer()
         if GS.ki5:
             # padsonsilk
             self.exclude_pads_from_silkscreen = not po.GetPlotPadsOnSilkLayer()
