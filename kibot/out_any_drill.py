@@ -153,7 +153,6 @@ class AnyDrill(VariantOptions):
             if hasattr(self, 'pth_and_npth_single_file') and self.table.unify_pth_and_npth == 'auto':
                 self._table_unify_pth_and_npth = self.pth_and_npth_single_file
             else:
-                logger.debug(f"unify {self.table.unify_pth_and_npth}")
                 if self.table.unify_pth_and_npth in ["no", "auto"]:
                     self._table_unify_pth_and_npth = False
                 else:
