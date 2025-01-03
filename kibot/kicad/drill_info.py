@@ -190,8 +190,7 @@ def build_holes_list(layer_pair, merge_PTH_NPTH, generate_NPTH_list=True,
 
     # Add footprint/pad related PTH to hole_list_layer_pair
     if layer_pair == (pcbnew.F_Cu, pcbnew.B_Cu):
-        footprints = GS.board.GetModules() if GS.ki5 else GS.board.GetFootprints()
-        for footprint in footprints:
+        for footprint in GS.get_modules():
             for pad in footprint.Pads():
 
                 if not merge_PTH_NPTH:
