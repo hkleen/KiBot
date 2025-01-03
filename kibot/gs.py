@@ -1087,3 +1087,11 @@ class GS(object):
     def module_position(m):
         pos = GS.get_center(m)
         return f'({GS.to_mm(pos.x)}, {GS.to_mm(pos.y)}) mm'
+
+    @staticmethod
+    def layer_is_inner(id):
+        return pcbnew.IsInnerCopperLayer(id) if GS.ki9 else id > pcbnew.F_Cu and id < pcbnew.B_Cu
+
+    @staticmethod
+    def inner_layer_index(id):
+        return int(id/2-1) if GS.ki9 else id-pcbnew.F_Cu+1

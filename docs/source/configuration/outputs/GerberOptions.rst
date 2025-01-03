@@ -7,9 +7,13 @@ GerberOptions parameters
 -  **create_gerber_job_file** :index:`: <pair: output - gerber - options; create_gerber_job_file>` [:ref:`boolean <boolean>`] (default: ``true``) Creates a file with information about all the generated gerbers.
    You can use it in gerbview to load all gerbers at once.
 -  **output** :index:`: <pair: output - gerber - options; output>` [:ref:`string <string>`] (default: ``'%f-%i%I%v.%x'``) Output file name, the default KiCad name if empty.
-   IMPORTANT! KiCad will always create the file using its own name and then we can rename it. |br|
-   For this reason you must avoid generating two variants at the same directory when one of
-   them uses the default KiCad name. Affected by global options.
+
+.. note::
+      KiCad will always create the file using its own name and then we can rename it. |br|
+                   For this reason you must avoid generating two variants at the same directory when one of
+                   them uses the default KiCad name. Affected by global options. |br|
+..
+
 -  **plot_sheet_reference** :index:`: <pair: output - gerber - options; plot_sheet_reference>` [:ref:`boolean <boolean>`] (default: ``false``) Include the frame and title block. Only available for KiCad 6+ and you get a poor result
    (i.e. always the default worksheet style, also problems expanding text variables). |br|
    The `pcb_print` output can do a better job for PDF, SVG, PS, EPS and PNG outputs.
@@ -17,6 +21,12 @@ GerberOptions parameters
 -  **use_gerber_net_attributes** :index:`: <pair: output - gerber - options; use_gerber_net_attributes>` [:ref:`boolean <boolean>`] (default: ``true``) Include netlist metadata.
 -  **use_gerber_x2_attributes** :index:`: <pair: output - gerber - options; use_gerber_x2_attributes>` [:ref:`boolean <boolean>`] (default: ``true``) Use the extended X2 format (otherwise use X1 formerly RS-274X).
 -  **use_protel_extensions** :index:`: <pair: output - gerber - options; use_protel_extensions>` [:ref:`boolean <boolean>`] (default: ``false``) Use legacy Protel file extensions.
+
+.. note::
+      Inner layers numbering is different for KiCad 8 and 9. KiCad 8 starts numbering inner
+                   layers with 2 and KiCad 9 with 1. |br|
+..
+
 -  ``custom_reports`` :index:`: <pair: output - gerber - options; custom_reports>`  [:ref:`CustomReport parameters <CustomReport>`] [:ref:`list(dict) <list(dict)>`] (default: ``[]``) A list of customized reports for the manufacturer.
 -  ``disable_aperture_macros`` :index:`: <pair: output - gerber - options; disable_aperture_macros>` [:ref:`boolean <boolean>`] (default: ``false``) Disable aperture macros (workaround for buggy CAM software) (KiCad 6).
 -  ``dnf_filter`` :index:`: <pair: output - gerber - options; dnf_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to mark components as not fitted.
@@ -37,7 +47,13 @@ GerberOptions parameters
 -  ``gerber_precision`` :index:`: <pair: output - gerber - options; gerber_precision>` [:ref:`number <number>`] (default: ``4.6``) (choices: 4.5, 4.6) This is the gerber coordinate format, can be 4.5 or 4.6.
 -  ``inner_extension_pattern`` :index:`: <pair: output - gerber - options; inner_extension_pattern>` [:ref:`string <string>`] (default: ``''``) Used to change the Protel style extensions for inner layers.
    The replacement pattern can contain %n for the inner layer number and %N for the layer number. |br|
-   Example '.g%n'.
+   Example '.g%n'. |br|
+
+.. note::
+      this numbering is consistent and the first inner layer is %n = 1 and %N = 2. Which
+                   isn't true for KiCad. KiCad 8 uses 2 for the first inner and KiCad 9 uses 1. |br|
+..
+
 -  ``line_width`` :index:`: <pair: output - gerber - options; line_width>` [:ref:`number <number>`] (default: ``0.1``) (range: 0.02 to 2) Line_width for objects without width [mm] (KiCad 5).
 -  ``plot_footprint_refs`` :index:`: <pair: output - gerber - options; plot_footprint_refs>` [:ref:`boolean <boolean>`] (default: ``true``) Include the footprint references.
 -  ``plot_footprint_values`` :index:`: <pair: output - gerber - options; plot_footprint_values>` [:ref:`boolean <boolean>`] (default: ``true``) Include the footprint values.

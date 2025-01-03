@@ -29,7 +29,9 @@ class GerberOptions(AnyLayerOptions):
             self.subtract_mask_from_silk = False
             """ *Subtract the solder mask from the silk screen """
             self.use_protel_extensions = False
-            """ *Use legacy Protel file extensions """
+            """ *Use legacy Protel file extensions.
+                Important: Inner layers numbering is different for KiCad 8 and 9. KiCad 8 starts numbering inner
+                layers with 2 and KiCad 9 with 1 """
             self.gerber_precision = 4.6
             """ [4.5;4.6] This is the gerber coordinate format, can be 4.5 or 4.6 """
             self.create_gerber_job_file = True

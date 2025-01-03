@@ -139,6 +139,10 @@ Fixed
    -  Problems drawing micro vias (#749)
    -  Confusing drawing when symmetric vias overlap
 
+-  Drill:
+
+   -  Via pairs overwritten by PTH files (#758)
+
 Changed
 ~~~~~~~
 

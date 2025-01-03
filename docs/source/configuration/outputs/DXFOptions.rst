@@ -5,9 +5,13 @@ DXFOptions parameters
 ~~~~~~~~~~~~~~~~~~~~~
 
 -  **output** :index:`: <pair: output - dxf - options; output>` [:ref:`string <string>`] (default: ``'%f-%i%I%v.%x'``) Output file name, the default KiCad name if empty.
-   IMPORTANT! KiCad will always create the file using its own name and then we can rename it. |br|
-   For this reason you must avoid generating two variants at the same directory when one of
-   them uses the default KiCad name. Affected by global options.
+
+.. note::
+      KiCad will always create the file using its own name and then we can rename it. |br|
+                   For this reason you must avoid generating two variants at the same directory when one of
+                   them uses the default KiCad name. Affected by global options. |br|
+..
+
 -  **plot_sheet_reference** :index:`: <pair: output - dxf - options; plot_sheet_reference>` [:ref:`boolean <boolean>`] (default: ``false``) Include the frame and title block. Only available for KiCad 6+ and you get a poor result
    (i.e. always the default worksheet style, also problems expanding text variables). |br|
    The `pcb_print` output can do a better job for PDF, SVG, PS, EPS and PNG outputs.
@@ -32,7 +36,13 @@ DXFOptions parameters
    Disabling it the pages are coherent and can be superposed.
 -  ``inner_extension_pattern`` :index:`: <pair: output - dxf - options; inner_extension_pattern>` [:ref:`string <string>`] (default: ``''``) Used to change the Protel style extensions for inner layers.
    The replacement pattern can contain %n for the inner layer number and %N for the layer number. |br|
-   Example '.g%n'.
+   Example '.g%n'. |br|
+
+.. note::
+      this numbering is consistent and the first inner layer is %n = 1 and %N = 2. Which
+                   isn't true for KiCad. KiCad 8 uses 2 for the first inner and KiCad 9 uses 1. |br|
+..
+
 -  ``metric_units`` :index:`: <pair: output - dxf - options; metric_units>` [:ref:`boolean <boolean>`] (default: ``false``) Use mm instead of inches.
 -  ``plot_footprint_refs`` :index:`: <pair: output - dxf - options; plot_footprint_refs>` [:ref:`boolean <boolean>`] (default: ``true``) Include the footprint references.
 -  ``plot_footprint_values`` :index:`: <pair: output - dxf - options; plot_footprint_values>` [:ref:`boolean <boolean>`] (default: ``true``) Include the footprint values.

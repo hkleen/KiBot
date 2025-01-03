@@ -1143,12 +1143,14 @@ outputs:
       individual_page_scaling: true
       # [string=''] Used to change the Protel style extensions for inner layers.
       # The replacement pattern can contain %n for the inner layer number and %N for the layer number.
-      # Example '.g%n'
+      # Example '.g%n'.
+      # Important: this numbering is consistent and the first inner layer is %n = 1 and %N = 2. Which
+      # isn't true for KiCad. KiCad 8 uses 2 for the first inner and KiCad 9 uses 1
       inner_extension_pattern: ''
       # [boolean=false] Use mm instead of inches
       metric_units: false
       # [string='%f-%i%I%v.%x'] Output file name, the default KiCad name if empty.
-      # IMPORTANT! KiCad will always create the file using its own name and then we can rename it.
+      # Important: KiCad will always create the file using its own name and then we can rename it.
       # For this reason you must avoid generating two variants at the same directory when one of
       # them uses the default KiCad name. Affected by global options
       output: '%f-%i%I%v.%x'
@@ -1427,12 +1429,14 @@ outputs:
       gerber_precision: 4.6
       # [string=''] Used to change the Protel style extensions for inner layers.
       # The replacement pattern can contain %n for the inner layer number and %N for the layer number.
-      # Example '.g%n'
+      # Example '.g%n'.
+      # Important: this numbering is consistent and the first inner layer is %n = 1 and %N = 2. Which
+      # isn't true for KiCad. KiCad 8 uses 2 for the first inner and KiCad 9 uses 1
       inner_extension_pattern: ''
       # [number=0.1] [0.02,2] Line_width for objects without width [mm] (KiCad 5)
       line_width: 0.1
       # [string='%f-%i%I%v.%x'] Output file name, the default KiCad name if empty.
-      # IMPORTANT! KiCad will always create the file using its own name and then we can rename it.
+      # Important: KiCad will always create the file using its own name and then we can rename it.
       # For this reason you must avoid generating two variants at the same directory when one of
       # them uses the default KiCad name. Affected by global options
       output: '%f-%i%I%v.%x'
@@ -1467,7 +1471,9 @@ outputs:
       use_gerber_net_attributes: true
       # [boolean=true] Use the extended X2 format (otherwise use X1 formerly RS-274X)
       use_gerber_x2_attributes: true
-      # [boolean=false] Use legacy Protel file extensions
+      # [boolean=false] Use legacy Protel file extensions.
+      # Important: Inner layers numbering is different for KiCad 8 and 9. KiCad 8 starts numbering inner
+      # layers with 2 and KiCad 9 with 1
       use_protel_extensions: false
       # [string=''] Board variant to apply
       variant: ''
@@ -1512,12 +1518,14 @@ outputs:
       individual_page_scaling: true
       # [string=''] Used to change the Protel style extensions for inner layers.
       # The replacement pattern can contain %n for the inner layer number and %N for the layer number.
-      # Example '.g%n'
+      # Example '.g%n'.
+      # Important: this numbering is consistent and the first inner layer is %n = 1 and %N = 2. Which
+      # isn't true for KiCad. KiCad 8 uses 2 for the first inner and KiCad 9 uses 1
       inner_extension_pattern: ''
       # [boolean=false] Plot mirrored
       mirror_plot: false
       # [string='%f-%i%I%v.%x'] Output file name, the default KiCad name if empty.
-      # IMPORTANT! KiCad will always create the file using its own name and then we can rename it.
+      # Important: KiCad will always create the file using its own name and then we can rename it.
       # For this reason you must avoid generating two variants at the same directory when one of
       # them uses the default KiCad name. Affected by global options
       output: '%f-%i%I%v.%x'
@@ -3265,7 +3273,9 @@ outputs:
       individual_page_scaling: true
       # [string=''] Used to change the Protel style extensions for inner layers.
       # The replacement pattern can contain %n for the inner layer number and %N for the layer number.
-      # Example '.g%n'
+      # Example '.g%n'.
+      # Important: this numbering is consistent and the first inner layer is %n = 1 and %N = 2. Which
+      # isn't true for KiCad. KiCad 8 uses 2 for the first inner and KiCad 9 uses 1
       inner_extension_pattern: ''
       # [number=0.1] [0.02,2] For objects without width [mm] (KiCad 5)
       line_width: 0.1
@@ -3274,7 +3284,7 @@ outputs:
       # [boolean=false] Invert black and white
       negative_plot: false
       # [string='%f-%i%I%v.%x'] Output file name, the default KiCad name if empty.
-      # IMPORTANT! KiCad will always create the file using its own name and then we can rename it.
+      # Important: KiCad will always create the file using its own name and then we can rename it.
       # For this reason you must avoid generating two variants at the same directory when one of
       # them uses the default KiCad name. Affected by global options
       output: '%f-%i%I%v.%x'
@@ -3579,7 +3589,9 @@ outputs:
       individual_page_scaling: true
       # [string=''] Used to change the Protel style extensions for inner layers.
       # The replacement pattern can contain %n for the inner layer number and %N for the layer number.
-      # Example '.g%n'
+      # Example '.g%n'.
+      # Important: this numbering is consistent and the first inner layer is %n = 1 and %N = 2. Which
+      # isn't true for KiCad. KiCad 8 uses 2 for the first inner and KiCad 9 uses 1
       inner_extension_pattern: ''
       # [number=0.15] [0.02,2] For objects without width [mm] (KiCad 5)
       line_width: 0.15
@@ -3588,7 +3600,7 @@ outputs:
       # [boolean=false] Invert black and white
       negative_plot: false
       # [string='%f-%i%I%v.%x'] Output file name, the default KiCad name if empty.
-      # IMPORTANT! KiCad will always create the file using its own name and then we can rename it.
+      # Important: KiCad will always create the file using its own name and then we can rename it.
       # For this reason you must avoid generating two variants at the same directory when one of
       # them uses the default KiCad name. Affected by global options
       output: '%f-%i%I%v.%x'
@@ -4204,7 +4216,9 @@ outputs:
       individual_page_scaling: true
       # [string=''] Used to change the Protel style extensions for inner layers.
       # The replacement pattern can contain %n for the inner layer number and %N for the layer number.
-      # Example '.g%n'
+      # Example '.g%n'.
+      # Important: this numbering is consistent and the first inner layer is %n = 1 and %N = 2. Which
+      # isn't true for KiCad. KiCad 8 uses 2 for the first inner and KiCad 9 uses 1
       inner_extension_pattern: ''
       # [boolean=false] When enabled the view box is limited to a selected area.
       # This option can't be enabled when using a scale
@@ -4228,7 +4242,7 @@ outputs:
       # [boolean=false] Invert black and white
       negative_plot: false
       # [string='%f-%i%I%v.%x'] Output file name, the default KiCad name if empty.
-      # IMPORTANT! KiCad will always create the file using its own name and then we can rename it.
+      # Important: KiCad will always create the file using its own name and then we can rename it.
       # For this reason you must avoid generating two variants at the same directory when one of
       # them uses the default KiCad name. Affected by global options
       output: '%f-%i%I%v.%x'

@@ -84,11 +84,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - XLSX logo scale (#750)
 - Do Not Fit footprint crosses:
   - Problems with footprints where the center isn't the geometric center (#725)
-- Navigate Results:
-  - Problems when using `erc: true` or `drc: true` (#742)
+- DRC:
+  - Zone refill issues with the new DRC preflight (#759)
 - Draw Fancy Stackup:
   - Problems drawing micro vias (#749)
   - Confusing drawing when symmetric vias overlap
+- Drill:
+  - Via pairs overwritten by PTH files (#758)
+- Navigate Results:
+  - Problems when using `erc: true` or `drc: true` (#742)
 
 ### Changed
 - Default temporal layer for internal use is now "Margin", instead of "User.9"
