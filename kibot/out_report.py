@@ -26,7 +26,7 @@ from .misc import (UI_SMD, UI_VIRTUAL, MOD_THROUGH_HOLE, MOD_SMD, MOD_EXCLUDE_FR
 from .registrable import RegOutput
 from .out_base import VariantOptions
 from .error import KiPlotConfigurationError
-from .kiplot import config_output, run_command
+from .kiplot import config_output, run_command, get_output_targets
 from .dep_downloader import get_dep_data
 from .macros import macros, document, output_class  # noqa: F401
 from . import log
@@ -275,6 +275,35 @@ class ReportOptions(VariantOptions):
             if m:
                 pattern = m.group(1)
                 var = m.group(2)
+            # Handle `_outpath` with optional indexing
+            if var.endswith('_outpath') or '_outpath_' in var:
+                base_var = var
+                index = None
+                idx_match = re.match(r'^(.*)_outpath_(\d+)$', var)
+                if idx_match:
+                    base_var = idx_match.group(1) + '_outpath'
+                    index = int(idx_match.group(2)) - 1  # Convert 1-based to 0-based index
+
+                output_name = base_var[:-8]  # Strip `_outpath`
+                try:
+                    targets, _, _ = get_output_targets(output_name, self._parent)
+                    target = None
+                    if isinstance(targets, list):
+                        if index is not None:
+                            if 0 <= index < len(targets):
+                                target = targets[index]
+                            else:
+                                logger.warning(f"Index {index + 1} out of range for `{var_ori}`")
+                        else:
+                            target = targets[0]
+                    else:
+                        target = targets
+                    if target is not None:
+                        target_rel = os.path.relpath(target, os.path.join(GS.out_dir, self._parent.dir))
+                        line = line.replace(f'${{{var_ori}}}', target_rel)
+                except Exception as e:
+                    logger.warning(f"Error processing _outpath for `{var_ori}`: {str(e)}")
+                continue
             if var.endswith('_mm'):
                 units = to_mm
                 digits = self.mm_digits
