@@ -126,8 +126,12 @@ def get_layer_pair_name(index, use_layer_names=False, merge_PTH_NPTH=True, group
         return f'{GS.board.GetLayerName(layer_pair[0])} - {GS.board.GetLayerName(layer_pair[1])}'
     else:
         layer_cnt = GS.board.GetCopperLayerCount()
-        top_layer = layer_pair[0] + 1
-        bot_layer = layer_pair[1] + 1 if layer_pair[1] != pcbnew.B_Cu else layer_cnt
+        if not GS.ki9:
+            top_layer = layer_pair[0] + 1
+            bot_layer = layer_pair[1] + 1 if layer_pair[1] != pcbnew.B_Cu else layer_cnt
+        else:
+            top_layer = 1 if layer_pair[0] == pcbnew.F_Cu else layer_pair[0]/2 - 1
+            bot_layer = layer_cnt if layer_pair[1] == pcbnew.B_Cu else layer_pair[1]/2 - 1
         return f'L{top_layer} - L{bot_layer}'
 
 
