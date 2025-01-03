@@ -287,8 +287,8 @@ class ReportOptions(VariantOptions):
                 output_name = base_var[:-8]  # Strip `_outpath`
                 try:
                     targets, _, _ = get_output_targets(output_name, self._parent)
+                    target = None
                     if isinstance(targets, list):
-                        target = None
                         if index is not None:
                             if 0 <= index < len(targets):
                                 target = targets[index]
@@ -296,16 +296,11 @@ class ReportOptions(VariantOptions):
                                 logger.warning(f"Index {index + 1} out of range for `{var_ori}`")
                         else:
                             target = targets[0]
-
-                        if target is not None:
-                            target_rel = os.path.relpath(target, os.path.join(GS.out_dir, self._parent.dir))
-                            line = line.replace(f'${{{var_ori}}}', target_rel)
                     else:
                         target = targets
-                        root_folder = defined.get('KIPRJMOD', '')
-                        if target.startswith(root_folder):
-                            target = target[len(root_folder):].lstrip('/')
-                        line = line.replace(f'${{{var_ori}}}', target)
+                    if target is not None:
+                        target_rel = os.path.relpath(target, os.path.join(GS.out_dir, self._parent.dir))
+                        line = line.replace(f'${{{var_ori}}}', target_rel)
                 except Exception as e:
                     logger.warning(f"Error processing _outpath for `{var_ori}`: {str(e)}")
                 continue
