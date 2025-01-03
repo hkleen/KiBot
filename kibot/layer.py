@@ -39,6 +39,12 @@ def get_priority(id):
     return LAYER_PRIORITY.get(id, 1e6)
 
 
+def inner_id_in_range(id, cnt):
+    if GS.ki9:
+        return GS.layer_is_inner(id) and int(id/2) < cnt
+    return id > 0 and id < cnt-1
+
+
 class Layer(Optionable):
     """ A layer description """
     # Default names
@@ -221,7 +227,7 @@ class Layer(Optionable):
                 if isinstance(layer, Layer):
                     layer._get_layer_id_from_name()
                     # Check if the layer is in use
-                    if layer._is_inner and (layer._id < 1 or layer._id >= layer_cnt - 1):
+                    if layer._is_inner and not inner_id_in_range(layer._id, layer_cnt):
                         raise PlotError("Inner layer `{}` is not valid for this board".format(layer))
                     layer.fix_protel_ext()
                     new_vals.append(layer)
