@@ -1177,7 +1177,7 @@ outputs:
       sketch_pads_on_fab_layers: false
       # [boolean=false] Don't fill objects, just draw the outline
       sketch_plot: false
-      # [boolean=true] Cover the vias.
+      # [boolean=true] Cover the vias. Usable for KiCad versions older than 9.
       # Warning: KiCad 8 has a bug that ignores this option. Set it from KiCad GUI
       tent_vias: true
       # [boolean=false] Use uppercase names for the extensions
@@ -1456,7 +1456,7 @@ outputs:
       sketch_pads_on_fab_layers: false
       # [boolean=false] Subtract the solder mask from the silk screen
       subtract_mask_from_silk: false
-      # [boolean=true] Cover the vias.
+      # [boolean=true] Cover the vias. Usable for KiCad versions older than 9.
       # Warning: KiCad 8 has a bug that ignores this option. Set it from KiCad GUI
       tent_vias: true
       # [boolean=false] Use uppercase names for the extensions
@@ -1549,7 +1549,7 @@ outputs:
       sketch_pads_on_fab_layers: false
       # [boolean=false] Don't fill objects, just draw the outline
       sketch_plot: false
-      # [boolean=true] Cover the vias.
+      # [boolean=true] Cover the vias. Usable for KiCad versions older than 9.
       # Warning: KiCad 8 has a bug that ignores this option. Set it from KiCad GUI
       tent_vias: true
       # [boolean=false] Use uppercase names for the extensions
@@ -3298,7 +3298,7 @@ outputs:
       sketch_pad_line_width: 0.1
       # [boolean=false] Draw only the outline of the pads on the *.Fab layers (KiCad 6+)
       sketch_pads_on_fab_layers: false
-      # [boolean=true] Cover the vias.
+      # [boolean=true] Cover the vias. Usable for KiCad versions older than 9.
       # Warning: KiCad 8 has a bug that ignores this option. Set it from KiCad GUI
       tent_vias: true
       # [boolean=false] Use uppercase names for the extensions
@@ -3618,7 +3618,7 @@ outputs:
       sketch_pads_on_fab_layers: false
       # [boolean=false] Don't fill objects, just draw the outline
       sketch_plot: false
-      # [boolean=true] Cover the vias.
+      # [boolean=true] Cover the vias. Usable for KiCad versions older than 9.
       # Warning: KiCad 8 has a bug that ignores this option. Set it from KiCad GUI
       tent_vias: true
       # [boolean=false] Use uppercase names for the extensions
@@ -4263,7 +4263,7 @@ outputs:
       # The value is how much zeros has the multiplier (1 mm = 10 power `svg_precision` units).
       # Note that for an A4 paper Firefox 91 and Chrome 105 can't handle more than 5
       svg_precision: 4
-      # [boolean=true] Cover the vias.
+      # [boolean=true] Cover the vias. Usable for KiCad versions older than 9.
       # Warning: KiCad 8 has a bug that ignores this option. Set it from KiCad GUI
       tent_vias: true
       # [boolean=false] Use uppercase names for the extensions

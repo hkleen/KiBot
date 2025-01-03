@@ -60,7 +60,7 @@ SVGOptions parameters
 -  ``svg_precision`` :index:`: <pair: output - svg - options; svg_precision>` [:ref:`number <number>`] (default: ``4``) (range: 0 to 6) Scale factor used to represent 1 mm in the SVG (KiCad 6).
    The value is how much zeros has the multiplier (1 mm = 10 power `svg_precision` units). |br|
    Note that for an A4 paper Firefox 91 and Chrome 105 can't handle more than 5.
--  ``tent_vias`` :index:`: <pair: output - svg - options; tent_vias>` [:ref:`boolean <boolean>`] (default: ``true``) Cover the vias.
+-  ``tent_vias`` :index:`: <pair: output - svg - options; tent_vias>` [:ref:`boolean <boolean>`] (default: ``true``) Cover the vias. Usable for KiCad versions older than 9.
    
 .. warning::
    KiCad 8 has a bug that ignores this option. Set it from KiCad GUI.

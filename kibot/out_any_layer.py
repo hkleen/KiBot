@@ -67,7 +67,7 @@ class AnyLayerOptions(VariantOptions):
                 For this reason you must avoid generating two variants at the same directory when one of
                 them uses the default KiCad name """
             self.tent_vias = True
-            """ Cover the vias.
+            """ Cover the vias. Usable for KiCad versions older than 9.
                 Warning: KiCad 8 has a bug that ignores this option. Set it from KiCad GUI """
             self.uppercase_extensions = False
             """ Use uppercase names for the extensions """
@@ -109,7 +109,9 @@ class AnyLayerOptions(VariantOptions):
         else:
             po.SetSketchPadsOnFabLayers(self.sketch_pads_on_fab_layers)
             po.SetSketchPadLineWidth(self.sketch_pad_line_width)
-        po.SetPlotViaOnMaskLayer(not self.tent_vias)
+        if not GS.ki9:
+            # Now controlled for each via
+            po.SetPlotViaOnMaskLayer(not self.tent_vias)
         # Only useful for gerber outputs
         po.SetCreateGerberJobFile(False)
         # We'll come back to this on a per-layer basis

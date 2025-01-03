@@ -87,7 +87,7 @@ Parameters:
 -  ``sketch_pad_line_width`` :index:`: <pair: output - pdf; sketch_pad_line_width>` [:ref:`number <number>`] (default: ``0.1``) Line width for the sketched pads [mm], see `sketch_pads_on_fab_layers` (KiCad 6+)
    Note that this value is currently ignored by KiCad (6.0.9).
 -  ``sketch_pads_on_fab_layers`` :index:`: <pair: output - pdf; sketch_pads_on_fab_layers>` [:ref:`boolean <boolean>`] (default: ``false``) Draw only the outline of the pads on the \\*.Fab layers (KiCad 6+).
--  ``tent_vias`` :index:`: <pair: output - pdf; tent_vias>` [:ref:`boolean <boolean>`] (default: ``true``) Cover the vias.
+-  ``tent_vias`` :index:`: <pair: output - pdf; tent_vias>` [:ref:`boolean <boolean>`] (default: ``true``) Cover the vias. Usable for KiCad versions older than 9.
    
 .. warning::
    KiCad 8 has a bug that ignores this option. Set it from KiCad GUI.
