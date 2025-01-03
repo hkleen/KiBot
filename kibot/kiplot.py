@@ -240,7 +240,7 @@ def load_board(pcb_file=None, forced=False):
                 if dr.GetClass().startswith('PCB_DIM_') and dr.GetUnitsMode() == pcbnew.DIM_UNITS_MODE_AUTOMATIC:
                     dr.SetUnitsMode(forced_units)
                     dr.Update()
-        if GS.ki8:
+        if GS.ki8 and not GS.ki9:
             # KiCad 8.0.2 crazyness: hidden text affects scaling, even when not plotted
             # So a PRL can affect the plot mechanism
             # https://gitlab.com/kicad/code/kicad/-/issues/17958
