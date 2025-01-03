@@ -1,0 +1,7 @@
+png/light_control-assembly_page_01.png
+png/light_control-assembly_page_01.png
+png/light_control-assembly_page_02.png
+png/light_control-assembly_page_03.png
+png/light_control-assembly_page_04.png
+${pcb_print_png_outpath_5}
+

@@ -1,0 +1,6 @@
+${pcb_print_png_outpath}
+${pcb_print_png_outpath_1}
+${pcb_print_png_outpath_2}
+${pcb_print_png_outpath_3}
+${pcb_print_png_outpath_4}
+${pcb_print_png_outpath_5}

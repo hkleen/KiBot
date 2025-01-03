@@ -1203,6 +1203,17 @@ def test_report_edge_2(test_dir):
     ctx.clean_up()
 
 
+def test_report_output_path(test_dir):
+    prj = 'light_control'
+    ctx = context.TestContext(test_dir, prj, 'report_output_path', POS_DIR)
+    ctx.run(extra=['pcb_print_png', 'report_output_path_1', 'report_output_path_2'])
+    ctx.expect_out_file('report/'+prj+'-report_output_path_1.txt')
+    ctx.expect_out_file(prj+'-report_output_path_2.txt')
+    ctx.compare_txt('report/'+prj+'-report_output_path_1.txt', reference=prj+'-report_output_path_1.txt')
+    ctx.compare_txt(prj+'-report_output_path_2.txt')
+    ctx.clean_up(keep_project=True)
+
+
 def test_board_view_1(test_dir):
     prj = 'glasgow'
     ctx = context.TestContext(test_dir, prj, 'boardview', POS_DIR)
