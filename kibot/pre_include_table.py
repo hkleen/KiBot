@@ -12,6 +12,7 @@ import pcbnew
 from .error import KiPlotConfigurationError
 from .gs import GS
 from .kicad.pcb_draw_helpers import (draw_rect, draw_line, draw_text, get_text_width,
+                                     draw_marker, get_marker_best_pen_size,
                                      GR_TEXT_HJUSTIFY_LEFT, GR_TEXT_HJUSTIFY_RIGHT,
                                      GR_TEXT_HJUSTIFY_CENTER)
 from .kiplot import load_board, get_output_targets, look_for_output
@@ -24,7 +25,8 @@ logger = log.get_logger()
 ALIGNMENT = {'left': GR_TEXT_HJUSTIFY_LEFT,
              'center': GR_TEXT_HJUSTIFY_CENTER,
              'right': GR_TEXT_HJUSTIFY_RIGHT}
-VALID_OUTPUT_TYPES = {'bom', 'kibom', 'position', 'report'}
+VALID_OUTPUT_TYPES = {'bom', 'kibom', 'position', 'report', 'excellon', 'gerb_drill'}
+VALID_DRILL_TABLE_OUTPUTS = ['excellon', 'gerb_drill']
 
 
 class IncTableOutputOptions(Optionable):
@@ -97,6 +99,9 @@ class IncludeTableOptions(Optionable):
                 for example *kibot_table_out[:10]* would include all elements until the 10th
                 element (10th excluded), and *kibot_table_out[2][5:8]* would include the second
                 output's elements number 6 to 8 (python indexes start at 0). """
+            self.format_drill_table = True
+            """ If True, CSV drill tables will have drill marks displayed on the left and
+                an extra bottom rule for the total number of holes """
         super().__init__()
         self._unknown_is_error = True
 
@@ -116,7 +121,7 @@ class ITColumns:
         self.data = []  # List to hold data for the column
 
 
-def update_table_group(g, pos_x, pos_y, width, tlayer, ops, out, csv_file, slice_str=None):
+def update_table_group(g, pos_x, pos_y, width, tlayer, ops, out, csv_file, out_type, slice_str=None):
     """Extend the function to handle slicing of rows based on the slice_str."""
     if not os.path.isfile(csv_file):
         raise KiPlotConfigurationError(f'Missing `{csv_file}`, create it first using the `{out.name}` output')
@@ -131,16 +136,22 @@ def update_table_group(g, pos_x, pos_y, width, tlayer, ops, out, csv_file, slice
 
     cols = []
 
+    format_drill_table = out_type in VALID_DRILL_TABLE_OUTPUTS and ops.format_drill_table
+
     with open(csv_file) as csvfile:
         reader = csv.reader(csvfile, delimiter=out._obj.get_csv_separator())
 
         # Parse the header if present
         if out.has_header:
             headers = next(reader)
+            if format_drill_table:
+                cols.append(ITColumns(header='Symbol'))
             for header in headers:
                 cols.append(ITColumns(header=header))
         else:
             first_row = next(reader)
+            if format_drill_table:
+                cols.append(ITColumns())
             for _ in range(len(first_row)):
                 cols.append(ITColumns())
             for i, value in enumerate(first_row):
@@ -148,6 +159,8 @@ def update_table_group(g, pos_x, pos_y, width, tlayer, ops, out, csv_file, slice
 
         # Add the rest of the CSV rows to the column data
         for row in reader:
+            if format_drill_table:
+                row.insert(0, '   ')  # for the drill symbol we reserve 3 em spaces
             for i, value in enumerate(row):
                 if i < len(cols):
                     cols[i].data.append(value)
@@ -176,15 +189,22 @@ def update_table_group(g, pos_x, pos_y, width, tlayer, ops, out, csv_file, slice
     xpos_x = int(pos_x + col_spacing_width / 2)
     max_row_data = 0
 
+    # KiCad adds some padding around the texts, we add some padding to align
+    # markers with the texts
+    marker_padding = font_w/4
+
     for c in cols:
         c.w = int(c.width / total_rel_w * width)
         c.x = xpos_x
         if out._text_alignment == GR_TEXT_HJUSTIFY_LEFT:
             c.xoffset = 0
+            c.xoffset_marker = int(font_w/2 + marker_padding)
         elif out._text_alignment == GR_TEXT_HJUSTIFY_RIGHT:
             c.xoffset = int(c.w - col_spacing_width)
+            c.xoffset_marker = int(-font_w/2 - marker_padding)
         elif out._text_alignment == GR_TEXT_HJUSTIFY_CENTER:
             c.xoffset = int(c.w / 2 - col_spacing_width / 2)
+            c.xoffset_marker = 0
         xpos_x += c.w
         max_row_data = max(max_row_data, len(c.data))
 
@@ -202,12 +222,19 @@ def update_table_group(g, pos_x, pos_y, width, tlayer, ops, out, csv_file, slice
         rule_y = int(y + (i + 1) * row_h)
         draw_line(g, pos_x, rule_y, pos_x + width, rule_y, tlayer, line_w=GS.from_mm(out.horizontal_rule_width))
 
+    if format_drill_table:
+        rule_y = int(y + (max_row_data - 1) * row_h)
+        draw_line(g, pos_x, rule_y, pos_x + width, rule_y, tlayer, line_w=GS.from_mm(out.bottom_rule_width))
+
     table_h = 0
-    for c in cols:
+    for i, c in enumerate(cols):
         row_y = int(y + row_h / 2)
-        for d in c.data:
+        for j, d in enumerate(c.data):
             txt, _ = draw_text(g, c.x + c.xoffset, int(row_y - font_w), d, font_w, font_w,
                                tlayer, alignment=out._text_alignment, font=font)
+            if format_drill_table and i == 0 and j != len(c.data)-1:
+                marker_w = get_marker_best_pen_size(font_w)
+                draw_marker(g, int(c.x + c.xoffset + c.xoffset_marker), int(row_y), font_w, tlayer, j, marker_w)
             row_y += row_h
         table_h = int(max(table_h, row_y - pos_y) - row_h / 2)
 
@@ -238,7 +265,7 @@ def measure_table(cols, out, bold_headers, font=None):
         c.width = c.max_len/tot_len
 
 
-def update_table(ops, parent):
+def update_table(ops, parent, force_index=-1, only_drill_tables=False):
     logger.debug('Starting include table preflight')
     load_board()
     csv_files = []
@@ -254,7 +281,7 @@ def update_table(ops, parent):
             logger.debug(f'  - {out.name} no CSV')
             continue
         out._obj = csv
-        targets, _, _ = get_output_targets(out.name, parent)
+        targets, _, o = get_output_targets(out.name, parent)
 
         csv_targets = [file for file in targets if file.endswith('.csv')]
         for file in csv_targets:
@@ -263,7 +290,7 @@ def update_table(ops, parent):
             file_name = os.path.basename(file)
             name_without_ext = os.path.splitext(file_name)[0]
             csv_name.append(name_without_ext)
-        out_to_csv_mapping[out.name] = (out, csv_targets)
+        out_to_csv_mapping[out.name] = (out, csv_targets, o.type)
         logger.debug(f'  - {out.name} -> {csv_targets}')
 
     group_found = False
@@ -287,6 +314,14 @@ def update_table(ops, parent):
         # Check for number of brackets in the group name
         bracket_matches = re.findall(r'\[.*?\]', group_suffix)
 
+        out, csv, out_type = out_to_csv_mapping.get(group_suffix, (None, None, None))
+        if not csv:
+            logger.warning(W_NOMATCHGRP + f'No output to handle `{group_name}` found')
+            continue
+
+        if only_drill_tables and out_type not in VALID_DRILL_TABLE_OUTPUTS:
+            continue
+
         if len(bracket_matches) == 2:
             # Two brackets: second is slicing expression
             slice_str = bracket_matches[1]
@@ -294,7 +329,7 @@ def update_table(ops, parent):
             group_suffix = re.sub(r'\[.*?\]', '', group_suffix, count=2)  # Remove both brackets
         elif len(bracket_matches) == 1:
             # One bracket: determine if it's an index or a slice
-            if len(csv_targets) == 1:
+            if len(csv) == 1:
                 slice_str = bracket_matches[0]  # Single CSV means it must be a slice
             else:
                 index = int(bracket_matches[0][1:-1]) - 1  # Multiple CSVs mean it's an index
@@ -302,17 +337,15 @@ def update_table(ops, parent):
 
         logger.debug(f'    - Parsed group_suffix: {group_suffix}, index: {index}, slice_str: {slice_str}')
 
-        out, csv = out_to_csv_mapping.get(group_suffix, (None, None))
-        if not csv:
-            logger.warning(W_NOMATCHGRP + f'No output to handle `{group_name}` found')
-            continue
+        if force_index != -1:
+            index = force_index
 
         # Default index to 0 if csv has only one element
         if index is None:
             index = 0
 
         if index < 0 or index >= len(csv):
-            msg = f'Index {index + 1} is out of range, '
+            msg = f'Index {index + 1} is out of range for output {out.name}, '
             raise KiPlotConfigurationError(msg)
 
         x1, y1, x2, y2 = GS.compute_group_boundary(g)
@@ -322,7 +355,7 @@ def update_table(ops, parent):
                      f' ({GS.to_mm(x2 - x1)}x{GS.to_mm(y2 - y1)} mm) layer {layer}'
                      f' with name {g.GetName()}')
 
-        update_table_group(g, x1, y1, x2 - x1, layer, ops, out, csv[index], slice_str)
+        update_table_group(g, x1, y1, x2 - x1, layer, ops, out, csv[index], out_type, slice_str)
 
         updated = True
 
