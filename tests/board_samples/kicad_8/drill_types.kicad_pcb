@@ -827,6 +827,17 @@
 			)
 		)
 	)
+	(gr_rect
+		(start 50 55)
+		(end 150 155)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(fill none)
+		(layer "Cmts.User")
+		(uuid "8f769ff7-0ab1-44a8-ac30-8af10f3c087c")
+	)
 	(gr_line
 		(start 100 25)
 		(end 100 50)
@@ -934,5 +945,9 @@
 		(layers "In2.Cu" "B.Cu")
 		(net 0)
 		(uuid "0f54db53-a272-4955-88fb-d7ab00657bb0")
+	)
+	(group "kibot_table_drill_table"
+		(uuid "b0bd6bf1-b019-4a3f-aac0-2d0e494e009d")
+		(members "8f769ff7-0ab1-44a8-ac30-8af10f3c087c")
 	)
 )

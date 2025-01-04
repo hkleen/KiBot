@@ -1,0 +1,35 @@
+# KiBot config file
+kibot:
+  version: 1
+
+outputs:
+  - name: drill_table
+    comment: "CSV Drill Tables"
+    type: excellon
+    dir: tables
+    options:
+      generate_drill_files: false 
+      table:
+        unify_pth_and_npth: 'no'
+        group_slots_and_round_holes: true
+
+  - name: 'print_drill_table'
+    comment: "Drill Map/Table drawings in PNG b/w"
+    type: pcb_print
+    dir: .
+    output_id: '_table'
+    options:
+      plot_sheet_reference: true
+      sheet_reference_layout: '${KIPRJMOD}/../../data/test_img.kicad_wks'
+      format: 'PNG'
+      include_table: true
+      drill:  # must match the settings of the CSV table
+        unify_pth_and_npth: 'no'
+        group_slots_and_round_holes: true
+      pages:
+        - scaling: 2
+          repeat_for_layer: 'User.Comments'
+          repeat_layers: 'drill_pairs'
+          layers:
+            - layer: 'User.Comments'
+              color: '#000000'
