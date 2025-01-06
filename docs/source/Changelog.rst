@@ -75,6 +75,7 @@ Added
 
    -  Option to don’t generate the drill files, so you can generate only
       the maps (#720)
+   -  Option to generate a drill table (#760)
 
 -  Include table:
 

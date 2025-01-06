@@ -26,6 +26,7 @@ Gerb_DrillOptions parameters
 
 -  ``pth_id`` :index:`: <pair: output - gerb_drill - options; pth_id>` [:ref:`string <string>`] Force this replacement for %i when generating PTH and unified files.
 -  ``report`` :index:`: <pair: output - gerb_drill - options; report>`  [:ref:`DrillReport parameters <DrillReport>`] [:ref:`dict <dict>` | :ref:`string <string>`] (default: ``''``) Name of the drill report. Not generated unless a name is specified.
+-  ``table`` :index:`: <pair: output - gerb_drill - options; table>`  [:ref:`DrillTable parameters <DrillTable>`] [:ref:`dict <dict>` | :ref:`string <string>`] (default: ``''``) Name of the drill table. Not generated unless a name is specified.
 -  ``use_aux_axis_as_origin`` :index:`: <pair: output - gerb_drill - options; use_aux_axis_as_origin>` [:ref:`boolean <boolean>`] (default: ``false``) Use the auxiliary axis as origin for coordinates.
 -  ``variant`` :index:`: <pair: output - gerb_drill - options; variant>` [:ref:`string <string>`] (default: ``''``) Board variant to apply.
    Used for sub-PCBs.
@@ -35,3 +36,4 @@ Gerb_DrillOptions parameters
 
    DrillMap
    DrillReport
+   DrillTable

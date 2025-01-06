@@ -1,15 +1,15 @@
-48 outputs types with a total of 1932 different parameters
-Single type parameters: 1758 (91 %)
-Multi type parameters: 174 (9 %)
-Average parameters: 40
+48 outputs types with a total of 1948 different parameters
+Single type parameters: 1772 (91 %)
+Multi type parameters: 176 (9 %)
+Average parameters: 41
 Maximum number of parameters: 217
 Minimum number of parameters: 14
 Histogram:
   0-  9: 
  10- 19: *****
- 20- 29: ********************
+ 20- 29: *******************
  30- 39: ********
- 40- 49: *******
+ 40- 49: ********
  50- 59: **
  60- 69: **
  70- 79: *
@@ -45,7 +45,6 @@ Outputs sorted by parameters:
 - svg_sch_print: 24
 - compress: 25
 - qr_lib: 25
-- gerb_drill: 26
 - hpgl_sch_print: 26
 - kiri: 26
 - stencil_3d: 26
@@ -59,9 +58,10 @@ Outputs sorted by parameters:
 - report: 33
 - svg_pcb_print: 33
 - vrml: 33
-- excellon: 34
+- gerb_drill: 34
 - kicost: 37
 - diff: 40
+- excellon: 42
 - dxf: 43
 - hpgl: 44
 - kibom: 45
@@ -76,15 +76,15 @@ Outputs sorted by parameters:
 - pcb_print: 94
 - bom: 149
 - panelize: 217
-Average depth: 2.5416666666666665
+Average depth: 2.5833333333333335
 Maximum depth: 5
 Minimum depth: 2
 Histogram:
 0: 
 1: 
 2: ***************************
-3: *****************
-4: ***
+3: ***************
+4: *****
 5: *
 Outputs sorted by depth:
 - boardview: 2
@@ -118,8 +118,6 @@ Outputs sorted by depth:
 - compress: 3
 - copy_files: 3
 - dxf: 3
-- excellon: 3
-- gerb_drill: 3
 - gerber: 3
 - hpgl: 3
 - kicost: 3
@@ -131,19 +129,21 @@ Outputs sorted by depth:
 - ps: 3
 - qr_lib: 3
 - svg: 3
+- excellon: 4
+- gerb_drill: 4
 - kibom: 4
 - panelize: 4
 - pcb_print: 4
 - bom: 5
 --------------------------------------------------------------------------------
 14 different data types
--             String:  846
--            Boolean:  477
+-             String:  854
+-            Boolean:  479
 -             Number:  270
 - ListStringSingular:  265
--             Choice:   95
--               Dict:   79
--   ListDictOrString:   21
+-             Choice:   99
+-               Dict:   81
+-   ListDictOrString:   23
 -           ListDict:   20
 -              Combo:   14
 -         ListString:    9
@@ -153,16 +153,16 @@ Outputs sorted by depth:
 -       NumberChoice:    1
 --------------------------------------------------------------------------------
 Used as single data type:
--             String:  692 
--            Boolean:  421 
+-             String:  698 
+-            Boolean:  423 
 - ListStringSingular:  262 
 -             Number:  176 
--             Choice:   92 
+-             Choice:   96 
 -               Dict:   70 
 -           ListDict:   20 
 -         ListString:    9 ['blender_export.options.pcb3d.highlight', 'bom.options.group_fields', 'bom.options.group_fields_fallbacks', 'bom.options.no_conflict', 'kibom.options.conf.group_fields', 'pcbdraw.options.libs', 'pcbdraw.options.highlight', 'render_3d.options.highlight', 'vrml.options.highlight']
+-   ListDictOrString:    7 ['bom.options.columns', 'bom.options.cost_extra_columns', 'bom.options.xlsx.specs_columns', 'excellon.options.table.columns', 'gerb_drill.options.table.columns', 'kibom.options.conf.columns', 'position.options.columns']
 -   ListDictSingular:    5 ['blender_export.options.outputs', 'blender_export.options.light', 'blender_export.options.point_of_view', 'kikit_present.options.boards', 'qr_lib.options.qrs']
--   ListDictOrString:    5 ['bom.options.columns', 'bom.options.cost_extra_columns', 'bom.options.xlsx.specs_columns', 'kibom.options.conf.columns', 'position.options.columns']
 -     ListListString:    2 ['bom.options.component_aliases', 'kibom.options.conf.component_aliases']
 -              Combo:    2 ['report.options.template', 'step.options.origin']
 -         StringDict:    1 ['download_datasheets.options.classify_extra']
@@ -172,7 +172,7 @@ Used as single data type:
 -              Number,String:   92 
 -             Boolean,String:   52 
 -     Combo,ListDictOrString:   12 
--                Dict,String:    5 ['blender_export.options.pcb3d', 'excellon.options.report', 'gerb_drill.options.report', 'kibom.options.conf', 'pcbdraw.options.style']
+-                Dict,String:    7 ['blender_export.options.pcb3d', 'excellon.options.report', 'excellon.options.table', 'gerb_drill.options.report', 'gerb_drill.options.table', 'kibom.options.conf', 'pcbdraw.options.style']
 -    ListDictOrString,String:    4 ['bom.options.columns.join', 'bom.options.cost_extra_columns.join', 'bom.options.xlsx.specs_columns.join', 'panelize.options.configs']
 - Boolean,ListStringSingular:    3 ['bom.options.html.lcsc_link', 'bom.options.xlsx.lcsc_link', 'kibom.options.conf.lcsc_link']
 -                Choice,Dict:    2 ['excellon.options.map', 'gerb_drill.options.map']
@@ -392,18 +392,18 @@ Used as single data type:
 -              Number,String:   15 
 ================================================================================
 ================================================================================
-87 totals types with a total of 2306 different parameters
-Single type parameters: 2108 (91 %)
-Multi type parameters: 198 (9 %)
+87 totals types with a total of 2322 different parameters
+Single type parameters: 2122 (91 %)
+Multi type parameters: 200 (9 %)
 Average parameters: 27
 Maximum number of parameters: 217
 Minimum number of parameters: 1
 Histogram:
   0-  9: ************************
  10- 19: **************
- 20- 29: *************************
+ 20- 29: ************************
  30- 39: *********
- 40- 49: *******
+ 40- 49: ********
  50- 59: **
  60- 69: **
  70- 79: *
@@ -477,7 +477,6 @@ Totals sorted by parameters:
 - kicost: 24
 - compress: 25
 - qr_lib: 25
-- gerb_drill: 26
 - hpgl_sch_print: 26
 - kiri: 26
 - stencil_3d: 26
@@ -491,10 +490,11 @@ Totals sorted by parameters:
 - report: 33
 - svg_pcb_print: 33
 - vrml: 33
-- excellon: 34
+- gerb_drill: 34
 - generic: 34
 - kicost: 37
 - diff: 40
+- excellon: 42
 - dxf: 43
 - hpgl: 44
 - kibom: 45
@@ -509,15 +509,15 @@ Totals sorted by parameters:
 - pcb_print: 94
 - bom: 149
 - panelize: 217
-Average depth: 2.1839080459770117
+Average depth: 2.206896551724138
 Maximum depth: 5
 Minimum depth: 1
 Histogram:
 0: 
 1: *****************
 2: ******************************************
-3: ************************
-4: ***
+3: **********************
+4: *****
 5: *
 Totals sorted by depth:
 - annotate_power: 1
@@ -583,8 +583,6 @@ Totals sorted by depth:
 - compress: 3
 - copy_files: 3
 - dxf: 3
-- excellon: 3
-- gerb_drill: 3
 - gerber: 3
 - hpgl: 3
 - kicost: 3
@@ -603,20 +601,22 @@ Totals sorted by depth:
 - include_table: 3
 - pcb_replace: 3
 - sch_replace: 3
+- excellon: 4
+- gerb_drill: 4
 - kibom: 4
 - panelize: 4
 - pcb_print: 4
 - bom: 5
 --------------------------------------------------------------------------------
 14 different data types
--             String:  999
--            Boolean:  576
+-             String: 1007
+-            Boolean:  578
 -             Number:  320
 - ListStringSingular:  294
--             Choice:  127
--               Dict:   90
+-             Choice:  131
+-               Dict:   92
 -           ListDict:   30
--   ListDictOrString:   24
+-   ListDictOrString:   26
 -              Combo:   14
 -         ListString:   12
 -   ListDictSingular:   11
@@ -625,16 +625,16 @@ Totals sorted by depth:
 -       NumberChoice:    1
 --------------------------------------------------------------------------------
 Used as single data type:
--             String:  829 
--            Boolean:  512 
+-             String:  835 
+-            Boolean:  514 
 - ListStringSingular:  291 
 -             Number:  211 
--             Choice:  124 
+-             Choice:  128 
 -               Dict:   73 
 -           ListDict:   30 
 -         ListString:   12 
 -   ListDictSingular:   11 
--   ListDictOrString:    7 ['bom.options.columns', 'bom.options.cost_extra_columns', 'bom.options.xlsx.specs_columns', 'kibom.options.conf.columns', 'position.options.columns', 'draw_fancy_stackup.draw_fancy_stackup.columns', 'draw_stackup.draw_stackup.columns']
+-   ListDictOrString:    9 ['bom.options.columns', 'bom.options.cost_extra_columns', 'bom.options.xlsx.specs_columns', 'excellon.options.table.columns', 'gerb_drill.options.table.columns', 'kibom.options.conf.columns', 'position.options.columns', 'draw_fancy_stackup.draw_fancy_stackup.columns', 'draw_stackup.draw_stackup.columns']
 -     ListListString:    4 ['bom.options.component_aliases', 'kibom.options.conf.component_aliases', 'rot_footprint.rotations', 'rot_footprint.offsets']
 -              Combo:    2 ['report.options.template', 'step.options.origin']
 -         StringDict:    1 ['download_datasheets.options.classify_extra']
@@ -645,7 +645,7 @@ Used as single data type:
 -             Boolean,String:   52 
 -     Combo,ListDictOrString:   12 
 -               Boolean,Dict:    8 ['draw_fancy_stackup.draw_fancy_stackup', 'draw_stackup.draw_stackup', 'drc.drc', 'erc.erc', 'include_table.include_table', 'run_drc.run_drc', 'run_erc.run_erc', 'update_xml.update_xml']
--                Dict,String:    5 ['blender_export.options.pcb3d', 'excellon.options.report', 'gerb_drill.options.report', 'kibom.options.conf', 'pcbdraw.options.style']
+-                Dict,String:    7 ['blender_export.options.pcb3d', 'excellon.options.report', 'excellon.options.table', 'gerb_drill.options.report', 'gerb_drill.options.table', 'kibom.options.conf', 'pcbdraw.options.style']
 -    ListDictOrString,String:    5 ['bom.options.columns.join', 'bom.options.cost_extra_columns.join', 'bom.options.xlsx.specs_columns.join', 'panelize.options.configs', 'include_table.include_table.outputs']
 - Boolean,ListStringSingular:    3 ['bom.options.html.lcsc_link', 'bom.options.xlsx.lcsc_link', 'kibom.options.conf.lcsc_link']
 -                Choice,Dict:    2 ['excellon.options.map', 'gerb_drill.options.map']

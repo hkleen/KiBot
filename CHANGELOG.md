@@ -45,6 +45,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Drill:
   - Option to don't generate the drill files, so you can generate only the maps
     (#720)
+  - Option to generate a drill table (#760)
 - Include table:
   - A mechanism to set the font, using a text box (#748)
   - `force_font_width` to force a font width (#752)

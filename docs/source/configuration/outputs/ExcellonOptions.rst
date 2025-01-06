@@ -33,6 +33,7 @@ ExcellonOptions parameters
 -  ``report`` :index:`: <pair: output - excellon - options; report>`  [:ref:`DrillReport parameters <DrillReport>`] [:ref:`dict <dict>` | :ref:`string <string>`] (default: ``''``) Name of the drill report. Not generated unless a name is specified.
 -  ``right_digits`` :index:`: <pair: output - excellon - options; right_digits>` [:ref:`number <number>`] (default: ``0``) number of digits for mantissa part of coordinates (0 is auto).
 -  ``route_mode_for_oval_holes`` :index:`: <pair: output - excellon - options; route_mode_for_oval_holes>` [:ref:`boolean <boolean>`] (default: ``true``) Use route command for oval holes (G00), otherwise use G85.
+-  ``table`` :index:`: <pair: output - excellon - options; table>`  [:ref:`DrillTable parameters <DrillTable>`] [:ref:`dict <dict>` | :ref:`string <string>`] (default: ``''``) Name of the drill table. Not generated unless a name is specified.
 -  ``use_aux_axis_as_origin`` :index:`: <pair: output - excellon - options; use_aux_axis_as_origin>` [:ref:`boolean <boolean>`] (default: ``false``) Use the auxiliary axis as origin for coordinates.
 -  ``variant`` :index:`: <pair: output - excellon - options; variant>` [:ref:`string <string>`] (default: ``''``) Board variant to apply.
    Used for sub-PCBs.
@@ -43,3 +44,4 @@ ExcellonOptions parameters
 
    DrillMap
    DrillReport
+   DrillTable

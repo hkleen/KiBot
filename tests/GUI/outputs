@@ -3218,6 +3218,65 @@
           ]
         ],
         [
+          "table",
+          [
+            "DataTypeDict",
+            "DataTypeString"
+          ],
+          [
+            [
+              "unify_pth_and_npth",
+              [
+                "DataTypeChoice"
+              ],
+              null
+            ],
+            [
+              "group_slots_and_round_holes",
+              [
+                "DataTypeBoolean"
+              ],
+              null
+            ],
+            [
+              "output",
+              [
+                "DataTypeString"
+              ],
+              null
+            ],
+            [
+              "units",
+              [
+                "DataTypeChoice"
+              ],
+              null
+            ],
+            [
+              "columns",
+              [
+                "DataTypeListDictOrString"
+              ],
+              [
+                [
+                  "field",
+                  [
+                    "DataTypeString"
+                  ],
+                  null
+                ],
+                [
+                  "name",
+                  [
+                    "DataTypeString"
+                  ],
+                  null
+                ]
+              ]
+            ]
+          ]
+        ],
+        [
           "pth_id",
           [
             "DataTypeString"
@@ -3618,6 +3677,65 @@
                 "DataTypeString"
               ],
               null
+            ]
+          ]
+        ],
+        [
+          "table",
+          [
+            "DataTypeDict",
+            "DataTypeString"
+          ],
+          [
+            [
+              "unify_pth_and_npth",
+              [
+                "DataTypeChoice"
+              ],
+              null
+            ],
+            [
+              "group_slots_and_round_holes",
+              [
+                "DataTypeBoolean"
+              ],
+              null
+            ],
+            [
+              "output",
+              [
+                "DataTypeString"
+              ],
+              null
+            ],
+            [
+              "units",
+              [
+                "DataTypeChoice"
+              ],
+              null
+            ],
+            [
+              "columns",
+              [
+                "DataTypeListDictOrString"
+              ],
+              [
+                [
+                  "field",
+                  [
+                    "DataTypeString"
+                  ],
+                  null
+                ],
+                [
+                  "name",
+                  [
+                    "DataTypeString"
+                  ],
+                  null
+                ]
+              ]
             ]
           ]
         ],

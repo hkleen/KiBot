@@ -1292,6 +1292,22 @@ outputs:
       right_digits: 0
       # [boolean=true] Use route command for oval holes (G00), otherwise use G85
       route_mode_for_oval_holes: true
+      # [dict|string=''] Name of the drill table. Not generated unless a name is specified
+      table:
+        # [list(dict)|list(string)] List of columns to display.
+        # Each entry can be a dictionary with `field`, `name` or just a string (field name)
+        columns: ['Count', 'Hole Size', 'Plated', 'Hole Shape', 'Drill Layer Pair', 'Hole Type']
+        # [boolean=true] By default KiCad groups slots and rounded holes if they can be cut from the same tool (same diameter)
+        group_slots_and_round_holes: true
+        # [string='%f-%i%I%v.%x'] Name of the drill table. Not generated unless a name is specified.
+        # (%i='drill_table' %x='csv'). Affected by global options
+        output: '%f-%i%I%v.%x'
+        # [string='auto'] [yes,no,auto] Choose whether to unify plated and non-plated
+        # holes in the same table. If 'auto' is chosen, the setting is copied
+        # from the `excellon` output's `pth_and_npth_single_file`
+        unify_pth_and_npth: 'auto'
+        # [string='millimeters_mils'] [millimeters,mils,millimeters_mils,mils_millimeters] Units used for the hole sizes
+        units: 'millimeters_mils'
       # [boolean=false] Use the auxiliary axis as origin for coordinates
       use_aux_axis_as_origin: false
       # [string=''] Board variant to apply.
@@ -1380,6 +1396,22 @@ outputs:
         # [string=''] Name of the drill report. Not generated unless a name is specified.
         # (%i='drill_report' %x='txt')
         filename: ''
+      # [dict|string=''] Name of the drill table. Not generated unless a name is specified
+      table:
+        # [list(dict)|list(string)] List of columns to display.
+        # Each entry can be a dictionary with `field`, `name` or just a string (field name)
+        columns: ['Count', 'Hole Size', 'Plated', 'Hole Shape', 'Drill Layer Pair', 'Hole Type']
+        # [boolean=true] By default KiCad groups slots and rounded holes if they can be cut from the same tool (same diameter)
+        group_slots_and_round_holes: true
+        # [string='%f-%i%I%v.%x'] Name of the drill table. Not generated unless a name is specified.
+        # (%i='drill_table' %x='csv'). Affected by global options
+        output: '%f-%i%I%v.%x'
+        # [string='auto'] [yes,no,auto] Choose whether to unify plated and non-plated
+        # holes in the same table. If 'auto' is chosen, the setting is copied
+        # from the `excellon` output's `pth_and_npth_single_file`
+        unify_pth_and_npth: 'auto'
+        # [string='millimeters_mils'] [millimeters,mils,millimeters_mils,mils_millimeters] Units used for the hole sizes
+        units: 'millimeters_mils'
       # [boolean=false] Use the auxiliary axis as origin for coordinates
       use_aux_axis_as_origin: false
       # [string=''] Board variant to apply.
