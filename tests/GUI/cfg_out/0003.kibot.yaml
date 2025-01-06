@@ -142,6 +142,7 @@ outputs:
     generate_drill_files: false
     map: None
     report: ''
+    table: ''
 - name: output.gencad
   type: gencad
   comment: Exports the PCB in GENCAD format
@@ -154,6 +155,7 @@ outputs:
     generate_drill_files: false
     map: None
     report: ''
+    table: ''
 - name: output.gerber
   type: gerber
   comment: This is the main fabrication format for the PCB

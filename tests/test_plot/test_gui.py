@@ -397,9 +397,9 @@ def for_output(e, name, items, level=0):
         # PcbDraw
         elif ikind == 'string' and input == 'copper':
             val = '#5e283a'
-        # KiBoM
+        # KiBoM and Drill tables
         elif ikind == 'string' and input == 'field':
-            val = 'References'
+            val = 'Count' if name.startswith('output.gerb_drill') or name.startswith('output.excellon') else 'References'
         if ikind == 'boolean':
             id = f'{name}.{input}.{ikind}'
             e.toggle_value(id)
