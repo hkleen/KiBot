@@ -227,7 +227,7 @@ class AnyDrill(VariantOptions):
         layer_cnt = GS.board.GetCopperLayerCount()
         top_layer = layer_pair[0] + 1
         bot_layer = layer_pair[1] + 1 if layer_pair[1] != B_Cu else layer_cnt
-        return f"(L{top_layer} - L{bot_layer})"
+        return f"(L{top_layer}-L{bot_layer})"
 
     @staticmethod
     def _get_drill_groups(unified):
