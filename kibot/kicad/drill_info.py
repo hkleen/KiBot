@@ -21,7 +21,9 @@ HOLE_SHAPE_DICT = {0: 'Round',
                    1: 'Slot',
                    2: 'Round + Slot'}
 
-if not GS.ki5:
+if GS.ki5:
+    HOLE_TYPE_DICT = {}
+else:
     HOLE_TYPE_DICT = {pcbnew.HOLE_ATTRIBUTE_HOLE_MECHANICAL: 'Mechanical',
                       pcbnew.HOLE_ATTRIBUTE_HOLE_PAD: 'Pad',
                       pcbnew.HOLE_ATTRIBUTE_HOLE_VIA_THROUGH: 'Via',

@@ -10,7 +10,7 @@ import csv
 from pcbnew import (PLOT_FORMAT_HPGL, PLOT_FORMAT_POST, PLOT_FORMAT_GERBER, PLOT_FORMAT_DXF, PLOT_FORMAT_SVG,
                     PLOT_FORMAT_PDF, wxPoint, B_Cu)
 from .error import KiPlotConfigurationError
-from .kicad.drill_info import get_full_holes_list, PLATED_DICT, HOLE_SHAPE_DICT
+from .kicad.drill_info import get_full_holes_list, PLATED_DICT, HOLE_SHAPE_DICT, HOLE_TYPE_DICT
 from .optionable import Optionable
 from .out_base import VariantOptions
 from .gs import GS
@@ -18,9 +18,6 @@ from .layer import Layer
 from .misc import W_NODRILL
 from .macros import macros, document  # noqa: F401
 from . import log
-
-if not GS.ki5:
-    from .kicad.drill_info import HOLE_TYPE_DICT
 
 logger = log.get_logger()
 
@@ -362,9 +359,8 @@ class AnyDrill(VariantOptions):
                                 value = HOLE_SHAPE_DICT[tool.m_Hole_Shape]
                             elif col._field == "drill layer pair":
                                 value = f'{GS.board.GetLayerName(layer_pair[0])} - {GS.board.GetLayerName(layer_pair[1])}'
-                            elif col._field == "hole type":
-                                if not GS.ki5:
-                                    value = HOLE_TYPE_DICT[tool.m_HoleAttribute]
+                            elif col._field == "hole type" and GS.ki6:
+                                value = HOLE_TYPE_DICT[tool.m_HoleAttribute]
                             else:
                                 value = ""
                             row.append(value)
