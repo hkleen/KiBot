@@ -24,7 +24,7 @@ import textwrap
 from .error import KiPlotConfigurationError, config_error
 from .misc import (NO_YAML_MODULE, EXIT_BAD_ARGS, EXAMPLE_CFG, WONT_OVERWRITE, W_NOOUTPUTS, W_UNKOUT, W_NOFILTERS,
                    W_NOVARIANTS, W_NOGLOBALS, TRY_INSTALL_CHECK, W_NOPREFLIGHTS, W_NOGROUPS, W_NEWGROUP, error_level_to_name,
-                   DEFAULT_ROTATIONS, DEFAULT_OFFSETS, W_EXTRADOCS, RE_LEN)
+                   DEFAULT_ROTATIONS, DEFAULT_OFFSETS, W_EXTRADOCS, RE_LEN, W_DEFNOSTR)
 from .gs import GS
 from .registrable import RegOutput, RegVariant, RegFilter, RegDependency
 from .pre_base import BasePreFlight
@@ -80,7 +80,14 @@ def do_replace(k, v, content, replaced):
         # Handle empty definitions keeping YAML's "null"
         if v is None:
             v = 'null'
-        logger.debugl(2, '- Replacing {} -> {}'.format(key, v))
+        if isinstance(v, bool):
+            v = str(v).lower()  # True/False is also valid
+        if isinstance(v, (int, float)):
+            v = str(v)
+        if not isinstance(v, str):
+            logger.warning(W_DEFNOSTR+f'Please only use simple data types for definitions (`{k}` contains `{v}`'
+                           f' which is `{type(v).__name__}` type)')
+        logger.debugl(2, f'- Replacing {key} -> {v} ({type(v)})')
         content = content.replace(key, str(v))
         replaced = True
     return content, replaced
