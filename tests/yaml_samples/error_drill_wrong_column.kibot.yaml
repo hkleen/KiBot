@@ -1,0 +1,13 @@
+# Drills and Gerber drills
+kibot:
+  version: 1
+
+outputs:
+  - name: excellon_drill
+    comment: "Excellon drill files"
+    type: excellon
+    dir: Drill
+    options:
+      table:
+        columns: ['Bogus']
+
