@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2020-2024 Salvador E. Tropea
-# Copyright (c) 2020-2024 Instituto Nacional de Tecnología Industrial
+# Copyright (c) 2020-2025 Salvador E. Tropea
+# Copyright (c) 2020-2025 Instituto Nacional de Tecnología Industrial
 # License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
+# Drill table contributed by Nguyen Vincent (@nguyen-v)
 import os
 import re
 import csv
 from pcbnew import (PLOT_FORMAT_HPGL, PLOT_FORMAT_POST, PLOT_FORMAT_GERBER, PLOT_FORMAT_DXF, PLOT_FORMAT_SVG,
                     PLOT_FORMAT_PDF, wxPoint, B_Cu)
+from .error import KiPlotConfigurationError
 from .kicad.drill_info import get_full_holes_list, PLATED_DICT, HOLE_SHAPE_DICT
 from .optionable import Optionable
 from .out_base import VariantOptions
@@ -25,6 +27,7 @@ logger = log.get_logger()
 VALID_COLUMNS = ["Count", "Hole Size", "Plated", "Hole Shape", "Drill Layer Pair"]
 if GS.ki6:
     VALID_COLUMNS.append("Hole Type")
+VALID_COLUMNS_L = {c.lower() for c in VALID_COLUMNS}
 
 
 class DrillMap(Optionable):
@@ -53,12 +56,50 @@ class DrillOptions(Optionable):
         super().__init__()
         with document:
             self.unify_pth_and_npth = 'auto'
-            """ [yes,no,auto]. Choose whether to unify plated and non-plated
+            """ [yes,no,auto] Choose whether to unify plated and non-plated
                 holes in the same table. If 'auto' is chosen, the setting is copied
                 from the `excellon` output's `pth_and_npth_single_file`"""
             self.group_slots_and_round_holes = True
             """ By default KiCad groups slots and rounded holes if they can be cut from the same tool (same diameter) """
         self._unknown_is_error = True
+
+
+class DrillTableColumns(Optionable):
+    """ Column for the drill table """
+    _default = VALID_COLUMNS
+
+    def __init__(self):
+        super().__init__()
+        self._unknown_is_error = True
+        with document:
+            self.field = ''
+            """ *Name of the field to use for this column """
+            self.name = ''
+            """ *Name to display in the header. The field is used when empty """
+        self._field_example = 'Count'
+
+    @staticmethod
+    def new(field):
+        c = DrillTableColumns()
+        c.field = c._name = field
+        c._field = field.lower()
+        c.validate_field()
+        return c
+
+    def __str__(self):
+        return self.field if not self.name else f"{self.field} -> {self.name}"
+
+    def validate_field(self):
+        if self._field not in VALID_COLUMNS_L:
+            raise KiPlotConfigurationError(f"Invalid column name `{self.field}`. Valid columns are: {VALID_COLUMNS}")
+
+    def config(self, parent):
+        super().config(parent)
+        if not self.field:
+            raise KiPlotConfigurationError(f"Missing or empty `field` in columns list ({self._tree})")
+        self._field = self.field.lower()
+        self.validate_field()
+        self._name = self.name or self.field
 
 
 class DrillTable(DrillOptions):
@@ -70,10 +111,16 @@ class DrillTable(DrillOptions):
                 (%i='drill_table' %x='csv') """
             self.units = 'millimeters_mils'
             """ *[millimeters,mils,millimeters_mils,mils_millimeters] Units used for the hole sizes """
-            self.columns = []
-            """ *[list(dict)|list(string)=?] List of columns to display.
-                Each entry can be a dictionary with `field`, `name` or just a string (field name).
-                Default fields are: ["Count", "Hole Size", "Plated", "Hole Shape", "Drill Layer Pair", "Hole Type"] """
+            self.columns = DrillTableColumns
+            """ *[list(dict)|list(string)] List of columns to display.
+                Each entry can be a dictionary with `field`, `name` or just a string (field name) """
+
+    def config(self, parent):
+        super().config(parent)
+        if not self.columns:
+            raise KiPlotConfigurationError("No columns for the drill table ({})".format(str(self._tree)))
+        self._columns = [c if isinstance(c, DrillTableColumns) else DrillTableColumns.new(c) for c in self.columns]
+        logger.error([str(c) for c in self._columns])
 
 
 class AnyDrill(VariantOptions):
@@ -201,59 +248,6 @@ class AnyDrill(VariantOptions):
         groups.extend(list(pairs))
         return groups
 
-    def get_columns_config(self):
-        """Process the columns configuration."""
-        columns = self.table.columns if isinstance(self.table, DrillTable) else []
-        if not columns:
-            # Default column configuration based on VALID_COLUMNS
-            return [{"field": col, "name": col} for col in VALID_COLUMNS]
-
-        # Process custom columns
-        processed_columns = []
-        for col in columns:
-            if isinstance(col, str):
-                # Simple field name
-                processed_columns.append({"field": col, "name": col})
-            elif isinstance(col, dict):
-                # Detailed configuration
-                processed_columns.append({
-                    "field": col.get("field", ""),
-                    "name": col.get("name", col.get("field", "")),
-                })
-        return processed_columns
-
-    def validate_and_process_columns(self, cols, valid_columns):
-
-        processed_columns = []
-        valid_columns_l = {col.lower(): col for col in valid_columns}
-
-        for col in cols:
-            if isinstance(col, str):
-                # Simple field name
-                field = col
-                name = col
-            elif isinstance(col, dict):
-                # Detailed configuration
-                field = col.get("field", "")
-                name = col.get("name", field)
-            else:
-                logger.warning(f"Invalid column entry: {col}")
-
-            field_lower = field.lower()
-            if field_lower not in valid_columns_l:
-                logger.warning(f"Invalid column name `{field}`. Valid columns are: {list(valid_columns_l.values())}")
-                continue  # Skip invalid columns
-
-            processed_columns.append({
-                "field": valid_columns_l[field_lower],  # Use the original case from the valid columns list
-                "name": name,
-            })
-
-        if not processed_columns:
-            logger.error("No valid columns specified. At least one valid column is required.")
-
-        return processed_columns
-
     def get_file_names(self, output_dir):
         """ Returns a dict containing KiCad names and its replacement.
             If no replacement is needed the replacement is empty """
@@ -325,9 +319,9 @@ class AnyDrill(VariantOptions):
                                                                         self._table_group_slots_and_round_holes)
 
             # Get column configuration
-
-            columns = self.get_columns_config()
-            columns = self.validate_and_process_columns(columns, VALID_COLUMNS)
+            # columns = self.get_columns_config()
+            # columns = self.validate_and_process_columns(columns, VALID_COLUMNS)
+            columns = self.table._columns
 
             for i, (tools, layer_pair) in enumerate(zip(tool_list, hole_sets)):
 
@@ -344,31 +338,31 @@ class AnyDrill(VariantOptions):
                     writer = csv.writer(file)
 
                     # Write header
-                    writer.writerow([col["name"] for col in columns])
+                    writer.writerow([col._name for col in columns])
 
                     # Write rows
                     for tool in tools:
                         row = []
                         for col in columns:
-                            if col["field"] == "Count":
+                            if col._field == "count":
                                 value = (f'{tool.m_TotalCount-tool.m_OvalCount} + {tool.m_OvalCount}' if
                                          tool.m_Hole_Shape == 2 else tool.m_TotalCount)
-                            elif col["field"] == "Hole Size":
+                            elif col._field == "hole size":
                                 if self._table_units == 'millimeters':
                                     value = f'{GS.to_mm(tool.m_Diameter):.2f}mm'
                                 elif self._table_units == 'mils':
                                     value = f'{GS.to_mils(tool.m_Diameter):.2f}mils'
                                 elif self._table_units == 'mils_millimeters':
                                     value = f'{GS.to_mils(tool.m_Diameter):.2f}mils ({GS.to_mm(tool.m_Diameter):.2f}mm)'
-                                else:
+                                else:  # millimeters_mils
                                     value = f'{GS.to_mm(tool.m_Diameter):.2f}mm ({GS.to_mils(tool.m_Diameter):.2f}mils)'
-                            elif col["field"] == "Plated":
+                            elif col._field == "plated":
                                 value = PLATED_DICT[tool.m_Hole_NotPlated]
-                            elif col["field"] == "Hole Shape":
+                            elif col._field == "hole shape":
                                 value = HOLE_SHAPE_DICT[tool.m_Hole_Shape]
-                            elif col["field"] == "Drill Layer Pair":
+                            elif col._field == "drill layer pair":
                                 value = f'{GS.board.GetLayerName(layer_pair[0])} - {GS.board.GetLayerName(layer_pair[1])}'
-                            elif col["field"] == "Hole Type":
+                            elif col._field == "hole type":
                                 if not GS.ki5:
                                     value = HOLE_TYPE_DICT[tool.m_HoleAttribute]
                             else:
@@ -378,11 +372,7 @@ class AnyDrill(VariantOptions):
 
                     row = []
                     for col in columns:
-                        if col["field"] == "Count":
-                            value = f"Total {sum(tool.m_TotalCount for tool in tools)}"
-                        else:
-                            value = ""
-                        row.append(value)
+                        row.append(f"Total {sum(tool.m_TotalCount for tool in tools)}" if col._field == "count" else "")
                     writer.writerow(row)
 
         self.unfilter_pcb_components()
