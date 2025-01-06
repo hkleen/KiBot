@@ -22,23 +22,9 @@ if not GS.ki5:
 
 logger = log.get_logger()
 
-if GS.ki5:
-    VALID_COLUMNS = [
-        "Count",
-        "Hole Size",
-        "Plated",
-        "Hole Shape",
-        "Drill Layer Pair",
-    ]
-else:
-    VALID_COLUMNS = [
-        "Count",
-        "Hole Size",
-        "Plated",
-        "Hole Shape",
-        "Drill Layer Pair",
-        "Hole Type",
-    ]
+VALID_COLUMNS = ["Count", "Hole Size", "Plated", "Hole Shape", "Drill Layer Pair"]
+if GS.ki6:
+    VALID_COLUMNS.append("Hole Type")
 
 
 class DrillMap(Optionable):
