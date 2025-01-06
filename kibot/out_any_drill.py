@@ -117,7 +117,6 @@ class DrillTable(DrillOptions):
         if not self.columns:
             raise KiPlotConfigurationError("No columns for the drill table ({})".format(str(self._tree)))
         self._columns = [c if isinstance(c, DrillTableColumns) else DrillTableColumns.new(c) for c in self.columns]
-        logger.error([str(c) for c in self._columns])
 
 
 class AnyDrill(VariantOptions):
