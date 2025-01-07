@@ -66,6 +66,7 @@ POLY_FILL_STYLE = ("fill:{0}; fill-opacity:1.0; stroke:{0}; stroke-width:1; stro
                    "stroke-linejoin:round;fill-rule:evenodd;")
 DRAWING_LAYERS = ['Dwgs.User', 'Cmts.User', 'Eco1.User', 'Eco2.User']
 EXTRA_LAYERS = ['F.Fab', 'B.Fab', 'F.CrtYd', 'B.CrtYd']
+GSPNERROR = re.compile(r'%\d*d[0-9a-fA-F]')
 # The following modules will be downloaded after we solve the dependencies
 # They are just helpers and we solve their dependencies
 svgutils = None  # Will be loaded during dependency check
@@ -1284,14 +1285,18 @@ class PCB_PrintOptions(VariantOptions):
         # if self.format == 'EPS':
         #    self.rsvg_command_eps = self.ensure_tool('rsvg2')
 
-    def rename_pages(self, output_dir):
+    def rename_pages(self, output_dir, real_output=None):
         for n, p in enumerate(self._pages):
             id, ext = self.get_id_and_ext(n)
             cur_name = self.expand_filename(output_dir, self.output, id, ext)
             id, ext = self.get_id_and_ext(n, p.page_id)
-            user_name = self.expand_filename(output_dir, self.output, id, ext)
+            user_name = self.expand_filename(output_dir, real_output or self.output, id, ext)
             if cur_name != user_name and os.path.isfile(cur_name):
+                logger.debug('- Renaming {cur_name} -> {user_name}')
                 os.replace(cur_name, user_name)
+        if real_output:
+            # Revert the output, GS workaround
+            self.output = real_output
 
     def check_ki7_scale_issue(self):
         """ Check if all visible layers has scaling problems """
@@ -1543,13 +1548,21 @@ class PCB_PrintOptions(VariantOptions):
                 else:  # EPS and PNG
                     id, ext = self.get_id_and_ext()
                     out_file = self.expand_filename(output_dir, self.output, id, ext, make_safe=False)
+                    real_output = None
+                    # Ghostscript issue workaround
+                    # Patterns like %02d followed by an hex digit makes GS fail (i.e. GS 10.00.0)
+                    # So here we use a pattern that works and then we rename the files
+                    if GSPNERROR.search(out_file):
+                        real_output = self.output
+                        self.output = '_kibot_tmp_%i.'+ext
+                        out_file = self.expand_filename(output_dir, self.output, id, ext, make_safe=False)
                     if self.format == 'EPS':
                         # Use GS to create one EPS per page
                         self.pdf_to_eps(pdf_file, out_file)
                     else:
                         # Use GS to create one PNG per page and then scale to the wanted width
                         self.pdf_to_png(pdf_file, out_file)
-                    self.rename_pages(output_dir)
+                    self.rename_pages(output_dir, real_output)
         # Restore KiBot image groups away
         self.restore_kibot_image_groups()
         # Remove the temporal files
