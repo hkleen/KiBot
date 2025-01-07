@@ -3063,7 +3063,8 @@ outputs:
           sketch_pads_on_fab_layers: false
           # [boolean=false] Try to sort the layers in the same order that uses KiCad for printing
           sort_layers: false
-          # [boolean=true] Cover the vias
+          # [boolean=true] Cover the vias. This option applies to KiCad 8 and older versions.
+          # On KiCad 9 each via can control it individually
           tent_vias: true
           # [string=''] Text used to replace the sheet title. %VALUE expansions are allowed.
           # If it starts with `+` the text is concatenated

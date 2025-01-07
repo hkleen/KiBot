@@ -41,7 +41,8 @@ PagesOptions parameters
 -  ``sketch_pad_line_width`` :index:`: <pair: output - pcb_print - options - pages; sketch_pad_line_width>` [:ref:`number <number>`] (default: ``0.1``) Line width for the sketched pads [mm], see `sketch_pads_on_fab_layers` (KiCad 6+)
    Note that this value is currently ignored by KiCad (6.0.9).
 -  ``sketch_pads_on_fab_layers`` :index:`: <pair: output - pcb_print - options - pages; sketch_pads_on_fab_layers>` [:ref:`boolean <boolean>`] (default: ``false``) Draw the outline of the pads on the \\*.Fab layers (KiCad 6+).
--  ``tent_vias`` :index:`: <pair: output - pcb_print - options - pages; tent_vias>` [:ref:`boolean <boolean>`] (default: ``true``) Cover the vias.
+-  ``tent_vias`` :index:`: <pair: output - pcb_print - options - pages; tent_vias>` [:ref:`boolean <boolean>`] (default: ``true``) Cover the vias. This option applies to KiCad 8 and older versions.
+   On KiCad 9 each via can control it individually.
 -  ``title`` :index:`: <pair: output - pcb_print - options - pages; title>` [:ref:`string <string>`] (default: ``''``) Text used to replace the sheet title. %VALUE expansions are allowed.
    If it starts with `+` the text is concatenated.
 

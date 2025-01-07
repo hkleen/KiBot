@@ -242,7 +242,8 @@ class PagesOptions(Optionable):
             self.exclude_pads_from_silkscreen = False
             """ Do not plot the component pads in the silk screen (KiCad 5.x only) """
             self.tent_vias = True
-            """ Cover the vias """
+            """ Cover the vias. This option applies to KiCad 8 and older versions.
+                On KiCad 9 each via can control it individually """
             self.colored_holes = True
             """ Change the drill holes to be colored instead of white """
             self.holes_color = '#000000'
@@ -1505,7 +1506,8 @@ class PCB_PrintOptions(VariantOptions):
             po.SetMirror(p.mirror)
             p.scaling = self.set_scaling(po, p.scaling)
             po.SetNegative(p.negative_plot)
-            po.SetPlotViaOnMaskLayer(not p.tent_vias)
+            if not GS.ki9:
+                po.SetPlotViaOnMaskLayer(not p.tent_vias)
             if GS.ki5:
                 po.SetLineWidth(FromMM(p.line_width))
                 po.SetPlotPadsOnSilkLayer(not p.exclude_pads_from_silkscreen)
