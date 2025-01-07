@@ -1209,10 +1209,6 @@ class Report(BaseOutput):  # noqa: F821
             """ *[dict={}] Options for the `report` output """
         self._category = 'PCB/docs'
 
-    def get_csv_separator(self):
-        """ This is only true for `total_components` template """
-        return ','
-
     @staticmethod
     def get_conf_examples(name, layers):
         pandoc = GS.check_tool(name, 'PanDoc')

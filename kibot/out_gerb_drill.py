@@ -35,9 +35,6 @@ class Gerb_Drill(BaseOutput):  # noqa: F821
             self.options = Gerb_DrillOptions
             """ *[dict={}] Options for the `gerb_drill` output """
 
-    def get_csv_separator(self):
-        return ','
-
     @staticmethod
     def get_conf_examples(name, layers):
         gb = {}

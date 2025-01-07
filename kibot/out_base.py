@@ -199,6 +199,10 @@ class BaseOutput(RegOutput):
     def fix_priority_help(self):
         self._help_priority = self._help_priority.replace('[number=50]', '[number={}]'.format(self.priority))
 
+    def get_csv_separator(self):
+        """ Default separator for CSV files """
+        return ','
+
     def run(self, output_dir):
         self.output_dir = output_dir
         output = self.options.output if hasattr(self.options, 'output') else ''
