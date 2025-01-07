@@ -8954,6 +8954,29 @@
           null
         ],
         [
+          "drill",
+          [
+            "DataTypeDict",
+            "DataTypeBoolean"
+          ],
+          [
+            [
+              "unify_pth_and_npth",
+              [
+                "DataTypeChoice"
+              ],
+              null
+            ],
+            [
+              "group_slots_and_round_holes",
+              [
+                "DataTypeBoolean"
+              ],
+              null
+            ]
+          ]
+        ],
+        [
           "drill_marks",
           [
             "DataTypeChoice"

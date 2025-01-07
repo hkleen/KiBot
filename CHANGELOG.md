@@ -53,6 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - A mechanism to filter components for a particular layer (#706)
   - Workaround for Ghostscript handling %d wrong when followed by an hex digit
     (#763)
+  - Now you can include drill maps using `drill_pairs` as `repeat_layers` (#764)
 - Report:
   - `top_total`, `bot_total`, `total_smd`, `total_tht` and `total_all`
     component counts (See #730)

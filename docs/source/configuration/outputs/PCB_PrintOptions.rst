@@ -32,6 +32,7 @@ PCB_PrintOptions parameters
 
 -  ``dpi`` :index:`: <pair: output - pcb_print - options; dpi>` [:ref:`number <number>`] (default: ``360``) (range: 36 to 1200) Resolution (Dots Per Inch) for the output file. Most objects are vectors, but thing
    like the the solder mask are handled as images by the conversion tools.
+-  ``drill`` :index:`: <pair: output - pcb_print - options; drill>`  [:ref:`DrillOptions parameters <DrillOptions>`] [:ref:`boolean <boolean>` | :ref:`dict <dict>`] (default: ``false``) Use a boolean for simple cases or fine-tune its behavior.
 -  ``drill_marks`` :index:`: <pair: output - pcb_print - options; drill_marks>` [:ref:`string <string>`] (default: ``'full'``) (choices: "none", "small", "full") What to use to indicate the drill places, can be none, small or full (for real scale).
 -  ``exclude_filter`` :index:`: <pair: output - pcb_print - options; exclude_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to exclude components from processing.
    Is a short-cut to use for simple cases where a variant is an overkill. |br|
@@ -87,4 +88,5 @@ PCB_PrintOptions parameters
 .. toctree::
    :caption: Used dicts
 
+   DrillOptions
    PagesOptions

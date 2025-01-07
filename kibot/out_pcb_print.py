@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2022-2024 Salvador E. Tropea
-# Copyright (c) 2022-2024 Instituto Nacional de Tecnología Industrial
+# Copyright (c) 2022-2025 Salvador E. Tropea
+# Copyright (c) 2022-2025 Instituto Nacional de Tecnología Industrial
 # License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
 # Base idea: https://gitlab.com/dennevi/Board2Pdf/ (Released as Public Domain)
+# Drill maps contributed by Nguyen Vincent (@nguyen-v)
 """
 Dependencies:
   - from: RSVG
@@ -268,7 +269,9 @@ class PagesOptions(Optionable):
             self.repeat_layers = LayerOptions
             """ [list(dict)|list(string)|string='inners'] [all,selected,copper,technical,user,inners,outers,*]
                 List of layers to replace `repeat_for_layer`.
-                This can be used to generate a page for each copper layer, here you put `copper` """
+                This can be used to generate a page for each copper layer, here you put `copper`.
+                You can also use it to generate pages with drill maps, in this case use `drill_pairs` here.
+                Note that in this case the `repeat_for_layer` should be some drawing layer """
             self.repeat_inherit = True
             """ If we will inherit the options of the layer we are replacing.
                 Disable it if you specify the options in `repeat_layers`, which is unlikely """

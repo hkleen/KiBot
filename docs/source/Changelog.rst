@@ -87,6 +87,8 @@ Added
    -  A mechanism to filter components for a particular layer (#706)
    -  Workaround for Ghostscript handling %d wrong when followed by an
       hex digit (#763)
+   -  Now you can include drill maps using ``drill_pairs`` as
+      ``repeat_layers`` (#764)
 
 -  Report:
 
