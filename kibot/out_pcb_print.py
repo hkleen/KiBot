@@ -473,10 +473,16 @@ class PCB_PrintOptions(VariantOptions):
 
     def config(self, parent):
         super().config(parent)
+        self._include_table_output = False
         if isinstance(self.include_table, bool):
-            self._include_table = IncludeTableOptions()
-            self._include_table.config(self)
+            if self.include_table:
+                self._include_table_output = True
+                self._include_table = IncludeTableOptions()
+                self._include_table.config(self)
+            else:
+                self._include_table_output = False
         else:
+            self._include_table_output = True
             self._include_table = self.include_table
         if isinstance(self.drill, bool):
             self._drill_unify_pth_and_npth = True
@@ -1481,7 +1487,7 @@ class PCB_PrintOptions(VariantOptions):
         self.move_kibot_image_groups()
 
         # Update all tables
-        if GS.ki7:
+        if GS.ki7 and self._include_table_output:
             update_table(self._include_table, self)
 
         # Generate the output, page by page
@@ -1491,7 +1497,7 @@ class PCB_PrintOptions(VariantOptions):
                 if p._is_drill:
                     g_drill_map = PCB_GROUP(GS.board)
                     self.add_drill_map_drawing(p, g_drill_map)
-                    if GS.ki7:
+                    if GS.ki7 and self._include_table_output:
                         update_table(self._include_table, self, p._drill_pair_index, True)
             # Make visible only the layers we need
             # This is very important when scaling, otherwise the results are controlled by the .kicad_prl (See #407)
