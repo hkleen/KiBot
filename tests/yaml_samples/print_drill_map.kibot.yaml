@@ -22,3 +22,5 @@ outputs:
           layers:
             - layer: 'User.Drawings'
               color: '#000000'
+            - layer: 'Edge.Cuts'
+              color: '#000000'

@@ -198,27 +198,6 @@ def draw_oval(g, x, y, size, orientation, layer, line_w=10000):
 
 def draw_drill_map(g, layer, layer_pair_idx, merge_PTH_NPTH=True, group_slots_and_round_holes=True):
 
-    # Draw elements on Edge.Cuts which are not part of footprints
-    for item in GS.board.GetDrawings():
-        if item.GetLayer() != pcbnew.Edge_Cuts:
-            continue
-        if isinstance(item, pcbnew.PCB_SHAPE):
-            dummy_shape = item.Duplicate()
-            dummy_shape.SetLayer(layer)
-            g.AddItem(dummy_shape)
-            GS.board.Add(dummy_shape)
-
-    # Plot edge cuts in footprints
-    for footprint in GS.board.GetFootprints():
-        for item in footprint.GraphicalItems():
-            if item.GetLayer() != pcbnew.Edge_Cuts:
-                continue
-            if isinstance(item, pcbnew.PCB_SHAPE):
-                dummy_shape = item.Duplicate()
-                dummy_shape.SetLayer(layer)
-                g.AddItem(dummy_shape)
-                GS.board.Add(dummy_shape)
-
     hole_list, _, _, _ = get_full_holes_list(merge_PTH_NPTH, group_slots_and_round_holes)
 
     if layer_pair_idx > len(hole_list)-1:
