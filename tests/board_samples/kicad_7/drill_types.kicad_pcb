@@ -234,6 +234,10 @@
     )
   )
 
+  (gr_rect (start 52.5 57.5) (end 147.5 152.5)
+    (stroke (width 0.1) (type default)) (fill none) (layer "Cmts.User") (tstamp 8d7edf18-5b01-4e99-b249-8da236cc1f47))
+  (gr_rect (start 50 55) (end 150 155)
+    (stroke (width 0.1) (type default)) (fill none) (layer "Cmts.User") (tstamp a757db21-387f-4a33-8e86-dbb0b22b01e7))
   (gr_line (start 100 25) (end 100 50)
     (stroke (width 0.05) (type solid)) (layer "Edge.Cuts") (tstamp 00000000-0000-0000-0000-00005ea7192f))
   (gr_line (start 125 25) (end 125 50)
@@ -252,4 +256,10 @@
   (via blind (at 120.75 36.25) (size 0.8) (drill 0.4) (layers "In1.Cu" "In2.Cu") (net 0) (tstamp 922058ca-d09a-45fd-8394-05f3e2c1e03a))
   (via blind (at 119.25 34.5) (size 0.8) (drill 0.4) (layers "In2.Cu" "B.Cu") (net 0) (tstamp 0f54db53-a272-4955-88fb-d7ab00657bb0))
 
+  (group "kibot_table_drill_table" (id 0d020107-262c-422c-8a17-e26f4adef897)
+    (members
+      8d7edf18-5b01-4e99-b249-8da236cc1f47
+      a757db21-387f-4a33-8e86-dbb0b22b01e7
+    )
+  )
 )
