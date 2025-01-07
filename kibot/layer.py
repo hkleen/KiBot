@@ -278,10 +278,14 @@ class Layer(Optionable):
 
     @staticmethod
     def _get_technical():
+        if GS.ki9:
+            return {GS.board.GetLayerName(id): id for id in GS.board.GetEnabledLayers().AllTechMask().Seq()}
         return {GS.board.GetLayerName(id): id for id in GS.board.GetEnabledLayers().Technicals()}
 
     @staticmethod
     def _get_user():
+        if GS.ki9:
+            return {GS.board.GetLayerName(id): id for id in GS.board.GetEnabledLayers().UserMask().Seq()}
         return {GS.board.GetLayerName(id): id for id in GS.board.GetEnabledLayers().Users()}
 
     @staticmethod
