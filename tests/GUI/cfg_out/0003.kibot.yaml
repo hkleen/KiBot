@@ -300,6 +300,7 @@ outputs:
       repeat_layers:
       - inners
       - layer: output.pcb_print.options.dict.pages.dict.repeat_layers.dict
+    include_table: false
     drill: false
 - name: output.pcb_variant
   type: pcb_variant

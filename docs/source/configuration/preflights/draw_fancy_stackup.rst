@@ -15,7 +15,7 @@ will contain the stackup. |br|
 Note that the height is not determined by the group height, but by the number
 of layers and spacing between layers. |br|
 
-   -  **draw_fancy_stackup** :index:`: <pair: preflight - draw_fancy_stackup; draw_fancy_stackup>`  [:ref:`DrawFancyStackupOptions parameters <DrawFancyStackupOptions>`] [:ref:`boolean <boolean>` | :ref:`dict <dict>`] (default: ``false``) Use a boolean for simple cases or fine-tune its behavior.
+   -  **draw_fancy_stackup** :index:`: <pair: preflight - draw_fancy_stackup; draw_fancy_stackup>`  [:ref:`DrawFancyStackupOptions parameters <DrawFancyStackupOptions_pre>`] [:ref:`boolean <boolean>` | :ref:`dict <dict>`] (default: ``false``) Use a boolean for simple cases or fine-tune its behavior.
 
 .. toctree::
    :caption: Used dicts

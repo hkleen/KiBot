@@ -1,4 +1,4 @@
-.. _DRCOptions:
+.. _DRCOptions_pre:
 
 
 DRCOptions parameters
@@ -14,7 +14,7 @@ DRCOptions parameters
 -  ``dir`` :index:`: <pair: preflight - drc - drc; dir>` [:ref:`string <string>`] (default: ``''``) Sub-directory for the report.
 -  ``dont_stop`` :index:`: <pair: preflight - drc - drc; dont_stop>` [:ref:`boolean <boolean>`] (default: ``false``) Continue even if we detect errors.
 -  ``enabled`` :index:`: <pair: preflight - drc - drc; enabled>` [:ref:`boolean <boolean>`] (default: ``true``) Enable the check. This is the replacement for the boolean value.
--  ``filters`` :index:`: <pair: preflight - drc - drc; filters>`  [:ref:`FilterOptionsXRC parameters <FilterOptionsXRC>`] [:ref:`list(dict) <list(dict)>`] (default: ``[]``) Used to manipulate the violations. Avoid using the *filters* preflight.
+-  ``filters`` :index:`: <pair: preflight - drc - drc; filters>`  [:ref:`FilterOptionsXRC parameters <FilterOptionsXRC_pre>`] [:ref:`list(dict) <list(dict)>`] (default: ``[]``) Used to manipulate the violations. Avoid using the *filters* preflight.
 -  ``force_english`` :index:`: <pair: preflight - drc - drc; force_english>` [:ref:`boolean <boolean>`] (default: ``true``) Force english messages. KiCad 8.0.4 introduced translation, breaking filters for previous versions.
    Disable it if you prefer using the system wide language.
 -  ``format`` :index:`: <pair: preflight - drc - drc; format>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'HTML'``) (choices: "RPT", "HTML", "CSV", "JSON") [:ref:`comma separated <comma_sep>`] Format/s used for the report.

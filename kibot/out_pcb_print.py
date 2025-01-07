@@ -273,7 +273,8 @@ class PagesOptions(Optionable):
                 List of layers to replace `repeat_for_layer`.
                 This can be used to generate a page for each copper layer, here you put `copper`.
                 You can also use it to generate pages with drill maps, in this case use `drill_pairs` here.
-                Note that in this case the `repeat_for_layer` should be some drawing layer """
+                Note that in this case the `repeat_for_layer` should be some drawing layer, which might contain
+                a group used to insert the drill table (like in the `include_table` preflight)"""
             self.repeat_inherit = True
             """ If we will inherit the options of the layer we are replacing.
                 Disable it if you specify the options in `repeat_layers`, which is unlikely """
@@ -457,9 +458,12 @@ class PCB_PrintOptions(VariantOptions):
                 This can be used to just select the edge cuts for centering, in this case enable this option
                 and disable the `use_for_center` option of the edge cuts layer """
             self.include_table = IncludeTableOptions
-            """ [boolean|dict=false] Use a boolean for simple cases or fine-tune its behavior """
+            """ [boolean|dict=false] Use a boolean for simple cases or fine-tune its behavior.
+                When enabled we include tables using the same mechanism used in the `include_table`
+                preflight. The result isn't saved to disk """
             self.drill = DrillOptions
-            """ [boolean|dict=false] Use a boolean for simple cases or fine-tune its behavior """
+            """ [boolean|dict=false] Use a boolean for simple cases or fine-tune its behavior.
+                Used to customize the `drill_pairs` option to print drill maps """
         add_drill_marks(self)
         super().__init__()
         self._expand_id = 'assembly'

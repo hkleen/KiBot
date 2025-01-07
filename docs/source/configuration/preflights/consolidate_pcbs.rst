@@ -13,7 +13,7 @@ After executing this preflight the current PCB contains the references PCBs at t
 Only the top left corner of the text box is relevant. |br|
 An example can be found `here <https://github.com/INTI-CMNB/KiBot/tree/dev/docs/samples/Consolidate_PCBs>`__
 
-   -  **consolidate_pcbs** :index:`: <pair: preflight - consolidate_pcbs; consolidate_pcbs>`  [:ref:`PCB_Reference parameters <PCB_Reference>`] [:ref:`dict <dict>` | :ref:`list(dict) <list(dict)>`] (default: ``[]``) One or more PCBs to include.
+   -  **consolidate_pcbs** :index:`: <pair: preflight - consolidate_pcbs; consolidate_pcbs>`  [:ref:`PCB_Reference parameters <PCB_Reference_pre>`] [:ref:`dict <dict>` | :ref:`list(dict) <list(dict)>`] (default: ``[]``) One or more PCBs to include.
 
 .. toctree::
    :caption: Used dicts

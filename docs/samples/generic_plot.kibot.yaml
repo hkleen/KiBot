@@ -2882,7 +2882,8 @@ outputs:
       # [number=360] [36,1200] Resolution (Dots Per Inch) for the output file. Most objects are vectors, but thing
       # like the the solder mask are handled as images by the conversion tools
       dpi: 360
-      # [boolean|dict=false] Use a boolean for simple cases or fine-tune its behavior
+      # [boolean|dict=false] Use a boolean for simple cases or fine-tune its behavior.
+      # Used to customize the `drill_pairs` option to print drill maps
       drill:
         # [boolean=true] By default KiCad groups slots and rounded holes if they can be cut from the same tool (same diameter)
         group_slots_and_round_holes: true
@@ -2919,6 +2920,56 @@ outputs:
       # [boolean=false] Hide components in the Fab layer that are marked as excluded by a variant.
       # Affected by global options
       hide_excluded: false
+      # [boolean|dict=false] Use a boolean for simple cases or fine-tune its behavior.
+      # When enabled we include tables using the same mechanism used in the `include_table`
+      # preflight. The result isn't saved to disk
+      include_table:
+        # [boolean=true] Enable the check. This is the replacement for the boolean value
+        enabled: true
+        # [boolean=true] If True, CSV drill tables will have drill marks displayed on the left and
+        # an extra bottom rule for the total number of holes
+        format_drill_table: true
+        # [string='kibot_table'] Name for the group containing the table. The name of the group
+        # should be <group_name>_X where X is the output name.
+        # When the output generates more than one CSV use *kibot_table_out[2]*
+        # to select the second CSV. Python expressions for slicing are supported,
+        # for example *kibot_table_out[:10]* would include all elements until the 10th
+        # element (10th excluded), and *kibot_table_out[2][5:8]* would include the second
+        # output's elements number 6 to 8 (python indexes start at 0).
+        group_name: 'kibot_table'
+        # [list(dict)|list(string)|string=computed for your project] List of CSV-generating outputs.
+        # When empty we include all possible outputs
+        outputs:
+          # [boolean=true] Whether or not the headers should be in bold
+          - bold_headers: true
+            # [number=0.4] Width of border around the table. Use 0 to eliminate it
+            border_width: 0.4
+            # [number=0.4] Width of bottom rule (bottom of table). Use 0 to eliminate it
+            bottom_rule_width: 0.4
+            # [number=3] Blank space (in number of characters) between columns
+            column_spacing: 3
+            # [number=0] Force the font width (in mm) in the table. Leave empty to compute the
+            # width automatically from the group width
+            force_font_width: 0
+            # [boolean=true] Plot header on the table
+            has_header: true
+            # [number=0.3] Width of rule below header. Use 0 to eliminate it
+            header_rule_width: 0.3
+            # [number=0.1] Width of vertical rules between rows (doesn't include header)
+            # Use 0 to eliminate it
+            horizontal_rule_width: 0.1
+            # [boolean=false] Invert column order. Useful when inverting PCB texts in PCB Print
+            invert_columns_order: false
+            # [string=''] Name of output
+            name: ''
+            # [number=2] Space (in number of characters) between rows
+            row_spacing: 2
+            # [string='left'] [left,center,right] Text alignment in the table
+            text_alignment: 'left'
+            # [number=0.4] Width of top rule (above header). Use 0 to eliminate it
+            top_rule_width: 0.4
+            # [number=0.1] Width of vertical rules between columns. Use 0 to eliminate it
+            vertical_rule_width: 0.1
       # [boolean=true] Tell KiCad to apply the scaling for each page as a separated entity.
       # Disabling it the pages are coherent and can be superposed
       individual_page_scaling: true
@@ -3015,7 +3066,8 @@ outputs:
           # List of layers to replace `repeat_for_layer`.
           # This can be used to generate a page for each copper layer, here you put `copper`.
           # You can also use it to generate pages with drill maps, in this case use `drill_pairs` here.
-          # Note that in this case the `repeat_for_layer` should be some drawing layer
+          # Note that in this case the `repeat_for_layer` should be some drawing layer, which might contain
+          # a group used to insert the drill table (like in the `include_table` preflight)
           repeat_layers:
             # [string=''] Color used for this layer.
             # KiCad 6+: don't forget the alpha channel for layers like the solder mask

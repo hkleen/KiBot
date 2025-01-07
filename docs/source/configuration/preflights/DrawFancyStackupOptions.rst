@@ -1,10 +1,10 @@
-.. _DrawFancyStackupOptions:
+.. _DrawFancyStackupOptions_pre:
 
 
 DrawFancyStackupOptions parameters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
--  **columns** :index:`: <pair: preflight - draw_fancy_stackup - draw_fancy_stackup; columns>`  [:ref:`SUColumnsFancy parameters <SUColumnsFancy>`] [:ref:`list(dict) <list(dict)>` | :ref:`list(string) <list(string)>`] (default: computed for your project) List of columns to display.
+-  **columns** :index:`: <pair: preflight - draw_fancy_stackup - draw_fancy_stackup; columns>`  [:ref:`SUColumnsFancy parameters <SUColumnsFancy_pre>`] [:ref:`list(dict) <list(dict)>` | :ref:`list(string) <list(string)>`] (default: computed for your project) List of columns to display.
    Can be just the name of the column. |br|
    Available columns are *drawing*, *material*, *layer*, *thickness*, *dielectric*, *layer_type*, *gerber*. |br|
    When empty KiBot will add them in the above order, skipping the *gerber* if not available.

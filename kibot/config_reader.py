@@ -971,7 +971,7 @@ def print_output_options(name, cl, indent, context=None, skip_keys=False, skip_o
                 print(f".. _{v.__name__+id}:\n\n")
                 print(title)
                 print('~'*len(title)+'\n')
-            print_output_options('', v, i, new_context, separate_files=separate_files, skip_keys=separate_files)
+            print_output_options('', v, i, new_context, separate_files=separate_files, skip_keys=separate_files, id=id)
             if separate_files and has_dict:
                 sys.stdout = ori
                 f.close()
@@ -1128,7 +1128,7 @@ def _print_preflights_help(rst, deprecated=False):
                 for ln in range(2, len(lines)):
                     print('                 '+adapt_text(lines[ln]))
         print_output_options(n, o, ind_size, 'preflight - '+n, skip_options={'comment', 'name'}, skip_keys=True,
-                             force_is_basic=True, separate_files=split)
+                             force_is_basic=True, separate_files=split, id='_pre')
         if split:
             sys.stdout = ori
             f.close()

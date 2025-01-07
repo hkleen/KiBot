@@ -904,6 +904,13 @@
             "DataTypeString"
           ],
           null
+        ],
+        [
+          "format_drill_table",
+          [
+            "DataTypeBoolean"
+          ],
+          null
         ]
       ]
     ]

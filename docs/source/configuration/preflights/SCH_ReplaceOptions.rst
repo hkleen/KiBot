@@ -1,4 +1,4 @@
-.. _SCH_ReplaceOptions:
+.. _SCH_ReplaceOptions_pre:
 
 
 SCH_ReplaceOptions parameters
@@ -15,7 +15,7 @@ SCH_ReplaceOptions parameters
                    This command will work only if you have a date in the SCH/Schematic. |br|
 ..
 
--  ``replace_tags`` :index:`: <pair: preflight - sch_replace - sch_replace; replace_tags>`  [:ref:`TagReplaceSCH parameters <TagReplaceSCH>`] [:ref:`dict <dict>` | :ref:`list(dict) <list(dict)>`] (default: ``[]``) Tag or tags to replace.
+-  ``replace_tags`` :index:`: <pair: preflight - sch_replace - sch_replace; replace_tags>`  [:ref:`TagReplaceSCH parameters <TagReplaceSCH_pre>`] [:ref:`dict <dict>` | :ref:`list(dict) <list(dict)>`] (default: ``[]``) Tag or tags to replace.
 
 .. toctree::
    :caption: Used dicts

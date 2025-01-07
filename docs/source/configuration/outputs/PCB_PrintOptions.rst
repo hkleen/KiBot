@@ -33,6 +33,7 @@ PCB_PrintOptions parameters
 -  ``dpi`` :index:`: <pair: output - pcb_print - options; dpi>` [:ref:`number <number>`] (default: ``360``) (range: 36 to 1200) Resolution (Dots Per Inch) for the output file. Most objects are vectors, but thing
    like the the solder mask are handled as images by the conversion tools.
 -  ``drill`` :index:`: <pair: output - pcb_print - options; drill>`  [:ref:`DrillOptions parameters <DrillOptions>`] [:ref:`boolean <boolean>` | :ref:`dict <dict>`] (default: ``false``) Use a boolean for simple cases or fine-tune its behavior.
+   Used to customize the `drill_pairs` option to print drill maps.
 -  ``drill_marks`` :index:`: <pair: output - pcb_print - options; drill_marks>` [:ref:`string <string>`] (default: ``'full'``) (choices: "none", "small", "full") What to use to indicate the drill places, can be none, small or full (for real scale).
 -  ``exclude_filter`` :index:`: <pair: output - pcb_print - options; exclude_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to exclude components from processing.
    Is a short-cut to use for simple cases where a variant is an overkill. |br|
@@ -52,6 +53,9 @@ PCB_PrintOptions parameters
    You get the default frame and some substitutions doesn't work.
 -  ``hide_excluded`` :index:`: <pair: output - pcb_print - options; hide_excluded>` [:ref:`boolean <boolean>`] (default: ``false``) Hide components in the Fab layer that are marked as excluded by a variant.
    Affected by global options.
+-  ``include_table`` :index:`: <pair: output - pcb_print - options; include_table>`  [:ref:`IncludeTableOptions parameters <IncludeTableOptions>`] [:ref:`boolean <boolean>` | :ref:`dict <dict>`] (default: ``false``) Use a boolean for simple cases or fine-tune its behavior.
+   When enabled we include tables using the same mechanism used in the `include_table`
+   preflight. The result isn't saved to disk.
 -  ``individual_page_scaling`` :index:`: <pair: output - pcb_print - options; individual_page_scaling>` [:ref:`boolean <boolean>`] (default: ``true``) Tell KiCad to apply the scaling for each page as a separated entity.
    Disabling it the pages are coherent and can be superposed.
 -  ``invert_use_for_center`` :index:`: <pair: output - pcb_print - options; invert_use_for_center>` [:ref:`boolean <boolean>`] (default: ``false``) Invert the meaning of the `use_for_center` layer option.
@@ -89,4 +93,5 @@ PCB_PrintOptions parameters
    :caption: Used dicts
 
    DrillOptions
+   IncludeTableOptions
    PagesOptions

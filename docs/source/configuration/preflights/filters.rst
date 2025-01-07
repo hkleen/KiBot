@@ -11,7 +11,7 @@ Avoid using it with the new *erc* and *drc* preflights. |br|
 Note that ignored errors will become KiBot warnings (i.e. `(W058) ...`). |br|
 To farther ignore these warnings use the `filters` option in the `global` section
 
-   -  **filters** :index:`: <pair: preflight - filters; filters>`  [:ref:`FilterOptions parameters <FilterOptions>`] [:ref:`list(dict) <list(dict)>`] (default: ``[]``) One or more filters.
+   -  **filters** :index:`: <pair: preflight - filters; filters>`  [:ref:`FilterOptions parameters <FilterOptions_pre>`] [:ref:`list(dict) <list(dict)>`] (default: ``[]``) One or more filters.
 
 .. toctree::
    :caption: Used dicts

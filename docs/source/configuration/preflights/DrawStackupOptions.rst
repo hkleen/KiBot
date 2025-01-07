@@ -1,10 +1,10 @@
-.. _DrawStackupOptions:
+.. _DrawStackupOptions_pre:
 
 
 DrawStackupOptions parameters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
--  **columns** :index:`: <pair: preflight - draw_stackup - draw_stackup; columns>`  [:ref:`SUColumns parameters <SUColumns>`] [:ref:`list(dict) <list(dict)>` | :ref:`list(string) <list(string)>`] (default: computed for your project) List of columns to display.
+-  **columns** :index:`: <pair: preflight - draw_stackup - draw_stackup; columns>`  [:ref:`SUColumns parameters <SUColumns_pre>`] [:ref:`list(dict) <list(dict)>` | :ref:`list(string) <list(string)>`] (default: computed for your project) List of columns to display.
    Can be just the name of the column. |br|
    Available columns are *gerber*, *drawing*, *thickness* and *description*. |br|
    When empty KiBot will add them in the above order, skipping the *gerber* if not available.
