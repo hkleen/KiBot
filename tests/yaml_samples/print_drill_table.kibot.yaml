@@ -33,3 +33,5 @@ outputs:
           layers:
             - layer: 'User.Comments'
               color: '#000000'
+            - layer: 'Edge.Cuts'
+              color: '#000000'
