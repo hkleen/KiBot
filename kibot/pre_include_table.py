@@ -26,7 +26,7 @@ ALIGNMENT = {'left': GR_TEXT_HJUSTIFY_LEFT,
              'center': GR_TEXT_HJUSTIFY_CENTER,
              'right': GR_TEXT_HJUSTIFY_RIGHT}
 VALID_OUTPUT_TYPES = {'bom', 'kibom', 'position', 'report', 'excellon', 'gerb_drill'}
-VALID_DRILL_TABLE_OUTPUTS = ['excellon', 'gerb_drill']
+VALID_DRILL_TABLE_OUTPUTS = {'excellon', 'gerb_drill'}
 
 
 class IncTableOutputOptions(Optionable):
