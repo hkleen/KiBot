@@ -314,7 +314,7 @@ def update_table(ops, parent, force_index=-1, only_drill_tables=False):
         # Check for number of brackets in the group name
         bracket_matches = re.findall(r'\[.*?\]', group_suffix)
 
-        out, csv, out_type = out_to_csv_mapping.get(group_suffix, (None, None, None))
+        out, csv, out_type = out_to_csv_mapping.get(group_suffix.split('[')[0], (None, None, None))
         if not csv:
             logger.warning(W_NOMATCHGRP + f'No output to handle `{group_name}` found')
             continue
