@@ -61,6 +61,7 @@ from .macros import macros, document, output_class  # noqa: F401
 from .drill_marks import DRILL_MARKS_MAP, add_drill_marks
 from .kicad.drill_info import get_num_layer_pairs, get_layer_pair_name
 from .kicad.pcb_draw_helpers import draw_drill_map
+from .pre_include_table import IncludeTableOptions, update_table
 from .layer import Layer, get_priority
 from .kiplot import run_command, load_board, get_all_components, look_for_output, get_output_targets, run_output
 from .svgutils.transform import ImageElement, GroupElement
@@ -455,6 +456,8 @@ class PCB_PrintOptions(VariantOptions):
             """ Invert the meaning of the `use_for_center` layer option.
                 This can be used to just select the edge cuts for centering, in this case enable this option
                 and disable the `use_for_center` option of the edge cuts layer """
+            self.include_table = IncludeTableOptions
+            """ [boolean|dict=false] Use a boolean for simple cases or fine-tune its behavior """
             self.drill = DrillOptions
             """ [boolean|dict=false] Use a boolean for simple cases or fine-tune its behavior """
         add_drill_marks(self)
@@ -471,6 +474,17 @@ class PCB_PrintOptions(VariantOptions):
 
     def config(self, parent):
         super().config(parent)
+        self._include_table_output = False
+        if isinstance(self.include_table, bool):
+            if self.include_table:
+                self._include_table_output = True
+                self._include_table = IncludeTableOptions()
+                self._include_table.config(self)
+            else:
+                self._include_table_output = False
+        else:
+            self._include_table_output = True
+            self._include_table = self.include_table
         if isinstance(self.drill, bool):
             self._drill_unify_pth_and_npth = True
             self._drill_group_slots_and_round_holes = True
@@ -1472,6 +1486,11 @@ class PCB_PrintOptions(VariantOptions):
         self.set_visible(edge_id)
         # Move KiBot image groups away
         self.move_kibot_image_groups()
+
+        # Update all tables
+        if GS.ki7 and self._include_table_output:
+            update_table(self._include_table, self)
+
         # Generate the output, page by page
         pages = []
         for n, p in enumerate(self._pages):
@@ -1479,6 +1498,8 @@ class PCB_PrintOptions(VariantOptions):
                 if p._is_drill:
                     g_drill_map = PCB_GROUP(GS.board)
                     self.add_drill_map_drawing(p, g_drill_map)
+                    if GS.ki7 and self._include_table_output:
+                        update_table(self._include_table, self, p._drill_pair_index, True)
             # Make visible only the layers we need
             # This is very important when scaling, otherwise the results are controlled by the .kicad_prl (See #407)
             if self.individual_page_scaling:
