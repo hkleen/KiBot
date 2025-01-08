@@ -171,7 +171,7 @@ def test_pcb_print_multizone_1(test_dir):
     ctx.clean_up()
 
 
-@pytest.mark.skipif(not context.ki7() and not context.ki8(), reason="Implemented for KiCad 7+")
+@pytest.mark.skipif(not context.ki7(), reason="Implemented for KiCad 7+")
 def test_pcb_print_drill_map(test_dir):
     prj = 'drill_types'
     ctx = context.TestContext(test_dir, prj, 'print_drill_map')
