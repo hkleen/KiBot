@@ -701,6 +701,7 @@ class GS(object):
     @staticmethod
     def create_eda_rect(tlx, tly, brx, bry):
         if GS.ki9:
+            # TODO: Might be fixed in the release
             return pcbnew.BOX2I(pcbnew.VECTOR2I(tlx, tly), pcbnew.VECTOR2L(brx-tlx, bry-tly))
         if GS.ki7:
             return pcbnew.BOX2I(pcbnew.VECTOR2I(tlx, tly), pcbnew.VECTOR2I(brx-tlx, bry-tly))
