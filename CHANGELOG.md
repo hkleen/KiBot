@@ -100,6 +100,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Via pairs overwritten by PTH files (#758)
 - Navigate Results:
   - Problems when using `erc: true` or `drc: true` (#742)
+- PCB Print:
+  - Problems when using the default worksheet and the internal frame plotter
+    (#767)
 
 ### Changed
 - Default temporal layer for internal use is now "Margin", instead of "User.9"

@@ -156,6 +156,11 @@ Fixed
 
    -  Problems when using ``erc: true`` or ``drc: true`` (#742)
 
+-  PCB Print:
+
+   -  Problems when using the default worksheet and the internal frame
+      plotter (#767)
+
 Changed
 ~~~~~~~
 

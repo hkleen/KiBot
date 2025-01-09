@@ -703,28 +703,22 @@ class PCB_PrintOptions(VariantOptions):
         self.pcb.write(pcb_name)
         # Copy the project
         pro_name, _, _ = GS.copy_project(pcb_name)
-        # Make a local WKS available
-        if self._sheet_reference_layout:
-            # Worksheet override
-            wks = os.path.abspath(self._sheet_reference_layout)
-            wks = KiConf.fix_page_layout(os.path.join(pcb_dir, GS.pro_fname), force_pcb=wks, force_sch=wks)
-        else:
-            # Original worksheet
-            wks = KiConf.fix_page_layout(os.path.join(pcb_dir, GS.pro_fname))
+        # Copy the layout, user provided or default, we need to expand vars here
+        # In particular KiBot internal stuff
+        wks = KiConf.fix_page_layout(os.path.join(pcb_dir, GS.pro_fname), force_pcb=self.layout, force_sch=self.layout)
         wks = wks[1]
-        if wks:
-            logger.debugl(1, '  - Worksheet: '+wks)
-            try:
-                ws = kicad_worksheet.Worksheet.load(wks)
-                error = None
-            except (kicad_worksheet.WksError, SchError) as e:
-                error = str(e)
-            if error:
-                raise KiPlotConfigurationError('Error reading `{}` ({})'.format(wks, error))
-            # Expand the variables in the copied worksheet
-            tb_vars = self.fill_kicad_vars(page, pages, p)
-            ws.expand(tb_vars, remove_images=True)
-            ws.save(wks)
+        logger.debugl(1, '  - Worksheet: '+wks)
+        try:
+            ws = kicad_worksheet.Worksheet.load(wks)
+            error = None
+        except (kicad_worksheet.WksError, SchError) as e:
+            error = str(e)
+        if error:
+            raise KiPlotConfigurationError('Error reading `{}` ({})'.format(wks, error))
+        # Expand the variables in the copied worksheet
+        tb_vars = self.fill_kicad_vars(page, pages, p)
+        ws.expand(tb_vars, remove_images=True)
+        ws.save(wks)
         # Plot the frame using a helper script
         # kicad-cli fails: https://gitlab.com/kicad/code/kicad/-/issues/18928
         script = os.path.join(GS.get_resource_path('tools'), 'frame_plotter')

@@ -500,7 +500,8 @@ class Worksheet(object):
             elif e_type == 'tbtext':
                 obj = WksText.parse(e)
                 if not version:
-                    obj.text = text_from_ki5(obj.text)
+                    # Translate KiCad 5 %X markers, and also change the sexp tree
+                    e[1] = obj.text = text_from_ki5(obj.text)
                 elements.append(obj)
             elif e_type == 'polygon':
                 elements.append(WksPolygon.parse(e))
