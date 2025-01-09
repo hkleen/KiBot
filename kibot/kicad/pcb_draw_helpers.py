@@ -154,45 +154,40 @@ def draw_arc(g, x, y, angle_start, angle, radius, layer, line_w=10000):
 
 
 def draw_oval(g, x, y, size, orientation, layer, line_w=10000):
+    # Rotate the shape to make it "vertical"
     if size.x > size.y:
         size.x, size.y = size.y, size.x
-        if orientation < GS.angle(270):
-            orientation += GS.angle(90)
+        # Avoid +=/-= they produce a free() error when using KiCad 8.0.6
+        if orientation.AsDegrees() < 270:
+            orientation = orientation + GS.angle(90)
         else:
-            orientation -= GS.angle(270)
+            orientation = orientation - GS.angle(270)
 
     deltaxy = size.y - size.x
     radius = size.x // 2
-
     half_height = deltaxy // 2
 
-    corners = [
-        pcbnew.wxPoint(-radius, -half_height),
-        pcbnew.wxPoint(-radius, half_height),
-        pcbnew.wxPoint(0, half_height),
-        pcbnew.wxPoint(radius, half_height),
-        pcbnew.wxPoint(radius, -half_height),
-        pcbnew.wxPoint(0, -half_height)
-    ]
-
+    # Apply the orientation
+    corners = [pcbnew.wxPoint(-radius, -half_height),
+               pcbnew.wxPoint(-radius, half_height),
+               pcbnew.wxPoint(0, half_height),
+               pcbnew.wxPoint(radius, half_height),
+               pcbnew.wxPoint(radius, -half_height),
+               pcbnew.wxPoint(0, -half_height)]
     s = pcbnew.SHAPE_SIMPLE()
     for c in corners:
         s.Append(GS.p2v_k7(c))
-
     s.Rotate(orientation, GS.p2v_k7(pcbnew.wxPoint(0, 0)))
-
     for i in range(len(corners)):
         corners[i].x = s.CPoint(i).x
         corners[i].y = s.CPoint(i).y
         corners[i].x += int(x)
         corners[i].y += int(y)
 
+    # Draw the "oval"
     draw_line(g, corners[0].x, corners[0].y, corners[1].x, corners[1].y, layer, line_w)
-
     draw_arc(g, corners[2].x, corners[2].y, -orientation.AsDegrees(), 180, radius, layer, line_w)
-
     draw_line(g, corners[3].x, corners[3].y, corners[4].x, corners[4].y, layer, line_w)
-
     draw_arc(g, corners[5].x, corners[5].y, -orientation.AsDegrees(), -180, radius, layer, line_w)
 
 
