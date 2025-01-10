@@ -1744,6 +1744,10 @@ class PCB_Print(BaseOutput):  # noqa: F821
                         if ly['layer'].endswith('.Mask'):
                             ly['color'] = '#14332440'
                     pages.append(page)
+            # Drill map
+            page = {'repeat_for_layer': 'User.Drawings', 'repeat_layers': 'drill_pairs', 'layers':
+                    [{'layer': 'User.Drawings', 'color': '#000000'}, {'layer': 'Edge.Cuts', 'color': '#000000'}]}
+            pages.append(page)
             ops = {'format': fmt, 'pages': pages, 'keep_temporal_files': True}
             if fmt in ['PNG', 'SVG']:
                 ops['add_background'] = True
