@@ -335,13 +335,13 @@ def draw_marker(g, x, y, diameter, layer, shape_id, line_w=10000):
 
 def get_marker_best_pen_size(diameter):
     min_size_mm = 0.1
-    best_size = max(diameter // 10, min_size_mm*pcbnew.pcbIUScale.IU_PER_MM)
+    best_size = max(diameter // 10, GS.from_mm(min_size_mm))
     return int(best_size)
 
 
 def get_sketch_oval_best_pen_size():
     sketch_line_width_mm = 0.1
-    return int(sketch_line_width_mm*pcbnew.pcbIUScale.IU_PER_MM)
+    return GS.from_mm(sketch_line_width_mm)
 
 
 def draw_drill_marks(g, layer, hole_list_layer_pair):
