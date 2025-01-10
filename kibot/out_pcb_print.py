@@ -1132,7 +1132,7 @@ class PCB_PrintOptions(VariantOptions):
     def plot_extra_cu(self, id, la, pc, p, filelist):
         """ Plot pads and vias to make them different """
         re_filled_zones = False
-        if id >= F_Cu and id <= B_Cu:
+        if IsCopperLayer(id):
             # Here we force the same bounding box
             # Problem: we will remove items, so the bbox can be affected
             # Solution: we add a couple of points at the edges of the bbox
