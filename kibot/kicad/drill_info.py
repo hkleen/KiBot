@@ -132,8 +132,8 @@ def get_layer_pair_name(index, use_layer_names=False, merge_PTH_NPTH=True, group
             top_layer = layer_pair[0] + 1
             bot_layer = layer_pair[1] + 1 if layer_pair[1] != pcbnew.B_Cu else layer_cnt
         else:
-            top_layer = 1 if layer_pair[0] == pcbnew.F_Cu else layer_pair[0]/2
-            bot_layer = layer_cnt if layer_pair[1] == pcbnew.B_Cu else layer_pair[1]/2
+            top_layer = int(1 if layer_pair[0] == pcbnew.F_Cu else layer_pair[0]/2)
+            bot_layer = int(layer_cnt if layer_pair[1] == pcbnew.B_Cu else layer_pair[1]/2)
         return f'L{top_layer} - L{bot_layer}'
 
 
