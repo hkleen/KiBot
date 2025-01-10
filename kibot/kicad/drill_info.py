@@ -173,7 +173,8 @@ def build_holes_list(layer_pair, merge_PTH_NPTH, generate_NPTH_list=True,
                     new_hole.m_HoleAttribute = pcbnew.HOLE_ATTRIBUTE_HOLE_VIA_BURIED
 
             new_hole.m_Tool_Reference = -1
-            new_hole.m_Hole_Orient = GS.angle(0)
+            # KiCad 7+ an angle, otherwise just a double
+            new_hole.m_Hole_Orient = GS.angle(0) if GS.ki7 else 0.0
             new_hole.m_Hole_Diameter = hole_sz
             new_hole.m_Hole_NotPlated = False
             new_hole.m_Hole_Size.x = new_hole.m_Hole_Size.y = new_hole.m_Hole_Diameter
@@ -215,7 +216,7 @@ def build_holes_list(layer_pair, merge_PTH_NPTH, generate_NPTH_list=True,
                     new_hole.m_HoleAttribute = (pcbnew.HOLE_ATTRIBUTE_HOLE_MECHANICAL if
                                                 new_hole.m_Hole_NotPlated else pcbnew.HOLE_ATTRIBUTE_HOLE_PAD)
                 new_hole.m_Tool_Reference = -1
-                new_hole.m_Hole_Orient = pad.GetOrientation()
+                new_hole.m_Hole_Orient = pad.GetOrientation() if GS.ki7 else GS.angle_as_double(pad.GetOrientation())
                 new_hole.m_Hole_Diameter = min(pad.GetDrillSize().x, pad.GetDrillSize().y)
                 new_hole.m_Hole_Size = pad.GetDrillSize()
                 new_hole.m_Hole_Shape = 1 if (pad.GetDrillShape() != pcbnew.PAD_DRILL_SHAPE_CIRCLE and

@@ -390,6 +390,12 @@ class GS(object):
             return pcbnew.EDA_ANGLE(ang*10, pcbnew.TENTHS_OF_A_DEGREE_T)
         return ang*10
 
+    def angle_as_double(ang):
+        if isinstance(ang, float):
+            return ang
+        # Here we can't use KiCad version because the nasty pcb_transition can be patching it
+        return ang.AsDegrees()
+
     @staticmethod
     def get_modules():
         if GS.ki6:
