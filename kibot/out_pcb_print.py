@@ -230,7 +230,7 @@ class PagesOptions(Optionable):
                 In addition when you use `repeat_for_layer` the following patterns are available:
                 %ln layer name, %ls layer suffix and %ld layer description.
                 When `repeat_layers` is `drill_pairs`, the following additional patterns are available:
-                %lnp layer name pair, %lp layer pair """
+                %lpn layer name pair, %lp layer pair """
             self.layer_var = '%ll'
             """ Text to use for the `LAYER` in the title block.
                 All the expansions available for `sheet` are also available here """

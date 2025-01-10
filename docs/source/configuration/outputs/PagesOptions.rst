@@ -42,7 +42,7 @@ PagesOptions parameters
    In addition when you use `repeat_for_layer` the following patterns are available:
    %ln layer name, %ls layer suffix and %ld layer description. |br|
    When `repeat_layers` is `drill_pairs`, the following additional patterns are available:
-   %lnp layer name pair, %lp layer pair.
+   %lpn layer name pair, %lp layer pair.
 -  ``sheet_reference_color`` :index:`: <pair: output - pcb_print - options - pages; sheet_reference_color>` [:ref:`string <string>`] (default: ``''``) Color to use for the frame and title block.
 -  ``sketch_pad_line_width`` :index:`: <pair: output - pcb_print - options - pages; sketch_pad_line_width>` [:ref:`number <number>`] (default: ``0.1``) Line width for the sketched pads [mm], see `sketch_pads_on_fab_layers` (KiCad 6+)
    Note that this value is currently ignored by KiCad (6.0.9).
