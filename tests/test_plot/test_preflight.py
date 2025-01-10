@@ -376,12 +376,18 @@ def test_drc_parity_1(test_dir):
     ctx = context.TestContext(test_dir, prj, 'drc_parity', '')
     # ctx.run(ret_val=NETLIST_DIFF, extra_debug=True)
     ctx.run(extra_debug=True)
-    ctx.search_err(["C1 footprint .Capacitor_SMD:C_0805_2012Metric. doesn't match that given by symbol",
-                    "Footprint R1 value .100. doesn't match symbol value .120.",
-                    "Missing footprint FID1 .Fiducial.",
-                    "Pad net .VCC. doesn't match net given by schematic .GND.",
-                    "Pad net .Net-.C1-Pad1.. doesn't match net given by schematic .unconnected-.C1-Pad1..",
-                    "Pad net .Net-.C1-Pad1.. doesn't match net given by schematic .Net-.R1-Pad2.."])
+    errors = ["Missing footprint FID1 .Fiducial.",
+              "Pad net .VCC. doesn't match net given by schematic .GND.",
+              "Pad net .Net-.C1-Pad1.. doesn't match net given by schematic .unconnected-.C1-Pad1..",
+              "Pad net .Net-.C1-Pad1.. doesn't match net given by schematic .Net-.R1-Pad2.."]
+    if context.ki9():
+        # Is that supposed to be an improvement?
+        errors.extend(["Capacitor_SMD:C_0805_2012Metric doesn't match footprint given by symbol",
+                       "Value .R1. doesn't match symbol value .100."])
+    else:
+        errors.extend(["C1 footprint .Capacitor_SMD:C_0805_2012Metric. doesn't match that given by symbol",
+                       "Footprint R1 value .100. doesn't match symbol value .120."])
+    ctx.search_err(errors)
     ctx.clean_up()
 
 
