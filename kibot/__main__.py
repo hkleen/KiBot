@@ -122,6 +122,8 @@ import platform
 import re
 import sys
 from sys import path as sys_path
+import warnings
+warnings.filterwarnings('ignore', message='.*SWIG-based Python.*', module='pcbnew')
 from . import __version__, __copyright__, __license__
 # Import log first to set the domain
 from . import log
