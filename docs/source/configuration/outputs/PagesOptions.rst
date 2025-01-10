@@ -29,7 +29,13 @@ PagesOptions parameters
    See `repeat_layers`.
 -  ``repeat_inherit`` :index:`: <pair: output - pcb_print - options - pages; repeat_inherit>` [:ref:`boolean <boolean>`] (default: ``true``) If we will inherit the options of the layer we are replacing.
    Disable it if you specify the options in `repeat_layers`, which is unlikely.
--  ``repeat_layers`` :index:`: <pair: output - pcb_print - options - pages; repeat_layers>`  [:ref:`LayerOptions parameters <LayerOptions>`] [:ref:`list(dict) <list(dict)>` | :ref:`list(string) <list(string)>` | :ref:`string <string>`] (default: ``'inners'``) (choices: "all", "selected", "copper", "technical", "user", "inners", "outers") (also accepts any string).
+-  ``repeat_layers`` :index:`: <pair: output - pcb_print - options - pages; repeat_layers>`  [:ref:`LayerOptions parameters <LayerOptions>`] [:ref:`list(dict) <list(dict)>` | :ref:`list(string) <list(string)>` | :ref:`string <string>`] (default: ``'inners'``) (choices: "all", "selected", "copper", "technical", "user", "inners", "outers") (also accepts any string) List
+   of layers to replace `repeat_for_layer`. |br|
+   This can be used to generate a page for each copper layer, here you put `copper`. |br|
+   You can also use it to generate pages with drill maps, in this case use `drill_pairs` here. |br|
+   Note that in this case the `repeat_for_layer` should be some drawing layer, which might contain
+   a group used to insert the drill table (like in the `include_table` preflight). |br|
+   The drill map needs KiCad 7 or newer.
 -  ``sheet`` :index:`: <pair: output - pcb_print - options - pages; sheet>` [:ref:`string <string>`] (default: ``'Assembly'``) Text to use for the `SHEET` in the title block.
    Pattern (%*) and text variables are expanded. |br|
    The %ll is the list of layers included in this page. |br|

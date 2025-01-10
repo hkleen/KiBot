@@ -269,12 +269,13 @@ class PagesOptions(Optionable):
                 This can be used to generate a page for each copper layer, here you put `F.Cu`.
                 See `repeat_layers` """
             self.repeat_layers = LayerOptions
-            """ [list(dict)|list(string)|string='inners'] [all,selected,copper,technical,user,inners,outers,*]
-                List of layers to replace `repeat_for_layer`.
+            """ [list(dict)|list(string)|string='inners'] [all,selected,copper,technical,user,inners,outers,*] List
+                of layers to replace `repeat_for_layer`.
                 This can be used to generate a page for each copper layer, here you put `copper`.
                 You can also use it to generate pages with drill maps, in this case use `drill_pairs` here.
                 Note that in this case the `repeat_for_layer` should be some drawing layer, which might contain
-                a group used to insert the drill table (like in the `include_table` preflight)"""
+                a group used to insert the drill table (like in the `include_table` preflight).
+                The drill map needs KiCad 7 or newer """
             self.repeat_inherit = True
             """ If we will inherit the options of the layer we are replacing.
                 Disable it if you specify the options in `repeat_layers`, which is unlikely """
@@ -998,6 +999,8 @@ class PCB_PrintOptions(VariantOptions):
 
     def add_drill_map_drawing(self, p, g):
         if p._is_drill:
+            if not GS.ki7:
+                raise KiPlotConfigurationError('The `pcb_print` drill map needs KiCad 7 or newer')
             layer = p._drill_map_layer
             index = p._drill_pair_index
             draw_drill_map(g, layer, index, self._drill_unify_pth_and_npth,
@@ -1745,9 +1748,10 @@ class PCB_Print(BaseOutput):  # noqa: F821
                             ly['color'] = '#14332440'
                     pages.append(page)
             # Drill map
-            page = {'repeat_for_layer': 'User.Drawings', 'repeat_layers': 'drill_pairs', 'layers':
-                    [{'layer': 'User.Drawings', 'color': '#000000'}, {'layer': 'Edge.Cuts', 'color': '#000000'}]}
-            pages.append(page)
+            if GS.ki7:
+                page = {'repeat_for_layer': 'User.Drawings', 'repeat_layers': 'drill_pairs', 'layers':
+                        [{'layer': 'User.Drawings', 'color': '#000000'}, {'layer': 'Edge.Cuts', 'color': '#000000'}]}
+                pages.append(page)
             ops = {'format': fmt, 'pages': pages, 'keep_temporal_files': True}
             if fmt in ['PNG', 'SVG']:
                 ops['add_background'] = True

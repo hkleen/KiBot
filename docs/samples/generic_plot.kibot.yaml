@@ -3062,12 +3062,13 @@ outputs:
           # [boolean=true] If we will inherit the options of the layer we are replacing.
           # Disable it if you specify the options in `repeat_layers`, which is unlikely
           repeat_inherit: true
-          # [list(dict)|list(string)|string='inners'] [all,selected,copper,technical,user,inners,outers,*]
-          # List of layers to replace `repeat_for_layer`.
+          # [list(dict)|list(string)|string='inners'] [all,selected,copper,technical,user,inners,outers,*] List
+          # of layers to replace `repeat_for_layer`.
           # This can be used to generate a page for each copper layer, here you put `copper`.
           # You can also use it to generate pages with drill maps, in this case use `drill_pairs` here.
           # Note that in this case the `repeat_for_layer` should be some drawing layer, which might contain
-          # a group used to insert the drill table (like in the `include_table` preflight)
+          # a group used to insert the drill table (like in the `include_table` preflight).
+          # The drill map needs KiCad 7 or newer
           repeat_layers:
             # [string=''] Color used for this layer.
             # KiCad 6+: don't forget the alpha channel for layers like the solder mask
