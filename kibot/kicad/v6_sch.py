@@ -753,6 +753,9 @@ class LibComponent(object):
         # This member is used to generate crossed components (DNF).
         # When defined means we need to add a cross in this box and then reset the box.
         self.cross_box = None
+        # KiCad 9
+        # WTF?!
+        self.embedded_fonts = None
 
     def get_field_value(self, field):
         field = field.lower()
@@ -804,7 +807,7 @@ class LibComponent(object):
                     index = 2
                 comp.pin_names_hide = None
                 try:
-                    comp.pin_names_hide = _check_symbol(i, index, i_type)
+                    comp.pin_names_hide = _check_hide(i, index, i_type)
                 except SchError:
                     # Optional
                     pass
@@ -844,6 +847,9 @@ class LibComponent(object):
                 comp.draw.append(DrawTextV6.parse(i))
             elif i_type == 'text_box':
                 comp.draw.append(TextBox.parse(i, i_type))
+            elif i_type == 'embedded_fonts':
+                # Fonts in a lib component?!
+                comp.embedded_fonts = _get_yes_no(i, 1, i_type)
             # PINS...
             elif i_type == 'pin':
                 vis_obj = PinV6.parse(i)
@@ -947,6 +953,9 @@ class LibComponent(object):
         if s.unit_name is not None:
             sdata.append(_symbol('unit_name', [s.unit_name]))
             sdata.append(Sep())
+        # Fonts
+        if s.embedded_fonts is not None:
+            sdata.append(_symbol_yn('embedded_fonts', s.embedded_fonts))
         # Properties
         for f in s.fields:
             fdata = f.write()
@@ -1577,9 +1586,16 @@ class HSPin(object):
         pin = HSPin()
         pin.name = _check_str(items, 1, name+' name')
         pin.type = _check_symbol(items, 2, name+' type')
-        pin.pos_x, pin.pos_y, pin.ang = _get_at(items, 3, name)
-        pin.effects = _get_effects(items, 4, name)
-        pin.uuid = get_uuid(items, 5, name)
+        for c, i in enumerate(items[3:]):
+            i_type = _check_is_symbol_list(i)
+            if i_type == 'at':
+                pin.pos_x, pin.pos_y, pin.ang = _get_at(items, c+3, name)
+            elif i_type == 'effects':
+                pin.effects = _get_effects(items, c+3, name)
+            elif i_type == 'uuid':
+                pin.uuid = get_uuid(items, c+3, name)
+            else:
+                raise SchError(f'Unknown {name} attribute `{i}`')
         return pin
 
     def write(self):
@@ -1625,6 +1641,11 @@ class Sheet(object):
         self.projects = None
         # All instances, by path (page look-up)
         self.all_instances = {}
+        # KiCad 9 attributes
+        self.exclude_from_sim = None
+        self.in_bom = None
+        self.on_board = None
+        self.dnp = None
 
     def load_project(self, prj):
         name = _check_str(prj, 1, 'instance project')
@@ -1661,6 +1682,14 @@ class Sheet(object):
             elif i_type == 'uuid':
                 sheet.uuid_ori = _get_uuid(items, c+1, 'sheet')
                 sheet.uuid, _ = UUID_Validator.validate(sheet.uuid_ori)
+            elif i_type == 'exclude_from_sim':
+                sheet.exclude_from_sim = _get_yes_no(i, 1, i_type)
+            elif i_type == 'in_bom':
+                sheet.in_bom = _get_yes_no(i, 1, i_type)
+            elif i_type == 'on_board':
+                sheet.on_board = _get_yes_no(i, 1, i_type)
+            elif i_type == 'dnp':
+                sheet.dnp = _get_yes_no(i, 1, i_type)
             elif i_type == 'property':
                 field = SchematicFieldV6.parse(i, field_id)
                 field_id += 1
@@ -1709,6 +1738,14 @@ class Sheet(object):
     def write(self, exp_hierarchy):
         data = [_symbol('at', [self.pos_x, self.pos_y]),
                 _symbol('size', [self.w, self.h])]
+        if self.exclude_from_sim is not None:
+            data.append(_symbol_yn('exclude_from_sim', self.exclude_from_sim))
+        if self.in_bom is not None:
+            data.append(_symbol_yn('in_bom', self.in_bom))
+        if self.on_board is not None:
+            data.append(_symbol_yn('on_board', self.on_board))
+        if self.dnp is not None:
+            data.append(_symbol_yn('dnp', self.dnp))
         if self.fields_autoplaced:
             data.append(_symbol('fields_autoplaced', []))
         data.extend([Sep(), self.stroke.write(), Sep(),
@@ -2061,6 +2098,9 @@ class SchematicV6(Schematic):
                             s.path = path_join(c.path, c.uuid)
                 if base_sheet == self or not exp_hierarchy:
                     _add_items_list('symbol_instances', instances, sch)
+            # Fonts
+            if self.embedded_fonts is not None:
+                sch.append(_symbol_yn('embedded_fonts', self.embedded_fonts))
             logger.debug('Saving schematic: `{}`'.format(fname))
             # Keep a back-up of existing files
             if os.path.isfile(fname):
@@ -2244,6 +2284,7 @@ class SchematicV6(Schematic):
         self.libs = {}  # Just for compatibility with v5 class
         self.symbol_uuids = {}
         self.generator_version = None
+        self.embedded_fonts = None
         if not os.path.isfile(fname):
             raise SchError('Missing subsheet: '+fname)
         with open(fname, 'rt') as fh:
@@ -2333,6 +2374,8 @@ class SchematicV6(Schematic):
                 self.sheet_instances = SheetInstance.parse(e)
             elif e_type == 'symbol_instances':
                 self.symbol_instances = SymbolInstance.parse(e)
+            elif e_type == 'embedded_fonts':
+                self.embedded_fonts = _get_yes_no(e, 1, e_type)
             else:
                 raise SchError('Unknown kicad_sch attribute `{}`'.format(e))
         if not self.title:

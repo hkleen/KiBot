@@ -109,9 +109,17 @@ def _check_symbol(items, pos, name):
 
 
 def _check_hide(items, pos, name):
-    value = _check_symbol(items, pos, name + ' hide')
+    # hide alone as a symbol or (hide yes/no)
+    value = _check_len(items, pos, name)
+    name += ' hide'
+    if isinstance(value, list):
+        hide = _check_symbol(value, 0, name)
+        if hide != 'hide':
+            raise SchError(f'Found Symbol `{hide}` when `hide` expected')
+        return _get_yes_no(value, 1, name)
+    value = _check_symbol(items, pos, name)
     if value != 'hide':
-        raise SchError('Found Symbol `{}` when `hide` expected'.format(value))
+        raise SchError(f'Found Symbol `{value}` when `hide` expected')
     return True
 
 
