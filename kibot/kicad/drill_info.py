@@ -57,7 +57,7 @@ def get_unique_layer_pairs():
     layer_pairs = [(pcbnew.F_Cu, pcbnew.B_Cu)]
 
     # Add each unique layer pair individually to the list
-    for layer_pair in unique_layer_pairs:
+    for layer_pair in sorted(unique_layer_pairs):
         layer_pairs.append(layer_pair)
 
     return layer_pairs
