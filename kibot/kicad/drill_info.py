@@ -144,7 +144,8 @@ def build_holes_list(layer_pair, merge_PTH_NPTH, generate_NPTH_list=True,
     hole_list_layer_pair = []
     tool_list_layer_pair = []
 
-    assert layer_pair[0] < layer_pair[1], "Invalid layer pair order."
+    # This is no longer valid on KiCad 9 where micro vias can specify their real top layer
+    # assert layer_pair[0] < layer_pair[1], f"Invalid layer pair order {layer_pair[0]} {layer_pair[1]}"
 
     # Add plated vias to hole_list_layer_pair
     if not generate_NPTH_list:
