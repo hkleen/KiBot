@@ -1,0 +1,16 @@
+kibot:
+  version: 1
+
+outputs:
+  - name: render_list
+    comment: "Render drawings"
+    type: render_3d
+    options:
+      ray_tracing: false
+      realistic: true
+      force_stackup_colors: true
+      show_drawings: true
+      show_comments: true
+      show_eco: true
+      show_eco1: true
+      show_eco2: true
