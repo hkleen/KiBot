@@ -12,8 +12,8 @@ ReportOptions parameters
    In CI/CD environments: the `kicad_auto_test` docker image contains it. |br|
    In Debian/Ubuntu environments: install `pandoc`, `texlive`, `texlive-latex-base` and `texlive-latex-recommended`.
 -  **output** :index:`: <pair: output - report - options; output>` [:ref:`string <string>`] (default: ``'%f-%i%I%v.%x'``) Output file name (%i='report', %x='txt'). Affected by global options.
--  **template** :index:`: <pair: output - report - options; template>` [:ref:`string <string>`] (default: ``'full'``) (choices: "full", "full_svg", "simple", "testpoints", "total_components") (also accepts any string) Name for one of the internal templates or a custom
-   template file. |br|
+-  **template** :index:`: <pair: output - report - options; template>` [:ref:`string <string>`] (default: ``'full'``) (choices: "full", "full_svg", "simple", "testpoints", "total_components", "total_components_dnp") (also accepts any string) Name for one of the internal
+   templates or a custom template file. |br|
    Environment variables and ~ are allowed. |br|
    The `total_components` template can be used to include a table containing components count
    in your PCB. Take a look at the `docs/samples/Component_Count_Table/` in the repo. |br|

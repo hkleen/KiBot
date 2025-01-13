@@ -186,8 +186,8 @@ class ReportOptions(VariantOptions):
             self.output = GS.def_global_output
             """ *Output file name (%i='report', %x='txt') """
             self.template = 'full'
-            """ *[full,full_svg,simple,testpoints,total_components,*] Name for one of the internal templates or a custom
-                template file.
+            """ *[full,full_svg,simple,testpoints,total_components,total_components_dnp,*] Name for one of the internal
+                templates or a custom template file.
                 Environment variables and ~ are allowed.
                 The `total_components` template can be used to include a table containing components count
                 in your PCB. Take a look at the `docs/samples/Component_Count_Table/` in the repo.

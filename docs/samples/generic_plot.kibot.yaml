@@ -4055,8 +4055,8 @@ outputs:
       solder_paste_metal_amount: 87.75
       # [number=0.12] Stencil thickness in mm. Used to compute solder paste usage
       stencil_thickness: 0.12
-      # [string='full'] [full,full_svg,simple,testpoints,total_components,*] Name for one of the internal templates or a custom
-      # template file.
+      # [string='full'] [full,full_svg,simple,testpoints,total_components,total_components_dnp,*] Name for one of the internal
+      # templates or a custom template file.
       # Environment variables and ~ are allowed.
       # The `total_components` template can be used to include a table containing components count
       # in your PCB. Take a look at the `docs/samples/Component_Count_Table/` in the repo.
