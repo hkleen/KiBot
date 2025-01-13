@@ -1,0 +1,39 @@
+# Example KiBot config file
+kibot:
+  version: 1
+
+preflight:
+  update_qr: true
+
+outputs:
+  - name: 'print_sch'
+    comment: "Print schematic (PDF)"
+    type: pdf_sch_print
+    options:
+      output: Schematic.pdf
+      monochrome: true
+      frame: false
+
+  - name: 'print_front'
+    comment: "Print F.SilkS and F.Cu"
+    type: pcb_print
+    options:
+      output: PCB.pdf
+      plot_sheet_reference: false
+      format: 'PDF'
+      pages:
+        - monochrome: true
+          layers: F.Cu
+        - monochrome: true
+          layers: F.SilkS
+
+  - name: 'QRCodes'
+    comment: "Example of QR codes"
+    type: qr_lib
+    options:
+      output: 'qr.%x'
+      qrs:
+        size_sch: 1
+        size_pcb: 2
+        size_units: inches
+        layer: copper
