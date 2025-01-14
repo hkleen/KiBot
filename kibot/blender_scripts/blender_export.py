@@ -36,6 +36,26 @@ VALID_FORMATS = {'fbx': 'Filmbox, proprietary format developed by Kaydara (owned
                  'render': 'do render'}
 
 
+def enable_addon():
+    res = addon_utils.enable("pcb2blender_importer")
+    if res is not None:
+        return res
+    # v2.14
+    res = addon_utils.enable("pcb3d_importer")
+    if res is not None:
+        return res
+    # Name on 2025/01/14, v2.16
+    res = addon_utils.enable("bl_ext.blender_org.pcb3d_importer")
+    if res is not None:
+        return res
+    print('Failed to find PCB3D import addon')
+    print('Installed anddons:')
+    for addon in addon_utils.modules():
+        ver = ''.join([str(v) + '.' for v in addon.bl_info['version']]).rstrip('.') if 'version' in addon.bl_info else None
+        print('{name} {ver} {mod}'.format(mod=addon.__name__, name=addon.bl_info['name'], ver=ver))
+    sys.exit(2)
+
+
 def fbx_export(name):
     bpy.ops.export_scene.fbx(filepath=name)
 
@@ -393,7 +413,7 @@ def main():
     # Start with fresh settings
     bpy.ops.wm.read_factory_settings(use_empty=True)
     # Now enable the plug-in
-    addon_utils.enable("pcb2blender_importer")
+    enable_addon()
     # Import the PCB3D file
     ops = {"filepath": PCB3D_file, "pcb_material": args.pcb_material, "import_components": args.no_components,
            "add_solder_joints": args.solder_joints, "center_pcb": args.dont_center,
