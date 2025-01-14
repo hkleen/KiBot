@@ -22,7 +22,7 @@ if not GS.kicad_version_n:
     detect_kicad()
 if GS.ki6:
     # New name, no alias ...
-    from pcbnew import wxPoint, LSET, FP_3DMODEL, ToMM
+    from pcbnew import wxPoint, LSET, LSEQ, FP_3DMODEL, ToMM
 else:
     from pcbnew import wxPoint, LSET, MODULE_3D_SETTINGS, ToMM
     FP_3DMODEL = MODULE_3D_SETTINGS
@@ -472,7 +472,12 @@ class VariantOptions(BaseOptions):
                     for p in m.Pads():
                         pad_layers = p.GetLayerSet()
                         is_front = (fpaste in pad_layers.Seq()) or (fmask in pad_layers.Seq())
-                        old_c_layers.append(pad_layers.FmtHex())
+                        if not GS.ki9:
+                            old_c_layers.append(pad_layers.FmtHex())
+                        else:
+                            # KiCad 9 RC1 lack of FmtHex
+                            # https://gitlab.com/kicad/code/kicad/-/issues/19546
+                            old_c_layers.append(list(pad_layers.Seq()))
                         pad_layers.removeLayerSet(exclude)
                         if len(pad_layers.Seq()) == 0:
                             # No layers at all. Ridiculous, but happens.
@@ -541,7 +546,15 @@ class VariantOptions(BaseOptions):
                     for p in m.Pads():
                         pad_layers = p.GetLayerSet()
                         res = restore.pop(0)
-                        pad_layers.ParseHex(res, len(res))
+                        if not GS.ki9:
+                            pad_layers.ParseHex(res, len(res))
+                        else:
+                            # KiCad 9 RC1 lack of ParseHex
+                            # https://gitlab.com/kicad/code/kicad/-/issues/19546
+                            new_seq = LSEQ()
+                            for la in res:
+                                new_seq.append(la)
+                            pad_layers = LSET(new_seq)
                         p.SetLayerSet(pad_layers)
         if GS.global_remove_adhesive_for_dnp:
             for gi in self._old_fadhes:
