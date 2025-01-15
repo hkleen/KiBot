@@ -723,6 +723,46 @@ class SchematicFieldV6(object):
         return _symbol('property', data)
 
 
+class EmbeddedFile(object):
+    @staticmethod
+    def load(f):
+        if not isinstance(f, list):
+            raise SchError('Embedded file is not a list')
+        if len(f) < 4:  # name, type, data, checksum
+            raise SchError('Truncated embedded file definition (len<4)')
+        file = EmbeddedFile()
+        name = 'embedded file '
+        # Variable list
+        for c, i in enumerate(f[1:]):
+            i_type = _check_is_symbol_list(i)
+            if i_type == 'name':
+                file.name = _check_str(i, 1, name+i_type)
+            elif i_type == 'type':
+                file.type = _check_symbol(i, 1, name+i_type)
+            elif i_type == 'data':
+                values = _check_symbol_value(f, c+1, name+i_type, i_type)
+                file.data = [_check_relaxed(values, i+1, name+i_type) for i, d in enumerate(values[1:])]
+            elif i_type == 'checksum':
+                # MurMur Hash 3 with Seed=0xABBA2345
+                # KiCad devs are really creative! Very hard to verify, useless
+                file.checksum = _check_str(i, 1, name+i_type)
+            else:
+                raise SchError(f'Unknown embedded file attribute `{i}`')
+        return file
+
+    def write(self):
+        d = []
+        # KiCad 9 uses the method used by KiCad 7 images and changed in KiCad 8 ...
+        for v in self.data:
+            d.append(Symbol(v))
+            d.append(Sep())
+        data = [Sep(), _symbol('name', [self.name]),
+                Sep(), _symbol('type', [Symbol(self.type)]),
+                Sep(), _symbol('data', [Sep()] + d),
+                Sep(), _symbol('checksum', [self.checksum]), Sep()]
+        return _symbol('file', data)
+
+
 class LibComponent(object):
     unit_regex = re.compile(r'^(.*)_(\d+)_(\d+)$')
     cross_color = Color()
@@ -1466,6 +1506,7 @@ class TextBox(object):
         text.exclude_from_sim = None
         text.text = _check_str(items, 1, name)
         text.uuid = None
+        text.margins = None
         for c, i in enumerate(items[2:]):
             i_type = _check_is_symbol_list(i)
             if i_type == 'at':
@@ -1483,6 +1524,13 @@ class TextBox(object):
             elif i_type == 'exclude_from_sim':
                 # KiCad 8
                 text.exclude_from_sim = _get_yes_no(i, 1, i_type)
+            elif i_type == 'margins':
+                # KiCad 9
+                m1 = _check_float(i, 1, name+' margin 1')
+                m2 = _check_float(i, 2, name+' margin 2')
+                m3 = _check_float(i, 3, name+' margin 3')
+                m4 = _check_float(i, 4, name+' margin 4')
+                text.margins = [m1, m2, m3, m4]
             else:
                 raise SchError('Unknown symbol attribute `{}`'.format(i))
         return text
@@ -1491,8 +1539,10 @@ class TextBox(object):
         data = [self.text, Sep()]
         if self.exclude_from_sim is not None:
             data.append(_symbol_yn('exclude_from_sim', self.exclude_from_sim))
-        data.extend([_symbol('at', [self.pos_x, self.pos_y, self.ang]), _symbol('size', [self.size.x, self.size.y]), Sep(),
-                     self.stroke.write(), Sep(),
+        data.extend([_symbol('at', [self.pos_x, self.pos_y, self.ang]), _symbol('size', [self.size.x, self.size.y]), Sep()])
+        if self.margins is not None:
+            data.append(_symbol('margins', self.margins))
+        data.extend([self.stroke.write(), Sep(),
                      self.fill.write(), Sep(),
                      self.effects.write(), Sep()])
         if self.uuid:
@@ -1925,6 +1975,14 @@ class SchematicV6(Schematic):
             self.lib_symbols.append(obj)
             self.lib_symbol_names[obj.lib_id] = obj
 
+    def _get_embedded_files(self, files):
+        if not isinstance(files, list):
+            raise SchError('The embedded files is not a list')
+        for f in files[1:]:
+            obj = EmbeddedFile.load(f)
+            self.embedded_files.append(obj)
+            self.embedded_file_names[obj.name] = obj
+
     def path_to_human(self, path):
         """ Converts a UUID path into something we can read """
         if path == '/':
@@ -2101,6 +2159,14 @@ class SchematicV6(Schematic):
             # Fonts
             if self.embedded_fonts is not None:
                 sch.append(_symbol_yn('embedded_fonts', self.embedded_fonts))
+            # - Embedded files (here are the fonts)
+            if self.embedded_files:
+                files = []
+                for f in self.embedded_files:
+                    files.append(Sep())
+                    files.append(f.write())
+                files.append(Sep())
+                sch.extend([Sep(), _symbol('embedded_files', files), Sep()])
             logger.debug('Saving schematic: `{}`'.format(fname))
             # Keep a back-up of existing files
             if os.path.isfile(fname):
@@ -2246,6 +2312,7 @@ class SchematicV6(Schematic):
             self.root_sheet = self
             UUID_Validator.reset()
             self.root_file_path = os.path.dirname(os.path.abspath(fname))
+            self.embedded_file_names = {}
         else:
             self.fields = parent.fields
             self.fields_lc = parent.fields_lc
@@ -2256,6 +2323,7 @@ class SchematicV6(Schematic):
             self.all_sheets = parent.all_sheets
             self.root_sheet = parent.root_sheet
             self.root_file_path = parent.root_file_path
+            self.embedded_file_names = parent.embedded_file_names
         self.symbol_instances = []
         self.parent = parent
         self.fname = fname
@@ -2285,6 +2353,7 @@ class SchematicV6(Schematic):
         self.symbol_uuids = {}
         self.generator_version = None
         self.embedded_fonts = None
+        self.embedded_files = []
         if not os.path.isfile(fname):
             raise SchError('Missing subsheet: '+fname)
         with open(fname, 'rt') as fh:
@@ -2374,8 +2443,10 @@ class SchematicV6(Schematic):
                 self.sheet_instances = SheetInstance.parse(e)
             elif e_type == 'symbol_instances':
                 self.symbol_instances = SymbolInstance.parse(e)
-            elif e_type == 'embedded_fonts':
+            elif e_type == 'embedded_fonts':  # KiCad 9
                 self.embedded_fonts = _get_yes_no(e, 1, e_type)
+            elif e_type == 'embedded_files':  # KiCad 9
+                self._get_embedded_files(e)
             else:
                 raise SchError('Unknown kicad_sch attribute `{}`'.format(e))
         if not self.title:
