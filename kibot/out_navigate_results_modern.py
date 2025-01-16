@@ -26,8 +26,9 @@ import base64
 import os
 import subprocess
 import pprint
+import re
 from shutil import copy2
-from .bom.kibot_logo import KIBOT_LOGO
+from .bom.kibot_logo import KIBOT_LOGO, KIBOT_LOGO_W, KIBOT_LOGO_H
 from .error import KiPlotConfigurationError
 from .gs import GS
 from .optionable import Optionable, BaseOptions
@@ -36,9 +37,22 @@ from .misc import W_NOTYET, W_MISSTOOL, W_NOOUTPUTS, read_png, force_list
 from .pre_base import BasePreFlight
 from .registrable import RegOutput
 from .macros import macros, document, output_class  # noqa: F401
-from . import log
+from . import log, __version__
 
 logger = log.get_logger()
+CAT_IMAGE = {'PCB': 'pcbnew',
+             'Schematic': 'eeschema',
+             'Compress': 'zip',
+             'fabrication': 'fabrication',
+             'export': 'export',
+             'assembly': 'assembly_simple',
+             'repair': 'repair',
+             'docs': 'project',
+             'BoM': 'bom',
+             '3D': '3d',
+             'gerber': 'gerber',
+             'drill': 'load_drill',
+             'Auxiliar': 'repair'}
 EXT_IMAGE = {'gbr': 'file_gbr',
              'gtl': 'file_gbr',
              'gtp': 'file_gbr',
@@ -92,7 +106,8 @@ for i in range(31):
     EXT_IMAGE['gl'+n] = 'file_gbr'
     EXT_IMAGE['g'+n] = 'file_gbr'
     EXT_IMAGE['gp'+n] = 'file_gbr'
-
+CAT_REP = {'PCB': ['pdf_pcb_print', 'svg_pcb_print', 'pcb_print'],
+           'Schematic': ['pdf_sch_print', 'svg_sch_print']}
 BIG_ICON = 512
 MID_ICON = 64
 
@@ -185,6 +200,7 @@ button, #open-sidenav, #close-sidenav {
     color: var(--dark-text-color);
     cursor: pointer;
     transition: color 0.3s ease;
+    user-select: none;
 }
 
 body.light-mode #topmenu button,
@@ -210,8 +226,7 @@ button {
     line-height: 36px;
     text-align: center;
     font-size: 28px;
-    margin-left: 10px;
-    user-select: none; /* Prevent text selection */
+    margin-left: 15px;
 }
 
 /* Hover effects */
@@ -269,6 +284,7 @@ body.light-mode #topmenu #close-sidenav:active {
         background-color 0.2s ease-in-out;
     box-sizing: border-box;
     padding-top: 0;
+    padding-bottom: 40px;
 }
 
 
@@ -486,6 +502,38 @@ body.dark-mode .output-comment {
     color: var(--dark-text-color);
 }
 
+/* Kibot version ------------------------------------------------------------ */
+
+.generator {
+    text-align: right; 
+    font-size: 0.6em; 
+    text-decoration: none;
+}
+
+.generator a {
+    text-decoration: none; /* Removes the underline */
+}
+
+/* Dark Mode: Regular Text */
+body.dark-mode .generator {
+    color: var(--dark-text-color-accent);
+}
+
+/* Dark Mode: Hyperlinks */
+body.dark-mode .generator a {
+    color: var(--dark-hover-color); /* Hyperlink */
+}
+
+/* Light Mode: Regular Text */
+body.light-mode .generator {
+    color: var(--light-text-color-accent);
+}
+
+/* Light Mode: Hyperlinks */
+body.light-mode .generator a {
+    color: var(--light-hover-color); /* Hyperlink */
+}
+
 /* Category boxes (folder) -------------------------------------------------- */
 
 .category-box {
@@ -693,7 +741,6 @@ body.dark-mode .output-box .filename {
     left: 0;
     right: 0;
     bottom: 0;
-    transform: translateY(-30%); /* Center vertically */
     transition: 0.4s;
 }
 
@@ -780,10 +827,9 @@ body::-webkit-scrollbar-corner, .sidenav::-webkit-scrollbar-corner {
 .markdown-content {
     font-family: Roboto, sans-serif;
     line-height: 1.6;
-    margin-left: 150px;
-    margin-right: 150px;
     padding: 15px;
     border-radius: 5px;
+    max-width: calc(100% - 180px);
     white-space: pre-wrap; /* Handle preformatted text */
     transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
 }
@@ -899,6 +945,31 @@ body.dark-mode .markdown-content a {
     transition: opacity 0.4s ease;
 }
 
+.markdown-content pre::-webkit-scrollbar {
+    height: 12px; /* Horizontal scrollbar height */
+}
+
+.markdown-content pre::-webkit-scrollbar-thumb {
+    background: var(--dark-banner-hover); /* Match other scrollbar thumb color */
+    border-radius: 6px; /* Round edges */
+    border: 2px solid var(--dark-bg-color); /* Outer border matches background */
+}
+
+.markdown-content pre::-webkit-scrollbar-track {
+    background: var(--dark-bg-color); /* Match the background color */
+    border-radius: 6px;
+}
+
+body.light-mode .markdown-content pre::-webkit-scrollbar-thumb {
+    background: var(--light-banner-hover); /* Light mode thumb color */
+    border: 2px solid var(--light-bg-color); /* Light mode border */
+}
+
+body.light-mode .markdown-content pre::-webkit-scrollbar-track {
+    background: var(--light-bg-color); /* Light mode track background */
+}
+
+
 /* Search bar =============================================================== */
 
 #search-container,
@@ -1006,6 +1077,7 @@ body.no-transition #back-button,
 body.no-transition #forward-button,
 body.no-transition #topmenu,
 body.no-transition .sidenav-category .folder > span,
+body.no-transition .sidenav-output,
 body.no-transition .category-box,
 #search-bar {
     transition: none !important; /* Disable transition during page load */
@@ -1324,6 +1396,24 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 50); // Allow rendering to complete before enabling transitions
 });
 
+function adjustMainBodyOffset() {
+    const topMenu = document.getElementById("topmenu");
+    const mainBody = document.getElementById("main");
+
+    if (topMenu && mainBody) {
+        const topMenuHeight = topMenu.offsetHeight;
+        mainBody.style.marginTop = `${topMenuHeight}px`;
+    }
+}
+
+// Apply the adjustment on page load and window resize
+window.addEventListener("DOMContentLoaded", adjustMainBodyOffset);
+window.addEventListener("resize", adjustMainBodyOffset);
+</script>
+"""
+
+SCRIPT_MARKDOWN = """
+<script>
 document.addEventListener('DOMContentLoaded', function () {
     const md = window.markdownit({
         html: true,
@@ -1338,20 +1428,6 @@ document.addEventListener('DOMContentLoaded', function () {
         container.innerHTML = md.render(rawMarkdown);
     });
 });
-
-function adjustMainBodyOffset() {
-    const topMenu = document.getElementById("topmenu");
-    const mainBody = document.getElementById("main");
-
-    if (topMenu && mainBody) {
-        const topMenuHeight = topMenu.offsetHeight;
-        mainBody.style.marginTop = `${topMenuHeight}px`;
-    }
-}
-
-// Apply the adjustment on page load and window resize
-window.addEventListener("DOMContentLoaded", adjustMainBodyOffset);
-window.addEventListener("resize", adjustMainBodyOffset);
 </script>
 """
 
@@ -1384,6 +1460,8 @@ class Navigate_Results_ModernOptions(BaseOptions):
                 The KiBot logo is used by default """
             self.logo_url = 'https://github.com/INTI-CMNB/KiBot/'
             """ Target link when clicking the logo """
+            self.logo_force_height = -1
+            """ Force logo height in px. Useful to get consistent heights across different logos. """
             self.title = ''
             """ Title for the page, when empty KiBot will try using the schematic or PCB title.
                 If they are empty the name of the project, schematic or PCB file is used.
@@ -1395,6 +1473,8 @@ class Navigate_Results_ModernOptions(BaseOptions):
             """ Add a side navigation bar to quickly access to the outputs """
             self.render_markdown = True
             """ If True, markdown files are rendered; otherwise, they are treated like other files """
+            self.display_kibot_version = True
+            """ If True, display the KiBot version at the bottom of each page """
         super().__init__()
         self._expand_id = 'navigate'
         self._expand_ext = 'html'
@@ -1410,21 +1490,26 @@ class Navigate_Results_ModernOptions(BaseOptions):
             if not os.path.isfile(self.logo):
                 raise KiPlotConfigurationError('Missing logo file `{}`'.format(self.logo))
             try:
-                self._logo_data, _, _, _ = read_png(self.logo, logger)
+                self._logo_data, self._logo_w, self._logo_h, _ = read_png(self.logo, logger)
             except TypeError as e:
                 raise KiPlotConfigurationError(f'Only PNG images are supported for the logo ({e})')
         if self.logo == '':
             # Internal logo
+            self._logo_w = int(KIBOT_LOGO_W/4)
+            self._logo_h = int(KIBOT_LOGO_H/4)
             self._logo_data = base64.b64decode(KIBOT_LOGO)
         elif self.logo is None:
+            self._logo_w = self._logo_h = 0
             self._logo_data = ''
+        if self.logo_force_height > 0:
+            self._logo_w = self.logo_force_height/self._logo_h*self._logo_w
+            self._logo_h = self.logo_force_height
         # Title URL
         if isinstance(self.title_url, bool):
             self.title_url = '' if self.title_url else None
 
     def add_to_tree(self, cat, out, o_tree):
-        # Add `out` to `o_tree` in the `cat` category
-        if cat == '.':
+        if cat == '.' or cat == './':
             # Place output directly at the root level
             o_tree[out.name] = out
         else:
@@ -1471,6 +1556,46 @@ class Navigate_Results_ModernOptions(BaseOptions):
             logger.warning(W_MISSTOOL+"Missing ImageMagick converter")
             return False
         return ext in IMAGEABLES_SVG or ext in IMAGEABLES_GS or ext in IMAGEABLES_SIMPLE
+
+    def get_image_for_cat(self, cat):
+        img = None
+        if cat in CAT_REP and self.convert_command is not None:
+            outs_rep = CAT_REP[cat]
+            rep_file = None
+            # Look in all outputs
+            for o in RegOutput.get_outputs():
+                if o.type in outs_rep:
+                    out_dir = get_output_dir(o.dir, o, dry=True)
+                    targets = o.get_targets(out_dir)
+                    for tg in targets:
+                        ext = os.path.splitext(tg)[1][1:].lower()
+                        if os.path.isfile(tg) and self.can_be_converted(ext):
+                            rep_file = tg
+                            break
+                    if rep_file:
+                        break
+            if rep_file:
+                cat_img, _ = self.get_image_for_file(rep_file, cat, no_icon=True)
+                cat_img = (f'''
+                    <div class="category-title">
+                        <img src="{cat_img}" alt="{cat}" width="{int(BIG_ICON*0.6)}" height="{int(BIG_ICON*0.6)}">
+                        <br><span class="category-title">{cat}</span>
+                    </div>
+                ''')
+                return cat_img
+
+        if cat in CAT_IMAGE:
+            img = self.copy(CAT_IMAGE[cat], BIG_ICON)
+            # Include the category name with the category-title class
+            cat_img = (
+                f'<div class="category-title">'
+                f'  <img src="{img}" alt="{cat}" width="{int(BIG_ICON*0.6)}" height="{int(BIG_ICON*0.6)}">'
+                f'  <br><span class="category-title">{cat}</span>'
+                f'</div>'
+            )
+            return cat_img
+                    
+        return f'<div class="category-title">{cat}</div>'  # Fallback if no image
 
     def compose_image(self, file, ext, img, out_name, no_icon=False):
         if not os.path.isfile(file):
@@ -1544,9 +1669,10 @@ class Navigate_Results_ModernOptions(BaseOptions):
                 format(ext_img, 'td-normal' if no_icon else 'td-small', out_name if no_icon else file))
         return file, wide
 
-    def add_nav_bar(self, f, prev):
-        if self.nav_bar:
-            f.write(SCRIPT_NAV_BAR)
+    def write_kibot_version(self, f):
+        if self.display_kibot_version:
+            f.write('<p class="generator">Generated by <a href="https://github.com/INTI-CMNB/KiBot/">KiBot</a> v{}</p>\n'.
+                    format(__version__))
 
     def write_head(self, f, title):
         f.write('<!DOCTYPE html>\n')
@@ -1557,7 +1683,8 @@ class Navigate_Results_ModernOptions(BaseOptions):
         f.write(' <link rel="stylesheet" href="styles.css">\n')
         f.write(' <link rel="icon" href="favicon.ico">\n')
         # Include Markdown-it
-        f.write(' <script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>\n')
+        if self.render_markdown:
+            f.write(' <script src="markdown-it.min.js"></script>\n')
         f.write('</head>\n')
         f.write('<body>\n')
         f.write(self.sidenav)
@@ -1570,8 +1697,7 @@ class Navigate_Results_ModernOptions(BaseOptions):
             self.write_head(f, category)
             name, ext = os.path.splitext(name)
 
-            # Start a vertically aligned container for categories
-            f.write('<div class="categories-container">\n')
+            f.write('<div>\n')
 
             for cat, content in node.items():
                 if not isinstance(content, dict):
@@ -1587,28 +1713,19 @@ class Navigate_Results_ModernOptions(BaseOptions):
                 </a>
                 ''')
 
-            # Close the container
             f.write('</div>\n')
 
             # Generate outputs below the categories
             self.generate_outputs(f, node)
-            self.add_nav_bar(f, prev)
+            if self.nav_bar:
+                f.write(SCRIPT_NAV_BAR)
+            if self.render_markdown:
+                f.write(SCRIPT_MARKDOWN)
             f.write(SCRIPT)
+            self.write_kibot_version(f)
             f.write('</body>\n</html>\n')
 
     def adjust_image_paths(self, md_content, current_dir, html_output_dir):
-        """
-        Adjusts image paths in markdown content to be relative to the HTML output directory.
-
-        Args:
-            md_content (str): Raw markdown content.
-            current_dir (str): Directory of the markdown file.
-            html_output_dir (str): Absolute directory where the HTML file is generated.
-
-        Returns:
-            str: Updated markdown content with adjusted image paths.
-        """
-        import re
 
         image_pattern = r'!\[.*?\]\((.*?)\)'  # Markdown image paths: ![Alt text](path/to/image.png)
         html_img_pattern = r'<img\s+[^>]*src="([^"]+)"'  # HTML img src="path/to/image.png"
@@ -1693,8 +1810,12 @@ class Navigate_Results_ModernOptions(BaseOptions):
             self.write_head(f, category)
             name, ext = os.path.splitext(name)
             self.generate_outputs(f, node)
-            self.add_nav_bar(f, prev)
+            if self.nav_bar:
+                f.write(SCRIPT_NAV_BAR)
+            if self.render_markdown:
+                f.write(SCRIPT_MARKDOWN)
             f.write(SCRIPT)
+            self.write_kibot_version(f)
             f.write('</body>\n</html>\n')
 
     def generate_page_for(self, node, name, prev=None, category=''):
@@ -1732,6 +1853,15 @@ class Navigate_Results_ModernOptions(BaseOptions):
             self.get_html_names_cat(name, node, prev, category, files)
         else:
             files.append(os.path.join(self.out_dir, name))
+
+    def get_html_names_for_path(self, category_path, name, ext):
+        files = []
+        node = self.create_tree()
+        self.get_html_names_cat(name, node, None, category_path, files)
+        for file_path in files:
+            if category_path.replace('/', '_') in file_path:
+                return os.path.basename(file_path) + ext
+        return None
 
     def create_tree(self):
         o_tree = {}
@@ -1790,110 +1920,114 @@ class Navigate_Results_ModernOptions(BaseOptions):
 
     def generate_top_menu(self, category=''):
         """
-        Generates the top menu with Back, Forward, Home, sidenav buttons, and a logo.
-        Displays the current folder name dynamically next to the forward arrow with wrapping for '/'.
-        Adds revision, variant, and company information.
+        Generates the top menu with clickable category paths and an up arrow button
+        that navigates to the root page if the current path is the category name.
         """
         fsize = f'{TITLE_HEIGHT}px'
-        logo_height = f'{TITLE_HEIGHT}px'
-        small_font_size = f'{int(TITLE_HEIGHT) - 8}px'  # Smaller font for revision/variant and company
+        fsize_up = f'{TITLE_HEIGHT+12}px'
+        small_font_size = f'{int(TITLE_HEIGHT) - 12}px'
         smallest_font_size = f'{int(TITLE_HEIGHT) - 16}px'
-        code = '<div id="topmenu" class="topmenu">\n'
-        code += '  <table style="width:100%; table-layout: fixed; height:100%;">\n'
-        code += '    <tr style="vertical-align: middle;">\n'
-
-        # Left-aligned section (sidenav button, Back/Forward buttons, and category path)
-        code += '      <td style="width: 33%;" align="left">\n'
+        
+        code = '''
+        <div id="topmenu" class="topmenu">
+        '''
+        
+        # Left Section (Buttons + Path)
+        code += '<div style="display: flex; align-items: center; flex: 1; min-width: 0; gap: 10px;">\n'
         if self.nav_bar:
-            code += (f'        <span id="open-sidenav" style="font-size:{fsize};cursor:pointer" '
-                     f'onclick="openNav()">&#9776;</span>\n')
-            code += (f'        <span id="close-sidenav" style="font-size:{fsize};cursor:pointer;display:none;" '
-                     f'onclick="closeNav()">⨉</span>\n')
-        code += f'        <button id="back-button" onclick="history.back()" style="font-size:{fsize};">↩</button>\n'
-        code += f'        <button id="forward-button" onclick="history.forward()" style="font-size:{fsize};">↪</button>\n'
+            code += (f'<span id="open-sidenav" style="font-size:{fsize};cursor:pointer;" '
+                    f'onclick="openNav()">&#9776;</span>\n')
+            code += (f'<span id="close-sidenav" style="font-size:{fsize};cursor:pointer;display:none;" '
+                    f'onclick="closeNav()">⨉</span>\n')
+        code += f'<button id="back-button" onclick="history.back()" style="font-size:{fsize};">↩</button>\n'
+        code += f'<button id="forward-button" onclick="history.forward()" style="font-size:{fsize};">↪</button>\n'
+        
+        # Up and Home Buttons
+        parent_path = '/'.join(category.strip('/').split('/')[:-1]) if category else None
+        if parent_path is not None:
+            target_file = self.get_html_names_for_path(parent_path, *os.path.splitext(self.home)) if parent_path else self.home
+            code += (f'<button id="up-button" onclick="location.href=\'{target_file}\'" '
+                    f'style="font-size:{fsize_up}; position: relative; top: -3px;">⌅</button>\n')
+        else:
+            code += (f'<button id="up-button" disabled style="font-size:{fsize_up}; color: gray; cursor: not-allowed; position: relative; top: -3px;">⌅</button>\n')
+        
+        code += f'<button id="home-button" onclick="location.href=\'{self.home}\'" style="font-size:{TITLE_HEIGHT-5}px; position: relative; top: -2px;">🏠︎</button>\n'
 
-        # Display the current folder name (category path)
-        if category:  # Display the current folder name
+        # Category Path
+        if category:
+            path_parts = category.lstrip('/').split('/')
+            path_links = []
+            current_path = ''
+            name, ext = os.path.splitext(self.home)
+            for part in path_parts:
+                current_path += f'{part}/'
+                html_file_name = self.get_html_names_for_path(current_path.rstrip('/'), name, ext)
+                path_links.append(f'<a href="{html_file_name}" style="text-decoration:none;color:inherit;">{part}</a>')
+            clickable_path = '/<wbr>'.join(path_links)
             code += f'''
             <span style="
                 font-size:{small_font_size};
-                margin-left: 10px;
-                color: var(--text-color-accent); /* Use dynamic variable */
-                position: relative;
-                top: -5px; /* Add -5px vertical offset */
-                white-space: normal; /* Allow wrapping */
-                word-break: keep-all; /* Prevent breaking at arbitrary places */
-                overflow-wrap: normal; /* Allow wrapping only where explicitly defined */
+                color: var(--text-color-accent);
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                flex: 1;
             ">
-                {category.lstrip('/').replace('/', '/<wbr>')}
-            </span>
-            '''
-        code += '      </td>\n'
+                {clickable_path}
+            </span>\n'''
 
-        # Centered title with company below
-        code += '      <td style="width: 33%;" align="center">\n'
+        code += '</div>\n'
+
+        # Center Section (Title + Company Name)
+        code += '<div style="text-align: center; flex: 1; min-width: 200px;">\n'
         if self._solved_title:
             if self.title_url:
-                code += f'        <a href="{self.title_url}" style="text-decoration: none; color: inherit;">\n'
-            code += f'        <span style="font-size:{fsize};">{self._solved_title}</span>\n'
+                code += f'<a href="{self.title_url}" style="text-decoration: none; color: inherit;">\n'
+            code += f'<span style="font-size:{fsize};">{self._solved_title}</span>\n'
             if self.title_url:
-                code += '        </a>\n'
-        # Add company information
+                code += '</a>\n'
         code += f'''
             <div style="
                 font-size:{smallest_font_size};
                 color: var(--text-color-accent);
-                text-align: center;
                 margin-top: 5px;">
                 {self._solved_company}
             </div>
         '''
-        code += '      </td>\n'
+        code += '</div>\n'
 
-        # Right-aligned section (Logo, Revision/Variant, Toggle, and Home button)
-        code += '      <td style="width: 33%;" align="right">\n'
-
-        # Revision and Variant
+        # Right Section (Logo, Revision/Variant, Theme Toggle)
+        code += '<div style="display: flex; align-items: center; flex: 1; justify-content: flex-end; min-width: 0; gap: 10px; padding-right: 10px;">\n'
         code += f'''
             <div style="
-                display: inline-block;
                 text-align: left;
-                position: relative;
-                top: 5px; /* Add 5px vertical offset */
                 font-size:{smallest_font_size};
-                color: var(--text-color-accent);
-                margin-right: 20px; /* Space to the left of the logo */
-            ">
+                margin-right: 10px;
+                color: var(--text-color-accent);">
                 <div style="margin-bottom: 5px;">Rev. {self._solved_revision}</div>
-                Variant: {self._variant_name}
-            </div>
-        '''
-
-        # Add the logo
+                <div>Variant: {self._variant_name}</div>
+            </div>\n'''
         if self.logo is not None:
             img_name = os.path.join('images', 'logo.png')
             if self.logo_url:
-                code += f'        <a href="{self.logo_url}" style="margin-right: 10px;">\n'
-            code += (f'        <img src="{img_name}" alt="Logo" '
-                     f'style="max-height: {logo_height}; vertical-align: middle; display: inline-block; '
-                     f'position: relative; top: -5px;">\n')
-
+                code += f'<a href="{self.logo_url}" style="margin-right: 10px;">\n'
+            code += (f'<img src="{img_name}" alt="Logo" '
+                    f'style="max-height: {str(self._logo_h)}px; max-width: {str(self._logo_w)}px;">\n')
             if self.logo_url:
-                code += '        </a>\n'
+                code += '</a>\n'
 
-        # Add the toggle
+        # Move the Theme Toggle Left
         code += '''
-            <label class="theme-switch">
+            <label class="theme-switch" style="
+                position: relative;
+                margin-right: 10px; /* Move toggle slightly left */
+                max-width: 100%; /* Prevent overflow */
+            ">
                 <input type="checkbox" id="themeToggle" onchange="toggleTheme()">
                 <span></span>
             </label>
         '''
-        code += (f'        <button id="home-button" onclick="location.href=\'{self.home}\'" '
-                 f'style="font-size:{fsize};">🏠︎</button>\n')
-        code += '      </td>\n'
-
-        code += '    </tr>\n'
-        code += '  </table>\n'
+        code += '</div>\n'
         code += '</div>\n'
         return code
 
@@ -1953,6 +2087,7 @@ class Navigate_Results_ModernOptions(BaseOptions):
     def run(self, name):
         self.out_dir = os.path.dirname(name)
         self.img_src_dir = GS.get_resource_path('images')
+        self.js_src_dir = GS.get_resource_path('navigate_results')
         self.img_dst_dir = os.path.join(self.out_dir, 'images')
         os.makedirs(self.img_dst_dir, exist_ok=True)
         self.copied_images = {}
@@ -1971,9 +2106,9 @@ class Navigate_Results_ModernOptions(BaseOptions):
         self.ps2img_avail = self.check_tool('Ghostscript')
         # Create the pages
         self.home = name
-        self.back_img = self.copy('back', MID_ICON)
-        self.home_img = self.copy('home', MID_ICON)
         copy2(os.path.join(self.img_src_dir, 'favicon.ico'), os.path.join(self.out_dir, 'favicon.ico'))
+        if self.render_markdown:
+            copy2(os.path.join(self.js_src_dir, 'markdown-it.min.js'), os.path.join(self.out_dir, 'markdown-it.min.js'))
         # Copy the logo image
         if self.logo is not None:
             with open(os.path.join(self.out_dir, 'images', 'logo.png'), 'wb') as f:
