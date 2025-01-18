@@ -538,18 +538,19 @@ body.light-mode .generator a {
 
 .category-box {
     z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     background-color: var(--dark-bg-color-banner);
     border: 1px solid var(--dark-bg-color-banner);
     border-radius: 8px;
-    padding: 10px 20px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 400px;
+    height: 140;
     text-decoration: none;
-    color: var(--light-text-color);
-    max-width: 400px;
     transition: background-color 0.3s ease, transform 0.2s ease;
-    margin: 10px auto;
+    margin-bottom: 0px;
 }
 
 body.light-mode .category-box {
@@ -565,6 +566,14 @@ body.dark-mode .category-box {
     border: var(--dark-bg-color-banner);
 }
 
+.category-box img {
+    margin-top: 10px;
+    max-width: 100%;
+    max-height: 100%;
+    height: auto;
+    margin-bottom: 10px;
+}
+
 .category-title {
     font-size: 1.4em;
     font-weight: 500;
@@ -572,6 +581,8 @@ body.dark-mode .category-box {
     color: #e5e5e5;
     text-decoration: none;
     display: inline-block;
+    margin-top: 0px;
+    margin-bottom: 0px;
 }
 
 body.light-mode .category-title {
@@ -636,10 +647,11 @@ body.dark-mode .category-box:hover {
 }
 
 .output-box img {
+    margin-top: 10px;
     max-width: 100%;
     max-height: 100%;
     height: auto;
-    margin-bottom: 10px;
+    margin-bottom: 0px;
 }
 
 /* The output boxes are centered and wrap around */
@@ -685,7 +697,7 @@ body.dark-mode .output-box:hover {
 .output-box .output-name {
     color: #8997c6;
     font-size: 14px;
-    margin-top: 8px;
+    margin-top: 0px;
     text-align: center;
 }
 
@@ -704,6 +716,7 @@ body.dark-mode .output-box .output-name {
     color: var(--dark-text-color);
     text-align: center;
     font-size: 14px;
+    margin-bottom: 7px;
 }
 
 body.light-mode .output-box .filename {
@@ -1475,6 +1488,8 @@ class Navigate_Results_ModernOptions(BaseOptions):
             """ If True, markdown files are rendered; otherwise, they are treated like other files """
             self.display_kibot_version = True
             """ If True, display the KiBot version at the bottom of each page """
+            self.display_category_images = True
+            """ If True, we try to display images for categories according to the category type"""
         super().__init__()
         self._expand_id = 'navigate'
         self._expand_ext = 'html'
@@ -1557,45 +1572,44 @@ class Navigate_Results_ModernOptions(BaseOptions):
             return False
         return ext in IMAGEABLES_SVG or ext in IMAGEABLES_GS or ext in IMAGEABLES_SIMPLE
 
-    def get_image_for_cat(self, cat):
-        img = None
-        if cat in CAT_REP and self.convert_command is not None:
-            outs_rep = CAT_REP[cat]
-            rep_file = None
-            # Look in all outputs
-            for o in RegOutput.get_outputs():
-                if o.type in outs_rep:
-                    out_dir = get_output_dir(o.dir, o, dry=True)
-                    targets = o.get_targets(out_dir)
-                    for tg in targets:
-                        ext = os.path.splitext(tg)[1][1:].lower()
-                        if os.path.isfile(tg) and self.can_be_converted(ext):
-                            rep_file = tg
+    def get_image_for_cat(self, cat, pname):
+        if self.display_category_images:
+            img = None
+            if cat in CAT_REP and self.convert_command is not None:
+                outs_rep = CAT_REP[cat]
+                rep_file = None
+                # Look in all outputs
+                for o in RegOutput.get_outputs():
+                    if o.type in outs_rep:
+                        out_dir = get_output_dir(o.dir, o, dry=True)
+                        targets = o.get_targets(out_dir)
+                        for tg in targets:
+                            ext = os.path.splitext(tg)[1][1:].lower()
+                            if os.path.isfile(tg) and self.can_be_converted(ext):
+                                rep_file = tg
+                                break
+                        if rep_file:
                             break
-                    if rep_file:
-                        break
-            if rep_file:
-                cat_img, _ = self.get_image_for_file(rep_file, cat, no_icon=True)
-                cat_img = (f'''
-                    <div class="category-title">
-                        <img src="{cat_img}" alt="{cat}" width="{int(BIG_ICON*0.6)}" height="{int(BIG_ICON*0.6)}">
-                        <br><span class="category-title">{cat}</span>
-                    </div>
-                ''')
-                return cat_img
+                if rep_file:
+                    cat_img, _ = self.get_image_for_file(rep_file, cat, no_icon=True, is_category=True, category_path=pname)
+                    return cat_img
 
-        if cat in CAT_IMAGE:
-            img = self.copy(CAT_IMAGE[cat], BIG_ICON)
-            # Include the category name with the category-title class
-            cat_img = (
-                f'<div class="category-title">'
-                f'  <img src="{img}" alt="{cat}" width="{int(BIG_ICON*0.6)}" height="{int(BIG_ICON*0.6)}">'
-                f'  <br><span class="category-title">{cat}</span>'
-                f'</div>'
-            )
-            return cat_img
+            if cat in CAT_IMAGE:
+                img = self.copy(CAT_IMAGE[cat], BIG_ICON)
+                # Include the category name with the category-title class
+                cat_img = (
+                    f'''<div class="category-box" onclick="location.href='{pname}'">'''
+                    f'  <img src="{img}" alt="{cat}" width="{BIG_ICON}" height="{BIG_ICON}">'
+                    f'  <p class="category-title">{cat}</p>'
+                    f'</div>'
+                )
+                return cat_img
                     
-        return f'<div class="category-title">{cat}</div>'  # Fallback if no image
+        return (f'''
+        <div class="category-box" onclick="location.href='{pname}'">
+            <p class="category-title">{cat}</p>
+        </div>
+        ''')  # Fallback if no image
 
     def compose_image(self, file, ext, img, out_name, no_icon=False):
         if not os.path.isfile(file):
@@ -1637,7 +1651,8 @@ class Navigate_Results_ModernOptions(BaseOptions):
             os.remove(tmp_name)
         return res, fname, os.path.relpath(fname, start=self.out_dir)
 
-    def get_image_for_file(self, file, out_name, no_icon=False, image=None):
+    def get_image_for_file(self, file, out_name, no_icon=False, is_category=False, category_path='', image=None):
+        tg_rel = os.path.relpath(os.path.abspath(file), start=self.out_dir)
         ext = os.path.splitext(file)[1][1:].lower()
         wide = False
         # Copy the icon for this file extension
@@ -1665,8 +1680,29 @@ class Navigate_Results_ModernOptions(BaseOptions):
                 wide = True
         # Now add the image with its file name as caption
         ext_img = '<img src="{}" alt="{}" width="{}" height="{}">'.format(img, file, width, height)
-        file = ('<table class="out-img"><tr><td>{}</td></tr><tr><td class="{}">{}</td></tr></table>'.
-                format(ext_img, 'td-normal' if no_icon else 'td-small', out_name if no_icon else file))
+        # file = ('<table class="out-img"><tr><td>{}</td></tr><tr><td class="{}">{}</td></tr></table>'.
+        #         format(ext_img, 'td-normal' if no_icon else 'td-small', out_name if no_icon else file))
+
+        cell_class = "wide" if wide else ""
+
+        # Make the entire output-box clickable
+        file_name = file
+        if is_category:
+            file = f'''\n        <div class="category-box" onclick="location.href='{category_path}'">\n'''
+        else:
+            file = f'''\n        <div class="output-box {cell_class}" onclick="location.href='{tg_rel}'">\n'''
+
+        file += (f'''            {ext_img}\n''')
+
+        if is_category:
+            file += (f'''            <p class="category-title">{out_name}</p>\n''')
+        else:
+            file += (f'''            <p class="filename">{file_name}</p>\n''')
+            file += (f'''            <p class="output-name">{out_name}</p>\n''')
+
+        file += '''        </div>\n'''
+
+
         return file, wide
 
     def write_kibot_version(self, f):
@@ -1697,7 +1733,8 @@ class Navigate_Results_ModernOptions(BaseOptions):
             self.write_head(f, category)
             name, ext = os.path.splitext(name)
 
-            f.write('<div>\n')
+            f.write('<div class="items-container">\n')
+            # f.write('<div>\n')
 
             for cat, content in node.items():
                 if not isinstance(content, dict):
@@ -1706,13 +1743,10 @@ class Navigate_Results_ModernOptions(BaseOptions):
                 pname = name + '_' + cat + ext
                 self.generate_page_for(content, pname, name, category + '/' + cat)
 
-                # Wrap the entire box in the <a> tag to make it clickable
-                f.write(f'''
-                <a href="{pname}" class="category-box">
-                    <span class="category-title">{cat}</span>
-                </a>
-                ''')
+                # f.write('''<div onclick="location.href='{}'">{}</div>'''.format(pname, self.get_image_for_cat(cat)))
+                f.write('''<div>{}</div>'''.format(self.get_image_for_cat(cat, pname)))
 
+            # f.write('</div>\n')
             f.write('</div>\n')
 
             # Generate outputs below the categories
@@ -1772,7 +1806,6 @@ class Navigate_Results_ModernOptions(BaseOptions):
             f.write('<div class="items-container">\n')
 
             for tg, icon in zip(targets, icons if icons else [None] * len(targets)):
-                tg_rel = os.path.relpath(os.path.abspath(tg), start=self.out_dir)
                 ext = os.path.splitext(tg)[1].lower()
 
                 if ext == '.md' and self.render_markdown:  # Render markdown only if enabled
@@ -1789,17 +1822,9 @@ class Navigate_Results_ModernOptions(BaseOptions):
                     ''')
                 else:
                     # Handle other files (icons, images, etc.)
-                    img, wide = self.get_image_for_file(tg, oname, image=icon)
+                    output_cell, wide = self.get_image_for_file(tg, oname, image=icon)
 
-                    cell_class = "wide" if wide else ""
-
-                    # Make the entire output-box clickable
-                    f.write(f'''
-                        <div class="output-box {cell_class}" onclick="location.href='{tg_rel}'">
-                            <a href="{tg_rel}" class="filename">{img}</a>
-                            <p class="output-name">{oname}</p>
-                        </div>
-                    ''')
+                    f.write(output_cell)
 
             # Close the items container and category box
             f.write('</div>\n</div>\n')
