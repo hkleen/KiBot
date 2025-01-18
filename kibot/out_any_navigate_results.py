@@ -11,13 +11,12 @@ import subprocess
 import pprint
 import re
 from shutil import copy2
-from math import ceil
 from .bom.kibot_logo import KIBOT_LOGO, KIBOT_LOGO_W, KIBOT_LOGO_H
 from .error import KiPlotConfigurationError
 from .gs import GS
 from .optionable import Optionable
 from .out_base import VariantOptions
-from .kiplot import config_output, get_output_dir, run_command
+from .kiplot import config_output, run_command
 from .misc import W_NOTYET, W_MISSTOOL, W_NOOUTPUTS, read_png, force_list
 from .pre_base import BasePreFlight
 from .registrable import RegOutput
