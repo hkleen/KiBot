@@ -344,7 +344,8 @@ class Globals(FiltersOptions):
                 They must be stored in sub-dirs. I.e. kibot_resources/fonts/MyFont.ttf
                 Note this is mainly useful for CI/CD, so you can store fonts and colors in your repo.
                 Also note that the fonts are installed using a mechanism known to work on Debian,
-                which is used by the KiBot docker images, on other OSs *your mileage may vary* """
+                which is used by the KiBot docker images, on other OSs *your mileage may vary*.
+                When using KiCad 9 you can just embed the fonts in the schematic/PCB """
             self.use_os_env_for_expand = True
             """ In addition to KiCad text variables also use the OS environment variables when expanding `${VARIABLE}` """
             self.field_tolerance = FieldTolerance

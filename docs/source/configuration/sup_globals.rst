@@ -177,7 +177,8 @@
          They must be stored in sub-dirs. I.e. kibot_resources/fonts/MyFont.ttf
          Note this is mainly useful for CI/CD, so you can store fonts and colors in your repo. |br|
          Also note that the fonts are installed using a mechanism known to work on Debian,
-         which is used by the KiBot docker images, on other OSs *your mileage may vary*.
+         which is used by the KiBot docker images, on other OSs *your mileage may vary*. |br|
+         When using KiCad 9 you can just embed the fonts in the schematic/PCB.
       -  ``restore_project`` :index:`: <pair: global options; restore_project>` [:ref:`boolean <boolean>`] (default: ``false``) Restore the KiCad project after execution.
          Note that this option will undo operations like `set_text_variables`. |br|
          Starting with 1.6.4 it also restores the PRL (Project Local Settings) and DRU (Design RUles) files.
