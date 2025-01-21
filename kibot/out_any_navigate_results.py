@@ -17,7 +17,7 @@ from .gs import GS
 from .optionable import Optionable
 from .out_base import VariantOptions
 from .kiplot import config_output, run_command
-from .misc import W_NOTYET, W_MISSTOOL, W_NOOUTPUTS, read_png, force_list
+from .misc import W_NOTYET, W_MISSTOOL, W_NOOUTPUTS, read_png, force_list, W_CONVPDF
 from .pre_base import BasePreFlight
 from .registrable import RegOutput
 from .macros import macros, document  # noqa: F401
@@ -102,9 +102,12 @@ def _run_command(cmd):
     try:
         cmd_output = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as e:
-        if e.output:
-            logger.debug('Output from command: '+e.output.decode())
+        odecoded = e.output.decode() if e.output else None
+        if odecoded:
+            logger.debug('Output from command: '+odecoded)
         logger.non_critical_error(f'Failed to run {cmd[0]}, error {e.returncode}')
+        if odecoded and 'operation not allowed by the security policy' in odecoded:
+            logger.warning(W_CONVPDF+"Your system doesn't allow PDF/PS manipulation, read the installation docs")
         return False
     if cmd_output.strip():
         logger.debug('- Output from command:\n'+cmd_output.decode())
