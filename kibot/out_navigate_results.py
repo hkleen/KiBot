@@ -493,9 +493,3 @@ class Navigate_Results(BaseOutput):  # noqa: F821
         # The help is inherited and already mentions the default priority
         self.fix_priority_help()
         self._any_related = True
-
-    @staticmethod
-    def get_conf_examples(name, layers):
-        outs = BaseOutput.simple_conf_examples(name, 'Web page to browse the results', 'Browse')  # noqa: F821
-        outs[0]['options'] = {'link_from_root': 'index.html', 'skip_not_run': True}
-        return outs
