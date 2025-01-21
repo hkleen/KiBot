@@ -2,11 +2,8 @@
 # Copyright (c) 2022-2025 Salvador E. Tropea
 # Copyright (c) 2022-2025 Nguyen Vincent
 # Copyright (c) 2022-2025 Instituto Nacional de Tecnología Industrial
-# Contributed by Nguyen Vincent (@nguyen-v)
 # License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
-# The Assembly image is a composition from Pixlok and oNline Web Fonts
-# The rest are KiCad icons
 """
 Dependencies:
   - from: RSVG

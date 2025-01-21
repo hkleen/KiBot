@@ -5,8 +5,6 @@
 # Contributed by Nguyen Vincent (@nguyen-v)
 # License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
-# The Assembly image is a composition from Pixlok and oNline Web Fonts
-# The rest are KiCad icons
 """
 Dependencies:
   - from: RSVG
