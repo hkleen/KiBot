@@ -1404,7 +1404,7 @@ def test_quick_start_1(test_dir):
     # 2) List the generated outputs
     ctx.run(extra=['-c', dest_conf_f, '-b', dest_file, '-l'], no_out_dir=True, no_yaml_file=True, no_board_file=True)
     OUTS = ('boardview', 'dxf', 'excellon', 'gencad', 'gerb_drill', 'gerber', 'compress', 'hpgl', 'ibom',
-            'navigate_results', 'netlist', 'pcb_print', 'pcbdraw', 'pdf', 'position', 'ps', 'render_3d',
+            'navigate_results_rb', 'netlist', 'pcb_print', 'pcbdraw', 'pdf', 'position', 'ps', 'render_3d',
             'report', 'step', 'svg', 'kiri', 'kicanvas',
             'bom', 'download_datasheets', 'pdf_sch_print', 'svg_sch_print')
     for o in OUTS:
@@ -1415,7 +1415,7 @@ def test_quick_start_1(test_dir):
     ctx.expect_out_file(os.path.join('PCB', 'PDF', prj+'-assembly.pdf'))
     # 4) Generate the navigate_results stuff
     logging.debug('Creating the web pages')
-    ctx.run(extra=['-c', dest_conf_f, '-b', dest_file, 'basic_navigate_results'], no_yaml_file=True, no_board_file=True)
+    ctx.run(extra=['-c', dest_conf_f, '-b', dest_file, 'basic_navigate_results_rb'], no_yaml_file=True, no_board_file=True)
     ctx.expect_out_file('index.html')
     ctx.expect_out_file(os.path.join('Browse', 'light_control-navigate.html'))
 
