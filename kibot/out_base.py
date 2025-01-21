@@ -87,7 +87,8 @@ class BaseOutput(RegOutput):
             """ [string|list(string)=''] {comma_sep} The category for this output. If not specified an internally defined
                 category is used.
                 Categories looks like file system paths, i.e. **PCB/fabrication/gerber**.
-                The categories are currently used for `navigate_results` """
+                Using '.' or './' as a category puts the file at the root.
+                The categories are currently used for `navigate_results` and `navigate_results_rb` """
             self.priority = 50
             """ [0,100] Priority for this output. High priority outputs are created first.
                 Internally we use 10 for low priority, 90 for high priority and 50 for most outputs """
