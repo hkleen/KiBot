@@ -237,6 +237,11 @@ outputs:
   comment: Generates a web page to navigate the generated outputs
   options:
     output: output.navigate_results.options.dict
+- name: output.navigate_results_rb
+  type: navigate_results_rb
+  comment: Generates a web page to navigate the generated outputs
+  options:
+    output: output.navigate_results_rb.options.dict
 - name: output.netlist
   type: netlist
   comment: Generates the list of connections for the project
