@@ -211,7 +211,6 @@ document.addEventListener('DOMContentLoaded', function () {
 class Navigate_ResultsOptions(Any_Navigate_ResultsOptions):
     def __init__(self):
         super().__init__()
-        self._default_logo_scale = 0.5
         self._style = STYLE
         self._big_2_mid_rel = int(ceil(self._big_icon/self._mid_icon))
 

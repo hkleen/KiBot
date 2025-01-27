@@ -2205,8 +2205,9 @@ outputs:
       # [string|boolean=''] PNG file to use as logo, use false to remove.
       # The KiBot logo is used by default
       logo: ''
-      # [number=-1] Force logo height in px. Useful to get consistent heights across different logos.
-      logo_force_height: -1
+      # [number=-1] Force logo height in px. Useful to get consistent heights across different logos..
+      # Using -1 a default height of 50 is used
+      logo_force_height: 50
       # [string='https://github.com/INTI-CMNB/KiBot/'] Target link when clicking the logo
       logo_url: 'https://github.com/INTI-CMNB/KiBot/'
       # [boolean=true] Add a side navigation bar to quickly access to the outputs

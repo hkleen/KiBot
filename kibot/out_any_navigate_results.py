@@ -150,7 +150,6 @@ class Any_Navigate_ResultsOptions(BaseOptions):
         self._variant_name = self._find_variant_name()
         self._expand_id = 'navigate'
         self._expand_ext = 'html'
-        self._default_logo_scale = 0.5
         self._style = ''
         self._title_height = 30
         self._big_icon = 256
@@ -171,8 +170,8 @@ class Any_Navigate_ResultsOptions(BaseOptions):
                 raise KiPlotConfigurationError(f'Only PNG images are supported for the logo ({e})')
         if self.logo == '':
             # Internal logo
-            self._logo_w = int(KIBOT_LOGO_W*self._default_logo_scale)
-            self._logo_h = int(KIBOT_LOGO_H*self._default_logo_scale)
+            self._logo_w = KIBOT_LOGO_W
+            self._logo_h = KIBOT_LOGO_H
             self._logo_data = base64.b64decode(KIBOT_LOGO)
         elif self.logo is None:
             self._logo_w = self._logo_h = 0

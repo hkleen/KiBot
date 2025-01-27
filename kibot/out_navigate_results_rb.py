@@ -1172,8 +1172,8 @@ function initializeSearchBar(searchContainerId, outputSelector) {
     const searchContainer = document.getElementById(searchContainerId);
     if (!searchContainer) return; // Exit if container is not found
 
-    const searchBar = searchContainer.querySelector("#search-bar");
-    const autocompleteList = searchContainer.querySelector("#autocomplete-list");
+    const searchBar = searchContainer.querySelector('#search-bar');
+    const autocompleteList = searchContainer.querySelector('#autocomplete-list');
     const outputLinks = document.querySelectorAll(outputSelector);
 
     // Collect output names and their hrefs
@@ -1364,9 +1364,10 @@ class Navigate_Results_RBOptions(Any_Navigate_ResultsOptions):
     def __init__(self):
         super().__init__()
         self.header = True
-        self._default_logo_scale = 0.25
         self._style = STYLE
         self._big_icon = 512
+        self.logo_force_height = 50
+        self.add_to_doc('logo_force_height', 'Using -1 a default height of 50 is used')
 
     def get_image_for_cat(self, cat, pname):
         if self.display_category_images:

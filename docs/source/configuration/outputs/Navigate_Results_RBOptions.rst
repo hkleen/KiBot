@@ -13,6 +13,7 @@ Navigate_Results_RBOptions parameters
    The KiBot logo is used by default.
 
 -  ``logo_force_height`` :index:`: <pair: output - navigate_results_rb - options; logo_force_height>` [:ref:`number <number>`] (default: ``-1``) Force logo height in px. Useful to get consistent heights across different logos..
+   Using -1 a default height of 50 is used.
 -  ``logo_url`` :index:`: <pair: output - navigate_results_rb - options; logo_url>` [:ref:`string <string>`] (default: ``'https://github.com/INTI-CMNB/KiBot/'``) Target link when clicking the logo.
 -  ``nav_bar`` :index:`: <pair: output - navigate_results_rb - options; nav_bar>` [:ref:`boolean <boolean>`] (default: ``true``) Add a side navigation bar to quickly access to the outputs.
 -  ``render_markdown`` :index:`: <pair: output - navigate_results_rb - options; render_markdown>` [:ref:`boolean <boolean>`] (default: ``true``) If True, markdown files are rendered; otherwise, they are treated like other files.
