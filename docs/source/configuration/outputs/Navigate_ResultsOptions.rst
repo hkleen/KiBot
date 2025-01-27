@@ -6,12 +6,16 @@ Navigate_ResultsOptions parameters
 
 -  **link_from_root** :index:`: <pair: output - navigate_results - options; link_from_root>` [:ref:`string <string>`] (default: ``''``) The name of a file to create at the main output directory linking to the home page.
 -  **output** :index:`: <pair: output - navigate_results - options; output>` [:ref:`string <string>`] (default: ``'%f-%i%I%v.%x'``) Filename for the output (%i=html, %x=navigate). Affected by global options.
+-  ``display_category_images`` :index:`: <pair: output - navigate_results - options; display_category_images>` [:ref:`boolean <boolean>`] (default: ``true``) If True, we try to display images for categories according to the category type.
+-  ``display_kibot_version`` :index:`: <pair: output - navigate_results - options; display_kibot_version>` [:ref:`boolean <boolean>`] (default: ``true``) If True, display the KiBot version at the bottom of each page.
 -  ``header`` :index:`: <pair: output - navigate_results - options; header>` [:ref:`boolean <boolean>`] (default: ``true``) Add a header containing information for the project.
 -  ``logo`` :index:`: <pair: output - navigate_results - options; logo>` [:ref:`string <string>` | :ref:`boolean <boolean>`] (default: ``''``) PNG file to use as logo, use false to remove.
    The KiBot logo is used by default.
 
+-  ``logo_force_height`` :index:`: <pair: output - navigate_results - options; logo_force_height>` [:ref:`number <number>`] (default: ``-1``) Force logo height in px. Useful to get consistent heights across different logos..
 -  ``logo_url`` :index:`: <pair: output - navigate_results - options; logo_url>` [:ref:`string <string>`] (default: ``'https://github.com/INTI-CMNB/KiBot/'``) Target link when clicking the logo.
 -  ``nav_bar`` :index:`: <pair: output - navigate_results - options; nav_bar>` [:ref:`boolean <boolean>`] (default: ``true``) Add a side navigation bar to quickly access to the outputs.
+-  ``render_markdown`` :index:`: <pair: output - navigate_results - options; render_markdown>` [:ref:`boolean <boolean>`] (default: ``true``) If True, markdown files are rendered; otherwise, they are treated like other files.
 -  ``skip_not_run`` :index:`: <pair: output - navigate_results - options; skip_not_run>` [:ref:`boolean <boolean>`] (default: ``false``) Skip outputs with `run_by_default: false`.
 -  ``title`` :index:`: <pair: output - navigate_results - options; title>` [:ref:`string <string>`] (default: ``''``) Title for the page, when empty KiBot will try using the schematic or PCB title.
    If they are empty the name of the project, schematic or PCB file is used. |br|

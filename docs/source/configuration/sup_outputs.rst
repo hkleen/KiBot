@@ -34,6 +34,7 @@ Notes:
    outputs/kikit_present
    outputs/kiri
    outputs/navigate_results
+   outputs/navigate_results_rb
    outputs/netlist
    outputs/panelize
    outputs/pcb2blender_tools

@@ -152,7 +152,7 @@ deps = '{\
         "extra_checks": null,\
         "extra_deb": null,\
         "help_option": "--version",\
-        "importance": 2,\
+        "importance": 3,\
         "in_debian": true,\
         "is_kicad_plugin": false,\
         "is_python": false,\
@@ -168,6 +168,13 @@ deps = '{\
                 "mandatory": false,\
                 "max_version": null,\
                 "output": "navigate_results",\
+                "version": null\
+            },\
+            {\
+                "desc": "Create outputs preview",\
+                "mandatory": false,\
+                "max_version": null,\
+                "output": "navigate_results_rb",\
                 "version": null\
             },\
             {\
@@ -193,7 +200,7 @@ deps = '{\
         "extra_checks": null,\
         "extra_deb": null,\
         "help_option": "--version",\
-        "importance": 7,\
+        "importance": 8,\
         "in_debian": true,\
         "is_kicad_plugin": false,\
         "is_python": false,\
@@ -230,6 +237,13 @@ deps = '{\
                 "mandatory": false,\
                 "max_version": null,\
                 "output": "navigate_results",\
+                "version": null\
+            },\
+            {\
+                "desc": "Find origin url",\
+                "mandatory": false,\
+                "max_version": null,\
+                "output": "navigate_results_rb",\
                 "version": null\
             },\
             {\
@@ -273,7 +287,7 @@ deps = '{\
         ],\
         "extra_deb": null,\
         "help_option": "--version",\
-        "importance": 5,\
+        "importance": 6,\
         "in_debian": true,\
         "is_kicad_plugin": false,\
         "is_python": false,\
@@ -296,6 +310,13 @@ deps = '{\
                 "mandatory": false,\
                 "max_version": null,\
                 "output": "navigate_results",\
+                "version": null\
+            },\
+            {\
+                "desc": "Create outputs preview",\
+                "mandatory": false,\
+                "max_version": null,\
+                "output": "navigate_results_rb",\
                 "version": null\
             },\
             {\
@@ -1102,7 +1123,7 @@ deps = '{\
         "extra_checks": null,\
         "extra_deb": null,\
         "help_option": "--version",\
-        "importance": 5,\
+        "importance": 7,\
         "in_debian": true,\
         "is_kicad_plugin": false,\
         "is_python": false,\
@@ -1132,6 +1153,20 @@ deps = '{\
                 "mandatory": false,\
                 "max_version": null,\
                 "output": "navigate_results",\
+                "version": null\
+            },\
+            {\
+                "desc": "Create outputs preview",\
+                "mandatory": false,\
+                "max_version": null,\
+                "output": "navigate_results_rb",\
+                "version": null\
+            },\
+            {\
+                "desc": "Create PNG icons",\
+                "mandatory": false,\
+                "max_version": null,\
+                "output": "navigate_results_rb",\
                 "version": null\
             },\
             {\

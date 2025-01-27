@@ -2158,6 +2158,10 @@ outputs:
     type: 'navigate_results'
     dir: 'Example/navigate_results_dir'
     options:
+      # [boolean=true] If True, we try to display images for categories according to the category type
+      display_category_images: true
+      # [boolean=true] If True, display the KiBot version at the bottom of each page
+      display_kibot_version: true
       # [boolean=true] Add a header containing information for the project
       header: true
       # [string=''] The name of a file to create at the main output directory linking to the home page
@@ -2165,12 +2169,52 @@ outputs:
       # [string|boolean=''] PNG file to use as logo, use false to remove.
       # The KiBot logo is used by default
       logo: ''
+      # [number=-1] Force logo height in px. Useful to get consistent heights across different logos.
+      logo_force_height: -1
       # [string='https://github.com/INTI-CMNB/KiBot/'] Target link when clicking the logo
       logo_url: 'https://github.com/INTI-CMNB/KiBot/'
       # [boolean=true] Add a side navigation bar to quickly access to the outputs
       nav_bar: true
       # [string='%f-%i%I%v.%x'] Filename for the output (%i=html, %x=navigate). Affected by global options
       output: '%f-%i%I%v.%x'
+      # [boolean=true] If True, markdown files are rendered; otherwise, they are treated like other files
+      render_markdown: true
+      # [boolean=false] Skip outputs with `run_by_default: false`
+      skip_not_run: false
+      # [string=''] Title for the page, when empty KiBot will try using the schematic or PCB title.
+      # If they are empty the name of the project, schematic or PCB file is used.
+      # You can use %X values and KiCad variables here
+      title: ''
+      # [string|boolean=''] Target link when clicking the title, use false to remove.
+      # KiBot will try with the origin of the current git repo when empty
+      title_url: ''
+  # Navigate Results:
+  - name: 'navigate_results_rb_example'
+    comment: 'Generates a web page to navigate the generated outputs'
+    type: 'navigate_results_rb'
+    dir: 'Example/navigate_results_rb_dir'
+    options:
+      # [boolean=true] If True, we try to display images for categories according to the category type
+      display_category_images: true
+      # [boolean=true] If True, display the KiBot version at the bottom of each page
+      display_kibot_version: true
+      # [boolean=true] Add a header containing information for the project
+      header: true
+      # [string=''] The name of a file to create at the main output directory linking to the home page
+      link_from_root: ''
+      # [string|boolean=''] PNG file to use as logo, use false to remove.
+      # The KiBot logo is used by default
+      logo: ''
+      # [number=-1] Force logo height in px. Useful to get consistent heights across different logos.
+      logo_force_height: -1
+      # [string='https://github.com/INTI-CMNB/KiBot/'] Target link when clicking the logo
+      logo_url: 'https://github.com/INTI-CMNB/KiBot/'
+      # [boolean=true] Add a side navigation bar to quickly access to the outputs
+      nav_bar: true
+      # [string='%f-%i%I%v.%x'] Filename for the output (%i=html, %x=navigate). Affected by global options
+      output: '%f-%i%I%v.%x'
+      # [boolean=true] If True, markdown files are rendered; otherwise, they are treated like other files
+      render_markdown: true
       # [boolean=false] Skip outputs with `run_by_default: false`
       skip_not_run: false
       # [string=''] Title for the page, when empty KiBot will try using the schematic or PCB title.

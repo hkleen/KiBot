@@ -26,7 +26,8 @@ Parameters:
 -  ``category`` :index:`: <pair: output - ibom; category>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``''``) [:ref:`comma separated <comma_sep>`] The category for this output. If not specified an internally defined
    category is used. |br|
    Categories looks like file system paths, i.e. **PCB/fabrication/gerber**. |br|
-   The categories are currently used for `navigate_results`.
+   Using '.' or './' as a category puts the file at the root. |br|
+   The categories are currently used for `navigate_results` and `navigate_results_rb`.
 
 -  ``disable_run_by_default`` :index:`: <pair: output - ibom; disable_run_by_default>` [:ref:`string <string>` | :ref:`boolean <boolean>`] (default: ``''``) Use it to disable the `run_by_default` status of other output.
    Useful when this output extends another and you don't want to generate the original. |br|

@@ -87,29 +87,33 @@
    -  Find commit hash and/or date for `kikit_present`
    -  Compare with files in the repo for `kiri`
    -  Find origin url for `navigate_results`
+   -  Find origin url for `navigate_results_rb`
    -  Find commit hash and/or date for `pcb_replace`
    -  Find commit hash and/or date for `sch_replace`
    -  Find commit hash and/or date for `set_text_variables`
 
-`ImageMagick <https://imagemagick.org/>`__ :index:`: <pair: dependency; ImageMagick>`  |image37| |image38| |Auto-download|
-
--  Optional to:
-
-   -  Automatically crop images for `blender_export`
-   -  Create outputs preview for `navigate_results`
-   -  Create monochrome prints and scaled PNG files for `pcb_print`
-   -  Create JPG and BMP images for `pcbdraw`
-   -  Automatically crop images for `render_3d`
-
-`RSVG tools <https://gitlab.gnome.org/GNOME/librsvg>`__ :index:`: <pair: dependency; RSVG tools>`  |image39| |image40| |Auto-download|
+`RSVG tools <https://gitlab.gnome.org/GNOME/librsvg>`__ :index:`: <pair: dependency; RSVG tools>`  |image37| |image38| |Auto-download|
 
 -  Optional to:
 
    -  SVG logos for the BoM for `bom`
    -  Create outputs preview for `navigate_results`
    -  Create PNG icons for `navigate_results`
+   -  Create outputs preview for `navigate_results_rb`
+   -  Create PNG icons for `navigate_results_rb`
    -  Create PDF, PNG, PS and EPS formats for `pcb_print`
    -  Create PNG, JPG and BMP images for `pcbdraw`
+
+`ImageMagick <https://imagemagick.org/>`__ :index:`: <pair: dependency; ImageMagick>`  |image39| |image40| |Auto-download|
+
+-  Optional to:
+
+   -  Automatically crop images for `blender_export`
+   -  Create outputs preview for `navigate_results`
+   -  Create outputs preview for `navigate_results_rb`
+   -  Create monochrome prints and scaled PNG files for `pcb_print`
+   -  Create JPG and BMP images for `pcbdraw`
+   -  Automatically crop images for `render_3d`
 
 `Bash <https://www.gnu.org/software/bash/>`__ :index:`: <pair: dependency; Bash>`  |image41| |image42|
 
@@ -124,6 +128,7 @@
 -  Optional to:
 
    -  Create outputs preview for `navigate_results`
+   -  Create outputs preview for `navigate_results_rb`
    -  Create PNG, PS and EPS formats for `pcb_print`
 
 `numpy <https://pypi.org/project/numpy/>`__ :index:`: <pair: dependency; numpy>`  |image45| |image46| |Auto-download|
@@ -218,13 +223,13 @@
 .. |image36| image:: https://raw.githubusercontent.com/INTI-CMNB/KiBot/master/docs/images/debian-openlogo-22x22.png
    :target: https://packages.debian.org/stable/git
 .. |image37| image:: https://raw.githubusercontent.com/INTI-CMNB/KiBot/master/docs/images/llave-inglesa-22x22.png
-   :target: https://imagemagick.org/
-.. |image38| image:: https://raw.githubusercontent.com/INTI-CMNB/KiBot/master/docs/images/debian-openlogo-22x22.png
-   :target: https://packages.debian.org/stable/imagemagick
-.. |image39| image:: https://raw.githubusercontent.com/INTI-CMNB/KiBot/master/docs/images/llave-inglesa-22x22.png
    :target: https://gitlab.gnome.org/GNOME/librsvg
-.. |image40| image:: https://raw.githubusercontent.com/INTI-CMNB/KiBot/master/docs/images/debian-openlogo-22x22.png
+.. |image38| image:: https://raw.githubusercontent.com/INTI-CMNB/KiBot/master/docs/images/debian-openlogo-22x22.png
    :target: https://packages.debian.org/stable/librsvg2-bin
+.. |image39| image:: https://raw.githubusercontent.com/INTI-CMNB/KiBot/master/docs/images/llave-inglesa-22x22.png
+   :target: https://imagemagick.org/
+.. |image40| image:: https://raw.githubusercontent.com/INTI-CMNB/KiBot/master/docs/images/debian-openlogo-22x22.png
+   :target: https://packages.debian.org/stable/imagemagick
 .. |image41| image:: https://raw.githubusercontent.com/INTI-CMNB/KiBot/master/docs/images/llave-inglesa-22x22.png
    :target: https://www.gnu.org/software/bash/
 .. |image42| image:: https://raw.githubusercontent.com/INTI-CMNB/KiBot/master/docs/images/debian-openlogo-22x22.png
