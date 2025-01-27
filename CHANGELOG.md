@@ -49,6 +49,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Include table:
   - A mechanism to set the font, using a text box (#748)
   - `force_font_width` to force a font width (#752)
+- Navigate Results:
+  - New flavor "navigate_results_rb" with a "reactive" look (#768)
 - PCB Print:
   - A mechanism to filter components for a particular layer (#706)
   - Workaround for Ghostscript handling %d wrong when followed by an hex digit
