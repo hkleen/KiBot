@@ -962,6 +962,10 @@ class SchematicComponent(object):
         """ List of all the available field names for this component """
         return self.dfields.keys()
 
+    def get_real_field_names(self, names):
+        """ Returns the real names, using the lowercase ones """
+        return [self.dfields[n].name for n in names]
+
     def get_user_fields(self):
         """ Returns a list of tuples with the user defined fields (name, value) """
         return [(f.name, f.value) for f in self.fields if f.number > 3]

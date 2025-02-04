@@ -128,7 +128,7 @@ class Check_Fields(BasePreFlight):  # noqa: F821
                 field = check.field.lower()
                 if field == '*':
                     # Special case. This is a check for extra fields
-                    difference = set(c.get_field_names()) - checked_fields
+                    difference = c.get_real_field_names(set(c.get_field_names()) - checked_fields)
                     if difference and self.apply_severity(check, check.severity_missing,
                                                           f'{c.ref} extra fields: {pretty_list(list(difference))}'):
                         break
