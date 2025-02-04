@@ -23,6 +23,8 @@ Added
 
    -  ``--variant`` to specify which variants will be generated (See
       #737)
+   -  ``--defs-from-project`` allows using KiCad variables for the
+      preprocessor (See #643)
 
 -  Variants and filters:
 

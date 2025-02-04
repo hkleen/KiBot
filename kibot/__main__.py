@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2020-2024 Salvador E. Tropea
-# Copyright (c) 2020-2024 Instituto Nacional de Tecnología Industrial
+# Copyright (c) 2020-2025 Salvador E. Tropea
+# Copyright (c) 2020-2025 Instituto Nacional de Tecnología Industrial
 # Copyright (c) 2018 John Beard
 # License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
@@ -10,9 +10,9 @@
 Usage:
   kibot [-b BOARD] [-e SCHEMA] [-c CONFIG] [-d OUT_DIR] [-s PRE]
          [-q | -v...] [-L LOGFILE] [-C | -i | -n] [-m MKFILE] [-A] [-g DEF] ...
-         [-E DEF] ... [--defs-from-env] [-w LIST] [-D | -W] [--warn-ci-cd]
-         [--banner N] [--gui | --internal-check] [-I INJECT] [--variant VAR] ...
-         [TARGET...]
+         [-E DEF] ... [--defs-from-env] [--defs-from-project] [-w LIST] [-D | -W]
+         [--warn-ci-cd] [--banner N] [--gui | --internal-check] [-I INJECT]
+         [--variant VAR] ... [TARGET...]
   kibot [-v...] [-b BOARD] [-e SCHEMA] [-c PLOT_CONFIG] [--banner N]
          [-E DEF] ... [--defs-from-env] [--config-outs]
          [--only-pre|--only-groups] [--only-names] [--output-name-first] --list
@@ -50,6 +50,8 @@ Options:
   -D, --dont-stop                  Try to continue if an output fails
   --defs-from-env                  Use the environment vars as preprocessor
                                    values
+  --defs-from-project              Use the KiCad vars as preprocessor values.
+                                   They are stored in the project file
   -e SCHEMA, --schematic SCHEMA    The schematic file (.sch/.kicad_sch)
   -E DEF, --define DEF             Define preprocessor value (VAR=VAL)
   -g DEF, --global-redef DEF       Overwrite a global value (VAR=VAL)
@@ -374,6 +376,8 @@ def detect_kicad():
 def parse_defines(args):
     if args.defs_from_env:
         GS.cli_defines.update(os.environ)
+    if args.defs_from_project:
+        GS.cli_defines.update(GS.load_pro_variables())
     for define in args.define:
         if '=' not in define:
             GS.exit_with_error(f'Malformed `define` option, must be VARIABLE=VALUE ({define})', EXIT_BAD_ARGS)
