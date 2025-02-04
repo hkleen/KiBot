@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     (#728)
   - `expand_in_command` option to `set_text_variables`, used to expand %X
     patterns in the command (#746)
+  - `check_fields` mechanism to check for extra fields (#774)
 - Global options:
   - `work_layer`: to choose the temporal layer for internal operations (#713)
 - Workaround for people using backslashes (i.e. Windows+WSL) (#719) (#607)

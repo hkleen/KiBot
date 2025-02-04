@@ -36,6 +36,7 @@ Added
       stacked renders (#728)
    -  ``expand_in_command`` option to ``set_text_variables``, used to
       expand %X patterns in the command (#746)
+   -  ``check_fields`` mechanism to check for extra fields (#774)
 
 -  Global options:
 

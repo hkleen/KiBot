@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2024 Salvador E. Tropea
-# Copyright (c) 2024 Instituto Nacional de Tecnología Industrial
+# Copyright (c) 2024-2025 Salvador E. Tropea
+# Copyright (c) 2024-2025 Instituto Nacional de Tecnología Industrial
 # License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
 import re
 from .error import KiPlotConfigurationError
 from .kiplot import load_sch
-from .misc import CHECK_FIELD, W_CHKFLD
+from .misc import CHECK_FIELD, W_CHKFLD, pretty_list
 from .optionable import Optionable
 from .gs import GS
 from .macros import macros, document, pre_class  # noqa: F401
@@ -27,7 +27,10 @@ class FieldCheck(Optionable):
         self._unknown_is_error = True
         with document:
             self.field = ''
-            """ *Name of field to check """
+            """ *Name of field to check.
+                 The `*` name is a special case. Is used to check for extra fields. In this case you must have a
+                 rule for each allowed field name and then a rule containing `*` as name. The `severity_missing`
+                 is applied if the component contains extra fields """
             self.regex = ''
             """ *Regular expression to match the field content. Note that technically we do a search, not a match """
             self.regexp = None
@@ -120,8 +123,17 @@ class Check_Fields(BasePreFlight):  # noqa: F821
             return
         comps = GS.sch.get_components()
         for c in comps:
+            checked_fields = {'reference', 'value', 'footprint', 'datasheet', 'description', 'part'}
             for check in self.check_fields:
                 field = check.field.lower()
+                if field == '*':
+                    # Special case. This is a check for extra fields
+                    difference = set(c.get_field_names()) - checked_fields
+                    if difference and self.apply_severity(check, check.severity_missing,
+                                                          f'{c.ref} extra fields: {pretty_list(list(difference))}'):
+                        break
+                    continue
+                checked_fields.add(field)
                 if not c.is_field(field):
                     # No field with this name
                     if self.apply_severity(check, check.severity_missing, f'{c.ref} missing field `{check.field}`'):
