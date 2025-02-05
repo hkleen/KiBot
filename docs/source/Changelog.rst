@@ -182,6 +182,12 @@ Changed
    -  Micro vias to look closer to real world, they only span 2 layers
       and they must be stacked to span more layers.
 
+-  Renderers:
+
+   -  Components marked by the exclude filter, or marked virtual, were
+      excluded from the 3D models and solder paste processing, but the
+      docs says this is just for BoM (See #772)
+
 [1.8.2] - 2024-10-28
 --------------------
 

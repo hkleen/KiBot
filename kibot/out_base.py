@@ -466,7 +466,7 @@ class VariantOptions(BaseOptions):
         for m in GS.get_modules_board(board):
             ref = m.GetReference()
             c = comps_hash.get(ref, None)
-            if c and c.included and not c.fitted:
+            if c and not c.fitted:
                 # Remove all pads from *.Paste
                 if GS.global_remove_solder_paste_for_dnp or GS.global_remove_solder_mask_for_dnp:
                     old_c_layers = []
@@ -541,7 +541,7 @@ class VariantOptions(BaseOptions):
             for m in GS.get_modules_board(board):
                 ref = m.GetReference()
                 c = comps_hash.get(ref, None)
-                if c and c.included and not c.fitted:
+                if c and not c.fitted:
                     logger.debugl(3, '- Restoring paste/mask for '+ref)
                     restore = self._old_layers.pop(0)
                     for p in m.Pads():
@@ -667,7 +667,7 @@ class VariantOptions(BaseOptions):
             if c:
                 # The filter/variant knows about this component
                 models = m.Models()
-                if c.included and not c.fitted:
+                if not c.fitted:  # c.included was here, but the docs says this is for "BoM processing", not 3D
                     # Not fitted, remove the 3D model
                     rem_m_models = []
                     while not models.empty():
@@ -691,7 +691,7 @@ class VariantOptions(BaseOptions):
         for m in GS.get_modules_board(board):
             ref = m.GetReference()
             c = comps_hash.get(ref, None)
-            if c and c.included and not c.fitted:
+            if c and not c.fitted:
                 models = m.Models()
                 restore = self.rem_models.pop(0)
                 for model in reversed(restore):
