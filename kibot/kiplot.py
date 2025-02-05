@@ -362,7 +362,8 @@ def expand_footprint_fields(fields, env):
             depth += 1
             if depth == GS.MAXDEPTH:
                 logger.warning(W_MAXDEPTH+'Too much nested variables replacements, possible loop ({})'.format(v))
-        new_fields[k] = new_value
+        # Remove extra spaces as we did with the schematic values
+        new_fields[k] = new_value.strip()
     return new_fields
 
 
