@@ -3076,9 +3076,9 @@ outputs:
               plot_footprint_refs: true
               # [boolean=true] Include the footprint values
               plot_footprint_values: true
-              # [boolean=true] Draw the outline of the pads on the *.Fab layers (KiCad 6+).
+              # [boolean=false] Draw the outline of the pads on the *.Fab layers (KiCad 6+).
               # When not defined we use the default value for the page
-              sketch_pads_on_fab_layers: true
+              sketch_pads_on_fab_layers: false
               # [string=''] Suffix used in file names related to this layer. Derived from the name if not specified.
               # A default can be specified using the `layer_defaults` global option
               suffix: ''
@@ -3133,9 +3133,9 @@ outputs:
               plot_footprint_refs: true
               # [boolean=true] Include the footprint values
               plot_footprint_values: true
-              # [boolean=true] Draw the outline of the pads on the *.Fab layers (KiCad 6+).
+              # [boolean=false] Draw the outline of the pads on the *.Fab layers (KiCad 6+).
               # When not defined we use the default value for the page
-              sketch_pads_on_fab_layers: true
+              sketch_pads_on_fab_layers: false
               # [string=''] Suffix used in file names related to this layer. Derived from the name if not specified.
               # A default can be specified using the `layer_defaults` global option
               suffix: ''

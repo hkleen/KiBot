@@ -16,7 +16,7 @@ LayerOptions parameters
 -  ``layer`` :index:`: <pair: output - pcb_print - options - pages - repeat_layers; layer>` [:ref:`string <string>`] (default: ``''``) Name of the layer. As you see it in KiCad.
 -  ``plot_footprint_refs`` :index:`: <pair: output - pcb_print - options - pages - repeat_layers; plot_footprint_refs>` [:ref:`boolean <boolean>`] (default: ``true``) Include the footprint references.
 -  ``plot_footprint_values`` :index:`: <pair: output - pcb_print - options - pages - repeat_layers; plot_footprint_values>` [:ref:`boolean <boolean>`] (default: ``true``) Include the footprint values.
--  ``sketch_pads_on_fab_layers`` :index:`: <pair: output - pcb_print - options - pages - repeat_layers; sketch_pads_on_fab_layers>` [:ref:`boolean <boolean>`] (default: ``true``) Draw the outline of the pads on the \\*.Fab layers (KiCad 6+).
+-  ``sketch_pads_on_fab_layers`` :index:`: <pair: output - pcb_print - options - pages - repeat_layers; sketch_pads_on_fab_layers>` [:ref:`boolean <boolean>`] (default: ``false``) Draw the outline of the pads on the \\*.Fab layers (KiCad 6+).
    When not defined we use the default value for the page.
 -  ``suffix`` :index:`: <pair: output - pcb_print - options - pages - repeat_layers; suffix>` [:ref:`string <string>`] (default: ``''``) Suffix used in file names related to this layer. Derived from the name if not specified.
    A default can be specified using the `layer_defaults` global option.

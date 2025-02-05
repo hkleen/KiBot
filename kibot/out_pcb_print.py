@@ -160,7 +160,7 @@ class LayerOptions(Layer):
             self.use_for_center = True
             """ Use this layer for centering purposes.
                 You can invert the meaning using the `invert_use_for_center` option """
-            self.sketch_pads_on_fab_layers = True
+            self.sketch_pads_on_fab_layers = False
             r""" Draw the outline of the pads on the \*.Fab layers (KiCad 6+).
                  When not defined we use the default value for the page """
             self.exclude_filter = Optionable
@@ -177,11 +177,13 @@ class LayerOptions(Layer):
             self.sketch_pads_on_fab_layers = parent.sketch_pads_on_fab_layers
 
     @classmethod
-    def solve(cls, values):
+    def solve(cls, values, parent):
         layers = super().solve(values)
         for la in layers:
             if isinstance(la.exclude_filter, type):
                 la.exclude_filter = None
+            if not la.get_user_defined('sketch_pads_on_fab_layers'):
+                la.sketch_pads_on_fab_layers = parent.sketch_pads_on_fab_layers
         return layers
 
     @classmethod
@@ -196,6 +198,9 @@ class LayerOptions(Layer):
         self.plot_footprint_refs = ref.plot_footprint_refs
         self.plot_footprint_values = ref.plot_footprint_values
         self.force_plot_invisible_refs_vals = ref.force_plot_invisible_refs_vals
+        self.use_for_center = ref.use_for_center
+        self.sketch_pads_on_fab_layers = ref.sketch_pads_on_fab_layers
+        self.exclude_filter = ref.exclude_filter
 
 
 class PagesOptions(Optionable):
@@ -309,7 +314,7 @@ class PagesOptions(Optionable):
     def config(self, parent):
         super().config(parent)
         # Fill the ID member for all the layers
-        self._layers = LayerOptions.solve(self.layers)
+        self._layers = LayerOptions.solve(self.layers, self)
         self._is_drill = False
         if self.sort_layers:
             self._layers.sort(key=lambda x: get_priority(x._id), reverse=True)
@@ -335,7 +340,7 @@ class PagesOptions(Optionable):
                 raise KiPlotConfigurationError("Layer `{}` specified in `repeat_for_layer` isn't valid".format(layer))
             self._repeat_for_layer_index = self._layers.index(self._repeat_for_layer)
             if self.repeat_layers != ['drill_pairs']:
-                self._repeat_layers = LayerOptions.solve(self.repeat_layers)
+                self._repeat_layers = LayerOptions.solve(self.repeat_layers, self)
             else:
                 self._is_drill = True
                 self._drill_map_layer = GS.board.GetLayerID(self.repeat_for_layer)

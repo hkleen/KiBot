@@ -167,6 +167,10 @@ Fixed
 
    -  Problems when using the default worksheet and the internal frame
       plotter (#767)
+   -  Some layer options (use_for_center, sketch_pads_on_fab_layers and
+      exclude_filter) not copied on repeated layers
+   -  ``sketch_pads_on_fab_layers`` not inherited from parent when using
+      layer names (See #777)
 
 Changed
 ~~~~~~~

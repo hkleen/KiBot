@@ -108,6 +108,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - PCB Print:
   - Problems when using the default worksheet and the internal frame plotter
     (#767)
+  - Some layer options (use_for_center, sketch_pads_on_fab_layers and
+    exclude_filter) not copied on repeated layers
+  - `sketch_pads_on_fab_layers` not inherited from parent when using
+    layer names (See #777)
+
 
 ### Changed
 - Default temporal layer for internal use is now "Margin", instead of "User.9"
