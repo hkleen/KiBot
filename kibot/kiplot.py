@@ -298,7 +298,7 @@ def load_sch(sch_file=None, forced=False):
     GS.sch = load_any_sch(sch_file, os.path.splitext(os.path.basename(sch_file))[0])
 
 
-def create_component_from_footprint(m, ref):
+def create_component_from_footprint(m, ref, env):
     c = SchematicComponentV6()
     c.f_ref = c.ref = ref
     c.name = m.GetValue()
@@ -332,7 +332,7 @@ def create_component_from_footprint(m, ref):
     f.number = 3
     c.add_field(f)
     # Other fields
-    copy_fields(c, m)
+    copy_fields(c, m, env)
     c._solve_fields(None)
     try:
         c.split_ref()
@@ -348,12 +348,32 @@ class PadProperty(object):
     pass
 
 
-def copy_fields(c, m):
-    for name, value in GS.get_fields(m).items():
+def expand_footprint_fields(fields, env):
+    extra_env = {k.upper() if k.lower() in INTERNAL_FIELDS else k: v for k, v in fields.items()}
+    new_fields = {}
+    for k, v in fields.items():
+        new_value = v
+        depth = 1
+        used_extra = [False]
+        while depth < GS.MAXDEPTH:
+            new_value = expand_env(new_value, env, extra_env, used_extra=used_extra)
+            if not used_extra[0]:
+                break
+            depth += 1
+            if depth == GS.MAXDEPTH:
+                logger.warning(W_MAXDEPTH+'Too much nested variables replacements, possible loop ({})'.format(v))
+        new_fields[k] = new_value
+    return new_fields
+
+
+def copy_fields(c, m, env):
+    real_fields = GS.get_fields(m)
+    expanded_fields = expand_footprint_fields(real_fields, env)
+    for name, value in real_fields.items():
         if c.is_field(name.lower()):
             # Already there
             old = c.get_field_value(name)
-            if value and old != value:
+            if value and old != value and old != expanded_fields[name]:
                 logger.warning(f"{W_VALMISMATCH}{name} field mismatch for `{c.ref}` (SCH: `{old}` PCB: `{value}`)")
                 c.set_field(name, value)
         else:
@@ -376,6 +396,10 @@ def get_board_comps_data(comps):
         return
     load_board()
     comps_hash = {c.ref: c for c in comps}
+    # Get the KiCad variables for fields
+    KiConf.init(GS.sch_file)
+    env = KiConf.kicad_env
+    env.update(GS.load_pro_variables())
     for m in GS.get_modules():
         ref = m.GetReference()
         attrs = m.GetAttributes()
@@ -387,7 +411,7 @@ def get_board_comps_data(comps):
                 # v1.6.3 behavior
                 continue
             # Create a component for this so we can include/exclude it using filters
-            c = create_component_from_footprint(m, ref)
+            c = create_component_from_footprint(m, ref, env)
             if c is None:
                 continue
             comps.append(c)
@@ -408,7 +432,7 @@ def get_board_comps_data(comps):
         c.has_pcb_info = True
         c.pad_properties = {}
         if GS.global_use_pcb_fields:
-            copy_fields(c, m)
+            copy_fields(c, m, env)
         # Net
         net_name = set()
         net_class = set()
