@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2020-2024 Salvador E. Tropea
-# Copyright (c) 2020-2024 Instituto Nacional de Tecnología Industrial
+# Copyright (c) 2020-2025 Salvador E. Tropea
+# Copyright (c) 2020-2025 Instituto Nacional de Tecnología Industrial
 # License: GPL-3.0
 # Project: KiBot (formerly KiPlot)
 from contextlib import contextmanager
@@ -172,6 +172,7 @@ class GS(object):
     global_field_current = None
     global_field_lcsc_part = None
     global_field_package = None
+    global_field_part_number = None
     global_field_power = None
     global_field_temp_coef = None
     global_field_tolerance = None

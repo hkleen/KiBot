@@ -103,6 +103,8 @@
          I.e. 0805, SOT-23, etc. Used for the value split filter. |br|
          You can use `_field_package` as field name to use it in most places.
 
+      -  ``field_part_number`` :index:`: <pair: global options; field_part_number>` [:ref:`string <string>`] (default: ``''``) The name of the schematic field that contains the manufacturer part number.
+         You can use `_field_part_number` as field name to use it in most places.
       -  ``field_power`` :index:`: <pair: global options; field_power>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``['power', 'pow']``) Name/s of the field/s used for the power raiting.
          Used for the value split filter. |br|
          You can use `_field_power` as field name to use it in most places.

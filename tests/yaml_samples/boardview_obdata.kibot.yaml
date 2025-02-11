@@ -1,0 +1,13 @@
+# Example KiBot config file
+kibot:
+  version: 1
+
+globals:
+  field_part_number: MPN
+
+outputs:
+  - name: 'Board View Test'
+    comment: "Example of board view export"
+    type: boardview
+    options:
+      format: OBDATA

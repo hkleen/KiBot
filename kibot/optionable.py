@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2020-2023 Salvador E. Tropea
-# Copyright (c) 2020-2023 Instituto Nacional de Tecnología Industrial
-# License: GPL-3.0
+# Copyright (c) 2020-2025 Salvador E. Tropea
+# Copyright (c) 2020-2025 Instituto Nacional de Tecnología Industrial
+# License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
 """ Base class for output options """
 import difflib
@@ -703,6 +703,8 @@ class Optionable(object):
             return GS.global_field_tolerance[0] if GS.global_field_tolerance else field
         if rest == 'voltage':
             return GS.global_field_voltage[0] if GS.global_field_voltage else field
+        if rest == 'part_number':
+            return GS.global_field_part_number[0] if GS.global_field_part_number else field
         return field
 
 

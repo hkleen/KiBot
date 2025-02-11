@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `work_layer`: to choose the temporal layer for internal operations (#713)
 - Workaround for people using backslashes (i.e. Windows+WSL) (#719) (#607)
   More general than in previous versions.
+- Boardview: OBDATA support
 - BoM:
   - Field aliases ${QUANTITY} and ${ITEM_NUMBER} for compatibility with
     KiCad's internal BoM.

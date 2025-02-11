@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2020-2023 Salvador E. Tropea
-# Copyright (c) 2020-2023 Instituto Nacional de Tecnología Industrial
-# License: GPL-3.0
+# Copyright (c) 2020-2025 Salvador E. Tropea
+# Copyright (c) 2020-2025 Instituto Nacional de Tecnología Industrial
+# License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
 import os
 from .error import KiPlotConfigurationError
@@ -318,6 +318,9 @@ class Globals(FiltersOptions):
             """ The name of the schematic field that contains the part number for the LCSC/JLCPCB distributor.
                 When empty KiBot will try to discover it.
                 You can use `_field_lcsc_part` as field name to use it in most places """
+            self.field_part_number = ''
+            """ The name of the schematic field that contains the manufacturer part number.
+                You can use `_field_part_number` as field name to use it in most places """
             self.allow_blind_buried_vias = True
             """ Allow the use of buried vias. This value is only used for KiCad 7+.
                 For KiCad 5 and 6 use the design rules settings, stored in the project """
@@ -524,6 +527,7 @@ class Globals(FiltersOptions):
         self.field_package = Optionable.force_list(self.field_package)
         self.field_temp_coef = Optionable.force_list(self.field_temp_coef)
         self.field_power = Optionable.force_list(self.field_power)
+        self.field_part_number = Optionable.force_list(self.field_part_number)
         # Transfer options to the GS globals
         for option in filter(lambda x: x[0] != '_', self.__dict__.keys()):
             gl = 'global_'+option

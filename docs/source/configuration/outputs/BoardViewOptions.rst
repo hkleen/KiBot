@@ -15,8 +15,10 @@ BoardViewOptions parameters
    Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
    variant.
 
--  ``format`` :index:`: <pair: output - boardview - options; format>` [:ref:`string <string>`] (default: ``'BRD'``) (choices: "BRD", "BVR") Format used for the generated file. The BVR file format is bigger but keeps
-   more information, like alphanumeric pin names.
+-  ``format`` :index:`: <pair: output - boardview - options; format>` [:ref:`string <string>`] (default: ``'BRD'``) (choices: "BRD", "BVR", "OBDATA") Format used for the generated file. The BVR file format is bigger but keeps
+   more information, like alphanumeric pin names. |br|
+   OBDATA is the OpenBoardData format. You can include the manufacturer part number defining the global
+   `field_part_number` variable. Excluded and not fitted components are marked with `-` status.
 -  ``pre_transform`` :index:`: <pair: output - boardview - options; pre_transform>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to transform fields before applying other filters.
    Is a short-cut to use for simple cases where a variant is an overkill. |br|
    Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
