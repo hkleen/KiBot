@@ -8,7 +8,7 @@ import os
 import re
 import csv
 from pcbnew import (PLOT_FORMAT_HPGL, PLOT_FORMAT_POST, PLOT_FORMAT_GERBER, PLOT_FORMAT_DXF, PLOT_FORMAT_SVG,
-                    PLOT_FORMAT_PDF, wxPoint, B_Cu)
+                    PLOT_FORMAT_PDF, wxPoint, B_Cu, F_Cu)
 from .error import KiPlotConfigurationError
 from .kicad.drill_info import get_full_holes_list, PLATED_DICT, HOLE_SHAPE_DICT, HOLE_TYPE_DICT
 from .optionable import Optionable
@@ -221,8 +221,13 @@ class AnyDrill(VariantOptions):
     @staticmethod
     def _get_layer_pair_names(layer_pair):
         layer_cnt = GS.board.GetCopperLayerCount()
-        top_layer = layer_pair[0] + 1
-        bot_layer = layer_pair[1] + 1 if layer_pair[1] != B_Cu else layer_cnt
+        if GS.ki9:
+            # TODO: Unify and abstract
+            top_layer = int(layer_pair[0]/2) if layer_pair[0] != F_Cu else 1
+            bot_layer = int(layer_pair[1]/2) if layer_pair[1] != B_Cu else layer_cnt
+        else:
+            top_layer = layer_pair[0] + 1
+            bot_layer = layer_pair[1] + 1 if layer_pair[1] != B_Cu else layer_cnt
         return f"(L{top_layer}-L{bot_layer})"
 
     @staticmethod
