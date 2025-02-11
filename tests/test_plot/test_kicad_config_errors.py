@@ -86,7 +86,9 @@ def test_kicad_conf_guess_libs(monkeypatch):
     """ Check no HOME and fail to load kicad_common.
         Also check we correctly guess the libs dir. """
     res = check_load_conf(fail=True, no_conf_path=True)
-    if context.ki8():
+    if context.ki9():
+        name = "KICAD9_SYMBOL_DIR"
+    elif context.ki8():
         name = "KICAD8_SYMBOL_DIR"
     elif context.ki7():
         name = "KICAD7_SYMBOL_DIR"
