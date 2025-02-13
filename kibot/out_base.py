@@ -280,6 +280,8 @@ class VariantOptions(BaseOptions):
         self._undo_3d_models_rep = {}
         self._highlight_3D_file = None
         self._highlighted_3D_components = None
+        # Use a condensed list of components. Repeated references are listed once. Sub-units are represented by one
+        self._collapse_components = True
 
     def config(self, parent):
         super().config(parent)
@@ -1118,7 +1120,7 @@ class VariantOptions(BaseOptions):
         if not self.dnf_filter and not self.variant and not self.pre_transform and not self.exclude_filter:
             return
         # Get the components list from the schematic
-        comps = get_all_components()
+        comps = get_all_components(collapse=self._collapse_components)
         # Apply the filter
         reset_filters(comps)
         comps = apply_pre_transform(comps, self.pre_transform)

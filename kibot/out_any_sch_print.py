@@ -36,6 +36,8 @@ class Any_SCH_PrintOptions(VariantOptions):
         super().__init__()
         self.add_to_doc('variant', "Not fitted components are crossed")
         self._expand_id = 'schematic'
+        # We need the list from the schematic to control the real components
+        self._collapse_components = False
 
     def get_targets(self, out_dir):
         if self.output:

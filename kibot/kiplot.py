@@ -383,9 +383,9 @@ def copy_fields(c, m, env):
             c.set_field(name, value)
 
 
-def get_all_components():
+def get_all_components(collapse=True):
     load_sch()
-    comps = GS.sch.get_components()
+    comps = GS.sch.get_components(collapse=collapse)
     get_board_comps_data(comps)
     return comps
 
