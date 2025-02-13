@@ -87,6 +87,8 @@
 			(outputdirectory "")
 		)
 	)
+	(property "VAL_C2" "1000 pF")
+	(property "text" "Test")
 	(net 0 "")
 	(net 1 "unconnected-(C1-Pad1)")
 	(net 2 "unconnected-(C1-Pad2)")
