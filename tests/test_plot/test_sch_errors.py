@@ -5,6 +5,7 @@ Tests SCH errors
 For debug information use:
 pytest-3 --log-cli-level debug
 """
+import pytest
 from . import context
 from kibot.misc import CORRUPTED_SCH
 
@@ -311,3 +312,13 @@ def test_imported_k6(test_dir):
         prj = 'imported_top'
         ctx = context.TestContextSCH(test_dir, prj, 'int_bom_simple_csv')
         ctx.run()
+
+
+@pytest.mark.skipif(not context.ki8(), reason="Just v8 test")
+def test_field_duplicated(test_dir):
+    """ Test MNP vs mnp collision """
+    prj = 'field_duplicated'
+    ctx = context.TestContextSCH(test_dir, prj, 'int_bom_csv_mpn')
+    ctx.run()
+    ctx.search_err("Field conflict: MNP='Different' vs mnp='Test_1'")
+    ctx.clean_up()
