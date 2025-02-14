@@ -29,6 +29,7 @@ PCB2Blender_ToolsOptions parameters
    Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
    variant.
 
+-  ``solder_join_on_heatsink`` :index:`: <pair: output - pcb2blender_tools - options; solder_join_on_heatsink>` [:ref:`boolean <boolean>`] (default: ``true``) Solder the THT pads with heatsink fabrication attribute.
 -  ``stackup_create`` :index:`: <pair: output - pcb2blender_tools - options; stackup_create>` [:ref:`boolean <boolean>`] (default: ``false``) Create a file containing the board stackup.
 -  ``stackup_dir`` :index:`: <pair: output - pcb2blender_tools - options; stackup_dir>` [:ref:`string <string>`] (default: ``'.'``) Directory for the stackup file. Use 'layers' for 2.7+.
 -  ``stackup_file`` :index:`: <pair: output - pcb2blender_tools - options; stackup_file>` [:ref:`string <string>`] (default: ``'board.yaml'``) Name for the stackup file. Use 'stackup' for 2.7+.

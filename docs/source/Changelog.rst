@@ -47,6 +47,7 @@ Added
 
 -  Workaround for people using backslashes (i.e. Windows+WSL) (#719)
    (#607) More general than in previous versions.
+-  Blender Export: option to avoid soldering heatsinks
 -  Boardview: OBDATA support
 -  BoM:
 

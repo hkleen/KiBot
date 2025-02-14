@@ -342,6 +342,8 @@ outputs:
         # Ranges like *R5-R10* are supported.
         # Unlike the `pcbdraw` output, the default is `all`
         show_components: 'all'
+        # [boolean=true] Solder the THT pads with heatsink fabrication attribute
+        solder_join_on_heatsink: true
         # [boolean=true] Add solder paste only for the populated components.
         # Populated components are the ones listed in `show_components`
         solder_paste_for_populated: true
@@ -2871,6 +2873,8 @@ outputs:
       # [list(string)|string='all'] [none,all,*] List of components to include in the pads list,
       # can be also a string for `none` or `all`. Ranges like *R5-R10* are supported
       show_components: 'all'
+      # [boolean=true] Solder the THT pads with heatsink fabrication attribute
+      solder_join_on_heatsink: true
       # [boolean=false] Create a file containing the board stackup
       stackup_create: false
       # [string='.'] Directory for the stackup file. Use 'layers' for 2.7+

@@ -202,6 +202,13 @@
                 "DataTypeBoolean"
               ],
               null
+            ],
+            [
+              "solder_join_on_heatsink",
+              [
+                "DataTypeBoolean"
+              ],
+              null
             ]
           ]
         ],
@@ -8499,6 +8506,13 @@
           "show_components",
           [
             "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "solder_join_on_heatsink",
+          [
+            "DataTypeBoolean"
           ],
           null
         ],

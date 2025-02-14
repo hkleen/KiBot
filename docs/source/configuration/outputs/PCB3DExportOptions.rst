@@ -41,6 +41,7 @@ PCB3DExportOptions parameters
    Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
    variant.
 
+-  ``solder_join_on_heatsink`` :index:`: <pair: output - blender_export - options - pcb3d; solder_join_on_heatsink>` [:ref:`boolean <boolean>`] (default: ``true``) Solder the THT pads with heatsink fabrication attribute.
 -  ``solder_paste_for_populated`` :index:`: <pair: output - blender_export - options - pcb3d; solder_paste_for_populated>` [:ref:`boolean <boolean>`] (default: ``true``) Add solder paste only for the populated components.
    Populated components are the ones listed in `show_components`.
 -  ``variant`` :index:`: <pair: output - blender_export - options - pcb3d; variant>` [:ref:`string <string>`] (default: ``''``) Board variant to apply.

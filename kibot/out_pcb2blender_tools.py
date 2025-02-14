@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2023 Salvador E. Tropea
-# Copyright (c) 2023 Instituto Nacional de Tecnología Industrial
-# License: GPL-3.0
+# Copyright (c) 2023-2025 Salvador E. Tropea
+# Copyright (c) 2023-2025 Instituto Nacional de Tecnología Industrial
+# License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
 # Some code is adapted from: https://github.com/30350n/pcb2blender
 from dataclasses import dataclass, field
@@ -11,8 +11,10 @@ import os
 import re
 import struct
 from typing import List
-from pcbnew import B_Paste, F_Paste, PCB_TEXT_T, ToMM
 from .gs import GS
+from pcbnew import B_Paste, F_Paste, PCB_TEXT_T, ToMM
+if GS.ki6:
+    from pcbnew import PAD_PROP_HEATSINK
 from .misc import (MOD_THROUGH_HOLE, MOD_SMD, UI_VIRTUAL, W_UNKPCB3DTXT, W_NOPCB3DBR, W_NOPCB3DTL, W_BADPCB3DTXT,
                    W_UNKPCB3DNAME, W_BADPCB3DSTK, MISSING_TOOL)
 from .optionable import Optionable
@@ -21,6 +23,12 @@ from .macros import macros, document, output_class  # noqa: F401
 from . import log
 
 logger = log.get_logger()
+
+
+def is_heatsink_pad(pad):
+    if not GS.ki6:
+        return False
+    return pad.GetProperty() == PAD_PROP_HEATSINK
 
 
 @dataclass
@@ -106,6 +114,8 @@ class PCB2Blender_ToolsOptions(VariantOptions):
             self.show_components = Optionable
             """ *[list(string)|string='all'] [none,all,*] List of components to include in the pads list,
                 can be also a string for `none` or `all`. Ranges like *R5-R10* are supported """
+            self.solder_join_on_heatsink = True
+            """ Solder the THT pads with heatsink fabrication attribute """
         super().__init__()
         self._expand_id = 'pcb2blender'
         self._expand_ext = 'pcb3d'
@@ -158,6 +168,8 @@ class PCB2Blender_ToolsOptions(VariantOptions):
             value = value.replace('/', '_')
             reference = footprint.GetReference()
             for j, pad in enumerate(footprint.Pads()):
+                if not self.solder_join_on_heatsink and is_heatsink_pad(pad):
+                    continue
                 name = os.path.join(dir_name, sanitized("{}_{}_{}_{}".format(value, reference, i, j)))
                 is_flipped = pad.IsFlipped()
                 has_paste = pad.IsOnLayer(B_Paste if is_flipped else F_Paste)
@@ -341,7 +353,9 @@ class PCB2Blender_ToolsOptions(VariantOptions):
             for i, footprint in enumerate(GS.get_modules()):
                 value = footprint.GetValue()
                 reference = footprint.GetReference()
-                for j in range(len(footprint.Pads())):
+                for j, pad in enumerate(footprint.Pads()):
+                    if not self.solder_join_on_heatsink and is_heatsink_pad(pad):
+                        continue
                     files.append(os.path.join(dir_name, sanitized("{}_{}_{}_{}".format(value, reference, i, j))))
         if self.stackup_create and (GS.global_pcb_finish or GS.stackup):
             files.append(os.path.join(out_dir, self.stackup_dir, self.stackup_file))
