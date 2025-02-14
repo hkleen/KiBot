@@ -16,7 +16,7 @@ import os
 import re
 from ..gs import GS
 from .. import log
-from ..misc import W_NOLIB, W_UNKFLD, W_MISSCMP
+from ..misc import W_NOLIB, W_UNKFLD, W_MISSCMP, W_FIELDCONF
 from .error import SchError
 from .sexpdata import load, SExpData, Symbol, dumps, Sep
 from .sexp_helpers import (_check_is_symbol_list, _check_len, _check_len_total, _check_symbol, _check_hide, _check_integer,
@@ -1200,6 +1200,11 @@ class SchematicComponentV6(SchematicComponent):
                 field = SchematicFieldV6.parse(i, field_id)
                 field_id += 1
                 name_lc = field.name.lower()
+                if name_lc in comp.dfields:
+                    old = comp.dfields[name_lc]
+                    if old.value != field.value:
+                        logger.warning(W_FIELDCONF+f"Field conflict: {field.name}='{field.value}' vs {old.name}='{old.value}'"
+                                       f" (in {comp.fields[0].value})")
                 # Add to the global collection
                 if name_lc not in parent.fields_lc:
                     parent.fields.append(field.name)
