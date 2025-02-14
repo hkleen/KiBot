@@ -842,7 +842,7 @@ class LibComponent(object):
             elif i_type == 'pin_names':
                 value = _check_len(i, 1, i_type)
                 index = 1
-                if isinstance(value, list):
+                if isinstance(value, list) and isinstance(value[0], Symbol) and value[0].value() == 'offset':
                     comp.pin_names_offset = _get_offset(i, 1, i_type)
                     index = 2
                 comp.pin_names_hide = None
