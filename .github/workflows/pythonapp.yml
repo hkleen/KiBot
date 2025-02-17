@@ -31,10 +31,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # ki_release: [ki5, ki6, ki7, ki8, nightly]
-        # w_tests: [g1, g2, g3]
-        ki_release: [nightly]
-        w_tests: [gdebug]
+        ki_release: [ki5, ki6, ki7, ki8, nightly]
+        w_tests: [g1, g2, g3]
+        # ki_release: [nightly]
+        # w_tests: [gdebug]
 
     runs-on: ubuntu-latest
     container: ghcr.io/inti-cmnb/kicad_auto_test:${{ matrix.ki_release }}
