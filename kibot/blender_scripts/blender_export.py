@@ -48,6 +48,10 @@ def enable_addon():
     res = addon_utils.enable("bl_ext.blender_org.pcb3d_importer")
     if res is not None:
         return res
+    # Also try at system level
+    res = addon_utils.enable("bl_ext.system.pcb3d_importer")
+    if res is not None:
+        return res
     print('Failed to find PCB3D import addon')
     print('Installed anddons:')
     for addon in addon_utils.modules():
