@@ -351,7 +351,7 @@ SOLDER_COLORS = {'green': ("#285e3a", "#208b47"),
 SILK_COLORS = {'black': "0b1013", 'white': "d5dce4"}
 # Some browser name to pretend, popular at the moment
 # https://techblog.willshouse.com/2012/01/03/most-common-user-agents/ on 2024-10-22
-USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36'
+USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36'
 # Old value, caused problems with Zscaler
 # USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101 Firefox/102.0'
 # Text used to disable 3D models
