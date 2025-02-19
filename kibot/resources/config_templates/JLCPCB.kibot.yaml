@@ -74,6 +74,7 @@ outputs:
       map: gerber
       route_mode_for_oval_holes: false
       output: "%f%i.%x"
+      use_aux_axis_as_origin: @_KIBOT_DRILL_AUX_ORIGIN@
 
   - name: _JLCPCB_position@_KIBOT_IMPORT_ID@
     comment: "Pick and place file, JLCPCB style"
@@ -154,6 +155,7 @@ definitions:
   _KIBOT_PLOT_FOOTPRINT_REFS: true
   _KIBOT_PLOT_FOOTPRINT_VALUES: false
   _KIBOT_COMPRESS_MOVE: true
+  _KIBOT_DRILL_AUX_ORIGIN: true
   _KIBOT_GERBER_LAYERS: |
       - copper
             - F.SilkS
