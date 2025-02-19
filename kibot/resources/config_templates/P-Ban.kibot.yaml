@@ -55,6 +55,7 @@ outputs:
       left_digits: 3
       right_digits: 3
       output: "%f.drl"
+      use_aux_axis_as_origin: @_KIBOT_DRILL_AUX_ORIGIN@
 
   - name: _P-Ban_compress@_KIBOT_IMPORT_ID@
     comment: ZIP file for P-Ban
@@ -79,6 +80,7 @@ definitions:
   _KIBOT_PLOT_FOOTPRINT_REFS: true
   _KIBOT_PLOT_FOOTPRINT_VALUES: true
   _KIBOT_COMPRESS_MOVE: true
+  _KIBOT_DRILL_AUX_ORIGIN: false
   _KIBOT_GERBER_LAYERS: |
       - copper
             - F.SilkS

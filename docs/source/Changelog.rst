@@ -45,6 +45,10 @@ Added
    -  ``work_layer``: to choose the temporal layer for internal
       operations (#713)
 
+-  Internal templates:
+
+   -  ``_KIBOT_DRILL_AUX_ORIGIN`` option to control drill origin
+
 -  Workaround for people using backslashes (i.e. Windows+WSL) (#719)
    (#607) More general than in previous versions.
 -  Blender Export: option to avoid soldering heatsinks
