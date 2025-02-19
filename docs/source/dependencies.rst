@@ -22,13 +22,10 @@
    -  Compare schematics for `kiri` (v2.2.0)
    -  Print the page frame in GUI mode for `pcb_print` (v1.6.7)
 
-`KiKit <https://github.com/INTI-CMNB/KiKit>`__ :index:`: <pair: dependency; KiKit>`  v1.5.1 |image11| |Auto-download|
+`KiKit <https://github.com/INTI-CMNB/KiKit>`__ :index:`: <pair: dependency; KiKit>`  v1.7.0 |image11| |Auto-download|
 
 -  Mandatory for: `panelize`, `stencil_3d`, `stencil_for_jig`
 -  Optional to separate multiboard projects for general use
--  Notes:
-   -  Official 1.3.0 release does not work, use my fork if 1.3.0 is the latest
-   -  You can also try the official 1.4.0 release
 
 `KiCad PCB/SCH Diff <https://github.com/INTI-CMNB/KiDiff>`__ :index:`: <pair: dependency; KiCad PCB/SCH Diff>`  v2.5.3 |image12| |Auto-download|
 
