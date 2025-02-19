@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2021 Salvador E. Tropea
-# Copyright (c) 2021 Instituto Nacional de Tecnología Industrial
-# License: GPL-3.0
+# Copyright (c) 2021-2025 Salvador E. Tropea
+# Copyright (c) 2021-2025 Instituto Nacional de Tecnología Industrial
+# License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
 import os
 import re
 import requests
+import urllib.request
 from .optionable import Optionable
 from .out_base import VariantOptions
 from .fil_base import DummyFilter
@@ -82,22 +83,32 @@ class Download_Datasheets_Options(VariantOptions):
         elif not os.path.isfile(dest):
             # Download
             if not self._dry:
-                try:
-                    r = requests.get(ds, allow_redirects=True, headers={'User-Agent': USER_AGENT}, timeout=20)
-                except requests.exceptions.ReadTimeout:
-                    return self.do_warning('Timeout', ds, c)
-                except requests.exceptions.SSLError:
-                    return self.do_warning('SSL Error', ds, c)
-                except requests.exceptions.TooManyRedirects:
-                    return self.do_warning('More than 30 redirections', ds, c)
-                except requests.exceptions.ConnectionError:
-                    return self.do_warning('Connection', ds, c)
-                except requests.exceptions.RequestException as e:
-                    return self.do_warning(str(e), ds, c)
-                if r.status_code != 200:
-                    return self.do_warning('Failed with status '+str(r.status_code), ds, c)
+                if 'digikey' in ds:
+                    req = urllib.request.Request(ds)
+                    req.add_header('User-Agent', USER_AGENT)
+                    try:
+                        data = urllib.request.urlopen(req).read()
+                    except Exception as e:
+                        return self.do_warning('Failed '+str(e), ds, c)
+                else:
+                    try:
+                        r = requests.get(ds, allow_redirects=True, headers={'User-Agent': USER_AGENT}, timeout=20)
+                    except requests.exceptions.ReadTimeout:
+                        return self.do_warning('Timeout', ds, c)
+                    except requests.exceptions.SSLError:
+                        return self.do_warning('SSL Error', ds, c)
+                    except requests.exceptions.TooManyRedirects:
+                        return self.do_warning('More than 30 redirections', ds, c)
+                    except requests.exceptions.ConnectionError:
+                        return self.do_warning('Connection', ds, c)
+                    except requests.exceptions.RequestException as e:
+                        return self.do_warning(str(e), ds, c)
+                    if r.status_code != 200:
+                        return self.do_warning('Failed with status '+str(r.status_code), ds, c)
+                    else:
+                        data = r.content
                 with open(dest, 'wb') as f:
-                    f.write(r.content)
+                    f.write(data)
             self._downloaded.add(name)
             self._created.append(os.path.relpath(dest))
         elif self._dry:
