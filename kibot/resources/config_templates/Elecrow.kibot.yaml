@@ -35,6 +35,7 @@ outputs:
       subtract_mask_from_silk: true
       inner_extension_pattern: '.g%n'
       edge_cut_extension: '.gml'
+      use_aux_axis_as_origin: @_KIBOT_DRILL_AUX_ORIGIN@
     layers:
       @_KIBOT_GERBER_LAYERS@
       @_KIBOT_F_PASTE@

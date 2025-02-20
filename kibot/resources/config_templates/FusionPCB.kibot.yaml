@@ -33,7 +33,7 @@ outputs:
       line_width: 0.1
       uppercase_extensions: true
       subtract_mask_from_silk: false
-      use_aux_axis_as_origin: true
+      use_aux_axis_as_origin: @_KIBOT_DRILL_AUX_ORIGIN@
       inner_extension_pattern: '.gl%N'
       edge_cut_extension: '.gml'
     layers:

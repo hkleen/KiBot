@@ -57,6 +57,7 @@ outputs:
       line_width: 0.1
       subtract_mask_from_silk: true
       inner_extension_pattern: '.g%n'
+      use_aux_axis_as_origin: @_KIBOT_DRILL_AUX_ORIGIN@
     layers:
       @_KIBOT_GERBER_LAYERS@
       @_KIBOT_F_PASTE@
@@ -89,6 +90,7 @@ outputs:
       units: millimeters
       separate_files_for_front_and_back: false
       only_smd: @_KIBOT_POS_ONLY_SMD@
+      use_aux_axis_as_origin: @_KIBOT_DRILL_AUX_ORIGIN@
       columns:
         - id: Ref
           name: Designator

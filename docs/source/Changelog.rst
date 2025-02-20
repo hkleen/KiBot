@@ -47,7 +47,8 @@ Added
 
 -  Internal templates:
 
-   -  ``_KIBOT_DRILL_AUX_ORIGIN`` option to control drill origin
+   -  ``_KIBOT_DRILL_AUX_ORIGIN`` option to control drill, position and
+      gerber origin
 
 -  Workaround for people using backslashes (i.e. Windows+WSL) (#719)
    (#607) More general than in previous versions.

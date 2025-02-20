@@ -359,7 +359,7 @@ The manufacturer templates (Elecrow, FusionPCB, JLCPCB, P-Ban and PCBWay) suppor
 -  **_KIBOT_PLOT_FOOTPRINT_REFS**: Include the footprint references in the gerbers (default: true)
 -  **_KIBOT_PLOT_FOOTPRINT_VALUES**: Include the footprint values in the gerbers (default: true, except for JLCPCB)
 -  **_KIBOT_COMPRESS_MOVE**: Move the generated files to the compressed archive (default: true)
--  **_KIBOT_DRILL_AUX_ORIGIN**: Use the auxiliar origin as coordinates origin for drill files (default: false, except for FusionPCB)
+-  **_KIBOT_DRILL_AUX_ORIGIN**: Use the auxiliar origin as coordinates origin for drill, position and gerber files (default: false, except for FusionPCB)
 
 
 The JLCPCB case is a little bit more complex and also supports:
