@@ -284,9 +284,15 @@ class Layer(Optionable):
 
     @staticmethod
     def _get_user():
+        b = GS.board
+        enabled = b.GetEnabledLayers()
         if GS.ki9:
-            return {GS.board.GetLayerName(id): id for id in GS.board.GetEnabledLayers().UserMask().Seq()}
-        return {GS.board.GetLayerName(id): id for id in GS.board.GetEnabledLayers().Users()}
+            layers = {b.GetLayerName(id): id for id in enabled.UserMask().Seq()}
+            # Applying UserDefinedLayersMask() doesn't work as expected it returns all possible user layers
+            # This is why we need the "if id ..." and this why we need to get the list in 2 steps
+            layers.update({b.GetLayerName(id): id for id in enabled.UserDefinedLayersMask().Seq() if id in enabled.Seq()})
+            return layers
+        return {GS.board.GetLayerName(id): id for id in enabled.Users()}
 
     @staticmethod
     def _set_pcb_layers():
