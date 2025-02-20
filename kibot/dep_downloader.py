@@ -74,7 +74,9 @@ Dependencies:
     github: INTI-CMNB/KiKit
     pypi: KiKit
     downloader: pytool
-    version: 1.7.0
+    version_k6: 1.5.0
+    version_k7: 1.6.0
+    version_k9: 1.7.0
   - from: KiKit
     role: Separate multiboard projects
   - name: Xvfbwrapper
@@ -955,6 +957,21 @@ class ToolDependency(object):
         self.role = role
 
 
+def get_dep_version(dep):
+    # Look if we have a version depending on KiCad version
+    k_ver = GS.kicad_version_major
+    version = None
+    while k_ver >= 5 and version is None:
+        version = dep.get('version_k'+str(k_ver), None)
+        k_ver -= 1
+    # Try a version for all KiCad versions
+    if version is not None:
+        version = dep.get('version', None)
+    if version is not None:
+        version = version_str2tuple(str(version))
+    return version
+
+
 def register_dep(context, dep):
     # Solve inheritance
     parent = dep.get('from', None)
@@ -971,9 +988,7 @@ def register_dep(context, dep):
     desc = dep['role']
     if desc.lower() == 'mandatory':
         desc = None
-    version = dep.get('version', None)
-    if version is not None:
-        version = version_str2tuple(str(version))
+    version = get_dep_version(dep)
     max_version = dep.get('max_version', None)
     if max_version is not None:
         max_version = version_str2tuple(str(max_version))
