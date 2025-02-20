@@ -965,7 +965,7 @@ def get_dep_version(dep):
         version = dep.get('version_k'+str(k_ver), None)
         k_ver -= 1
     # Try a version for all KiCad versions
-    if version is not None:
+    if version is None:
         version = dep.get('version', None)
     if version is not None:
         version = version_str2tuple(str(version))
