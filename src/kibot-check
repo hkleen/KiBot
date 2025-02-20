@@ -800,7 +800,7 @@ deps = '{\
                 "output": "global",\
                 "version": [\
                     1,\
-                    7,\
+                    6,\
                     0\
                 ]\
             },\
@@ -811,8 +811,8 @@ deps = '{\
                 "output": "panelize",\
                 "version": [\
                     1,\
-                    5,\
-                    1\
+                    6,\
+                    0\
                 ]\
             },\
             {\
@@ -822,7 +822,7 @@ deps = '{\
                 "output": "stencil_3d",\
                 "version": [\
                     1,\
-                    7,\
+                    6,\
                     0\
                 ]\
             },\
@@ -833,7 +833,7 @@ deps = '{\
                 "output": "stencil_for_jig",\
                 "version": [\
                     1,\
-                    7,\
+                    6,\
                     0\
                 ]\
             }\
