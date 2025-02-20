@@ -528,7 +528,8 @@ class KiConf(object):
         if not loaded and 'KICAD_TEMPLATE_DIR' in KiConf.kicad_env:
             loaded = KiConf.load_lib_aliases(os.path.join(KiConf.kicad_env['KICAD_TEMPLATE_DIR'], table_name), lib_aliases)
         if not loaded:
-            logger.warning(W_NODEFSYMLIB + 'Missing default symbol library table')
+            if not GS.ci_cd_detected:
+                logger.warning(W_NODEFSYMLIB + 'Missing default symbol library table')
             # No default symbol libs table, try to create one
             if KiConf.sym_lib_dir:
                 for f in glob(os.path.join(sys_dir, pattern)):
@@ -579,7 +580,8 @@ class KiConf(object):
                 if global_fp_name and os.path.isfile(global_fp_name):
                     # Try to copy the template
                     if not GS.ci_cd_detected:
-                        logger.warning(f'{W_MISLIBTAB}Missing default system symbol table {table_name}, copying the template')
+                        logger.warning(f'{W_MISLIBTAB}Missing default system footprint table {table_name},'
+                                       ' copying the template')
                     logger.debug(f'Copying {global_fp_name} to {fp_name}')
                     copy2(global_fp_name, fp_name)
                     atexit.register(KiConf.remove_lib_table, fp_name)
