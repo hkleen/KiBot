@@ -20,7 +20,7 @@ from shutil import copy2
 from sys import exit, exc_info
 import tempfile
 from traceback import extract_stack, format_list, print_tb
-from .misc import EXIT_BAD_ARGS, W_DATEFORMAT, W_UNKVAR, WRONG_INSTALL, CORRUPTED_PRO
+from .misc import EXIT_BAD_ARGS, W_DATEFORMAT, W_UNKVAR, WRONG_INSTALL, CORRUPTED_PRO, hide_stderr
 from .log import get_logger
 
 logger = get_logger(__name__)
@@ -653,7 +653,9 @@ class GS(object):
 
     @staticmethod
     def load_board_low_level(file):
-        return pcbnew.LoadBoard(file)
+        with hide_stderr():
+            board = pcbnew.LoadBoard(file)
+        return board
 
     @staticmethod
     def load_sch():
