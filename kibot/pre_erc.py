@@ -104,16 +104,20 @@ class ERC(XRC):  # noqa: F821
         # HTML Head
         html = self.create_html_top(data)
         # Generate the content
+        empty = True
         for sheet in data.get('sheets', []):
             violations = sheet.get('violations', [])
             if not violations:
                 continue
+            empty = False
             sheet_fname = sheet.get('file_name', '')
             name = sheet.get('path', '')
             if sheet_fname:
                 name += f' ({sheet_fname})'
             html += f'<p class="subtitle">Sheet {name}</p>\n'
             html += self.create_html_violations(violations)
+        if empty:
+            html += self.create_html_ok()
         html += self.create_html_bottom()
         return html
 

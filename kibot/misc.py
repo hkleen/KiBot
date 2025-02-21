@@ -396,6 +396,8 @@ STYLE_COMMON = (" .cell-title { vertical-align: bottom; }\n"
                 " .color-ref th { text-align: left }\n"
                 " .color-ref td { padding: 5px 20px; }\n"
                 " .head-table { margin-bottom: 2em; }\n"
+                # Style the centered checkmark
+                " .centered-checkmark { font-size: 30vw; text-align: center; color: green; }\n"
                 # Table sorting cursor. 60% transparent when disabled. Solid white when enabled.
                 " .tg-sort-header::-moz-selection{background:0 0}\n"
                 " .tg-sort-header::selection{background:0 0}.tg-sort-header{cursor:pointer}\n"

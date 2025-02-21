@@ -271,6 +271,10 @@ class XRC(BasePreFlight):
         html += '</table>\n'
         return html
 
+    def create_html_ok(self):
+        """ Put a big checkmark to indicate all went ok """
+        return '<div class="centered-checkmark">&#x2714;</div>\n'
+
     def run(self):
         # Differences between ERC and DRC
         if GS.sch_file:

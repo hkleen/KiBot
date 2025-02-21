@@ -110,13 +110,17 @@ class DRC(XRC):  # noqa: F821
         # HTML Head
         html = self.create_html_top(data)
         # Generate the content
+        empty = True
         for section in JSON_SECTIONS:
             violations = data.get(section, [])
             if not violations:
                 continue
+            empty = False
             name = SECTION_HUMAN[section]
             html += f'<p class="subtitle">{name}</p>\n'
             html += self.create_html_violations(violations)
+        if empty:
+            html += self.create_html_ok()
         html += self.create_html_bottom()
         return html
 
