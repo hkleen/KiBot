@@ -86,6 +86,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     The variables are named OUTPUT_outpath_INDEX (#761)
 - SCH Variant and *SCH Print:
   - A mechanism to paste images from outputs (#714)
+- *SCH Print:
+  - Default font for KiCad 9 (#691)
 
 ### Fixed
 - Definitions: avoid interpreting empty definitions as the "None" string

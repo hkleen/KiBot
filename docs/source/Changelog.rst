@@ -131,6 +131,10 @@ Added
 
    -  A mechanism to paste images from outputs (#714)
 
+-  \*SCH Print:
+
+   -  Default font for KiCad 9 (#691)
+
 Fixed
 ~~~~~
 

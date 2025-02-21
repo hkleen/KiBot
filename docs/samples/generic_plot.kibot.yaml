@@ -1208,6 +1208,8 @@ outputs:
       background_color: false
       # [string=''] Color theme used, this must exist in the KiCad config (KiCad 6)
       color_theme: ''
+      # [string='KiCad Font'] Name for the default font. Only for KiCad 9 and newer
+      default_font: 'KiCad Font'
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
       # Is a short-cut to use for simple cases where a variant is an overkill.
       # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
@@ -1616,6 +1618,8 @@ outputs:
       background_color: false
       # [string=''] Color theme used, this must exist in the KiCad config (KiCad 6)
       color_theme: ''
+      # [string='KiCad Font'] Name for the default font. Only for KiCad 9 and newer
+      default_font: 'KiCad Font'
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
       # Is a short-cut to use for simple cases where a variant is an overkill.
       # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
@@ -3538,6 +3542,8 @@ outputs:
       background_color: false
       # [string=''] Color theme used, this must exist in the KiCad config (KiCad 6)
       color_theme: ''
+      # [string='KiCad Font'] Name for the default font. Only for KiCad 9 and newer
+      default_font: 'KiCad Font'
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
       # Is a short-cut to use for simple cases where a variant is an overkill.
       # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
@@ -3805,6 +3811,8 @@ outputs:
       background_color: false
       # [string=''] Color theme used, this must exist in the KiCad config (KiCad 6)
       color_theme: ''
+      # [string='KiCad Font'] Name for the default font. Only for KiCad 9 and newer
+      default_font: 'KiCad Font'
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
       # Is a short-cut to use for simple cases where a variant is an overkill.
       # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
@@ -4512,6 +4520,8 @@ outputs:
       background_color: false
       # [string=''] Color theme used, this must exist in the KiCad config (KiCad 6)
       color_theme: ''
+      # [string='KiCad Font'] Name for the default font. Only for KiCad 9 and newer
+      default_font: 'KiCad Font'
       # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
       # Is a short-cut to use for simple cases where a variant is an overkill.
       # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the

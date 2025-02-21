@@ -3049,6 +3049,13 @@
           null
         ],
         [
+          "default_font",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
           "variant",
           [
             "DataTypeString"
@@ -4585,6 +4592,13 @@
         ],
         [
           "sheet_reference_layout",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
+          "default_font",
           [
             "DataTypeString"
           ],
@@ -10770,6 +10784,13 @@
           null
         ],
         [
+          "default_font",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
           "variant",
           [
             "DataTypeString"
@@ -11783,6 +11804,13 @@
         ],
         [
           "sheet_reference_layout",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
+          "default_font",
           [
             "DataTypeString"
           ],
@@ -14148,6 +14176,13 @@
         ],
         [
           "sheet_reference_layout",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
+          "default_font",
           [
             "DataTypeString"
           ],

@@ -33,6 +33,8 @@ class Any_SCH_PrintOptions(VariantOptions):
             """ Worksheet file (.kicad_wks) to use. Leave empty to use the one specified in the project.
                 This option works only when you print the toplevel sheet of a project and the project
                 file is available """
+            self.default_font = 'KiCad Font'
+            """ Name for the default font. Only for KiCad 9 and newer """
         super().__init__()
         self.add_to_doc('variant', "Not fitted components are crossed")
         self._expand_id = 'schematic'
@@ -105,6 +107,8 @@ class Any_SCH_PrintOptions(VariantOptions):
                 cmd.extend(['--hpgl_origin', str(self._origin)])
             if hasattr(self, 'pen_size'):
                 cmd.extend(['--hpgl_pen_size', str(self.pen_size)])
+            if self.default_font:
+                cmd.extend(['--default_font', self.default_font])
             cmd.extend([sch_file, os.path.dirname(name)])
             self.exec_with_retry(self.add_extra_options(cmd), self._exit_error)
             if self.title:
