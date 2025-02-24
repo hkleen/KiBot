@@ -12,7 +12,7 @@
 
 -  Mandatory
 
-`KiCad Automation tools <https://github.com/INTI-CMNB/KiAuto>`__ :index:`: <pair: dependency; KiCad Automation tools>`  v2.3.2 |image10| |PyPi dependency| |Auto-download|
+`KiCad Automation tools <https://github.com/INTI-CMNB/KiAuto>`__ :index:`: <pair: dependency; KiCad Automation tools>`  v2.3.4 |image10| |PyPi dependency| |Auto-download|
 
 -  Mandatory for: `convert_pcb`, `dxf_sch_print`, `gencad`, `hpgl_sch_print`, `netlist`, `pdf_pcb_print`, `pdf_sch_print`, `ps_sch_print`, `render_3d`, `run_drc`, `run_erc`, `step`, `svg_pcb_print`, `svg_sch_print`, `update_xml`, `vrml`
 -  Optional to:
@@ -22,7 +22,7 @@
    -  Compare schematics for `kiri` (v2.2.0)
    -  Print the page frame in GUI mode for `pcb_print` (v1.6.7)
 
-`KiKit <https://github.com/INTI-CMNB/KiKit>`__ :index:`: <pair: dependency; KiKit>`  v1.7.0 |image11| |Auto-download|
+`KiKit <https://github.com/INTI-CMNB/KiKit>`__ :index:`: <pair: dependency; KiKit>`  v1.6.0 |image11| |Auto-download|
 
 -  Mandatory for: `panelize`, `stencil_3d`, `stencil_for_jig`
 -  Optional to separate multiboard projects for general use

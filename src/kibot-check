@@ -492,8 +492,8 @@ deps = '{\
                 "output": "dxf_sch_print",\
                 "version": [\
                     2,\
-                    1,\
-                    1\
+                    3,\
+                    4\
                 ]\
             },\
             {\
@@ -516,8 +516,8 @@ deps = '{\
                 "output": "hpgl_sch_print",\
                 "version": [\
                     2,\
-                    1,\
-                    1\
+                    3,\
+                    4\
                 ]\
             },\
             {\
@@ -588,8 +588,8 @@ deps = '{\
                 "output": "pdf_sch_print",\
                 "version": [\
                     2,\
-                    1,\
-                    1\
+                    3,\
+                    4\
                 ]\
             },\
             {\
@@ -600,8 +600,8 @@ deps = '{\
                 "output": "ps_sch_print",\
                 "version": [\
                     2,\
-                    1,\
-                    1\
+                    3,\
+                    4\
                 ]\
             },\
             {\
@@ -648,8 +648,8 @@ deps = '{\
                 "output": "svg_sch_print",\
                 "version": [\
                     2,\
-                    1,\
-                    1\
+                    3,\
+                    4\
                 ]\
             },\
             {\

@@ -8,7 +8,7 @@ Dependencies:
   - from: KiAuto
     role: mandatory
     command: eeschema_do
-    version: 2.1.1
+    version: 2.3.4
 """
 from .gs import GS
 from .out_any_sch_print import Any_SCH_PrintOptions
