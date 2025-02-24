@@ -146,6 +146,9 @@ class Any_Navigate_ResultsOptions(BaseOptions):
             """ If True, display the KiBot version at the bottom of each page """
             self.display_category_images = True
             """ If True, we try to display images for categories according to the category type"""
+            self.image_white_background = True
+            """ When creating a miniature preview of a document use a white background instead of a transparent background.
+                This helps when using a dark mode """
         super().__init__()
         self._variant_name = self._find_variant_name()
         self._expand_id = 'navigate'
@@ -255,6 +258,8 @@ class Any_Navigate_ResultsOptions(BaseOptions):
         cmd = [self.convert_command, file,
                # Size for the big icons (width)
                '-resize', str(self._big_icon)+'x']
+        if self.image_white_background:
+            cmd.extend(['-background', 'white', '-alpha', 'remove', '-alpha', 'off'])
         if ext == 'ps':
             # ImageMagick 6.9.11 (and also the one in Debian 11) rotates the PS
             cmd.extend(['-rotate', '90'])

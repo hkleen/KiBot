@@ -9,6 +9,8 @@ Navigate_Results_RBOptions parameters
 -  ``display_category_images`` :index:`: <pair: output - navigate_results_rb - options; display_category_images>` [:ref:`boolean <boolean>`] (default: ``true``) If True, we try to display images for categories according to the category type.
 -  ``display_kibot_version`` :index:`: <pair: output - navigate_results_rb - options; display_kibot_version>` [:ref:`boolean <boolean>`] (default: ``true``) If True, display the KiBot version at the bottom of each page.
 -  ``header`` :index:`: <pair: output - navigate_results_rb - options; header>` [:ref:`boolean <boolean>`] (default: ``true``) Add a header containing information for the project.
+-  ``image_white_background`` :index:`: <pair: output - navigate_results_rb - options; image_white_background>` [:ref:`boolean <boolean>`] (default: ``true``) When creating a miniature preview of a document use a white background instead of a transparent background.
+   This helps when using a dark mode.
 -  ``logo`` :index:`: <pair: output - navigate_results_rb - options; logo>` [:ref:`string <string>` | :ref:`boolean <boolean>`] (default: ``''``) PNG file to use as logo, use false to remove.
    The KiBot logo is used by default.
 

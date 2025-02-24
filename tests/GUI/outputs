@@ -6392,6 +6392,13 @@
             "DataTypeBoolean"
           ],
           null
+        ],
+        [
+          "image_white_background",
+          [
+            "DataTypeBoolean"
+          ],
+          null
         ]
       ]
     ]
@@ -6569,6 +6576,13 @@
         ],
         [
           "display_category_images",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "image_white_background",
           [
             "DataTypeBoolean"
           ],

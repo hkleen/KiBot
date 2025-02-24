@@ -2172,6 +2172,9 @@ outputs:
       display_kibot_version: true
       # [boolean=true] Add a header containing information for the project
       header: true
+      # [boolean=true] When creating a miniature preview of a document use a white background instead of a transparent background.
+      # This helps when using a dark mode
+      image_white_background: true
       # [string=''] The name of a file to create at the main output directory linking to the home page
       link_from_root: ''
       # [string|boolean=''] PNG file to use as logo, use false to remove.
@@ -2208,6 +2211,9 @@ outputs:
       display_kibot_version: true
       # [boolean=true] Add a header containing information for the project
       header: true
+      # [boolean=true] When creating a miniature preview of a document use a white background instead of a transparent background.
+      # This helps when using a dark mode
+      image_white_background: true
       # [string=''] The name of a file to create at the main output directory linking to the home page
       link_from_root: ''
       # [string|boolean=''] PNG file to use as logo, use false to remove.
