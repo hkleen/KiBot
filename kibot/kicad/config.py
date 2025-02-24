@@ -91,6 +91,11 @@ def fix_windows(name):
     return name
 
 
+def is_ci_cd_normal(var):
+    # Default docker images doesn't contain the 3D models, so we get this most of the time
+    return GS.ci_cd_detected and var.startswith('KICAD') and var.endswith('_3DMODEL_DIR')
+
+
 def expand_env(val, env, extra_env, used_extra=None):
     """ Expand KiCad environment variables """
     if used_extra is None:
@@ -121,7 +126,7 @@ def expand_env(val, env, extra_env, used_extra=None):
             else:
                 success = False
                 # Note: We can't expand NET_NAME(n)
-                if var not in reported and not var.startswith('NET_NAME('):
+                if var not in reported and not var.startswith('NET_NAME(') and not is_ci_cd_normal(var):
                     logger.non_critical_error(f'Unable to expand `{var}` in `{val}`')
                     reported.add(var)
     return val
