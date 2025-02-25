@@ -1,13 +1,13 @@
-49 outputs types with a total of 2008 different parameters
-Single type parameters: 1826 (91 %)
-Multi type parameters: 182 (9 %)
+50 outputs types with a total of 2028 different parameters
+Single type parameters: 1845 (91 %)
+Multi type parameters: 183 (9 %)
 Average parameters: 41
 Maximum number of parameters: 217
 Minimum number of parameters: 14
 Histogram:
   0-  9: 
  10- 19: *****
- 20- 29: ********************
+ 20- 29: *********************
  30- 39: ********
  40- 49: ********
  50- 59: **
@@ -33,6 +33,7 @@ Outputs sorted by parameters:
 - sch_variant: 18
 - boardview: 19
 - pdfunite: 19
+- odb: 20
 - pcb_variant: 20
 - gencad: 22
 - populate: 22
@@ -77,13 +78,13 @@ Outputs sorted by parameters:
 - pcb_print: 116
 - bom: 149
 - panelize: 217
-Average depth: 2.5714285714285716
+Average depth: 2.56
 Maximum depth: 5
 Minimum depth: 2
 Histogram:
 0: 
 1: 
-2: ****************************
+2: *****************************
 3: ***************
 4: *****
 5: *
@@ -101,6 +102,7 @@ Outputs sorted by depth:
 - navigate_results: 2
 - navigate_results_rb: 2
 - netlist: 2
+- odb: 2
 - pcb2blender_tools: 2
 - pcb_variant: 2
 - pdf_pcb_print: 2
@@ -139,12 +141,12 @@ Outputs sorted by depth:
 - bom: 5
 --------------------------------------------------------------------------------
 14 different data types
--             String:  875
--            Boolean:  504
--             Number:  282
-- ListStringSingular:  267
--             Choice:  101
--               Dict:   84
+-             String:  884
+-            Boolean:  506
+-             Number:  284
+- ListStringSingular:  272
+-             Choice:  103
+-               Dict:   85
 -   ListDictOrString:   24
 -           ListDict:   20
 -              Combo:   14
@@ -155,12 +157,12 @@ Outputs sorted by depth:
 -       NumberChoice:    1
 --------------------------------------------------------------------------------
 Used as single data type:
--             String:  715 
--            Boolean:  443 
-- ListStringSingular:  264 
--             Number:  188 
--             Choice:   98 
--               Dict:   71 
+-             String:  723 
+-            Boolean:  444 
+- ListStringSingular:  269 
+-             Number:  190 
+-             Choice:  100 
+-               Dict:   72 
 -           ListDict:   20 
 -         ListString:    9 ['blender_export.options.pcb3d.highlight', 'bom.options.group_fields', 'bom.options.group_fields_fallbacks', 'bom.options.no_conflict', 'kibom.options.conf.group_fields', 'pcbdraw.options.libs', 'pcbdraw.options.highlight', 'render_3d.options.highlight', 'vrml.options.highlight']
 -   ListDictOrString:    7 ['bom.options.columns', 'bom.options.cost_extra_columns', 'bom.options.xlsx.specs_columns', 'excellon.options.table.columns', 'gerb_drill.options.table.columns', 'kibom.options.conf.columns', 'position.options.columns']
@@ -172,7 +174,7 @@ Used as single data type:
 --------------------------------------------------------------------------------
 11 different data type combinations
 -              Number,String:   92 
--             Boolean,String:   55 
+-             Boolean,String:   56 
 -     Combo,ListDictOrString:   12 
 -                Dict,String:    7 ['blender_export.options.pcb3d', 'excellon.options.report', 'excellon.options.table', 'gerb_drill.options.report', 'gerb_drill.options.table', 'kibom.options.conf', 'pcbdraw.options.style']
 -    ListDictOrString,String:    5 ['bom.options.columns.join', 'bom.options.cost_extra_columns.join', 'bom.options.xlsx.specs_columns.join', 'panelize.options.configs', 'pcb_print.options.include_table.outputs']
@@ -395,16 +397,16 @@ Used as single data type:
 -              Number,String:   15 
 ================================================================================
 ================================================================================
-88 totals types with a total of 2383 different parameters
-Single type parameters: 2177 (91 %)
-Multi type parameters: 206 (9 %)
+89 totals types with a total of 2403 different parameters
+Single type parameters: 2196 (91 %)
+Multi type parameters: 207 (9 %)
 Average parameters: 27
 Maximum number of parameters: 217
 Minimum number of parameters: 1
 Histogram:
   0-  9: ************************
  10- 19: **************
- 20- 29: *************************
+ 20- 29: **************************
  30- 39: *********
  40- 49: ********
  50- 59: **
@@ -463,6 +465,7 @@ Totals sorted by parameters:
 - boardview: 19
 - pdfunite: 19
 - include_table: 19
+- odb: 20
 - pcb_variant: 20
 - gencad: 22
 - populate: 22
@@ -513,13 +516,13 @@ Totals sorted by parameters:
 - pcb_print: 116
 - bom: 149
 - panelize: 217
-Average depth: 2.2045454545454546
+Average depth: 2.202247191011236
 Maximum depth: 5
 Minimum depth: 1
 Histogram:
 0: 
 1: *****************
-2: *******************************************
+2: ********************************************
 3: **********************
 4: *****
 5: *
@@ -554,6 +557,7 @@ Totals sorted by depth:
 - navigate_results: 2
 - navigate_results_rb: 2
 - netlist: 2
+- odb: 2
 - pcb2blender_tools: 2
 - pcb_variant: 2
 - pdf_pcb_print: 2
@@ -614,12 +618,12 @@ Totals sorted by depth:
 - bom: 5
 --------------------------------------------------------------------------------
 14 different data types
--             String: 1028
--            Boolean:  604
--             Number:  332
-- ListStringSingular:  296
--             Choice:  133
--               Dict:   95
+-             String: 1037
+-            Boolean:  606
+-             Number:  334
+- ListStringSingular:  301
+-             Choice:  135
+-               Dict:   96
 -           ListDict:   30
 -   ListDictOrString:   27
 -              Combo:   14
@@ -630,12 +634,12 @@ Totals sorted by depth:
 -       NumberChoice:    1
 --------------------------------------------------------------------------------
 Used as single data type:
--             String:  852 
--            Boolean:  535 
-- ListStringSingular:  293 
--             Number:  223 
--             Choice:  130 
--               Dict:   74 
+-             String:  860 
+-            Boolean:  536 
+- ListStringSingular:  298 
+-             Number:  225 
+-             Choice:  132 
+-               Dict:   75 
 -           ListDict:   30 
 -         ListString:   12 
 -   ListDictSingular:   11 
@@ -647,7 +651,7 @@ Used as single data type:
 --------------------------------------------------------------------------------
 11 different data type combinations
 -              Number,String:  107 
--             Boolean,String:   55 
+-             Boolean,String:   56 
 -     Combo,ListDictOrString:   12 
 -               Boolean,Dict:   10 ['pcb_print.options.include_table', 'pcb_print.options.drill', 'include_table.include_table', 'draw_fancy_stackup.draw_fancy_stackup', 'draw_stackup.draw_stackup', 'drc.drc', 'erc.erc', 'run_drc.run_drc', 'run_erc.run_erc', 'update_xml.update_xml']
 -                Dict,String:    7 ['blender_export.options.pcb3d', 'excellon.options.report', 'excellon.options.table', 'gerb_drill.options.report', 'gerb_drill.options.table', 'kibom.options.conf', 'pcbdraw.options.style']

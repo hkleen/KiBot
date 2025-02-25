@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.8.3] - UNRELEASED
 ### Added
+- New outputs:
+  - ODB: Exports the PCB in ODB++ format (KiCad 9) (#782)
 - CLI:
   - `--variant` to specify which variants will be generated (See #737)
   - `--defs-from-project` allows using KiCad variables for the preprocessor

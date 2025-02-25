@@ -19,6 +19,10 @@ Versioning <https://semver.org/spec/v2.0.0.html>`__.
 Added
 ~~~~~
 
+-  New outputs:
+
+   -  ODB: Exports the PCB in ODB++ format (KiCad 9) (#782)
+
 -  CLI:
 
    -  ``--variant`` to specify which variants will be generated (See

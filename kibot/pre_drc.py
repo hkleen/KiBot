@@ -7,10 +7,10 @@
 import csv
 import io
 import os
-from .pre_any_xrc import DRCOptions, XRC, UNITS_2_KICAD
+from .pre_any_xrc import DRCOptions, XRC
 from .macros import macros, document, pre_class  # noqa: F401
 from .gs import GS
-from .misc import W_DRC, W_FILXRC
+from .misc import W_DRC, W_FILXRC, UNITS_2_KICAD
 from .log import get_logger
 logger = get_logger(__name__)
 JSON_SECTIONS = ('violations', 'unconnected_items', 'schematic_parity')

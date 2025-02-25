@@ -1,0 +1,13 @@
+kibot:
+  version: 1
+
+outputs:
+  - name: odb_zip_mm
+    comment: "PCB in ODB++ format"
+    type: odb
+    dir: Export
+
+  - name: 'navigate'
+    comment: "Browse the results"
+    type: navigate_results_rb
+    run_by_default: false

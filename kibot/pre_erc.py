@@ -6,10 +6,10 @@
 # https://gitlab.com/kicad/code/kicad/-/blob/master/resources/schemas/erc.v1.json?ref_type=heads
 import csv
 import io
-from .pre_any_xrc import ERCOptions, XRC, UNITS_2_KICAD
+from .pre_any_xrc import ERCOptions, XRC
 from .macros import macros, document, pre_class  # noqa: F401
 from .gs import GS
-from .misc import W_ERC, W_FILXRC
+from .misc import W_ERC, W_FILXRC, UNITS_2_KICAD
 from .log import get_logger
 logger = get_logger(__name__)
 

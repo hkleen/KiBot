@@ -359,6 +359,7 @@ DISABLE_3D_MODEL_TEXT = '_Disabled_by_KiBot'
 RENDERERS = ['pcbdraw', 'render_3d', 'blender_export']
 PCB_GENERATORS = ['pcb_variant', 'panelize']
 KIKIT_UNIT_ALIASES = {'millimeters': 'mm', 'inches': 'inch', 'mils': 'mil'}
+UNITS_2_KICAD = {'millimeters': 'mm', 'inches': 'in', 'mils': 'mils'}
 FONT_HELP_TEXT = ('\n        Important: If you use custom fonts and/or colors please consult the `resources_dir` '
                   'global variable.')
 # CSS style for HTML tables used by BoM and ERC

@@ -2073,3 +2073,12 @@ def test_report_variant_t1(test_dir):
     ctx.search_in_file(prj+'-report.txt', [r'|\s+Total\s+|\s+40\s+|\s+52'])
     ctx.search_in_file(prj+'-report_(V1).txt', [r'|\s+Total\s+|\s+4\s+|\s+5\.'])
     ctx.clean_up()
+
+
+@pytest.mark.skipif(not context.ki9(), reason="Needs KiCad 9")
+def test_odb_zip(test_dir):
+    prj = 'light_control'
+    ctx = context.TestContext(test_dir, prj, 'odb_zip_mm', 'Export')
+    ctx.run()
+    ctx.expect_out_file(prj+'-odb.zip', sub=True)
+    ctx.clean_up(keep_project=True)

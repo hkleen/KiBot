@@ -1,0 +1,18 @@
+kibot:
+  version: 1
+
+globals:
+  units: mils
+
+outputs:
+  - name: odb_dir_mils
+    comment: "PCB in ODB++ format"
+    type: odb
+    dir: Export
+    options:
+      compression: none
+
+  - name: 'navigate'
+    comment: "Browse the results"
+    type: navigate_results_rb
+    run_by_default: false

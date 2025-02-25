@@ -19,7 +19,6 @@ from .pre_filters import FilterOptions, FiltersOptions
 from .macros import macros, document  # noqa: F401
 from . import log
 logger = log.get_logger(__name__)
-UNITS_2_KICAD = {'millimeters': 'mm', 'inches': 'in', 'mils': 'mils'}
 
 
 class FilterOptionsXRC(FilterOptions):

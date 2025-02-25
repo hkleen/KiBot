@@ -36,6 +36,7 @@ Notes:
    outputs/navigate_results
    outputs/navigate_results_rb
    outputs/netlist
+   outputs/odb
    outputs/panelize
    outputs/pcb2blender_tools
    outputs/pcb_print
