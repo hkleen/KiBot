@@ -247,6 +247,11 @@ outputs:
   comment: Generates the list of connections for the project
   options:
     output: output.netlist.options.dict
+- name: output.odb
+  type: odb
+  comment: Exports the PCB in ODB++ format
+  options:
+    output: output.odb.options.dict
 - name: output.panelize
   type: panelize
   comment: Creates a panel to fabricate various copies of the PCB at once
