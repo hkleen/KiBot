@@ -50,8 +50,6 @@ class ODBOptions(VariantOptions):
             GS.exit_with_error("`odb` needs KiCad 9+", MISSING_TOOL)
         name = self.fix_dir_name(name)
         super().run(name)
-        logger.error(name)
-        logger.error(self.units)
         board_name = self.save_tmp_board_if_variant()
         cmd = ['kicad-cli', 'pcb', 'export', 'odb', '-o', name, '--compression', self.compression, '--units',
                UNITS_2_KICAD[self.units], '--precision', str(int(self.precision)), board_name]
