@@ -133,6 +133,7 @@ ul li {
     padding: 15px;
     border-radius: 5px;
     max-width: 100%;
+    text-align: left;
     white-space: pre-wrap; /* Handle preformatted text */
     transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
 }
