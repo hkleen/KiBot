@@ -1,0 +1,61 @@
+# Example KiBot config file
+kibot:
+  version: 1
+
+global:
+  solder_mask_color_top: blue
+  solder_mask_color_bottom: red
+  pcb_finish: ENIG
+  copper_thickness: "35"
+
+outputs:
+  - name: 'report_full'
+    comment: "Full design report"
+    type: report
+    options:
+      template: full_svg
+      convert_to: md
+      do_convert: true
+
+  - name: 'print_front'
+    comment: "Top copper and silkscreen"
+    type: pcb_print
+    dir: Layers
+    output_id: -front
+    options:
+      title: 'Fake title for front copper and silk'
+      format: SVG
+      pages:
+        - scaling: 2.0
+          layers:
+            - layer: F.Cu
+            - layer: F.SilkS
+            - layer: Edge.Cuts
+
+  - name: 'print_bottom'
+    comment: "Bottom copper and silkscreen"
+    type: pcb_print
+    dir: Layers
+    output_id: -bottom
+    options:
+      title: 'Fake title for bottom copper and silk'
+      format: SVG
+      pages:
+        - scaling: 2.0
+          layers:
+            - layer: B.Cu
+            - layer: B.SilkS
+            - layer: Edge.Cuts
+
+  - name: 'print_sch_svg'
+    comment: "Schematic"
+    type: svg_sch_print
+    dir: .
+    options:
+      output: Schematic.svg
+
+  - name: 'navigate'
+    comment: "Browse the results"
+    type: navigate_results
+
+
