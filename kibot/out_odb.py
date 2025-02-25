@@ -73,9 +73,6 @@ class ODB(BaseOutput):  # noqa: F821
 
     @staticmethod
     def get_conf_examples(name, layers):
-        gb = {}
-        gb['name'] = 'default_'+name
-        gb['comment'] = 'PCB in ODB++ format'
-        gb['type'] = name
-        gb['dir'] = 'Export'
-        return gb
+        if not GS.ki9:
+            return None
+        return BaseOutput.simple_conf_examples(name, 'PCB in ODB++ format', 'Export')  # noqa: F821

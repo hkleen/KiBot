@@ -1409,6 +1409,8 @@ def test_quick_start_1(test_dir):
             'bom', 'download_datasheets', 'pdf_sch_print', 'svg_sch_print')
     for o in OUTS:
         ctx.search_out(r'\['+o+r'\]')
+    if context.ki9():
+        ctx.search_out(r'\[odb\]')
     # 3) Generate one output that we can use as image for a category
     logging.debug('Creating `basic_pcb_print_pdf`')
     ctx.run(extra=['-c', dest_conf_f, '-b', dest_file, 'basic_pcb_print_pdf'], no_yaml_file=True, no_board_file=True)
