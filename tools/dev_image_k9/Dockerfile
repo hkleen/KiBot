@@ -4,7 +4,7 @@ LABEL Description="KiCad 9 with KiBot and other automation scripts (development)
 
 RUN     dpkg --remove kibot && \
 	apt-get update && \
-	apt-get -y install -t bookworm-backports --no-install-recommends curl unzip python3-pip && \
+	apt-get -y install --no-install-recommends curl unzip python3-pip && \
 	curl https://codeload.github.com/INTI-CMNB/KiBot/zip/refs/heads/dev --output pp.zip && \
 	unzip pp.zip && \
 	curl https://codeload.github.com/yaqwsx/PcbDraw-Lib/zip/refs/heads/master --output pp2.zip && \
