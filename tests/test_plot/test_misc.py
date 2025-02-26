@@ -1403,14 +1403,16 @@ def test_quick_start_1(test_dir):
     ctx.expect_out_file(dest_conf)
     # 2) List the generated outputs
     ctx.run(extra=['-c', dest_conf_f, '-b', dest_file, '-l'], no_out_dir=True, no_yaml_file=True, no_board_file=True)
-    OUTS = ('boardview', 'dxf', 'excellon', 'gencad', 'gerb_drill', 'gerber', 'compress', 'hpgl', 'ibom',
+    OUTS = ['boardview', 'dxf', 'excellon', 'gencad', 'gerb_drill', 'gerber', 'compress', 'hpgl', 'ibom',
             'navigate_results_rb', 'netlist', 'pcb_print', 'pcbdraw', 'pdf', 'position', 'ps', 'render_3d',
-            'report', 'step', 'svg', 'kiri', 'kicanvas',
-            'bom', 'download_datasheets', 'pdf_sch_print', 'svg_sch_print')
+            'report', 'svg', 'kiri', 'kicanvas',
+            'bom', 'download_datasheets', 'pdf_sch_print', 'svg_sch_print']
+    if context.ki9():
+        OUTS.extend(['odb', 'export_3d', 'ipc2581'])
+    else:
+        OUTS.append('step')
     for o in OUTS:
         ctx.search_out(r'\['+o+r'\]')
-    if context.ki9():
-        ctx.search_out(r'\[odb\]')
     # 3) Generate one output that we can use as image for a category
     logging.debug('Creating `basic_pcb_print_pdf`')
     ctx.run(extra=['-c', dest_conf_f, '-b', dest_file, 'basic_pcb_print_pdf'], no_yaml_file=True, no_board_file=True)
