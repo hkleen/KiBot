@@ -34,6 +34,22 @@ def test_step_1(test_dir):
     ctx.clean_up()
 
 
+# Generate STEP files using kicad-cli directly
+@pytest.mark.skipif(not context.ki9(), reason="Needs KiCad 9")
+def test_step_k9(test_dir):
+    prj = 'bom'
+    ctx = context.TestContext(test_dir, prj, 'export_3d_step_simple', STEP_DIR)
+    ctx.run()
+    # Check all outputs are there
+    name = prj+'-3D.step'
+    ctx.expect_out_file_d(name)
+    # Check the R and C 3D models are there
+    ctx.search_in_file_d(name, ['R_0805_2012Metric', 'C_0805_2012Metric'])
+    ctx.search_err(['Missing 3D model for R1: `(.*)R_0805_2012Metrico',
+                    'Failed to download `(.*)R_0805_2012Metrico'])
+    ctx.clean_up()
+
+
 @pytest.mark.slow
 @pytest.mark.kicad2step
 def test_step_2(test_dir):

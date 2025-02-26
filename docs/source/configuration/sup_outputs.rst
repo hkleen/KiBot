@@ -21,6 +21,7 @@ Notes:
    outputs/dxf
    outputs/dxf_sch_print
    outputs/excellon
+   outputs/export_3d
    outputs/gencad
    outputs/gerb_drill
    outputs/gerber

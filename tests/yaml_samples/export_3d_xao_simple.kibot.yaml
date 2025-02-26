@@ -1,0 +1,12 @@
+nkiplot:
+  version: 1
+
+outputs:
+  - name: XAO
+    comment: "Generate 3D model (XAO)"
+    type: export_3d
+    dir: 3D
+    options:
+      format: xao
+      include_tracks: true
+      include_pads: true

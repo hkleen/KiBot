@@ -1321,6 +1321,106 @@ outputs:
       variant: ''
       # [string='DECIMAL_FORMAT'] [DECIMAL_FORMAT,SUPPRESS_LEADING,SUPPRESS_TRAILING,KEEP_ZEROS] How to handle the zeros
       zeros_format: 'DECIMAL_FORMAT'
+  # Various 3D models exports using KiCad (BREP/GLB/STL/STEP/XAO):
+  # Supported formats include:
+  # - STEP: ISO 10303-21 Clear Text Encoding of the Exchange Structure
+  # - GLB: Binary version of the glTF, Graphics Library Transmission Format or GL Transmission Format and formerly
+  #   known as WebGL Transmissions Format or WebGL TF.
+  # - STL: 3D printer format, from stereolithography CAD software created by 3D Systems.
+  # - XAO: XAO (SALOME/Gmsh) format, used for FEM and simulations.
+  # - BRep: Part of Open CASCADE Technology (OCCT)
+  # STEP is the most common 3D format for exchange purposes
+  - name: 'export_3d_example'
+    comment: 'Exports the PCB as a 3D model using KiCad 9 or newer.'
+    type: 'export_3d'
+    dir: 'Example/export_3d_dir'
+    options:
+      # [boolean=false] Only generate a board with no components
+      board_only: false
+      # [boolean=false] Cut via holes in board body even if conductor layers are not exported
+      cut_vias_in_body: false
+      # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+      # variant
+      dnf_filter: '_null'
+      # [boolean=true] Downloads missing 3D models from KiCad git.
+      # Only applies to models in KISYS3DMOD and KICAD6_3DMODEL_DIR.
+      # They are downloaded to a temporal directory and discarded.
+      # If you want to cache the downloaded files specify a directory using the
+      # KIBOT_3D_MODELS environment variable
+      download: true
+      # [boolean=true] In addition to try to download the 3D models from KiCad git also try to get
+      # them from LCSC database. In order to work you'll need to provide the LCSC
+      # part number. The field containing the LCSC part number is defined by the
+      # `field_lcsc_part` global variable
+      download_lcsc: true
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+      # variant
+      exclude_filter: '_null'
+      # [boolean=false] Don't cut via holes in conductor layers
+      fill_all_vias: false
+      # [string='step'] [step,glb,stl,xao,brep] 3D format used.
+      # - STEP: ISO 10303-21 Clear Text Encoding of the Exchange Structure
+      # - GLB: Binary version of the glTF, Graphics Library Transmission Format or GL Transmission Format and formerly
+      # known as WebGL Transmissions Format or WebGL TF.
+      # - STL: 3D printer format, from stereolithography CAD software created by 3D Systems.
+      # - XAO: XAO (SALOME/Gmsh) format, used for FEM and simulations.
+      # - BRep: Part of Open CASCADE Technology (OCCT)
+      format: 'step'
+      # [boolean=false] Fuse overlapping geometry together
+      fuse_shapes: false
+      # [boolean=false] Export elements on inner copper layers
+      include_inner_copper: false
+      # [boolean=false] Export pads
+      include_pads: false
+      # [boolean=false] Export silkscreen graphics as a set of flat faces
+      include_silkscreen: false
+      # [boolean=false] Export soldermask layers as a set of flat faces
+      include_soldermask: false
+      # [boolean=false] Export tracks and vias
+      include_tracks: false
+      # [boolean=false] Export zones
+      include_zones: false
+      # [string='https://gitlab.com/kicad/libraries/kicad-packages3D/-/raw/master/'] Base URL for the KiCad 3D models
+      kicad_3d_url: 'https://gitlab.com/kicad/libraries/kicad-packages3D/-/raw/master/'
+      # [string=''] Text added to the end of the download URL.
+      # Can be used to pass variables to the GET request, i.e. ?VAR1=VAL1&VAR2=VAL2
+      kicad_3d_url_suffix: ''
+      # [number=-1] The minimum distance between points to treat them as separate ones (-1 is KiCad default: 0.01 mm).
+      # The units for this option are controlled by the `units` option
+      min_distance: -1
+      # [string=''] Only include copper items belonging to nets matching this wildcard
+      net_filter: ''
+      # [boolean=false] Exclude board body
+      no_board_body: false
+      # [boolean=false] Exclude 3D models for components
+      no_components: false
+      # [boolean=false] Do not optimize STEP file (enables writing parametric curves)
+      no_optimize_step: false
+      # [boolean=false] Used to exclude 3D models for components with 'virtual' attribute
+      no_virtual: false
+      # [string='grid'] [grid,drill,*] Determines the coordinates origin. Using grid the coordinates are the same as you have in the
+      # design sheet.
+      # The drill option uses the auxiliary reference defined by the user.
+      # You can define any other origin using the format 'X,Y', i.e. '3.2,-10'. Don't put units here.
+      # The units used here are the ones specified by the `units` option
+      origin: 'grid'
+      # [string='%f-%i%I%v.%x'] Name for the generated 3D file (%i='3D' %x='step/glb/stl/xao/brep'). Affected by global options
+      output: '%f-%i%I%v.%x'
+      # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+      # variant
+      pre_transform: '_null'
+      # [boolean=true] Substitute STEP or IGS models with the same name in place of VRML models
+      subst_models: true
+      # [string='millimeters'] [millimeters,inches,mils] Units used for the custom origin and `min_distance`. Affected by global options
+      units: 'millimeters'
+      # [string=''] Board variant to apply
+      variant: ''
   # GenCAD:
   # This format is interpreted by some CADCAM software and helps certain
   # manufacturers
@@ -4374,6 +4474,7 @@ outputs:
       variant: ''
   # STEP (ISO 10303-21 Clear Text Encoding of the Exchange Structure):
   # This is the most common 3D format for exchange purposes.
+  # For KiCad 9 use the `export_3d` output.
   # This output is what you get from the 'File/Export/STEP' menu in pcbnew.
   - name: 'step_example'
     comment: 'Exports the PCB as a 3D model.'

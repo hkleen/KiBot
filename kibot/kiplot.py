@@ -27,7 +27,7 @@ from .misc import (PLOT_ERROR, CORRUPTED_PCB, EXIT_BAD_ARGS, CORRUPTED_SCH, vers
                    MOD_VIRTUAL, W_PCBNOSCH, W_NONEEDSKIP, W_WRONGCHAR, name2make, W_TIMEOUT, W_KIAUTO, W_VARSCH,
                    NO_SCH_FILE, NO_PCB_FILE, W_VARPCB, NO_YAML_MODULE, WRONG_ARGUMENTS, FAILED_EXECUTE, W_VALMISMATCH,
                    MOD_EXCLUDE_FROM_POS_FILES, MOD_EXCLUDE_FROM_BOM, MOD_BOARD_ONLY, hide_stderr, W_MAXDEPTH, DONT_STOP,
-                   W_BADREF, try_decode_utf8)
+                   W_BADREF, try_decode_utf8, MISSING_FILES)
 from .error import PlotError, KiPlotConfigurationError, config_error, KiPlotError
 from .config_reader import CfgYamlReader
 from .pre_base import BasePreFlight
@@ -1290,6 +1290,8 @@ def generate_examples(start_dir, dry, types):
     for f in _walk(start_dir, 6):
         if k_files_regex.search(f):
             candidates.add(os.path.realpath(os.path.dirname(f)))
+    if not candidates:
+        GS.exit_with_error(f'No KiCad projects found in `{start_dir}`', MISSING_FILES)
     # Try to generate the configs in the candidate places
     confs = []
     for c in sorted(candidates):

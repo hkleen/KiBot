@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   id="Слой_1"
+   data-name="Слой 1"
+   viewBox="0 0 24 24"
+   version="1.1"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <metadata
+     id="metadata43">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/" />
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>svg_file</dc:title>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by-sa/4.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs27305">
+    <style
+       id="style27303">.cls-1{fill:#b9b9b9;}.cls-2{fill:#1a81c4;}.cls-3{fill:#fff;}</style>
+  </defs>
+  <title
+     id="title27307">svg_file</title>
+  <rect
+     class="cls-1"
+     x="3"
+     y="0"
+     width="21"
+     height="24"
+     rx="3.5044518"
+     id="rect27309"
+     style="stroke-width:0.999998" />
+  <g
+     id="layer3">
+    <polyline
+       class="cls-1"
+       points="23.501 7.642 23.501 18.392 13.001 24.5 12.999 24.5 2.499 18.392 2.499 7.642"
+       id="polyline115996"
+       transform="matrix(0.78568708,0,0,0.78568708,3.7143908,3.723819)"
+       style="fill:none;stroke:#545454;stroke-linecap:round;stroke-linejoin:round" />
+    <polyline
+       class="cls-1"
+       points="23.501 7.637 13.001 13.745 12.999 13.745 2.499 7.637"
+       id="polyline115998"
+       transform="matrix(0.78568708,0,0,0.78568708,3.7143908,3.723819)"
+       style="fill:none;stroke:#545454;stroke-linecap:round;stroke-linejoin:round" />
+    <polyline
+       class="cls-1"
+       points="2.499 7.608 12.999 1.5 13.001 1.5 23.501 7.608"
+       id="polyline116000"
+       transform="matrix(0.78568708,0,0,0.78568708,3.7143908,3.723819)"
+       style="fill:none;stroke:#545454;stroke-linecap:round;stroke-linejoin:round" />
+    <line
+       class="cls-1"
+       x1="13.927222"
+       y1="14.523245"
+       x2="13.927222"
+       y2="22.973152"
+       id="line116002"
+       style="fill:none;stroke:#545454;stroke-width:0.785687;stroke-linecap:round;stroke-linejoin:round" />
+    <line
+       class="cls-1"
+       x1="13.929344"
+       y1="4.9023495"
+       x2="13.928401"
+       y2="6.0808802"
+       id="line116004"
+       style="fill:none;stroke:#545454;stroke-width:0.785687;stroke-linecap:round;stroke-linejoin:round" />
+    <line
+       class="cls-2"
+       x1="13.926593"
+       y1="8.5021305"
+       x2="13.923687"
+       y2="12.134048"
+       id="line116006"
+       style="fill:none;stroke:#545454;stroke-width:0.785687;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:2.42125, 2.42125" />
+    <polyline
+       class="cls-1"
+       points="12.993 12.245 12.992 13.745 14.364 14.352"
+       id="polyline116008"
+       transform="matrix(0.78568708,0,0,0.78568708,3.7143908,3.723819)"
+       style="fill:none;stroke:#545454;stroke-linecap:round;stroke-linejoin:round" />
+    <line
+       class="cls-3"
+       x1="17.033438"
+       y1="15.898983"
+       x2="20.084024"
+       y2="17.24785"
+       id="line116010"
+       style="fill:none;stroke:#545454;stroke-width:0.785687;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:2.22365, 2.22365" />
+    <line
+       class="cls-1"
+       x1="21.100861"
+       y1="17.69742"
+       x2="22.178823"
+       y2="18.173941"
+       id="line116012"
+       style="fill:none;stroke:#545454;stroke-width:0.785687;stroke-linecap:round;stroke-linejoin:round" />
+    <line
+       class="cls-1"
+       x1="5.6778231"
+       y1="18.173941"
+       x2="6.7554712"
+       y2="17.696793"
+       id="line116014"
+       style="fill:none;stroke:#545454;stroke-width:0.785687;stroke-linecap:round;stroke-linejoin:round" />
+    <line
+       class="cls-4"
+       x1="8.7851362"
+       y1="16.797966"
+       x2="11.829438"
+       y2="15.449804"
+       id="line116016"
+       style="fill:none;stroke:#545454;stroke-width:0.785687;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:2.21972, 2.21972" />
+    <line
+       class="cls-1"
+       x1="12.844232"
+       y1="15.000393"
+       x2="13.92188"
+       y2="14.523245"
+       id="line116018"
+       style="fill:none;stroke:#545454;stroke-width:0.785687;stroke-linecap:round;stroke-linejoin:round" />
+  </g>
+  <g
+     id="layer4"
+     style="display:inline">
+    <rect
+       class="cls-2"
+       x="0"
+       y="1"
+       width="17.869905"
+       height="10"
+       id="rect27311"
+       style="stroke-width:1.02226" />
+    <path
+       class="cls-3"
+       d="M 2.0688,7.9416479 H 0.99590004 V 6.8772203 H 2.0688 Z"
+       id="path27313"
+       style="stroke-width:1" />
+    <g
+       aria-label="xao"
+       id="text909"
+       style="font-weight:bold;font-size:8px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Bold';letter-spacing:0px;word-spacing:0px;fill:#ffffff">
+      <path
+         d="m 4.6626811,5.8156418 -1.408,-2.136 h 1.352 l 0.848,1.392 0.856,-1.392 h 1.352 l -1.424,2.136 1.488,2.232 h -1.352 l -0.92,-1.496 -0.92,1.496 h -1.352 z"
+         id="path212" />
+      <path
+         d="m 10.182674,3.5916418 q 0.88,0 1.344,0.384 0.472,0.376 0.472,1.16 v 2.912 h -0.832 l -0.232,-0.592 h -0.032 q -0.28,0.352 -0.592,0.512 -0.312,0.16 -0.856,0.16 -0.584,0 -0.968,-0.336 -0.384,-0.344 -0.384,-1.048 0,-0.696 0.488,-1.024 0.488,-0.336 1.464,-0.368 l 0.76,-0.024 v -0.192 q 0,-0.344 -0.184,-0.504 -0.176,-0.16 -0.496,-0.16 -0.32,0 -0.624,0.096 -0.304,0.088 -0.608,0.224 l -0.392,-0.808 q 0.352,-0.184 0.776,-0.288 0.432,-0.104 0.896,-0.104 z m 0.168,2.448 q -0.576,0.016 -0.8,0.208 -0.224,0.192 -0.224,0.504 0,0.272 0.16,0.392 0.16,0.112 0.416,0.112 0.384,0 0.648,-0.224 0.264,-0.232 0.264,-0.648 v -0.36 z"
+         id="path214" />
+      <path
+         d="m 17.190675,5.8556418 q 0,1.088 -0.576,1.68 -0.568,0.592 -1.552,0.592 -0.608,0 -1.088,-0.264 -0.472,-0.264 -0.744,-0.768 -0.272,-0.512 -0.272,-1.24 0,-1.088 0.568,-1.672 0.568,-0.584 1.56,-0.584 0.616,0 1.088,0.264 0.472,0.264 0.744,0.768 0.272,0.496 0.272,1.224 z m -3.016,0 q 0,0.648 0.208,0.984 0.216,0.328 0.696,0.328 0.472,0 0.68,-0.328 0.216,-0.336 0.216,-0.984 0,-0.648 -0.216,-0.968 -0.208,-0.328 -0.688,-0.328 -0.472,0 -0.688,0.328 -0.208,0.32 -0.208,0.968 z"
+         id="path216" />
+    </g>
+  </g>
+</svg>

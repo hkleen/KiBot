@@ -143,6 +143,11 @@ outputs:
     map: None
     report: ''
     table: ''
+- name: output.export_3d
+  type: export_3d
+  comment: Exports the PCB as a 3D model using KiCad 9 or newer
+  options:
+    output: output.export_3d.options.dict
 - name: output.gencad
   type: gencad
   comment: Exports the PCB in GENCAD format
