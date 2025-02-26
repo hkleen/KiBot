@@ -12,7 +12,7 @@ from kibot.layer import Layer
 from kibot.pre_base import BasePreFlight
 from kibot.out_base import BaseOutput
 from kibot.gs import GS
-from kibot.kiplot import load_actions, _import, load_board, generate_makefile
+from kibot.kiplot import load_actions, _import, load_board, generate_makefile, get_columns
 from kibot.dep_downloader import search_as_plugin
 from kibot.registrable import RegOutput, RegFilter
 from kibot.misc import (WRONG_INSTALL, BOM_ERROR, DRC_ERROR, ERC_ERROR, PDF_PCB_PRINT, KICAD2STEP_ERR)
@@ -223,7 +223,7 @@ def test_bom_no_sch():
         # Create an ibom object
         GS.sch = None
         out = RegOutput.get_class_for('bom')()
-        (columns, extra) = out.options._get_columns()
+        (columns, extra) = get_columns()
         assert columns == ColumnList.COLUMNS_DEFAULT
         out = RegOutput.get_class_for('kibom')()
         options = out.options()
