@@ -28,6 +28,7 @@ Notes:
    outputs/hpgl_sch_print
    outputs/ibom
    outputs/info
+   outputs/ipc2581
    outputs/kibom
    outputs/kicanvas
    outputs/kicost

@@ -21,7 +21,6 @@ Dependencies:
     downloader: python
 """
 import csv
-from copy import deepcopy
 import os
 import re
 from .gs import GS
@@ -29,7 +28,8 @@ from .misc import W_BADFIELD, W_NEEDSPCB, DISTRIBUTORS, W_NOPART, W_MISSREF, DIS
 from .optionable import Optionable, BaseOptions
 from .registrable import RegOutput
 from .error import KiPlotConfigurationError
-from .kiplot import get_board_comps_data, load_any_sch, register_xmp_import, expand_fields, run_command, load_board
+from .kiplot import (get_board_comps_data, load_any_sch, register_xmp_import, expand_fields, run_command, load_board,
+                     get_columns)
 from .kicad.v5_sch import SchematicComponent, SchematicField
 from .bom.columnlist import ColumnList, BoMError
 from .bom.bom import do_bom
@@ -634,14 +634,6 @@ class BoMOptions(BaseOptions):
         super().__init__()
         self._no_conflict_example = ['Config', 'Part']
 
-    @staticmethod
-    def _get_columns():
-        """ Create a list of valid columns """
-        if GS.sch:
-            cols = deepcopy(ColumnList.COLUMNS_DEFAULT)
-            return (GS.sch.get_field_names(cols), ColumnList.COLUMNS_EXTRA)
-        return (ColumnList.COLUMNS_DEFAULT, ColumnList.COLUMNS_EXTRA)
-
     def _guess_format(self):
         """ Figure out the format """
         if self.format == 'Auto':
@@ -806,7 +798,7 @@ class BoMOptions(BaseOptions):
             no_conflict = set(self.no_conflict)
         self._no_conflict = no_conflict
         # Columns
-        (valid_columns, extra_columns) = self._get_columns()
+        (valid_columns, extra_columns) = get_columns()
         self.create_default_columns(valid_columns)
         (self._columns, self._column_levels, self._column_comments, self._column_rename,
          self._join) = self.process_columns_config(self.columns, valid_columns, extra_columns, self.group_fields)
@@ -1131,7 +1123,7 @@ class BoM(BaseOutput):  # noqa: F821
     def get_conf_examples(name, layers):
         outs = []
         # Make a list of available fields
-        fld_names, extra_names = BoMOptions._get_columns()
+        fld_names, extra_names = get_columns()
         fld_names_l = [f.lower() for f in fld_names]
         fld_set = set(fld_names_l)
         logger.debug(' - Available fields {}'.format(fld_names_l))

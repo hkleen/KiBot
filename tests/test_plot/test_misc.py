@@ -2077,10 +2077,21 @@ def test_report_variant_t1(test_dir):
     ctx.clean_up()
 
 
+# ODB++ export using kicad-cli on KiCad 9+
 @pytest.mark.skipif(not context.ki9(), reason="Needs KiCad 9")
 def test_odb_zip(test_dir):
     prj = 'light_control'
     ctx = context.TestContext(test_dir, prj, 'odb_zip_mm', 'Export')
     ctx.run()
     ctx.expect_out_file(prj+'-odb.zip', sub=True)
+    ctx.clean_up(keep_project=True)
+
+
+# IPC-2581 export using kicad-cli on KiCad 9+
+@pytest.mark.skipif(not context.ki9(), reason="Needs KiCad 9")
+def test_ipc2581_xml(test_dir):
+    prj = 'light_control'
+    ctx = context.TestContext(test_dir, prj, 'ipc2581_xml_mils', 'Export')
+    ctx.run()
+    ctx.expect_out_file(prj+'-IPC-2581.xml', sub=True)
     ctx.clean_up(keep_project=True)

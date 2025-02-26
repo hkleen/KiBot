@@ -96,9 +96,15 @@
       -  ``field_current`` :index:`: <pair: global options; field_current>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``['current', 'i']``) Name/s of the field/s used for the current raiting.
          You can use `_field_current` as field name to use it in most places.
 
+      -  ``field_dist_part_number`` :index:`: <pair: global options; field_dist_part_number>` [:ref:`string <string>`] (default: ``''``) The name of the schematic field that contains the distributor part number.
+         You can use `_field_dist_part_number` as field name to use it in most places.
+      -  ``field_distributor`` :index:`: <pair: global options; field_distributor>` [:ref:`string <string>`] (default: ``''``) The name of the schematic field that contains the distributor.
+         You can use `_field_distributor` as field name to use it in most places.
       -  ``field_lcsc_part`` :index:`: <pair: global options; field_lcsc_part>` [:ref:`string <string>`] (default: ``''``) The name of the schematic field that contains the part number for the LCSC/JLCPCB distributor.
          When empty KiBot will try to discover it. |br|
          You can use `_field_lcsc_part` as field name to use it in most places.
+      -  ``field_manufacturer`` :index:`: <pair: global options; field_manufacturer>` [:ref:`string <string>`] (default: ``''``) The name of the schematic field that contains the manufacturer.
+         You can use `_field_manufacturer` as field name to use it in most places.
       -  ``field_package`` :index:`: <pair: global options; field_package>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``['package', 'pkg']``) Name/s of the field/s used for the package, not footprint.
          I.e. 0805, SOT-23, etc. Used for the value split filter. |br|
          You can use `_field_package` as field name to use it in most places.
@@ -212,7 +218,7 @@
       -  ``time_format`` :index:`: <pair: global options; time_format>` [:ref:`string <string>`] (default: ``'%H-%M-%S'``) Format used for the time we started the script. Uses the `strftime` format.
       -  ``time_reformat`` :index:`: <pair: global options; time_reformat>` [:ref:`boolean <boolean>`] (default: ``true``) Tries to reformat the PCB/SCH date using the `date_format`.
          This assumes you let KiCad fill this value and hence the time is in ISO format (YY-MM-DD).
-      -  ``units`` :index:`: <pair: global options; units>` [:ref:`string <string>`] (default: ``''``) (choices: "millimeters", "inches", "mils") Default units. Affects `position`, `bom` and `panelize` outputs and
+      -  ``units`` :index:`: <pair: global options; units>` [:ref:`string <string>`] (default: ``''``) (choices: "millimeters", "inches", "mils") Default units. Affects `position`, `bom`, `panelize` and 'odb' outputs, and
          the `erc` and `drc` preflights. Also KiCad 6 dimensions.
       -  ``use_dir_for_preflights`` :index:`: <pair: global options; use_dir_for_preflights>` [:ref:`boolean <boolean>`] (default: ``true``) Use the global `dir` as subdir for the preflights.
       -  ``use_os_env_for_expand`` :index:`: <pair: global options; use_os_env_for_expand>` [:ref:`boolean <boolean>`] (default: ``true``) In addition to KiCad text variables also use the OS environment variables when expanding `${VARIABLE}`.

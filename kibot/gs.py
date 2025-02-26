@@ -170,7 +170,10 @@ class GS(object):
     global_extra_pth_drill = None
     global_field_3D_model = None
     global_field_current = None
+    global_field_dist_part_number = None
+    global_field_distributor = None
     global_field_lcsc_part = None
+    global_field_manufacturer = None
     global_field_package = None
     global_field_part_number = None
     global_field_power = None

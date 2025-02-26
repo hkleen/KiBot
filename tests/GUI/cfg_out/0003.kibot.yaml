@@ -194,6 +194,11 @@ outputs:
   comment: Records information about the current run
   options:
     output: output.info.options.dict
+- name: output.ipc2581
+  type: ipc2581
+  comment: Exports the PCB in the Digital Product Model Exchange IPC format
+  options:
+    output: output.ipc2581.options.dict
 - name: output.kibom
   type: kibom
   comment: Used to generate the BoM in HTML or CSV format using the KiBoM plug-in

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2020-2024 Salvador E. Tropea
-# Copyright (c) 2020-2024 Instituto Nacional de Tecnología Industrial
+# Copyright (c) 2020-2025 Salvador E. Tropea
+# Copyright (c) 2020-2025 Instituto Nacional de Tecnología Industrial
 # Copyright (c) 2018 John Beard
-# License: GPL-3.0
+# License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
 # Adapted from: https://github.com/johnbeard/kiplot
 """
@@ -19,6 +19,7 @@ from subprocess import run, PIPE, STDOUT, Popen, CalledProcessError
 from glob import glob
 from importlib.util import spec_from_file_location, module_from_spec
 
+from .bom.columnlist import ColumnList
 from .gs import GS
 from .registrable import RegOutput
 from .misc import (PLOT_ERROR, CORRUPTED_PCB, EXIT_BAD_ARGS, CORRUPTED_SCH, version_str2tuple,
@@ -1332,6 +1333,14 @@ def generate_examples(start_dir, dry, types):
     index = os.path.join(GS.out_dir, 'index.html')
     if os.environ.get('DISPLAY') and which('x-www-browser') and os.path.isfile(index):
         Popen(['x-www-browser', index])
+
+
+def get_columns():
+    """ Create a list of valid columns """
+    if GS.sch:
+        cols = deepcopy(ColumnList.COLUMNS_DEFAULT)
+        return (GS.sch.get_field_names(cols), ColumnList.COLUMNS_EXTRA)
+    return (ColumnList.COLUMNS_DEFAULT, ColumnList.COLUMNS_EXTRA)
 
 
 # To avoid circular dependencies: Optionable needs it, but almost everything needs Optionable

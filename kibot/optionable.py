@@ -693,18 +693,25 @@ class Optionable(object):
             field = Optionable._solve_field_name(field, empty_when_none)
             logger.debug('Using {} as LCSC field name'.format(field))
             return field
+        field_or_empty = '' if empty_when_none else field
         if rest == 'package':
-            return GS.global_field_package[0] if GS.global_field_package else field
+            return GS.global_field_package[0] if GS.global_field_package else field_or_empty
         if rest == 'power':
-            return GS.global_field_power[0] if GS.global_field_power else field
+            return GS.global_field_power[0] if GS.global_field_power else field_or_empty
         if rest == 'temp_coef':
-            return GS.global_field_temp_coef[0] if GS.global_field_temp_coef else field
+            return GS.global_field_temp_coef[0] if GS.global_field_temp_coef else field_or_empty
         if rest == 'tolerance':
-            return GS.global_field_tolerance[0] if GS.global_field_tolerance else field
+            return GS.global_field_tolerance[0] if GS.global_field_tolerance else field_or_empty
         if rest == 'voltage':
-            return GS.global_field_voltage[0] if GS.global_field_voltage else field
+            return GS.global_field_voltage[0] if GS.global_field_voltage else field_or_empty
         if rest == 'part_number':
-            return GS.global_field_part_number[0] if GS.global_field_part_number else field
+            return GS.global_field_part_number[0] if GS.global_field_part_number else field_or_empty
+        if rest == 'manufacturer':
+            return GS.global_field_manufacturer[0] if GS.global_field_manufacturer else field_or_empty
+        if rest == 'dist_part_number':
+            return GS.global_field_dist_part_number[0] if GS.global_field_dist_part_number else field_or_empty
+        if rest == 'distributor':
+            return GS.global_field_distributor[0] if GS.global_field_distributor else field_or_empty
         return field
 
 

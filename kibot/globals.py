@@ -299,7 +299,7 @@ class Globals(FiltersOptions):
             """ Tries to reformat the PCB/SCH date using the `date_format`.
                 This assumes you let KiCad fill this value and hence the time is in ISO format (YY-MM-DD) """
             self.units = ''
-            """ [millimeters,inches,mils] Default units. Affects `position`, `bom` and `panelize` outputs and
+            """ [millimeters,inches,mils] Default units. Affects `position`, `bom`, `panelize` and 'odb' outputs, and
                 the `erc` and `drc` preflights. Also KiCad 6 dimensions """
             self.use_dir_for_preflights = True
             """ Use the global `dir` as subdir for the preflights """
@@ -321,6 +321,15 @@ class Globals(FiltersOptions):
             self.field_part_number = ''
             """ The name of the schematic field that contains the manufacturer part number.
                 You can use `_field_part_number` as field name to use it in most places """
+            self.field_manufacturer = ''
+            """ The name of the schematic field that contains the manufacturer.
+                You can use `_field_manufacturer` as field name to use it in most places """
+            self.field_dist_part_number = ''
+            """ The name of the schematic field that contains the distributor part number.
+                You can use `_field_dist_part_number` as field name to use it in most places """
+            self.field_distributor = ''
+            """ The name of the schematic field that contains the distributor.
+                You can use `_field_distributor` as field name to use it in most places """
             self.allow_blind_buried_vias = True
             """ Allow the use of buried vias. This value is only used for KiCad 7+.
                 For KiCad 5 and 6 use the design rules settings, stored in the project """
@@ -528,6 +537,9 @@ class Globals(FiltersOptions):
         self.field_temp_coef = Optionable.force_list(self.field_temp_coef)
         self.field_power = Optionable.force_list(self.field_power)
         self.field_part_number = Optionable.force_list(self.field_part_number)
+        self.field_manufacturer = Optionable.force_list(self.field_manufacturer)
+        self.field_dist_part_number = Optionable.force_list(self.field_dist_part_number)
+        self.field_distributor = Optionable.force_list(self.field_distributor)
         # Transfer options to the GS globals
         for option in filter(lambda x: x[0] != '_', self.__dict__.keys()):
             gl = 'global_'+option

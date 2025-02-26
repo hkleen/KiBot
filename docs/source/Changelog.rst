@@ -22,6 +22,7 @@ Added
 -  New outputs:
 
    -  ODB: Exports the PCB in ODB++ format (KiCad 9) (#782)
+   -  IPC2581: Exports the PCB in IPC-2581 (IPC-DPMX) format (KiCad 9)
 
 -  CLI:
 
