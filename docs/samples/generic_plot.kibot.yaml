@@ -1934,6 +1934,58 @@ outputs:
       variant: ''
       # [string='C'] [B,C] Which implementation of the IPC-2581 standard will be generated
       version: 'C'
+  # KiCad Jobset (batch execution):
+  # The outputs will be generated using the `dir` directory as base.
+  # This is provided just for convenience
+  - name: 'jobset_example'
+    comment: 'Generates outputs defined in a KiCad jobset file (.kicad_jobset).'
+    type: 'jobset'
+    dir: 'Example/jobset_dir'
+    options:
+      # [string|list(string)='_null'] Name of the filter to mark components as not fitted.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+      # variant
+      dnf_filter: '_null'
+      # [boolean=true] Downloads missing 3D models from KiCad git.
+      # Only applies to models in KISYS3DMOD and KICAD6_3DMODEL_DIR.
+      # They are downloaded to a temporal directory and discarded.
+      # If you want to cache the downloaded files specify a directory using the
+      # KIBOT_3D_MODELS environment variable
+      download: true
+      # [boolean=true] In addition to try to download the 3D models from KiCad git also try to get
+      # them from LCSC database. In order to work you'll need to provide the LCSC
+      # part number. The field containing the LCSC part number is defined by the
+      # `field_lcsc_part` global variable
+      download_lcsc: true
+      # [string|list(string)='_null'] Name of the filter to exclude components from processing.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+      # variant
+      exclude_filter: '_null'
+      # [string=''] Name of the KiCad jobset file you want to use. Should have `kicad_jobset` extension.
+      # Leave empty to look for a jobset with the same name as the project
+      jobset: ''
+      # [string='https://gitlab.com/kicad/libraries/kicad-packages3D/-/raw/master/'] Base URL for the KiCad 3D models
+      kicad_3d_url: 'https://gitlab.com/kicad/libraries/kicad-packages3D/-/raw/master/'
+      # [string=''] Text added to the end of the download URL.
+      # Can be used to pass variables to the GET request, i.e. ?VAR1=VAL1&VAR2=VAL2
+      kicad_3d_url_suffix: ''
+      # [boolean=false] Used to exclude 3D models for components with 'virtual' attribute
+      no_virtual: false
+      # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
+      # Is a short-cut to use for simple cases where a variant is an overkill.
+      # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+      # variant
+      pre_transform: '_null'
+      # [string=''] Output to be generated. When empty KiCad runs all possible outputs.
+      # Here the name can be obtained from the .kicad_jobset file, in JSON format.
+      # The `outputs` section contains all the defined outputs. Each output has an `id` use it here
+      run_output: ''
+      # [boolean=true] Stop generation when an error is detected
+      stop_on_error: true
+      # [string=''] Board variant to apply
+      variant: ''
   # KiBoM (KiCad Bill of Materials):
   # For more information: https://github.com/INTI-CMNB/KiBoM
   # Note that this output is provided as a compatibility tool.

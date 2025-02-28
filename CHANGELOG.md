@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - IPC2581: Exports the PCB in IPC-2581 (IPC-DPMX) format (KiCad 9)
   - export_3d: Exports the 3D model of the PCB in BREP, GLB, STL, STEP and
     XAO (KiCad 9) (#783)
+  - jobset: Runs a KiCad jobset (KiCad 9)
 - CLI:
   - `--variant` to specify which variants will be generated (See #737)
   - `--defs-from-project` allows using KiCad variables for the preprocessor

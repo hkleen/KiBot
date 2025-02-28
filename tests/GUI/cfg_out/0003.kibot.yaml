@@ -204,6 +204,11 @@ outputs:
   comment: Exports the PCB in the Digital Product Model Exchange IPC format
   options:
     output: output.ipc2581.options.dict
+- name: output.jobset
+  type: jobset
+  comment: Generates outputs defined in a KiCad jobset file (.kicad_jobset)
+  options:
+    jobset: output.jobset.options.dict
 - name: output.kibom
   type: kibom
   comment: Used to generate the BoM in HTML or CSV format using the KiBoM plug-in

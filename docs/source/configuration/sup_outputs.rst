@@ -30,6 +30,7 @@ Notes:
    outputs/ibom
    outputs/info
    outputs/ipc2581
+   outputs/jobset
    outputs/kibom
    outputs/kicanvas
    outputs/kicost

@@ -64,6 +64,12 @@ WIDTHS_4 = [5, 12, 10.5, 12, 10.5, 12, 21, 12, 5]
 WIDTHS_5 = [5, 10, 8.5, 10, 8.5, 10, 8.5, 10, 14.5, 10, 5]
 
 
+def abs_path_model(data, replace):
+    """ Make sure the 3D model uses an absolute path.
+        Used for temporal files create at /tmp """
+    return os.path.abspath(replace)
+
+
 def do_expand_env(fname, used_extra, extra_debug, lib_nickname):
     # Is it using ALIAS:xxxxx?
     force_used_extra = False
@@ -81,9 +87,13 @@ def do_expand_env(fname, used_extra, extra_debug, lib_nickname):
     full_name = KiConf.expand_env(fname, used_extra, ref_dir=GS.pcb_dir)
     if extra_debug:
         logger.debug("- Expanded {} -> {}".format(fname, full_name))
-    if os.path.isfile(full_name) or ':' not in fname or GS.global_disable_3d_alias_as_env:
+    if os.path.isfile(full_name):
+        return full_name
+    if ':' not in fname or GS.global_disable_3d_alias_as_env:
+        # Try using the current working dir
         full_name_cwd = KiConf.expand_env(fname, used_extra, ref_dir=os.getcwd())
         if os.path.isfile(full_name_cwd):
+            # Was relative to cwd, not all KiCad versions supports it, patch the model
             full_name = full_name_cwd
             force_used_extra = True
         else:
@@ -541,7 +551,7 @@ class Base3DOptions(VariantOptions):
                     models.add(full_name)
         return list(models)
 
-    def filter_components(self, highlight=None, force_wrl=False):
+    def filter_components(self, highlight=None, force_wrl=False, also_sch=False):
         if not self._comps:
             # No filters, but we need to apply some stuff
             all_comps = None
@@ -568,8 +578,18 @@ class Base3DOptions(VariantOptions):
                 return ret
             return GS.pcb_file
         self.filter_pcb_components(do_3D=True, do_2D=True, highlight=highlight)
-        self.download_models(force_wrl=force_wrl, all_comps=self._comps)
-        fname = self.save_tmp_board()
+        if also_sch:
+            self.download_models(force_wrl=force_wrl, all_comps=self._comps, rename_function=abs_path_model,
+                                 rename_filter='*')
+            fname, pcb_dir = self.save_tmp_dir_board('3D')
+            replaced_images = self.sch_replace_images(GS.sch)
+            GS.sch.save_variant(pcb_dir)
+            if replaced_images:
+                self.sch_restore_images(GS.sch)
+            self._files_to_remove.append(pcb_dir)
+        else:
+            self.download_models(force_wrl=force_wrl, all_comps=self._comps)
+            fname = self.save_tmp_board()
         self.unfilter_pcb_components(do_3D=True, do_2D=True)
         return fname
 
