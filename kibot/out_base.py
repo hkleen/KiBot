@@ -1018,7 +1018,7 @@ class VariantOptions(BaseOptions):
     def save_tmp_dir_board(id, force_dir=None, forced_name=None):
         """ Save the PCB to a temporal dir.
             Disadvantage: all relative paths inside the file becomes useless
-            Aadvantage: the name of the file remains the same """
+            Advantage: the name of the file remains the same """
         pcb_dir = GS.mkdtemp(id) if force_dir is None else force_dir
         basename = forced_name if forced_name else GS.pcb_basename
         fname = os.path.join(pcb_dir, basename+'.kicad_pcb')
