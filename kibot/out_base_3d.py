@@ -88,6 +88,8 @@ def do_expand_env(fname, used_extra, extra_debug, lib_nickname):
     if extra_debug:
         logger.debug("- Expanded {} -> {}".format(fname, full_name))
     if os.path.isfile(full_name):
+        if force_used_extra:
+            used_extra[0] = True
         return full_name
     if ':' not in fname or GS.global_disable_3d_alias_as_env:
         # Try using the current working dir
