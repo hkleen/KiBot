@@ -458,11 +458,12 @@ class DrawCurve(object):
         self.points = []
         self.stroke = None
         self.fill = None
+        self.uuid = None
 
     @staticmethod
     def parse(items):
         curve = DrawCurve()
-        for i in items[1:]:
+        for c, i in enumerate(items[1:]):
             i_type = _check_is_symbol_list(i)
             if i_type == 'pts':
                 curve.points = _get_points(i)
@@ -470,6 +471,8 @@ class DrawCurve(object):
                 curve.stroke = Stroke.parse(i)
             elif i_type == 'fill':
                 curve.fill = Fill.parse(i)
+            elif i_type == 'uuid':
+                curve.uuid = get_uuid(items, c+1, 'bezier')
             else:
                 raise SchError('Unknown curve attribute `{}`'.format(i))
         curve.box = Box(curve.points)
@@ -483,6 +486,7 @@ class DrawCurve(object):
         data = [_symbol('pts', points), Sep()]
         data.extend([self.stroke.write(), Sep()])
         data.extend([self.fill.write(), Sep()])
+        add_uuid(data, self.uuid)
         return _symbol('bezier', data)
 
 
@@ -2242,6 +2246,8 @@ class SchematicV6(Schematic):
             _add_items(self.arcs, sch)
             # Circles
             _add_items(self.circles, sch)
+            # Beziers
+            _add_items(self.beziers, sch)
             # Rectangles
             _add_items(self.rectangles, sch)
             # Images
@@ -2469,6 +2475,7 @@ class SchematicV6(Schematic):
         self.wires = []
         self.arcs = []
         self.circles = []
+        self.beziers = []
         self.rectangles = []
         self.bitmaps = []
         self.text_boxes = []
@@ -2542,6 +2549,9 @@ class SchematicV6(Schematic):
                 self.arcs.append(DrawArcV6.parse(e))
             elif e_type == 'circle':
                 self.circles.append(DrawCircleV6.parse(e))
+            elif e_type == 'bezier':
+                # KiCad 9
+                self.beziers.append(DrawCurve.parse(e))
             elif e_type == 'rectangle':
                 self.rectangles.append(DrawRectangleV6.parse(e))
             elif e_type == 'image':
