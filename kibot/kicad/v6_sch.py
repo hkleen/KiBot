@@ -483,7 +483,7 @@ class DrawCurve(object):
         for p in self.points:
             points.append(_symbol('xy', [p.x, p.y]))
             points.append(Sep())
-        data = [_symbol('pts', points), Sep()]
+        data = [Sep(), _symbol('pts', points), Sep()]
         data.extend([self.stroke.write(), Sep()])
         data.extend([self.fill.write(), Sep()])
         add_uuid(data, self.uuid)
@@ -496,11 +496,12 @@ class DrawPolyLine(object):
         self.points = []
         self.stroke = None
         self.fill = None
+        self.uuid = None
 
     @staticmethod
     def parse(items):
         line = DrawPolyLine()
-        for i in items[1:]:
+        for c, i in enumerate(items[1:]):
             i_type = _check_is_symbol_list(i)
             if i_type == 'pts':
                 line.points = _get_points(i)
@@ -508,6 +509,8 @@ class DrawPolyLine(object):
                 line.stroke = Stroke.parse(i)
             elif i_type == 'fill':
                 line.fill = Fill.parse(i)
+            elif i_type == 'uuid':
+                line.uuid = get_uuid(items, c+1, 'polyline')
             else:
                 raise SchError('Unknown polyline attribute `{}`'.format(i))
         line.box = Box(line.points)
@@ -521,6 +524,7 @@ class DrawPolyLine(object):
         data = [Sep(), _symbol('pts', points), Sep()]
         data.extend([self.stroke.write(), Sep()])
         data.extend([self.fill.write(), Sep()])
+        add_uuid(data, self.uuid)
         return _symbol('polyline', data)
 
 
@@ -1967,6 +1971,30 @@ class Table(object):
         return _symbol(self.name, data)
 
 
+class RuleArea(object):
+    def __init__(self):
+        super().__init__()
+        self.poly_line = None
+        self.name = 'rule_area'
+
+    @staticmethod
+    def parse(items):
+        o = RuleArea()
+        for i in items[1:]:
+            i_type = _check_is_symbol_list(i)
+            if i_type == 'polyline':
+                o.poly_line = DrawPolyLine.parse(i)
+            else:
+                raise SchError(f'Unknown {o.name} attribute `{i}`')
+        return o
+
+    def write(self):
+        data = [Sep()]
+        if self.poly_line:
+            data.extend([self.poly_line.write(), Sep()])
+        return _symbol(self.name, data)
+
+
 # Here because we have all s-expr tools here
 class PCBLayer(object):
     def __init__(self):
@@ -2266,6 +2294,8 @@ class SchematicV6(Schematic):
             _add_items(self.net_class_flags, sch)
             # Tables
             _add_items(self.tables, sch)
+            # Tables
+            _add_items(self.rule_areas, sch)
             # Symbols
             _add_items(self.symbols, sch, sep=True, cross=cross, exp_hierarchy=exp_hierarchy)
             # Sheets
@@ -2493,6 +2523,7 @@ class SchematicV6(Schematic):
         self.embedded_fonts = None
         self.embedded_files = []
         self.tables = []
+        self.rule_areas = []
         if not os.path.isfile(fname):
             raise SchError('Missing subsheet: '+fname)
         with open(fname, 'rt') as fh:
@@ -2591,6 +2622,8 @@ class SchematicV6(Schematic):
                 self._get_embedded_files(e)
             elif e_type == 'table':  # KiCad 9
                 self.tables.append(Table.parse(e))
+            elif e_type == 'rule_area':  # KiCad 9
+                self.rule_areas.append(RuleArea.parse(e))
             else:
                 raise SchError('Unknown kicad_sch attribute `{}`'.format(e))
         if not self.title:
