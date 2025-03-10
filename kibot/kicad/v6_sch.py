@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2021-2023 Salvador E. Tropea
-# Copyright (c) 2021-2023 Instituto Nacional de Tecnología Industrial
-# License: GPL-3.0
+# Copyright (c) 2021-2025 Salvador E. Tropea
+# Copyright (c) 2021-2025 Instituto Nacional de Tecnología Industrial
+# License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
 """
 KiCad v6/7 Schematic format.
@@ -22,7 +22,7 @@ from .sexpdata import load, SExpData, Symbol, dumps, Sep
 from .sexp_helpers import (_check_is_symbol_list, _check_len, _check_len_total, _check_symbol, _check_hide, _check_integer,
                            _check_float, _check_str, _check_symbol_value, _check_symbol_float, _check_symbol_int,
                            _check_symbol_str, _get_offset, _get_yes_no, _get_at, _get_size, _get_xy, _get_points,
-                           _check_relaxed, Color, _symbol)
+                           _check_relaxed, Color, _symbol, _check_floats)
 from .v5_sch import SchematicComponent, Schematic
 
 logger = log.get_logger()
@@ -1512,6 +1512,8 @@ class TextBox(object):
         text.text = _check_str(items, 1, name)
         text.uuid = None
         text.margins = None
+        text.stroke = None
+        text.span = None  # For table cells
         for c, i in enumerate(items[2:]):
             i_type = _check_is_symbol_list(i)
             if i_type == 'at':
@@ -1536,8 +1538,13 @@ class TextBox(object):
                 m3 = _check_float(i, 3, name+' margin 3')
                 m4 = _check_float(i, 4, name+' margin 4')
                 text.margins = [m1, m2, m3, m4]
+            elif i_type == 'span':
+                # KiCad 9 cell table
+                m1 = _check_integer(i, 1, name+' '+i_type+' 1')
+                m2 = _check_integer(i, 2, name+' '+i_type+' 2')
+                text.span = [m1, m2]
             else:
-                raise SchError('Unknown symbol attribute `{}`'.format(i))
+                raise SchError(f'Unknown `{name}` attribute `{i}`')
         return text
 
     def write(self):
@@ -1547,8 +1554,11 @@ class TextBox(object):
         data.extend([_symbol('at', [self.pos_x, self.pos_y, self.ang]), _symbol('size', [self.size.x, self.size.y]), Sep()])
         if self.margins is not None:
             data.append(_symbol('margins', self.margins))
-        data.extend([self.stroke.write(), Sep(),
-                     self.fill.write(), Sep(),
+        if self.span is not None:
+            data.append(_symbol('span', self.span))
+        if self.stroke:
+            data.extend([self.stroke.write(), Sep()])
+        data.extend([self.fill.write(), Sep(),
                      self.effects.write(), Sep()])
         if self.uuid:
             add_uuid(data, self.uuid)
@@ -1839,7 +1849,121 @@ class Sheet(object):
         return _symbol('sheet', data)
 
 
-# Here because we have al s-expr tools here
+class TableBorder(object):
+    def __init__(self):
+        super().__init__()
+        self.external = self.header = True
+        self.stroke = None
+        self.name = 'border'
+
+    @staticmethod
+    def parse(items):
+        border = TableBorder()
+        for i in items[1:]:
+            i_type = _check_is_symbol_list(i)
+            if i_type == 'external':
+                border.external = _get_yes_no(i, 1, i_type)
+            elif i_type == 'header':
+                border.header = _get_yes_no(i, 1, i_type)
+            elif i_type == 'stroke':
+                border.stroke = Stroke.parse(i)
+            else:
+                raise SchError(f'Unknown {border.name} attribute `{i}`')
+        return border
+
+    def write(self):
+        data = [Sep(), _symbol_yn('external', self.external), Sep(),
+                _symbol_yn('header', self.header), Sep()]
+        if self.stroke:
+            data.extend([self.stroke.write(), Sep()])
+        return _symbol(self.name, data)
+
+
+class TableSeparator(object):
+    def __init__(self):
+        super().__init__()
+        self.rows = self.cols = True
+        self.stroke = None
+        self.name = 'separators'
+
+    @staticmethod
+    def parse(items):
+        sep = TableSeparator()
+        for i in items[1:]:
+            i_type = _check_is_symbol_list(i)
+            if i_type == 'rows':
+                sep.rows = _get_yes_no(i, 1, i_type)
+            elif i_type == 'cols':
+                sep.cols = _get_yes_no(i, 1, i_type)
+            elif i_type == 'stroke':
+                sep.stroke = Stroke.parse(i)
+            else:
+                raise SchError(f'Unknown {sep.name} attribute `{i}`')
+        return sep
+
+    def write(self):
+        data = [Sep(), _symbol_yn('rows', self.rows), Sep(),
+                _symbol_yn('cols', self.cols), Sep()]
+        if self.stroke:
+            data.extend([self.stroke.write(), Sep()])
+        return _symbol(self.name, data)
+
+
+class Table(object):
+    def __init__(self):
+        super().__init__()
+        self.column_count = 1
+        self.border = None
+        self.separators = None
+        self.column_widths = []
+        self.row_heights = []
+        self.cells = []
+        self.name = 'table'
+
+    @staticmethod
+    def parse(items):
+        tb = Table()
+        for i in items[1:]:
+            i_type = _check_is_symbol_list(i)
+            if i_type == 'column_count':
+                tb.column_count = _check_integer(i, 1, tb.name+' '+i_type)
+            elif i_type == 'border':
+                tb.border = TableBorder.parse(i)
+            elif i_type == 'separators':
+                tb.separators = TableSeparator.parse(i)
+            elif i_type == 'column_widths':
+                tb.column_widths = _check_floats(i, 1, tb.name+' '+i_type)
+            elif i_type == 'row_heights':
+                tb.row_heights = _check_floats(i, 1, tb.name+' '+i_type)
+            elif i_type == 'cells':
+                tb.cells = []
+                for cell in i[1:]:
+                    v = _check_symbol(cell, 0, tb.name+' '+i_type)
+                    if v != 'table_cell':
+                        raise SchError(f'Unknown `cells` element `{v}`')
+                    tb.cells.append(TextBox.parse(cell, v))
+            else:
+                raise SchError(f'Unknown {tb.name} attribute `{i}`')
+        return tb
+
+    def write(self):
+        data = [Sep(), _symbol('column_count', [self.column_count]), Sep()]
+        if self.border:
+            data.extend([self.border.write(), Sep()])
+        if self.separators:
+            data.extend([self.separators.write(), Sep()])
+        if self.column_widths:
+            data.extend([_symbol('column_widths', self.column_widths), Sep()])
+        if self.row_heights:
+            data.extend([_symbol('row_heights', self.row_heights), Sep()])
+        if self.cells:
+            cells = []
+            _add_items(self.cells, cells)
+            data.extend([_symbol('cells', cells), Sep()])
+        return _symbol(self.name, data)
+
+
+# Here because we have all s-expr tools here
 class PCBLayer(object):
     def __init__(self):
         super().__init__()
@@ -2134,6 +2258,8 @@ class SchematicV6(Schematic):
             _add_items(self.hlabels, sch)
             # Net Class Flags
             _add_items(self.net_class_flags, sch)
+            # Tables
+            _add_items(self.tables, sch)
             # Symbols
             _add_items(self.symbols, sch, sep=True, cross=cross, exp_hierarchy=exp_hierarchy)
             # Sheets
@@ -2359,6 +2485,7 @@ class SchematicV6(Schematic):
         self.generator_version = None
         self.embedded_fonts = None
         self.embedded_files = []
+        self.tables = []
         if not os.path.isfile(fname):
             raise SchError('Missing subsheet: '+fname)
         with open(fname, 'rt') as fh:
@@ -2452,6 +2579,8 @@ class SchematicV6(Schematic):
                 self.embedded_fonts = _get_yes_no(e, 1, e_type)
             elif e_type == 'embedded_files':  # KiCad 9
                 self._get_embedded_files(e)
+            elif e_type == 'table':  # KiCad 9
+                self.tables.append(Table.parse(e))
             else:
                 raise SchError('Unknown kicad_sch attribute `{}`'.format(e))
         if not self.title:
