@@ -730,11 +730,14 @@ outputs:
       right_digits: 4
       # [boolean=true] Sort in ascending order
       sort_ascending: true
-      # [string='type_value'] [type_value,type_value_ref,ref,kicad_bom] Sorting criteria.
+      # [string|list(string)='Reference'] {no_case} Field or fields used for the `field` `sort_style`
+      sort_field: 'Reference'
+      # [string='type_value'] [type_value,type_value_ref,ref,kicad_bom,field] Sorting criteria.
       # - type_value: component kind (reference prefix), then by value
       # - type_value_ref: like *type_value* but use the reference when we don't have a value
       # - ref: by reference
       # - kicad_bom: according to the options of the KiCad BoM tool
+      # - field: using the `sort_field` field/s
       sort_style: 'type_value'
       # [boolean=false] Generate the `Source BoM` column using the reference ID instead of the project name
       source_by_id: false

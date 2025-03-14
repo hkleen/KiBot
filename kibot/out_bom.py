@@ -609,13 +609,16 @@ class BoMOptions(BaseOptions):
             self.angle_positive = True
             """ Always use positive values for the footprint rotation """
             self.sort_style = 'type_value'
-            """ *[type_value,type_value_ref,ref,kicad_bom] Sorting criteria.
+            """ *[type_value,type_value_ref,ref,kicad_bom,field] Sorting criteria.
                 - type_value: component kind (reference prefix), then by value
                 - type_value_ref: like *type_value* but use the reference when we don't have a value
                 - ref: by reference
-                - kicad_bom: according to the options of the KiCad BoM tool """
+                - kicad_bom: according to the options of the KiCad BoM tool
+                - field: using the `sort_field` field/s """
             self.sort_ascending = True
             """ Sort in ascending order """
+            self.sort_field = Optionable
+            """ [string|list(string)='Reference'] {no_case} Field or fields used for the `field` `sort_style` """
             self.footprint_populate_values = Optionable
             """ [string|list(string)='no,yes'] {comma_sep} {L:2} Values for the `Footprint Populate` column """
             self.footprint_type_values = Optionable

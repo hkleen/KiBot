@@ -512,6 +512,9 @@ def group_components(cfg, components):
         if not sort_field:
             logger.warning(W_NOBOMOPS+'No KiCad BoM options available, sorting using `type_value`')
             sort_style = 'type_value'
+    elif sort_style == 'field':
+        sort_asc = cfg.sort_ascending
+        sort_field = cfg.sort_field
     if sort_style == 'type_value':
         # First priority is the Type of component (e.g. R?, U?, L?)
         # Second is the value
@@ -525,9 +528,9 @@ def group_components(cfg, components):
     elif sort_style == 'ref':
         groups = sorted(groups, key=lambda g: [g.components[0].ref_prefix, _suffix_to_num(g.components[0].ref_suffix)],
                         reverse=not cfg.sort_ascending)
-    else:  # kicad_bom
+    else:  # kicad_bom and field
         logger.debug(f'Sorting using KiCad definition, field: `{sort_field}`, ascending: {sort_asc}')
-        groups = sorted(groups, key=lambda g: g.components[0].get_field_value(sort_field).lower(), reverse=not sort_asc)
+        groups = sorted(groups, key=lambda g: g.components[0].get_field_value(sort_field, lower=True), reverse=not sort_asc)
     # Enumerate the groups and compute stats
     n_total = n_total_smd = n_total_tht = 0
     n_fitted = n_fitted_smd = n_fitted_tht = 0

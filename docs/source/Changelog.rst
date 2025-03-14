@@ -82,6 +82,8 @@ Added
    -  New *kicad* format to mimic KiCad’s internal BoM.
    -  ``right_digits`` option to control the decimals for position
       fields (#739)
+   -  New ``sort_style`` named ``field`` and ``sort_field`` option to
+      sort by one or more arbitrary fields.
 
 -  Draw Fancy Stackup:
 

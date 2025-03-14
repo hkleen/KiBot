@@ -1723,6 +1723,13 @@
           null
         ],
         [
+          "sort_field",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
           "footprint_populate_values",
           [
             "DataTypeListStringSingular"

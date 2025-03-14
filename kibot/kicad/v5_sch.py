@@ -914,10 +914,18 @@ class SchematicComponent(object):
         self.kicad_dnp = None       # Do Not Populate
         # Exclude from simulation is a field Sim.Enable
 
-    def get_field_value(self, field):
+    def get_field_value(self, field, lower=False):
+        if isinstance(field, list):
+            res = []
+            for f in field:
+                f = f.lower()
+                val = self.dfields[f].value if f in self.dfields else ''
+                res.append(val.lower() if lower else val)
+            return res
         field = field.lower()
         if field in self.dfields:
-            return self.dfields[field].value
+            val = self.dfields[field].value
+            return val.lower() if lower else val
         return ''
 
     def is_field(self, field):

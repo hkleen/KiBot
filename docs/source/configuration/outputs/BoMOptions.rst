@@ -35,12 +35,13 @@ BoMOptions parameters
 -  **output** :index:`: <pair: output - bom - options; output>` [:ref:`string <string>`] (default: ``'%f-%i%I%v.%x'``) filename for the output (%i=bom). The extension depends on the selected format.
    In the case of the **KICAD** format the extension comes from the name you selected in KiCad's
    internal BoM. Affected by global options.
--  **sort_style** :index:`: <pair: output - bom - options; sort_style>` [:ref:`string <string>`] (default: ``'type_value'``) (choices: "type_value", "type_value_ref", "ref", "kicad_bom") Sorting criteria.
+-  **sort_style** :index:`: <pair: output - bom - options; sort_style>` [:ref:`string <string>`] (default: ``'type_value'``) (choices: "type_value", "type_value_ref", "ref", "kicad_bom", "field") Sorting criteria.
 
    - type_value: component kind (reference prefix), then by value
    - type_value_ref: like *type_value* but use the reference when we don't have a value
    - ref: by reference
-   - kicad_bom: according to the options of the KiCad BoM tool.
+   - kicad_bom: according to the options of the KiCad BoM tool
+   - field: using the `sort_field` field/s.
 -  **units** :index:`: <pair: output - bom - options; units>` [:ref:`string <string>`] (default: ``'millimeters'``) (choices: "millimeters", "inches", "mils") Units used for the positions ('Footprint X', 'Footprint Y', 'Footprint X-Size' and
    'Footprint Y-Size' columns). |br|
    Affected by global options.
@@ -127,6 +128,8 @@ BoMOptions parameters
 -  ``right_digits`` :index:`: <pair: output - bom - options; right_digits>` [:ref:`number <number>`] (default: ``4``) Number of digits for mantissa part of coordinates ('Footprint X', 'Footprint Y', 'Footprint X-Size',
    'Footprint Y-Size' and 'Footprint Rot' columns) (0 is auto).
 -  ``sort_ascending`` :index:`: <pair: output - bom - options; sort_ascending>` [:ref:`boolean <boolean>`] (default: ``true``) Sort in ascending order.
+-  ``sort_field`` :index:`: <pair: output - bom - options; sort_field>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'Reference'``) [:ref:`case insensitive <no_case>`]Field or fields used for the `field` `sort_style`.
+
 -  ``source_by_id`` :index:`: <pair: output - bom - options; source_by_id>` [:ref:`boolean <boolean>`] (default: ``false``) Generate the `Source BoM` column using the reference ID instead of the project name.
 -  ``use_alt`` :index:`: <pair: output - bom - options; use_alt>` [:ref:`boolean <boolean>`] (default: ``false``) Print grouped references in the alternate compressed style eg: R1-R7,R18.
    Ignored when using the KICAD format.
