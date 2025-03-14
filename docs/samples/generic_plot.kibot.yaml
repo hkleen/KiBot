@@ -563,11 +563,17 @@ outputs:
         hide_pcb_info: false
         # [boolean=false] Hide statistics information
         hide_stats_info: false
+        # [boolean=true] Don't remove line breaks in field values
+        keep_line_breaks: true
+        # [boolean=true] Don't remove tabs in field values
+        keep_tabs: true
         # [boolean=false] Enclose all values using double quotes
         quote_all: false
         # [string=','] CSV Separator. TXT and TSV always use tab as delimiter.
         # Only one character can be specified
         separator: ','
+        # [string='"'] Character used to delimite strings
+        string_delimiter: '"'
       # [string|list(string)=[]] {comma_sep} Include this distributors list. Default is all the available
       distributors: []
       # [string|list(string)='_kibom_dnc_CONFIG_FIELD'] Name of the filter to mark components as 'Do Not Change'.

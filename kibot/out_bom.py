@@ -292,6 +292,12 @@ class BoMCSV(Optionable):
             """ Hide statistics information """
             self.quote_all = False
             """ *Enclose all values using double quotes """
+            self.string_delimiter = '"'
+            """ Character used to delimite strings """
+            self.keep_line_breaks = True
+            """ Don't remove line breaks in field values """
+            self.keep_tabs = True
+            """ Don't remove tabs in field values """
 
     def config(self, parent):
         super().config(parent)

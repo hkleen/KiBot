@@ -1444,6 +1444,27 @@
                 "DataTypeBoolean"
               ],
               null
+            ],
+            [
+              "string_delimiter",
+              [
+                "DataTypeString"
+              ],
+              null
+            ],
+            [
+              "keep_line_breaks",
+              [
+                "DataTypeBoolean"
+              ],
+              null
+            ],
+            [
+              "keep_tabs",
+              [
+                "DataTypeBoolean"
+              ],
+              null
             ]
           ]
         ],

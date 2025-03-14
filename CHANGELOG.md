@@ -53,6 +53,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `right_digits` option to control the decimals for position fields (#739)
   - New `sort_style` named `field` and `sort_field` option to sort by one or
     more arbitrary fields.
+  - New `csv` options: (to match KiCad internal BoM functionality)
+    - `string_delimiter` to configure the quote character
+    - `keep_line_breaks` to remove line breaks in fields
+    - `keep_tabs` to remove tabs in fields
 - Draw Fancy Stackup:
   - `border_thickness`: Thickness of the borders of stackup drawing and stackup
     table (#747)

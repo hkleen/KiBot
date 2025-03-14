@@ -172,7 +172,19 @@ def write_csv(filename, ext, groups, headings, head_names, cfg):
     quoting = csv.QUOTE_MINIMAL
     if is_kicad or (hasattr(ops, 'quote_all') and ops.quote_all):
         quoting = csv.QUOTE_ALL
-    quotechar = kops.get("string_delimiter", '"') if is_kicad else '"'
+    if is_kicad:
+        quotechar = kops.get("string_delimiter", '"')
+        # KiCad has a couple of options to remove \t and \n
+        keep_line_breaks = kops.get("keep_line_breaks", False)
+        keep_tabs = kops.get("keep_tabs", False)
+    elif hasattr(ops, 'string_delimiter'):
+        quotechar = ops.string_delimiter
+        keep_line_breaks = ops.keep_line_breaks
+        keep_tabs = ops.keep_tabs
+    else:
+        quotechar = '"'
+        keep_line_breaks = True
+        keep_tabs = True
 
     # KiCad has a couple of options to remove \t and \n
     keep_line_breaks = kops.get("keep_line_breaks", False) if is_kicad else True
