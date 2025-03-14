@@ -391,7 +391,7 @@ class Layer(Optionable):
 
 
 # Add all the Inner layers
-for i in range(1, 30):
+for i in range(1, 31):
     name = 'In'+str(i)+'.Cu'
     DEFAULT_INNER_LAYER_NAMES.add(name)
     Layer.DEFAULT_LAYER_NAMES[name] = (i+1)*2 if GS.ki9 else pcbnew.In1_Cu+i-1
