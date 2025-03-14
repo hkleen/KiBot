@@ -82,15 +82,7 @@ class Any_SCH_PrintOptions(VariantOptions):
         try:
             if self.title:
                 self.set_title(self.title, sch=True)
-            if self._comps or self.title or replaced_images:
-                # Save it to a temporal dir
-                sch_dir = GS.mkdtemp(self._expand_ext+'_sch_print')
-                GS.copy_project_sch(sch_dir)
-                fname = GS.sch.save_variant(sch_dir)
-                sch_file = os.path.join(sch_dir, fname)
-                self._files_to_remove.append(sch_dir)
-            else:
-                sch_file = GS.sch_file
+            sch_file = self.save_tmp_sch_if_variant(force=self.title or replaced_images)
             fmt = 'hpgl' if self._expand_ext == 'plt' else self._expand_ext
             cmd = [command, 'export', '--file_format', fmt, '-o', name]
             if self.monochrome:

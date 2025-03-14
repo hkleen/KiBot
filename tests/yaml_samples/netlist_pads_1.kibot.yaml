@@ -1,0 +1,10 @@
+kibot:
+  version: 1
+
+outputs:
+  - name: pads_netlist
+    comment: Schematic netlist in PADS format
+    type: netlist
+    dir: Export
+    options:
+      format: pads

@@ -2461,11 +2461,22 @@ outputs:
       # Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
       # variant
       exclude_filter: '_null'
-      # [string='classic'] [classic,ipc] The `classic` format is the KiCad internal format, and is generated
-      # from the schematic. The `ipc` format is the IPC-D-356 format, useful for PCB
-      # testing, is generated from the PCB
+      # [string='classic'] [classic,ipc,orcadpcb2,allegro,pads,cadstar,spice,spicemodel,kicadxml] The `classic` format is the KiCad
+      # internal format, and is generated from the schematic.
+      # The `ipc` format is the IPC-D-356 format, useful for PCB testing, is generated from the PCB.
+      # kicadxml, cadstar, orcadpcb2, spice and spicemodel needs KiCad 8 or newer.
+      # allegro and pads needs KiCad 9 or newer
       format: 'classic'
-      # [string='%f-%i%I%v.%x'] Filename for the output (%i=netlist/IPC-D-356, %x=net/d356). Affected by global options
+      # [string='%f-%i%I%v.%x'] Filename for the output
+      # - classic: (%i=netlist, %x=net)
+      # - ipc: (%i=IPC-D-356, %x=d356)
+      # - orcadpcb2: (%i=orcad, %x=net)
+      # - allegro: (%i=allegro, %x=txt)
+      # - pads: (%i=pads, %x=asc)
+      # - cadstar: (%i=cadstar, %x=frp)
+      # - spice: (%i=spice, %x=cir)
+      # - spicemodel: (%i=model, %x=cir)
+      # - kicadxml: (%i=netlist, %x=xml). Affected by global options
       output: '%f-%i%I%v.%x'
       # [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
       # Is a short-cut to use for simple cases where a variant is an overkill.

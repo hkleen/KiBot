@@ -1,0 +1,64 @@
+kibot:
+  version: 1
+
+outputs:
+  - name: allegro_netlist
+    comment: Schematic netlist in Allegro format
+    type: netlist
+    dir: Export
+    options:
+      format: allegro
+
+  - name: cadstar_netlist
+    comment: Schematic netlist in CADSTAR format
+    type: netlist
+    dir: Export
+    options:
+      format: cadstar
+
+  - name: classic_netlist
+    comment: Schematic netlist in KiCad format
+    type: netlist
+    dir: Export
+
+  - name: ipc_netlist
+    comment: IPC-D-356 netlist for testing
+    type: netlist
+    dir: Export
+    options:
+      format: ipc
+
+  - name: xml_netlist
+    comment: Schematic netlist in KiCad XML format
+    type: netlist
+    dir: Export
+    options:
+      format: kicadxml
+
+  - name: orcad_netlist
+    comment: Schematic netlist in OrCadPCB2 format
+    type: netlist
+    dir: Export
+    options:
+      format: orcadpcb2
+
+  - name: pads_netlist
+    comment: Schematic netlist in PADS format
+    type: netlist
+    dir: Export
+    options:
+      format: pads
+
+  - name: spice_netlist
+    comment: Schematic netlist in Spice format
+    type: netlist
+    dir: Export
+    options:
+      format: spice
+
+  - name: spicemodel_netlist
+    comment: Schematic netlist as a Spice model
+    type: netlist
+    dir: Export
+    options:
+      format: spicemodel

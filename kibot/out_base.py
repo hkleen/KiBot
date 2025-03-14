@@ -1014,6 +1014,18 @@ class VariantOptions(BaseOptions):
         logger.debug('- Modified PCB: '+fname)
         return fname
 
+    def save_tmp_sch_if_variant(self, force=False):
+        if self._comps or force:
+            # Save it to a temporal dir
+            sch_dir = GS.mkdtemp(self._expand_ext+'_sch_print')
+            GS.copy_project_sch(sch_dir)
+            fname = GS.sch.save_variant(sch_dir)
+            sch_file = os.path.join(sch_dir, fname)
+            self._files_to_remove.append(sch_dir)
+        else:
+            sch_file = GS.sch_file
+        return sch_file
+
     @staticmethod
     def save_tmp_dir_board(id, force_dir=None, forced_name=None):
         """ Save the PCB to a temporal dir.

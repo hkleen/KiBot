@@ -1,0 +1,10 @@
+kibot:
+  version: 1
+
+outputs:
+  - name: cadstar_netlist
+    comment: Schematic netlist in CADSTAR format
+    type: netlist
+    dir: Export
+    options:
+      format: cadstar

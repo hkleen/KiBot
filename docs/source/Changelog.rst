@@ -104,6 +104,11 @@ Added
 
    -  New flavor “navigate_results_rb” with a “reactive” look (#768)
 
+-  Netlist:
+
+   -  OrcadPCB2, Allegro, CADSTAR, PADS, KiCad XML, Spice and Spice
+      model formats
+
 -  PCB Print:
 
    -  A mechanism to filter components for a particular layer (#706)

@@ -1,0 +1,10 @@
+kibot:
+  version: 1
+
+outputs:
+  - name: spice_netlist
+    comment: Schematic netlist in Spice format
+    type: netlist
+    dir: Export
+    options:
+      format: spice

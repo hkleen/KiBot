@@ -64,6 +64,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `force_font_width` to force a font width (#752)
 - Navigate Results:
   - New flavor "navigate_results_rb" with a "reactive" look (#768)
+- Netlist:
+  - OrcadPCB2, Allegro, CADSTAR, PADS, KiCad XML, Spice and Spice model formats
 - PCB Print:
   - A mechanism to filter components for a particular layer (#706)
   - Workaround for Ghostscript handling %d wrong when followed by an hex digit
