@@ -1,7 +1,20 @@
 #!/bin/bash
 # Two optional arguments, first is the command to run, the second the image name
 cmd=/bin/bash
-image=kicad8_auto_full:latest
+image=kicad9_auto_full:latest
+
+if [ "$(uname)" = "Darwin" ]; then
+    # macOS specific code here
+    # Follow xhost setup guide here https://gist.github.com/sorny/969fe55d85c9b0035b0109a31cbcb088
+    # Steps 1 - 7
+    # Add access for the local user
+    # allow_to=SI:localuser:$USER # Doesn't seem to work on macOS, using localhost as a work around
+    allow_to=localhost
+    DISPLAY=docker.for.mac.host.internal:0
+else
+    # Add access for the local user
+    allow_to=SI:localuser:$USER
+fi
 
 # If this script is named "blender" it will try to start blender from the docker image
 SCRIPT_NAME=$(basename "$0")
@@ -25,8 +38,6 @@ fi
 # Save current xhost access control state to a variable
 original_state=$(xhost)
 
-# Add access for the local user
-allow_to=SI:localuser:$USER
 added_access="false"
 if [[ "$original_state" == *"access control disabled"* || "$original_state" == *"$allow_to"* ]]; then
     echo "The user already has access."
@@ -51,13 +62,14 @@ docker run --rm $INTERACTIVE \
     --user $USER_ID:$GROUP_ID \
     --env NO_AT_BRIDGE=1 \
     --env DISPLAY=$DISPLAY \
+    --env HOME=$HOME \
     --workdir=$(pwd) \
     --volume=/tmp/.X11-unix:/tmp/.X11-unix \
     --volume="/etc/group:/etc/group:ro" \
     --volume="/etc/passwd:/etc/passwd:ro" \
     --volume="/etc/shadow:/etc/shadow:ro" \
     --volume="/etc/timezone:/etc/timezone:ro" \
-    --volume="/home/$USER:/home/$USER:rw" \
+    --volume="$HOME:$HOME:rw" \
     $DOCKER_DEV \
     ghcr.io/inti-cmnb/$image /bin/bash -c "$cmd"
 
