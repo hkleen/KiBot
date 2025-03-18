@@ -1,0 +1,18 @@
+kiplot:
+  version: 1
+
+globals:
+  units: mils
+
+outputs:
+  - name: Step
+    comment: "Generate 3D model (STEP)"
+    type: export_3d
+    dir: 3D
+    options:
+      origin: 100,-200
+      min_distance: 1
+      include_tracks: true
+      include_pads: true
+      # no_virtual: false  # exclude 3D models for components with 'virtual' attribute
+      # output: project.step

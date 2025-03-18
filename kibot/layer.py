@@ -39,6 +39,12 @@ def get_priority(id):
     return LAYER_PRIORITY.get(id, 1e6)
 
 
+def inner_id_in_range(id, cnt):
+    if GS.ki9:
+        return GS.layer_is_inner(id) and int(id/2) < cnt
+    return id > 0 and id < cnt-1
+
+
 class Layer(Optionable):
     """ A layer description """
     # Default names
@@ -185,7 +191,7 @@ class Layer(Optionable):
             # Already set, keep it
             return
         if self._is_inner:
-            self._protel_extension = 'g'+str(self.id-pcbnew.F_Cu+1)
+            self._protel_extension = 'g'+str(GS.inner_layer_index(self.id))
             return
         if self.id in Layer.PROTEL_EXTENSIONS:
             self._protel_extension = Layer.PROTEL_EXTENSIONS[self.id]
@@ -221,7 +227,7 @@ class Layer(Optionable):
                 if isinstance(layer, Layer):
                     layer._get_layer_id_from_name()
                     # Check if the layer is in use
-                    if layer._is_inner and (layer._id < 1 or layer._id >= layer_cnt - 1):
+                    if layer._is_inner and not inner_id_in_range(layer._id, layer_cnt):
                         raise PlotError("Inner layer `{}` is not valid for this board".format(layer))
                     layer.fix_protel_ext()
                     new_vals.append(layer)
@@ -272,11 +278,21 @@ class Layer(Optionable):
 
     @staticmethod
     def _get_technical():
+        if GS.ki9:
+            return {GS.board.GetLayerName(id): id for id in GS.board.GetEnabledLayers().AllTechMask().Seq()}
         return {GS.board.GetLayerName(id): id for id in GS.board.GetEnabledLayers().Technicals()}
 
     @staticmethod
     def _get_user():
-        return {GS.board.GetLayerName(id): id for id in GS.board.GetEnabledLayers().Users()}
+        b = GS.board
+        enabled = b.GetEnabledLayers()
+        if GS.ki9:
+            layers = {b.GetLayerName(id): id for id in enabled.UserMask().Seq()}
+            # Applying UserDefinedLayersMask() doesn't work as expected it returns all possible user layers
+            # This is why we need the "if id ..." and this why we need to get the list in 2 steps
+            layers.update({b.GetLayerName(id): id for id in enabled.UserDefinedLayersMask().Seq() if id in enabled.Seq()})
+            return layers
+        return {GS.board.GetLayerName(id): id for id in enabled.Users()}
 
     @staticmethod
     def _set_pcb_layers():
@@ -304,7 +320,7 @@ class Layer(Optionable):
             layer._get_layer_id_from_name()
         else:
             layer._id = name
-            layer._is_inner = name > pcbnew.F_Cu and name < pcbnew.B_Cu
+            layer._is_inner = GS.layer_is_inner(name)
             name = GS.board.GetLayerName(name)
             layer.layer = name
         layer.suffix = layer.get_default_suffix()
@@ -340,13 +356,14 @@ class Layer(Optionable):
             if id is not None:
                 # 2) List from the PCB
                 self._id = id
-                self._is_inner = id > pcbnew.F_Cu and id < pcbnew.B_Cu
+                self._is_inner = GS.layer_is_inner(id)
             elif self.layer.startswith("Inner"):
                 # 3) Inner.N names
                 m = match(r"^Inner\.([0-9]+)$", self.layer)
                 if not m:
                     raise KiPlotConfigurationError("Malformed inner layer name: `{}`, use Inner.N".format(self.layer))
-                self._id = int(m.group(1))
+                id = int(m.group(1))
+                self._id = (id+1)*2 if GS.ki9 else id
                 self._is_inner = True
             else:
                 raise KiPlotConfigurationError("Unknown layer name: `{}`".format(self.layer))
@@ -374,10 +391,10 @@ class Layer(Optionable):
 
 
 # Add all the Inner layers
-for i in range(1, 30):
+for i in range(1, 31):
     name = 'In'+str(i)+'.Cu'
     DEFAULT_INNER_LAYER_NAMES.add(name)
-    Layer.DEFAULT_LAYER_NAMES[name] = pcbnew.In1_Cu+i-1
+    Layer.DEFAULT_LAYER_NAMES[name] = (i+1)*2 if GS.ki9 else pcbnew.In1_Cu+i-1
     Layer.DEFAULT_LAYER_DESC[name] = 'Inner layer '+str(i)
 if GS.ki6:
     # Add all the User.N layers

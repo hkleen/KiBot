@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2021-2023 Salvador E. Tropea
-# Copyright (c) 2021-2023 Instituto Nacional de Tecnología Industrial
-# License: GPL-3.0
+# Copyright (c) 2021-2025 Salvador E. Tropea
+# Copyright (c) 2021-2025 Instituto Nacional de Tecnología Industrial
+# License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
 """
 KiCad v6/7 Schematic format.
@@ -16,13 +16,13 @@ import os
 import re
 from ..gs import GS
 from .. import log
-from ..misc import W_NOLIB, W_UNKFLD, W_MISSCMP
+from ..misc import W_NOLIB, W_UNKFLD, W_MISSCMP, W_FIELDCONF
 from .error import SchError
 from .sexpdata import load, SExpData, Symbol, dumps, Sep
 from .sexp_helpers import (_check_is_symbol_list, _check_len, _check_len_total, _check_symbol, _check_hide, _check_integer,
                            _check_float, _check_str, _check_symbol_value, _check_symbol_float, _check_symbol_int,
                            _check_symbol_str, _get_offset, _get_yes_no, _get_at, _get_size, _get_xy, _get_points,
-                           _check_relaxed, Color, _symbol)
+                           _check_relaxed, Color, _symbol, _check_floats)
 from .v5_sch import SchematicComponent, Schematic
 
 logger = log.get_logger()
@@ -458,11 +458,12 @@ class DrawCurve(object):
         self.points = []
         self.stroke = None
         self.fill = None
+        self.uuid = None
 
     @staticmethod
     def parse(items):
         curve = DrawCurve()
-        for i in items[1:]:
+        for c, i in enumerate(items[1:]):
             i_type = _check_is_symbol_list(i)
             if i_type == 'pts':
                 curve.points = _get_points(i)
@@ -470,6 +471,8 @@ class DrawCurve(object):
                 curve.stroke = Stroke.parse(i)
             elif i_type == 'fill':
                 curve.fill = Fill.parse(i)
+            elif i_type == 'uuid':
+                curve.uuid = get_uuid(items, c+1, 'bezier')
             else:
                 raise SchError('Unknown curve attribute `{}`'.format(i))
         curve.box = Box(curve.points)
@@ -480,9 +483,10 @@ class DrawCurve(object):
         for p in self.points:
             points.append(_symbol('xy', [p.x, p.y]))
             points.append(Sep())
-        data = [_symbol('pts', points), Sep()]
+        data = [Sep(), _symbol('pts', points), Sep()]
         data.extend([self.stroke.write(), Sep()])
         data.extend([self.fill.write(), Sep()])
+        add_uuid(data, self.uuid)
         return _symbol('bezier', data)
 
 
@@ -492,11 +496,12 @@ class DrawPolyLine(object):
         self.points = []
         self.stroke = None
         self.fill = None
+        self.uuid = None
 
     @staticmethod
     def parse(items):
         line = DrawPolyLine()
-        for i in items[1:]:
+        for c, i in enumerate(items[1:]):
             i_type = _check_is_symbol_list(i)
             if i_type == 'pts':
                 line.points = _get_points(i)
@@ -504,6 +509,8 @@ class DrawPolyLine(object):
                 line.stroke = Stroke.parse(i)
             elif i_type == 'fill':
                 line.fill = Fill.parse(i)
+            elif i_type == 'uuid':
+                line.uuid = get_uuid(items, c+1, 'polyline')
             else:
                 raise SchError('Unknown polyline attribute `{}`'.format(i))
         line.box = Box(line.points)
@@ -517,6 +524,7 @@ class DrawPolyLine(object):
         data = [Sep(), _symbol('pts', points), Sep()]
         data.extend([self.stroke.write(), Sep()])
         data.extend([self.fill.write(), Sep()])
+        add_uuid(data, self.uuid)
         return _symbol('polyline', data)
 
 
@@ -723,6 +731,46 @@ class SchematicFieldV6(object):
         return _symbol('property', data)
 
 
+class EmbeddedFile(object):
+    @staticmethod
+    def load(f):
+        if not isinstance(f, list):
+            raise SchError('Embedded file is not a list')
+        if len(f) < 4:  # name, type, data, checksum
+            raise SchError('Truncated embedded file definition (len<4)')
+        file = EmbeddedFile()
+        name = 'embedded file '
+        # Variable list
+        for c, i in enumerate(f[1:]):
+            i_type = _check_is_symbol_list(i)
+            if i_type == 'name':
+                file.name = _check_str(i, 1, name+i_type)
+            elif i_type == 'type':
+                file.type = _check_symbol(i, 1, name+i_type)
+            elif i_type == 'data':
+                values = _check_symbol_value(f, c+1, name+i_type, i_type)
+                file.data = [_check_relaxed(values, i+1, name+i_type) for i, d in enumerate(values[1:])]
+            elif i_type == 'checksum':
+                # MurMur Hash 3 with Seed=0xABBA2345
+                # KiCad devs are really creative! Very hard to verify, useless
+                file.checksum = _check_str(i, 1, name+i_type)
+            else:
+                raise SchError(f'Unknown embedded file attribute `{i}`')
+        return file
+
+    def write(self):
+        d = []
+        # KiCad 9 uses the method used by KiCad 7 images and changed in KiCad 8 ...
+        for v in self.data:
+            d.append(Symbol(v))
+            d.append(Sep())
+        data = [Sep(), _symbol('name', [self.name]),
+                Sep(), _symbol('type', [Symbol(self.type)]),
+                Sep(), _symbol('data', [Sep()] + d),
+                Sep(), _symbol('checksum', [self.checksum]), Sep()]
+        return _symbol('file', data)
+
+
 class LibComponent(object):
     unit_regex = re.compile(r'^(.*)_(\d+)_(\d+)$')
     cross_color = Color()
@@ -753,6 +801,9 @@ class LibComponent(object):
         # This member is used to generate crossed components (DNF).
         # When defined means we need to add a cross in this box and then reset the box.
         self.cross_box = None
+        # KiCad 9
+        # WTF?!
+        self.embedded_fonts = None
 
     def get_field_value(self, field):
         field = field.lower()
@@ -799,12 +850,12 @@ class LibComponent(object):
             elif i_type == 'pin_names':
                 value = _check_len(i, 1, i_type)
                 index = 1
-                if isinstance(value, list):
+                if isinstance(value, list) and isinstance(value[0], Symbol) and value[0].value() == 'offset':
                     comp.pin_names_offset = _get_offset(i, 1, i_type)
                     index = 2
                 comp.pin_names_hide = None
                 try:
-                    comp.pin_names_hide = _check_symbol(i, index, i_type)
+                    comp.pin_names_hide = _check_hide(i, index, i_type)
                 except SchError:
                     # Optional
                     pass
@@ -844,6 +895,9 @@ class LibComponent(object):
                 comp.draw.append(DrawTextV6.parse(i))
             elif i_type == 'text_box':
                 comp.draw.append(TextBox.parse(i, i_type))
+            elif i_type == 'embedded_fonts':
+                # Fonts in a lib component?!
+                comp.embedded_fonts = _get_yes_no(i, 1, i_type)
             # PINS...
             elif i_type == 'pin':
                 vis_obj = PinV6.parse(i)
@@ -947,6 +1001,9 @@ class LibComponent(object):
         if s.unit_name is not None:
             sdata.append(_symbol('unit_name', [s.unit_name]))
             sdata.append(Sep())
+        # Fonts
+        if s.embedded_fonts is not None:
+            sdata.append(_symbol_yn('embedded_fonts', s.embedded_fonts))
         # Properties
         for f in s.fields:
             fdata = f.write()
@@ -1151,6 +1208,11 @@ class SchematicComponentV6(SchematicComponent):
                 field = SchematicFieldV6.parse(i, field_id)
                 field_id += 1
                 name_lc = field.name.lower()
+                if name_lc in comp.dfields:
+                    old = comp.dfields[name_lc]
+                    if old.value != field.value:
+                        logger.warning(W_FIELDCONF+f"Field conflict: {field.name}='{field.value}' vs {old.name}='{old.value}'"
+                                       f" (in {comp.fields[0].value})")
                 # Add to the global collection
                 if name_lc not in parent.fields_lc:
                     parent.fields.append(field.name)
@@ -1457,6 +1519,9 @@ class TextBox(object):
         text.exclude_from_sim = None
         text.text = _check_str(items, 1, name)
         text.uuid = None
+        text.margins = None
+        text.stroke = None
+        text.span = None  # For table cells
         for c, i in enumerate(items[2:]):
             i_type = _check_is_symbol_list(i)
             if i_type == 'at':
@@ -1474,17 +1539,34 @@ class TextBox(object):
             elif i_type == 'exclude_from_sim':
                 # KiCad 8
                 text.exclude_from_sim = _get_yes_no(i, 1, i_type)
+            elif i_type == 'margins':
+                # KiCad 9
+                m1 = _check_float(i, 1, name+' margin 1')
+                m2 = _check_float(i, 2, name+' margin 2')
+                m3 = _check_float(i, 3, name+' margin 3')
+                m4 = _check_float(i, 4, name+' margin 4')
+                text.margins = [m1, m2, m3, m4]
+            elif i_type == 'span':
+                # KiCad 9 cell table
+                m1 = _check_integer(i, 1, name+' '+i_type+' 1')
+                m2 = _check_integer(i, 2, name+' '+i_type+' 2')
+                text.span = [m1, m2]
             else:
-                raise SchError('Unknown symbol attribute `{}`'.format(i))
+                raise SchError(f'Unknown `{name}` attribute `{i}`')
         return text
 
     def write(self):
         data = [self.text, Sep()]
         if self.exclude_from_sim is not None:
             data.append(_symbol_yn('exclude_from_sim', self.exclude_from_sim))
-        data.extend([_symbol('at', [self.pos_x, self.pos_y, self.ang]), _symbol('size', [self.size.x, self.size.y]), Sep(),
-                     self.stroke.write(), Sep(),
-                     self.fill.write(), Sep(),
+        data.extend([_symbol('at', [self.pos_x, self.pos_y, self.ang]), _symbol('size', [self.size.x, self.size.y]), Sep()])
+        if self.margins is not None:
+            data.append(_symbol('margins', self.margins))
+        if self.span is not None:
+            data.append(_symbol('span', self.span))
+        if self.stroke:
+            data.extend([self.stroke.write(), Sep()])
+        data.extend([self.fill.write(), Sep(),
                      self.effects.write(), Sep()])
         if self.uuid:
             add_uuid(data, self.uuid)
@@ -1577,9 +1659,16 @@ class HSPin(object):
         pin = HSPin()
         pin.name = _check_str(items, 1, name+' name')
         pin.type = _check_symbol(items, 2, name+' type')
-        pin.pos_x, pin.pos_y, pin.ang = _get_at(items, 3, name)
-        pin.effects = _get_effects(items, 4, name)
-        pin.uuid = get_uuid(items, 5, name)
+        for c, i in enumerate(items[3:]):
+            i_type = _check_is_symbol_list(i)
+            if i_type == 'at':
+                pin.pos_x, pin.pos_y, pin.ang = _get_at(items, c+3, name)
+            elif i_type == 'effects':
+                pin.effects = _get_effects(items, c+3, name)
+            elif i_type == 'uuid':
+                pin.uuid = get_uuid(items, c+3, name)
+            else:
+                raise SchError(f'Unknown {name} attribute `{i}`')
         return pin
 
     def write(self):
@@ -1625,6 +1714,11 @@ class Sheet(object):
         self.projects = None
         # All instances, by path (page look-up)
         self.all_instances = {}
+        # KiCad 9 attributes
+        self.exclude_from_sim = None
+        self.in_bom = None
+        self.on_board = None
+        self.dnp = None
 
     def load_project(self, prj):
         name = _check_str(prj, 1, 'instance project')
@@ -1661,6 +1755,14 @@ class Sheet(object):
             elif i_type == 'uuid':
                 sheet.uuid_ori = _get_uuid(items, c+1, 'sheet')
                 sheet.uuid, _ = UUID_Validator.validate(sheet.uuid_ori)
+            elif i_type == 'exclude_from_sim':
+                sheet.exclude_from_sim = _get_yes_no(i, 1, i_type)
+            elif i_type == 'in_bom':
+                sheet.in_bom = _get_yes_no(i, 1, i_type)
+            elif i_type == 'on_board':
+                sheet.on_board = _get_yes_no(i, 1, i_type)
+            elif i_type == 'dnp':
+                sheet.dnp = _get_yes_no(i, 1, i_type)
             elif i_type == 'property':
                 field = SchematicFieldV6.parse(i, field_id)
                 field_id += 1
@@ -1709,6 +1811,14 @@ class Sheet(object):
     def write(self, exp_hierarchy):
         data = [_symbol('at', [self.pos_x, self.pos_y]),
                 _symbol('size', [self.w, self.h])]
+        if self.exclude_from_sim is not None:
+            data.append(_symbol_yn('exclude_from_sim', self.exclude_from_sim))
+        if self.in_bom is not None:
+            data.append(_symbol_yn('in_bom', self.in_bom))
+        if self.on_board is not None:
+            data.append(_symbol_yn('on_board', self.on_board))
+        if self.dnp is not None:
+            data.append(_symbol_yn('dnp', self.dnp))
         if self.fields_autoplaced:
             data.append(_symbol('fields_autoplaced', []))
         data.extend([Sep(), self.stroke.write(), Sep(),
@@ -1747,7 +1857,145 @@ class Sheet(object):
         return _symbol('sheet', data)
 
 
-# Here because we have al s-expr tools here
+class TableBorder(object):
+    def __init__(self):
+        super().__init__()
+        self.external = self.header = True
+        self.stroke = None
+        self.name = 'border'
+
+    @staticmethod
+    def parse(items):
+        border = TableBorder()
+        for i in items[1:]:
+            i_type = _check_is_symbol_list(i)
+            if i_type == 'external':
+                border.external = _get_yes_no(i, 1, i_type)
+            elif i_type == 'header':
+                border.header = _get_yes_no(i, 1, i_type)
+            elif i_type == 'stroke':
+                border.stroke = Stroke.parse(i)
+            else:
+                raise SchError(f'Unknown {border.name} attribute `{i}`')
+        return border
+
+    def write(self):
+        data = [Sep(), _symbol_yn('external', self.external), Sep(),
+                _symbol_yn('header', self.header), Sep()]
+        if self.stroke:
+            data.extend([self.stroke.write(), Sep()])
+        return _symbol(self.name, data)
+
+
+class TableSeparator(object):
+    def __init__(self):
+        super().__init__()
+        self.rows = self.cols = True
+        self.stroke = None
+        self.name = 'separators'
+
+    @staticmethod
+    def parse(items):
+        sep = TableSeparator()
+        for i in items[1:]:
+            i_type = _check_is_symbol_list(i)
+            if i_type == 'rows':
+                sep.rows = _get_yes_no(i, 1, i_type)
+            elif i_type == 'cols':
+                sep.cols = _get_yes_no(i, 1, i_type)
+            elif i_type == 'stroke':
+                sep.stroke = Stroke.parse(i)
+            else:
+                raise SchError(f'Unknown {sep.name} attribute `{i}`')
+        return sep
+
+    def write(self):
+        data = [Sep(), _symbol_yn('rows', self.rows), Sep(),
+                _symbol_yn('cols', self.cols), Sep()]
+        if self.stroke:
+            data.extend([self.stroke.write(), Sep()])
+        return _symbol(self.name, data)
+
+
+class Table(object):
+    def __init__(self):
+        super().__init__()
+        self.column_count = 1
+        self.border = None
+        self.separators = None
+        self.column_widths = []
+        self.row_heights = []
+        self.cells = []
+        self.name = 'table'
+
+    @staticmethod
+    def parse(items):
+        tb = Table()
+        for i in items[1:]:
+            i_type = _check_is_symbol_list(i)
+            if i_type == 'column_count':
+                tb.column_count = _check_integer(i, 1, tb.name+' '+i_type)
+            elif i_type == 'border':
+                tb.border = TableBorder.parse(i)
+            elif i_type == 'separators':
+                tb.separators = TableSeparator.parse(i)
+            elif i_type == 'column_widths':
+                tb.column_widths = _check_floats(i, 1, tb.name+' '+i_type)
+            elif i_type == 'row_heights':
+                tb.row_heights = _check_floats(i, 1, tb.name+' '+i_type)
+            elif i_type == 'cells':
+                tb.cells = []
+                for cell in i[1:]:
+                    v = _check_symbol(cell, 0, tb.name+' '+i_type)
+                    if v != 'table_cell':
+                        raise SchError(f'Unknown `cells` element `{v}`')
+                    tb.cells.append(TextBox.parse(cell, v))
+            else:
+                raise SchError(f'Unknown {tb.name} attribute `{i}`')
+        return tb
+
+    def write(self):
+        data = [Sep(), _symbol('column_count', [self.column_count]), Sep()]
+        if self.border:
+            data.extend([self.border.write(), Sep()])
+        if self.separators:
+            data.extend([self.separators.write(), Sep()])
+        if self.column_widths:
+            data.extend([_symbol('column_widths', self.column_widths), Sep()])
+        if self.row_heights:
+            data.extend([_symbol('row_heights', self.row_heights), Sep()])
+        if self.cells:
+            cells = []
+            _add_items(self.cells, cells)
+            data.extend([_symbol('cells', cells), Sep()])
+        return _symbol(self.name, data)
+
+
+class RuleArea(object):
+    def __init__(self):
+        super().__init__()
+        self.poly_line = None
+        self.name = 'rule_area'
+
+    @staticmethod
+    def parse(items):
+        o = RuleArea()
+        for i in items[1:]:
+            i_type = _check_is_symbol_list(i)
+            if i_type == 'polyline':
+                o.poly_line = DrawPolyLine.parse(i)
+            else:
+                raise SchError(f'Unknown {o.name} attribute `{i}`')
+        return o
+
+    def write(self):
+        data = [Sep()]
+        if self.poly_line:
+            data.extend([self.poly_line.write(), Sep()])
+        return _symbol(self.name, data)
+
+
+# Here because we have all s-expr tools here
 class PCBLayer(object):
     def __init__(self):
         super().__init__()
@@ -1888,6 +2136,14 @@ class SchematicV6(Schematic):
             self.lib_symbols.append(obj)
             self.lib_symbol_names[obj.lib_id] = obj
 
+    def _get_embedded_files(self, files):
+        if not isinstance(files, list):
+            raise SchError('The embedded files is not a list')
+        for f in files[1:]:
+            obj = EmbeddedFile.load(f)
+            self.embedded_files.append(obj)
+            self.embedded_file_names[obj.name] = obj
+
     def path_to_human(self, path):
         """ Converts a UUID path into something we can read """
         if path == '/':
@@ -2018,6 +2274,8 @@ class SchematicV6(Schematic):
             _add_items(self.arcs, sch)
             # Circles
             _add_items(self.circles, sch)
+            # Beziers
+            _add_items(self.beziers, sch)
             # Rectangles
             _add_items(self.rectangles, sch)
             # Images
@@ -2034,6 +2292,10 @@ class SchematicV6(Schematic):
             _add_items(self.hlabels, sch)
             # Net Class Flags
             _add_items(self.net_class_flags, sch)
+            # Tables
+            _add_items(self.tables, sch)
+            # Tables
+            _add_items(self.rule_areas, sch)
             # Symbols
             _add_items(self.symbols, sch, sep=True, cross=cross, exp_hierarchy=exp_hierarchy)
             # Sheets
@@ -2061,6 +2323,17 @@ class SchematicV6(Schematic):
                             s.path = path_join(c.path, c.uuid)
                 if base_sheet == self or not exp_hierarchy:
                     _add_items_list('symbol_instances', instances, sch)
+            # Fonts
+            if self.embedded_fonts is not None:
+                sch.append(_symbol_yn('embedded_fonts', self.embedded_fonts))
+            # - Embedded files (here are the fonts)
+            if self.embedded_files:
+                files = []
+                for f in self.embedded_files:
+                    files.append(Sep())
+                    files.append(f.write())
+                files.append(Sep())
+                sch.extend([Sep(), _symbol('embedded_files', files), Sep()])
             logger.debug('Saving schematic: `{}`'.format(fname))
             # Keep a back-up of existing files
             if os.path.isfile(fname):
@@ -2206,6 +2479,7 @@ class SchematicV6(Schematic):
             self.root_sheet = self
             UUID_Validator.reset()
             self.root_file_path = os.path.dirname(os.path.abspath(fname))
+            self.embedded_file_names = {}
         else:
             self.fields = parent.fields
             self.fields_lc = parent.fields_lc
@@ -2216,6 +2490,7 @@ class SchematicV6(Schematic):
             self.all_sheets = parent.all_sheets
             self.root_sheet = parent.root_sheet
             self.root_file_path = parent.root_file_path
+            self.embedded_file_names = parent.embedded_file_names
         self.symbol_instances = []
         self.parent = parent
         self.fname = fname
@@ -2230,6 +2505,7 @@ class SchematicV6(Schematic):
         self.wires = []
         self.arcs = []
         self.circles = []
+        self.beziers = []
         self.rectangles = []
         self.bitmaps = []
         self.text_boxes = []
@@ -2244,6 +2520,10 @@ class SchematicV6(Schematic):
         self.libs = {}  # Just for compatibility with v5 class
         self.symbol_uuids = {}
         self.generator_version = None
+        self.embedded_fonts = None
+        self.embedded_files = []
+        self.tables = []
+        self.rule_areas = []
         if not os.path.isfile(fname):
             raise SchError('Missing subsheet: '+fname)
         with open(fname, 'rt') as fh:
@@ -2300,6 +2580,9 @@ class SchematicV6(Schematic):
                 self.arcs.append(DrawArcV6.parse(e))
             elif e_type == 'circle':
                 self.circles.append(DrawCircleV6.parse(e))
+            elif e_type == 'bezier':
+                # KiCad 9
+                self.beziers.append(DrawCurve.parse(e))
             elif e_type == 'rectangle':
                 self.rectangles.append(DrawRectangleV6.parse(e))
             elif e_type == 'image':
@@ -2333,6 +2616,14 @@ class SchematicV6(Schematic):
                 self.sheet_instances = SheetInstance.parse(e)
             elif e_type == 'symbol_instances':
                 self.symbol_instances = SymbolInstance.parse(e)
+            elif e_type == 'embedded_fonts':  # KiCad 9
+                self.embedded_fonts = _get_yes_no(e, 1, e_type)
+            elif e_type == 'embedded_files':  # KiCad 9
+                self._get_embedded_files(e)
+            elif e_type == 'table':  # KiCad 9
+                self.tables.append(Table.parse(e))
+            elif e_type == 'rule_area':  # KiCad 9
+                self.rule_areas.append(RuleArea.parse(e))
             else:
                 raise SchError('Unknown kicad_sch attribute `{}`'.format(e))
         if not self.title:

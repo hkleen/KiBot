@@ -26,7 +26,7 @@ from .misc import (UI_SMD, UI_VIRTUAL, MOD_THROUGH_HOLE, MOD_SMD, MOD_EXCLUDE_FR
 from .registrable import RegOutput
 from .out_base import VariantOptions
 from .error import KiPlotConfigurationError
-from .kiplot import config_output, run_command
+from .kiplot import config_output, run_command, get_output_targets
 from .dep_downloader import get_dep_data
 from .macros import macros, document, output_class  # noqa: F401
 from . import log
@@ -186,8 +186,11 @@ class ReportOptions(VariantOptions):
             self.output = GS.def_global_output
             """ *Output file name (%i='report', %x='txt') """
             self.template = 'full'
-            """ *[full,full_svg,simple,testpoints,*] Name for one of the internal templates or a custom template file.
+            """ *[full,full_svg,simple,testpoints,total_components,total_components_dnp,*] Name for one of the internal
+                templates or a custom template file.
                 Environment variables and ~ are allowed.
+                The `total_components` template can be used to include a table containing components count
+                in your PCB. Take a look at the `docs/samples/Component_Count_Table/` in the repo.
                 Note: when converting to PDF PanDoc can fail on some Unicode values (use `simple_ASCII`).
                 Note: the testpoint variables uses the `testpoint` fabrication attribute of pads """
             self.convert_from = 'markdown'
@@ -216,12 +219,20 @@ class ReportOptions(VariantOptions):
             """ [0,100] Amount of metal in the solder paste (percentage). Used to compute solder paste usage """
             self.stencil_thickness = 0.12
             """ Stencil thickness in mm. Used to compute solder paste usage """
+            self.mm_digits = 2
+            """ Number of digits for values expressed in mm """
+            self.mils_digits = 0
+            """ Number of digits for values expressed in mils """
+            self.in_digits = 2
+            """ Number of digits for values expressed in inches """
+            self.display_trailing_zeros = False
+            """ Display trailing zeros """
+            self.csv_remove_leading_spaces = False
+            """ Remove any leading spaces/tabs at the end of each separator.
+                Used por templates that generates CSV files where elements are aligned for easier reading """
         super().__init__()
         self._expand_id = 'report'
         self._expand_ext = 'txt'
-        self._mm_digits = 2
-        self._mils_digits = 0
-        self._in_digits = 2
         # Extra help for PanDoc
         dep = get_dep_data('report', 'PanDoc')
         deb_text = 'In Debian/Ubuntu environments: install '+list_nice([dep.deb_package]+dep.extra_deb)
@@ -234,7 +245,7 @@ class ReportOptions(VariantOptions):
         if self.template.endswith('_ASCII'):
             self.template = self.template[:-6]
             self.to_ascii = True
-        if self.template.lower() in ('full', 'simple', 'full_svg', 'testpoints'):
+        if self.template.lower() in ('full', 'simple', 'full_svg', 'testpoints', 'total_components'):
             self.template = os.path.abspath(os.path.join(GS.get_resource_path('report_templates'),
                                             'report_'+self.template.lower()+'.txt'))
         if not os.path.isabs(self.template):
@@ -251,6 +262,7 @@ class ReportOptions(VariantOptions):
 
     def do_replacements(self, line, defined):
         """ Replace `${VAR}` patterns """
+        context = {k: getattr(self, k) for k in dir(self) if k[0] != '_' and not callable(getattr(self, k))}
         for var in re.findall(r'\$\{([^\s\}]+)\}', line):
             if var[0] == '_':
                 # Prevent access to internal data
@@ -259,27 +271,74 @@ class ReportOptions(VariantOptions):
             var_ori = var
             m = re.match(r'^(%[^,]+),(.*)$', var)
             pattern = None
+            capitalize = False
             if m:
                 pattern = m.group(1)
                 var = m.group(2)
+            # Handle `_outpath` with optional indexing
+            if var.endswith('_outpath') or '_outpath_' in var:
+                base_var = var
+                index = None
+                idx_match = re.match(r'^(.*)_outpath_(\d+)$', var)
+                if idx_match:
+                    base_var = idx_match.group(1) + '_outpath'
+                    index = int(idx_match.group(2)) - 1  # Convert 1-based to 0-based index
+
+                output_name = base_var[:-8]  # Strip `_outpath`
+                try:
+                    targets, _, _ = get_output_targets(output_name, self._parent)
+                    target = None
+                    if isinstance(targets, list):
+                        if index is not None:
+                            if 0 <= index < len(targets):
+                                target = targets[index]
+                            else:
+                                logger.warning(f"Index {index + 1} out of range for `{var_ori}`")
+                        else:
+                            target = targets[0]
+                    else:
+                        target = targets
+                    if target is not None:
+                        target_rel = os.path.relpath(target, os.path.join(GS.out_dir, self._parent.dir))
+                        line = line.replace(f'${{{var_ori}}}', target_rel)
+                except Exception as e:
+                    logger.warning(f"Error processing _outpath for `{var_ori}`: {str(e)}")
+                continue
             if var.endswith('_mm'):
                 units = to_mm
-                digits = self._mm_digits
+                digits = self.mm_digits
                 var = var[:-3]
             elif var.endswith('_in'):
                 units = to_inches
-                digits = self._in_digits
+                digits = self.in_digits
                 var = var[:-3]
             elif var.endswith('_mils'):
                 units = to_mils
-                digits = self._mils_digits
+                digits = self.mils_digits
                 var = var[:-5]
+            elif var.endswith('_cap'):
+                capitalize = True
+                var = var[:-4]
+            val = None
             if var in defined:
                 val = defined[var]
+            else:
+                try:
+                    val = eval(var, {}, context)
+                except NameError:
+                    # Don't stop on undefined values, report and go on
+                    pass
+                except Exception as e:
+                    raise KiPlotConfigurationError('wrong expression: `{}`\nPython says: `{}`'.format(var, str(e)))
+            if val is not None:
                 if val == INF:
                     val = 'N/A'
                 elif units is not None and isinstance(val, (int, float)):
                     val = units(val, digits)
+                    if self.display_trailing_zeros:
+                        val = f"{val:.{digits}f}"
+                if capitalize and isinstance(val, str):
+                    val = val.upper()
                 if pattern is not None:
                     clear = False
                     if 's' in pattern:
@@ -301,6 +360,13 @@ class ReportOptions(VariantOptions):
                 if not self._shown_defined:
                     self._shown_defined = True
                     logger.non_critical_error('Defined values: {}'.format([v for v in defined.keys() if v[0] != '_']))
+
+        if self.csv_remove_leading_spaces:
+            separator = self._parent.get_csv_separator()
+            parts = line.split(separator)
+            parts = [part.lstrip(' \t') for part in parts]
+            line = separator.join(parts)
+
         return line
 
     def context_defined_tracks(self, line):
@@ -566,8 +632,9 @@ class ReportOptions(VariantOptions):
         # Clearance
         ###########################################################
         self.clearance = ds.GetSmallestClearanceValue()
-        # This seems to be bogus:
-        # h2h = ds.m_HoleToHoleMin
+        self.h2h = ds.m_HoleToHoleMin if not GS.ki5 else None
+        self.c2h = ds.m_HoleClearance if not GS.ki5 else None
+        self.c2e = ds.m_CopperEdgeClearance if not GS.ki5 else None
         ###########################################################
         # Track width (min)
         ###########################################################
@@ -616,8 +683,13 @@ class ReportOptions(VariantOptions):
         self._drills = {}
         self._drills_oval = {}
         self.oar_pads = self.oar_pads_ec = self.pad_drill = self.pad_drill_real = self.pad_drill_real_ec = INF
+        self.pad_drill_pth = self.pad_drill_pth_real = INF
+        self.pad_drill_npth = self.pad_drill_npth_real = INF
         self.slot = INF
         self.top_smd = self.top_tht = self.bot_smd = self.bot_tht = 0
+        self.top_smd_dnp = self.top_tht_dnp = self.bot_smd_dnp = self.bot_tht_dnp = 0
+        self.top_smd_dnc = self.top_tht_dnc = self.bot_smd_dnc = self.bot_tht_dnc = 0
+        self.top_smd_exc = self.top_tht_exc = self.bot_smd_exc = self.bot_tht_exc = 0
         top_layer = board.GetLayerID('F.Cu')
         bottom_layer = board.GetLayerID('B.Cu')
         is_pure_smd, is_not_virtual = self.get_attr_tests()
@@ -626,17 +698,50 @@ class ReportOptions(VariantOptions):
         pad_properties = []
         for m in modules:
             ref = m.GetReference()
+            comp = self._comps_hash.get(ref, None) if self._comps and self._comps_hash else None
             layer = m.GetLayer()
             if layer == top_layer:
                 if is_pure_smd(m):
                     self.top_smd += 1
+                    if comp:
+                        if not comp.included:
+                            self.top_smd_exc += 1
+                        else:
+                            if not comp.fitted:
+                                self.top_smd_dnp += 1
+                            if comp.fixed:
+                                self.top_smd_dnc += 1
                 elif is_not_virtual(m):
                     self.top_tht += 1
+                    if comp:
+                        if not comp.included:
+                            self.top_tht_exc += 1
+                        else:
+                            if not comp.fitted:
+                                self.top_tht_dnp += 1
+                            if comp.fixed:
+                                self.top_tht_dnc += 1
             elif layer == bottom_layer:
                 if is_pure_smd(m):
                     self.bot_smd += 1
+                    if comp:
+                        if not comp.included:
+                            self.bot_smd_exc += 1
+                        else:
+                            if not comp.fitted:
+                                self.bot_smd_dnp += 1
+                            if comp.fixed:
+                                self.bot_smd_dnc += 1
                 elif is_not_virtual(m):
                     self.bot_tht += 1
+                    if comp:
+                        if not comp.included:
+                            self.bot_tht_exc += 1
+                        else:
+                            if not comp.fitted:
+                                self.bot_tht_dnp += 1
+                            if comp.fixed:
+                                self.bot_tht_dnc += 1
             pads = m.Pads()
             for pad in pads:
                 # Pad properties
@@ -653,10 +758,25 @@ class ReportOptions(VariantOptions):
                 self.pad_drill = min(dr.y, self.pad_drill)
                 # Compute the drill size to get it after plating
                 is_pth = pad.GetAttribute() != npth_attrib
+                if is_pth:
+                    self.pad_drill_pth = min(dr.x, self.pad_drill_pth)
+                    self.pad_drill_pth = min(dr.y, self.pad_drill_pth)
+                else:
+                    self.pad_drill_npth = min(dr.x, self.pad_drill_npth)
+                    self.pad_drill_npth = min(dr.y, self.pad_drill_npth)
+
                 dr_x_real = adjust_drill(dr.x, is_pth, pad)
                 dr_y_real = adjust_drill(dr.y, is_pth, pad)
                 self.pad_drill_real = min(dr_x_real, self.pad_drill_real)
                 self.pad_drill_real = min(dr_y_real, self.pad_drill_real)
+
+                if is_pth:
+                    self.pad_drill_pth_real = min(dr_x_real, self.pad_drill_pth_real)
+                    self.pad_drill_pth_real = min(dr_y_real, self.pad_drill_pth_real)
+                else:
+                    self.pad_drill_npth_real = min(dr_x_real, self.pad_drill_npth_real)
+                    self.pad_drill_npth_real = min(dr_y_real, self.pad_drill_npth_real)
+
                 if dr.x == dr.y:
                     self._drills[dr.x] = self._drills.get(dr.x, 0) + 1
                     self._drills_real[dr_x_real] = self._drills_real.get(dr_x_real, 0) + 1
@@ -703,21 +823,55 @@ class ReportOptions(VariantOptions):
         # Pad Drill
         # No minimum defined (so no _d)
         self.pad_drill_min = self.pad_drill if GS.ki5 else ds.m_MinThroughDrill
+        self.pad_drill_pth_min = self.pad_drill_pth if GS.ki5 else ds.m_MinThroughDrill
+        self.pad_drill_npth_min = self.pad_drill_npth if GS.ki5 else ds.m_MinThroughDrill
         self.pad_drill_real_min = self.pad_drill_real if GS.ki5 else adjust_drill(ds.m_MinThroughDrill, False)
+        self.pad_drill_pth_real_min = self.pad_drill_pth_real if GS.ki5 else adjust_drill(ds.m_MinThroughDrill, True)
+        self.pad_drill_npth_real_min = self.pad_drill_npth_real if GS.ki5 else adjust_drill(ds.m_MinThroughDrill, False)
         self.pad_drill_real_ec_min = self.pad_drill_real_ec if GS.ki5 else adjust_drill(ds.m_MinThroughDrill, False)
         # Drill overall
         self.drill_d = min(self.via_drill_d, self.pad_drill)
+        self.drill_pth_d = min(self.via_drill_d, self.pad_drill_pth)
         self.drill = min(self.via_drill, self.pad_drill)
+        self.drill_pth = min(self.via_drill, self.pad_drill_pth)
+        self.drill_npth = self.pad_drill_npth
         self.drill_min = min(self.via_drill_min, self.pad_drill_min)
+        self.drill_pth_min = min(self.via_drill_min, self.pad_drill_pth_min)
+        self.drill_npth_min = self.pad_drill_npth_min
         # Drill overall size minus 0.1 mm
         self.drill_real_d = min(self.via_drill_real_d, self.pad_drill_real)
+        self.drill_pth_real_d = min(self.via_drill_real_d, self.pad_drill_pth_real)
         self.drill_real = min(self.via_drill_real, self.pad_drill_real)
+        self.drill_pth_real = min(self.via_drill_real, self.pad_drill_pth_real)
+        self.drill_npth_real = self.pad_drill_npth_real
         self.drill_real_min = min(self.via_drill_real_min, self.pad_drill_real_min)
+        self.drill_pth_real_min = min(self.via_drill_real_min, self.pad_drill_pth_real_min)
+        self.drill_npth_real_min = self.pad_drill_npth_real_min
         self.drill_real_ec_d = min(self.via_drill_real_d, self.pad_drill_real_ec)
         self.drill_real_ec = min(self.via_drill_real_ec, self.pad_drill_real_ec)
         self.drill_real_ec_min = min(self.via_drill_real_ec_min, self.pad_drill_real_ec_min)
         self.top_comp_type = to_smd_tht(self.top_smd, self.top_tht)
         self.bot_comp_type = to_smd_tht(self.bot_smd, self.bot_tht)
+        self.top_total = self.top_smd + self.top_tht
+        self.top_total_dnp = self.top_smd_dnp + self.top_tht_dnp
+        self.top_total_dnc = self.top_smd_dnc + self.top_tht_dnc
+        self.top_total_exc = self.top_smd_exc + self.top_tht_exc
+        self.bot_total = self.bot_smd + self.bot_tht
+        self.bot_total_dnp = self.bot_smd_dnp + self.bot_tht_dnp
+        self.bot_total_dnc = self.bot_smd_dnc + self.bot_tht_dnc
+        self.bot_total_exc = self.bot_smd_exc + self.bot_tht_exc
+        self.total_smd = self.top_smd + self.bot_smd
+        self.total_smd_dnp = self.top_smd_dnp + self.bot_smd_dnp
+        self.total_smd_dnc = self.top_smd_dnc + self.bot_smd_dnc
+        self.total_smd_exc = self.top_smd_exc + self.bot_smd_exc
+        self.total_tht = self.top_tht + self.bot_tht
+        self.total_tht_dnp = self.top_tht_dnp + self.bot_tht_dnp
+        self.total_tht_dnc = self.top_tht_dnc + self.bot_tht_dnc
+        self.total_tht_exc = self.top_tht_exc + self.bot_tht_exc
+        self.total_all = self.total_tht + self.total_smd
+        self.total_all_dnp = self.total_tht_dnp + self.total_smd_dnp
+        self.total_all_dnc = self.total_tht_dnc + self.total_smd_dnc
+        self.total_all_exc = self.total_tht_exc + self.total_smd_exc
         ###########################################################
         # Vias
         ###########################################################
@@ -793,7 +947,9 @@ class ReportOptions(VariantOptions):
                     continue
                 shape = pad.GetShape()
                 size = pad.GetSize()
-                if GS.ki6:
+                if GS.ki9:
+                    area = GS.to_mm(GS.to_mm(pad.GetEffectivePolygon(pcbnew.F_Cu if on_top else pcbnew.B_Cu).Area()))
+                elif GS.ki6:
                     area = GS.to_mm(GS.to_mm(pad.GetEffectivePolygon().Area()))
                 elif shape == pcbnew.PAD_SHAPE_CIRCLE:
                     radius = GS.to_mm(size.x/2)
@@ -1044,7 +1200,8 @@ class Report(BaseOutput):  # noqa: F821
         Generates a report about the design.
         Mainly oriented to be sent to the manufacturer or check PCB details.
         You can expand internal values, KiCad text variables and environment
-        variables using `${VARIABLE}` """
+        variables using `${VARIABLE}`.
+        You can also use `${V1+V2}` or similar using Python operators """
     def __init__(self):
         super().__init__()
         with document:

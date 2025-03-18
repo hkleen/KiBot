@@ -5,20 +5,25 @@ BoMOptions parameters
 ~~~~~~~~~~~~~~~~~~~~~
 
 -  **columns** :index:`: <pair: output - bom - options; columns>`  [:ref:`BoMColumns parameters <BoMColumns>`] [:ref:`list(dict) <list(dict)>` | :ref:`list(string) <list(string)>`] (default: computed for your project) List of columns to display.
-   Can be just the name of the field.
+   One entry can be just the name of the field (a string). |br|
+   If you want to import the columns used in KiCad internal BoM tool add an entry `_kicad_bom_fields`,
+   this will be replaced by the list from KiCad. |br|
    In addition to all user defined fields you have various special columns, consult :ref:`bom_columns`.
 -  **csv** :index:`: <pair: output - bom - options; csv>`  [:ref:`BoMCSV parameters <BoMCSV>`] [:ref:`dict <dict>`] (default: empty dict, default values used) Options for the CSV, TXT and TSV formats.
--  **format** :index:`: <pair: output - bom - options; format>` [:ref:`string <string>`] (default: ``'Auto'``) (choices: "HTML", "CSV", "TXT", "TSV", "XML", "XLSX", "HRTXT", "Auto") format for the BoM.
-   `Auto` defaults to CSV or a guess according to the options.
-   HRTXT stands for Human Readable TeXT.
+-  **format** :index:`: <pair: output - bom - options; format>` [:ref:`string <string>`] (default: ``'Auto'``) (choices: "HTML", "CSV", "TXT", "TSV", "XML", "XLSX", "HRTXT", "KICAD", "Auto") format for the BoM.
+   `Auto` defaults to CSV or a guess according to the options. |br|
+   HRTXT stands for Human Readable TeXT. |br|
+   KICAD is used to get the options from KiCad project. In KiCad you can configure CSV like options.
 -  **group_fields** :index:`: <pair: output - bom - options; group_fields>` [:ref:`list(string) <list(string)>`] (default: ``['part', 'part lib', 'value', 'footprint', 'footprint lib', 'voltage', 'tolerance', 'current', 'power']``) [:ref:`case insensitive <no_case>`]List of fields used for sorting individual components into groups.
-   Components which match (comparing *all* fields) will be grouped together.
-   Field names are case-insensitive.
+   Components which match (comparing *all* fields) will be grouped together. |br|
+   Field names are case-insensitive. |br|
    For empty fields the behavior is defined by the `group_fields_fallbacks`, `merge_blank_fields` and
-   `merge_both_blank` options.
+   `merge_both_blank` options. |br|
    Note that for resistors, capacitors and inductors the _Value_ field is parsed and qualifiers, like
    tolerance, are discarded. Please use a separated field and disable `merge_blank_fields` if this
-   information is important. You can also disable `parse_value`.
+   information is important. You can also disable `parse_value`. |br|
+   When using `_kicad_bom_fields` in the `columns` you should use `[]` for this value, so the fields
+   selected in KiCad are used. |br|
    If empty: ['Part', 'Part Lib', 'Value', 'Footprint', 'Footprint Lib',
    'Voltage', 'Tolerance', 'Current', 'Power'] is used.
 
@@ -27,22 +32,31 @@ BoMOptions parameters
 -  **ignore_dnf** :index:`: <pair: output - bom - options; ignore_dnf>` [:ref:`boolean <boolean>`] (default: ``true``) Exclude DNF (Do Not Fit) components.
 -  **normalize_values** :index:`: <pair: output - bom - options; normalize_values>` [:ref:`boolean <boolean>`] (default: ``false``) Try to normalize the R, L and C values, producing uniform units and prefixes.
 -  **number** :index:`: <pair: output - bom - options; number>` [:ref:`number <number>`] (default: ``1``) Number of boards to build (components multiplier).
--  **output** :index:`: <pair: output - bom - options; output>` [:ref:`string <string>`] (default: ``'%f-%i%I%v.%x'``) filename for the output (%i=bom). Affected by global options.
--  **sort_style** :index:`: <pair: output - bom - options; sort_style>` [:ref:`string <string>`] (default: ``'type_value'``) (choices: "type_value", "type_value_ref", "ref") Sorting criteria.
--  **units** :index:`: <pair: output - bom - options; units>` [:ref:`string <string>`] (default: ``'millimeters'``) (choices: "millimeters", "inches", "mils") Units used for the positions ('Footprint X' and 'Footprint Y' columns).
+-  **output** :index:`: <pair: output - bom - options; output>` [:ref:`string <string>`] (default: ``'%f-%i%I%v.%x'``) filename for the output (%i=bom). The extension depends on the selected format.
+   In the case of the **KICAD** format the extension comes from the name you selected in KiCad's
+   internal BoM. Affected by global options.
+-  **sort_style** :index:`: <pair: output - bom - options; sort_style>` [:ref:`string <string>`] (default: ``'type_value'``) (choices: "type_value", "type_value_ref", "ref", "kicad_bom", "field") Sorting criteria.
+
+   - type_value: component kind (reference prefix), then by value
+   - type_value_ref: like *type_value* but use the reference when we don't have a value
+   - ref: by reference
+   - kicad_bom: according to the options of the KiCad BoM tool
+   - field: using the `sort_field` field/s.
+-  **units** :index:`: <pair: output - bom - options; units>` [:ref:`string <string>`] (default: ``'millimeters'``) (choices: "millimeters", "inches", "mils") Units used for the positions ('Footprint X', 'Footprint Y', 'Footprint X-Size' and
+   'Footprint Y-Size' columns). |br|
    Affected by global options.
 -  **xlsx** :index:`: <pair: output - bom - options; xlsx>`  [:ref:`BoMXLSX parameters <BoMXLSX>`] [:ref:`dict <dict>`] (default: empty dict, default values used) Options for the XLSX format.
 -  ``aggregate`` :index:`: <pair: output - bom - options; aggregate>`  [:ref:`Aggregate parameters <Aggregate>`] [:ref:`list(dict) <list(dict)>`] (default: ``[]``) Add components from other projects.
-   You can use CSV files, the first row must contain the names of the fields.
-   The `Reference` and `Value` are mandatory, in most cases `Part` is also needed.
+   You can use CSV files, the first row must contain the names of the fields. |br|
+   The `Reference` and `Value` are mandatory, in most cases `Part` is also needed. |br|
    The `Part` column should contain the name/type of the component. This is important for
    passive components (R, L, C, etc.). If this information isn't available consider
-   configuring the grouping to exclude the `Part`..
+   configuring the grouping to exclude the `Part`.
 -  ``angle_positive`` :index:`: <pair: output - bom - options; angle_positive>` [:ref:`boolean <boolean>`] (default: ``true``) Always use positive values for the footprint rotation.
 -  ``bottom_negative_x`` :index:`: <pair: output - bom - options; bottom_negative_x>` [:ref:`boolean <boolean>`] (default: ``false``) Use negative X coordinates for footprints on bottom layer (for XYRS).
 -  ``component_aliases`` :index:`: <pair: output - bom - options; component_aliases>` [:ref:`list(list(string)) <list(list(string))>`] (default: ``[['r', 'r_small', 'res', 'resistor'], ['l', 'l_small', 'inductor'], ['c', 'c_small', 'cap', 'capacitor'], ['sw', 'switch'], ['zener', 'zenersmall'], ['d', 'diode', 'd_small']]``) A series of values which are considered to be equivalent for the part name.
    Each entry is a list of equivalen names. Example: ['c', 'c_small', 'cap' ]
-   will ensure the equivalent capacitor symbols can be grouped together.
+   will ensure the equivalent capacitor symbols can be grouped together. |br|
    If empty the following aliases are used:
 
    - ['r', 'r_small', 'res', 'resistor']
@@ -58,16 +72,16 @@ BoMOptions parameters
 -  ``distributors`` :index:`: <pair: output - bom - options; distributors>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``[]``) [:ref:`comma separated <comma_sep>`] Include this distributors list. Default is all the available.
 
 -  ``dnc_filter`` :index:`: <pair: output - bom - options; dnc_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_kibom_dnc_CONFIG_FIELD'``) Name of the filter to mark components as 'Do Not Change'.
-   The default filter marks components with a DNC value or DNC in the Config field.
+   The default filter marks components with a DNC value or DNC in the Config field. |br|
    This option is for simple cases, consider using a full variant for complex cases.
 
 -  ``dnf_filter`` :index:`: <pair: output - bom - options; dnf_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_kibom_dnf_CONFIG_FIELD'``) Name of the filter to mark components as 'Do Not Fit'.
-   The default filter marks components with a DNF value or DNF in the Config field.
+   The default filter marks components with a DNF value or DNF in the Config field. |br|
    This option is for simple cases, consider using a full variant for complex cases.
 
 -  ``exclude_filter`` :index:`: <pair: output - bom - options; exclude_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_mechanical'``) Name of the filter to exclude components from BoM processing.
-   The default filter (built-in filter '_mechanical') excludes test points, fiducial marks, mounting holes, etc.
-   Please consult the built-in filters explanation to fully understand what is excluded by default.
+   The default filter (built-in filter '_mechanical') excludes test points, fiducial marks, mounting holes, etc. |br|
+   Please consult the built-in filters explanation to fully understand what is excluded by default. |br|
    This option is for simple cases, consider using a full variant for complex cases.
 
 -  ``exclude_marked_in_pcb`` :index:`: <pair: output - bom - options; exclude_marked_in_pcb>` [:ref:`boolean <boolean>`] (default: ``false``) Exclude components marked with *Exclude from BOM* in the PCB.
@@ -75,7 +89,7 @@ BoMOptions parameters
 -  ``exclude_marked_in_sch`` :index:`: <pair: output - bom - options; exclude_marked_in_sch>` [:ref:`boolean <boolean>`] (default: ``true``) Exclude components marked with *Exclude from bill of materials* in the schematic.
    This is a KiCad 6 option.
 -  ``expand_text_vars`` :index:`: <pair: output - bom - options; expand_text_vars>` [:ref:`boolean <boolean>`] (default: ``true``) Expand KiCad 6 text variables after applying all filters and variants.
-   This is done using a **_expand_text_vars** filter.
+   This is done using a **_expand_text_vars** filter. |br|
    If you need to customize the filter, or apply it before, you can disable this option and
    add a custom filter to the filter chain.
 -  ``fit_field`` :index:`: <pair: output - bom - options; fit_field>` [:ref:`string <string>`] (default: ``'config'``) [:ref:`case insensitive <no_case>`]Field name used for internal filters (not for variants).
@@ -87,11 +101,12 @@ BoMOptions parameters
 -  ``group_fields_fallbacks`` :index:`: <pair: output - bom - options; group_fields_fallbacks>` [:ref:`list(string) <list(string)>`] (default: ``[]``) [:ref:`case insensitive <no_case>`]List of fields to be used when the fields in `group_fields` are empty.
    The first field in this list is the fallback for the first in `group_fields`, and so on.
 
+-  ``group_not_fitted`` :index:`: <pair: output - bom - options; group_not_fitted>` [:ref:`boolean <boolean>`] (default: ``false``) Enable it to group fitted and not fitted components together. This is how KiCad's internal BoM behaves.
 -  ``int_qtys`` :index:`: <pair: output - bom - options; int_qtys>` [:ref:`boolean <boolean>`] (default: ``true``) Component quantities are always expressed as integers. Using the ceil() function.
 -  ``merge_blank_fields`` :index:`: <pair: output - bom - options; merge_blank_fields>` [:ref:`boolean <boolean>`] (default: ``true``) Component groups with blank fields will be merged into the most compatible group, where possible.
 -  ``merge_both_blank`` :index:`: <pair: output - bom - options; merge_both_blank>` [:ref:`boolean <boolean>`] (default: ``true``) When creating groups two components with empty/missing field will be interpreted as with the same value.
 -  ``no_conflict`` :index:`: <pair: output - bom - options; no_conflict>` [:ref:`list(string) <list(string)>`] (default: computed for your project) [:ref:`case insensitive <no_case>`]List of fields where we tolerate conflicts.
-   Use it to avoid undesired warnings.
+   Use it to avoid undesired warnings. |br|
    By default the field indicated in `fit_field`, the field used for variants and
    the field `part` are excluded.
 
@@ -107,13 +122,22 @@ BoMOptions parameters
    This option is for simple cases, consider using a full variant for complex cases.
 
 -  ``ref_id`` :index:`: <pair: output - bom - options; ref_id>` [:ref:`string <string>`] (default: ``''``) A prefix to add to all the references from this project. Used for multiple projects.
--  ``ref_separator`` :index:`: <pair: output - bom - options; ref_separator>` [:ref:`string <string>`] (default: ``' '``) Separator used for the list of references.
+-  ``ref_range_separator`` :index:`: <pair: output - bom - options; ref_range_separator>` [:ref:`string <string>`] (default: ``'-'``) Separator used for ranges in the list of references. Used when `use_alt` is enabled.
+   Ignored when using the KICAD format.
+-  ``ref_separator`` :index:`: <pair: output - bom - options; ref_separator>` [:ref:`string <string>`] (default: ``' '``) Separator used for the list of references. Ignored when using the KICAD format.
+-  ``right_digits`` :index:`: <pair: output - bom - options; right_digits>` [:ref:`number <number>`] (default: ``4``) Number of digits for mantissa part of coordinates ('Footprint X', 'Footprint Y', 'Footprint X-Size',
+   'Footprint Y-Size' and 'Footprint Rot' columns) (0 is auto).
+-  ``sort_ascending`` :index:`: <pair: output - bom - options; sort_ascending>` [:ref:`boolean <boolean>`] (default: ``true``) Sort in ascending order.
+-  ``sort_field`` :index:`: <pair: output - bom - options; sort_field>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'Reference'``) [:ref:`case insensitive <no_case>`]Field or fields used for the `field` `sort_style`.
+
 -  ``source_by_id`` :index:`: <pair: output - bom - options; source_by_id>` [:ref:`boolean <boolean>`] (default: ``false``) Generate the `Source BoM` column using the reference ID instead of the project name.
 -  ``use_alt`` :index:`: <pair: output - bom - options; use_alt>` [:ref:`boolean <boolean>`] (default: ``false``) Print grouped references in the alternate compressed style eg: R1-R7,R18.
+   Ignored when using the KICAD format.
 -  ``use_aux_axis_as_origin`` :index:`: <pair: output - bom - options; use_aux_axis_as_origin>` [:ref:`boolean <boolean>`] (default: ``true``) Use the auxiliary axis as origin for coordinates (KiCad default) (for XYRS).
+-  *use_ref_ranges* :index:`: <pair: output - bom - options; use_ref_ranges>` Alias for use_alt.
 -  ``variant`` :index:`: <pair: output - bom - options; variant>` [:ref:`string <string>`] (default: ``'_kibom_simple'``) Board variant, used to determine which components are output to the BoM.
    The `_kibom_simple` variant is a KiBoM variant without any filters and it provides some basic
-   compatibility with KiBoM. Note that this output has default filters that behaves like KiBoM.
+   compatibility with KiBoM. Note that this output has default filters that behaves like KiBoM. |br|
    The combination between the default for this option and the defaults for the filters provides
    a behavior that mimics KiBoM default behavior.
 

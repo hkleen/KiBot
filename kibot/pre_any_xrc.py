@@ -19,7 +19,6 @@ from .pre_filters import FilterOptions, FiltersOptions
 from .macros import macros, document  # noqa: F401
 from . import log
 logger = log.get_logger(__name__)
-UNITS_2_KICAD = {'millimeters': 'mm', 'inches': 'in', 'mils': 'mils'}
 
 
 class FilterOptionsXRC(FilterOptions):
@@ -97,6 +96,7 @@ class XRC(BasePreFlight):
     def __init__(self, cls):
         super().__init__()
         self._opts_cls = cls
+        self._files_to_remove = []
 
     def __str__(self):
         return f'{self.type}: {self._enabled} ({self._format})'
@@ -106,9 +106,8 @@ class XRC(BasePreFlight):
         ops = self.erc if self._sch_related else self.drc
         if isinstance(ops, bool):
             new_ops = self._opts_cls()
+            new_ops.config(self)  # Get the defaults
             new_ops.enabled = ops
-            new_ops.format = ['HTML']
-            new_ops.filters = []
             ops = new_ops
         # Transfer the options to this class
         for k, v in dict(ops.get_attrs_gen()).items():
@@ -271,6 +270,10 @@ class XRC(BasePreFlight):
         html += '</table>\n'
         return html
 
+    def create_html_ok(self):
+        """ Put a big checkmark to indicate all went ok """
+        return '<div class="centered-checkmark">&#x2714;</div>\n'
+
     def run(self):
         # Differences between ERC and DRC
         if GS.sch_file:
@@ -307,6 +310,12 @@ class XRC(BasePreFlight):
         run_command(cmd)
         if self._force_english and old_lang:
             os.environ['LANG'] = old_lang
+        # Remove temporals
+        logger.debug('Removing temporal files')
+        for f in self._files_to_remove:
+            if os.path.isfile(f):
+                logger.debug('- File `{}`'.format(f))
+                os.remove(f)
         # Read the result
         with open(output, 'rt') as f:
             raw = f.read()

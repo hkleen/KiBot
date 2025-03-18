@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2020-2023 Salvador E. Tropea
-# Copyright (c) 2020-2023 Instituto Nacional de Tecnología Industrial
-# License: GPL-3.0
+# Copyright (c) 2020-2024 Salvador E. Tropea
+# Copyright (c) 2020-2024 Instituto Nacional de Tecnología Industrial
+# License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
 import os
 from .error import KiPlotConfigurationError
@@ -33,14 +33,21 @@ class Any_SCH_PrintOptions(VariantOptions):
             """ Worksheet file (.kicad_wks) to use. Leave empty to use the one specified in the project.
                 This option works only when you print the toplevel sheet of a project and the project
                 file is available """
+            self.default_font = 'KiCad Font'
+            """ Name for the default font. Only for KiCad 9 and newer """
         super().__init__()
         self.add_to_doc('variant', "Not fitted components are crossed")
         self._expand_id = 'schematic'
+        # We need the list from the schematic to control the real components
+        self._collapse_components = False
 
     def get_targets(self, out_dir):
         if self.output:
             return [self._parent.expand_filename(out_dir, self.output)]
         return [self._parent.expand_filename(out_dir, '%f.%x')]
+
+    def desc_box(self, box):
+        return f"SCH text box @{box.pos_x},{box.pos_y}"
 
     def run(self, name):
         super().run(name)
@@ -63,11 +70,7 @@ class Any_SCH_PrintOptions(VariantOptions):
             else:
                 ori_wks = new_wks = wks[0]
                 if ori_wks and not os.path.isfile(new_wks):
-                    # Try replacing backslashes
-                    try_wks = new_wks.replace('\\', '/')
-                    if not os.path.isfile(try_wks):
-                        raise KiPlotConfigurationError(f'Missing `{new_wks}` worksheet')
-                    new_wks = try_wks
+                    raise KiPlotConfigurationError(f'Missing `{new_wks}` worksheet')
             if ori_wks != new_wks:
                 prj = GS.read_pro()
                 GS.fix_page_layout(GS.pro_file, dry=False, force_sch=os.path.relpath(new_wks, GS.pro_dir),
@@ -75,18 +78,11 @@ class Any_SCH_PrintOptions(VariantOptions):
         elif self.sheet_reference_layout:
             raise KiPlotConfigurationError('Using `sheet_reference_layout` but no project available')
 
+        replaced_images = self.sch_replace_images(GS.sch)
         try:
             if self.title:
                 self.set_title(self.title, sch=True)
-            if self._comps or self.title:
-                # Save it to a temporal dir
-                sch_dir = GS.mkdtemp(self._expand_ext+'_sch_print')
-                GS.copy_project_sch(sch_dir)
-                fname = GS.sch.save_variant(sch_dir)
-                sch_file = os.path.join(sch_dir, fname)
-                self._files_to_remove.append(sch_dir)
-            else:
-                sch_file = GS.sch_file
+            sch_file = self.save_tmp_sch_if_variant(force=self.title or replaced_images)
             fmt = 'hpgl' if self._expand_ext == 'plt' else self._expand_ext
             cmd = [command, 'export', '--file_format', fmt, '-o', name]
             if self.monochrome:
@@ -103,10 +99,14 @@ class Any_SCH_PrintOptions(VariantOptions):
                 cmd.extend(['--hpgl_origin', str(self._origin)])
             if hasattr(self, 'pen_size'):
                 cmd.extend(['--hpgl_pen_size', str(self.pen_size)])
+            if self.default_font:
+                cmd.extend(['--default_font', self.default_font])
             cmd.extend([sch_file, os.path.dirname(name)])
             self.exec_with_retry(self.add_extra_options(cmd), self._exit_error)
             if self.title:
                 self.restore_title(sch=True)
+            if replaced_images:
+                self.sch_restore_images(GS.sch)
         finally:
             if prj:
                 GS.write_pro(prj)

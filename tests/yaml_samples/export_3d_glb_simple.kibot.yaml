@@ -1,0 +1,12 @@
+kiplot:
+  version: 1
+
+outputs:
+  - name: GLB
+    comment: "Generate 3D model (glTF binary)"
+    type: export_3d
+    dir: 3D
+    options:
+      format: glb
+      include_tracks: true
+      include_pads: true

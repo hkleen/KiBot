@@ -291,10 +291,7 @@ class SubPCBOptions(PanelOptions):
     def move_objects(self):
         """ Move all objects by self._moved """
         logger.debug('Moving all PCB elements by '+point_str(self._moved))
-        any((x.Move(self._moved) for x in GS.get_modules()))
-        any((x.Move(self._moved) for x in GS.board.GetDrawings()))
-        any((x.Move(self._moved) for x in GS.board.GetTracks()))
-        any((x.Move(self._moved) for x in GS.board.Zones()))
+        GS.move_board_items(self._moved)
 
     def center_objects(self):
         """ Move all objects in the PCB so it gets centered """

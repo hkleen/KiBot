@@ -1,0 +1,32 @@
+{
+  "auto_camera_z_axis_factor": 1.1,
+  "fixed_auto_camera": false,
+  "lights": [
+    {
+      "energy": 14.275470399999996,
+      "name": "kibot_light",
+      "position": [
+        -0.1989342,
+        0.1989342,
+        0.2987
+      ],
+      "type": "POINT"
+    }
+  ],
+  "point_of_view": [
+    {
+      "rotate_x": -30,
+      "rotate_y": 0,
+      "rotate_z": 20,
+      "view": "z"
+    }
+  ],
+  "render": {
+    "background1": "#66667F",
+    "background2": "#CCCCE5",
+    "resolution_x": 1280,
+    "resolution_y": 720,
+    "samples": 10,
+    "transparent_background": true
+  }
+}

@@ -1203,6 +1203,17 @@ def test_report_edge_2(test_dir):
     ctx.clean_up()
 
 
+def test_report_output_path(test_dir):
+    prj = 'light_control'
+    ctx = context.TestContext(test_dir, prj, 'report_output_path', POS_DIR)
+    ctx.run(extra=['pcb_print_png', 'report_output_path_1', 'report_output_path_2'])
+    ctx.expect_out_file('report/'+prj+'-report_output_path_1.txt')
+    ctx.expect_out_file(prj+'-report_output_path_2.txt')
+    ctx.compare_txt('report/'+prj+'-report_output_path_1.txt', reference=prj+'-report_output_path_1.txt')
+    ctx.compare_txt(prj+'-report_output_path_2.txt')
+    ctx.clean_up(keep_project=True)
+
+
 def test_board_view_1(test_dir):
     prj = 'glasgow'
     ctx = context.TestContext(test_dir, prj, 'boardview', POS_DIR)
@@ -1392,10 +1403,14 @@ def test_quick_start_1(test_dir):
     ctx.expect_out_file(dest_conf)
     # 2) List the generated outputs
     ctx.run(extra=['-c', dest_conf_f, '-b', dest_file, '-l'], no_out_dir=True, no_yaml_file=True, no_board_file=True)
-    OUTS = ('boardview', 'dxf', 'excellon', 'gencad', 'gerb_drill', 'gerber', 'compress', 'hpgl', 'ibom',
-            'navigate_results', 'netlist', 'pcb_print', 'pcbdraw', 'pdf', 'position', 'ps', 'render_3d',
-            'report', 'step', 'svg', 'kiri', 'kicanvas',
-            'bom', 'download_datasheets', 'pdf_sch_print', 'svg_sch_print')
+    OUTS = ['boardview', 'dxf', 'excellon', 'gencad', 'gerb_drill', 'gerber', 'compress', 'hpgl', 'ibom',
+            'navigate_results_rb', 'netlist', 'pcb_print', 'pcbdraw', 'pdf', 'position', 'ps', 'render_3d',
+            'report', 'svg', 'kiri', 'kicanvas',
+            'bom', 'download_datasheets', 'pdf_sch_print', 'svg_sch_print']
+    if context.ki9():
+        OUTS.extend(['odb', 'export_3d', 'ipc2581'])
+    else:
+        OUTS.append('step')
     for o in OUTS:
         ctx.search_out(r'\['+o+r'\]')
     # 3) Generate one output that we can use as image for a category
@@ -1404,7 +1419,7 @@ def test_quick_start_1(test_dir):
     ctx.expect_out_file(os.path.join('PCB', 'PDF', prj+'-assembly.pdf'))
     # 4) Generate the navigate_results stuff
     logging.debug('Creating the web pages')
-    ctx.run(extra=['-c', dest_conf_f, '-b', dest_file, 'basic_navigate_results'], no_yaml_file=True, no_board_file=True)
+    ctx.run(extra=['-c', dest_conf_f, '-b', dest_file, 'basic_navigate_results_rb'], no_yaml_file=True, no_board_file=True)
     ctx.expect_out_file('index.html')
     ctx.expect_out_file(os.path.join('Browse', 'light_control-navigate.html'))
 
@@ -1496,6 +1511,8 @@ def test_diff_git_1(test_dir):
     ctx.clean_up(keep_project=True)
 
 
+@pytest.mark.slow
+@pytest.mark.eeschema
 def test_diff_kiri_1(test_dir):
     """ Difference between the current PCB and the git HEAD """
     prj = 'light_control'
@@ -1517,7 +1534,7 @@ def test_diff_kiri_1(test_dir):
     # Copy the "new" file
     shutil.copy2(ctx.board_file.replace(prj, prj+'_diff'), file)
     # Run the test
-    ctx.run(extra=['-b', file], no_board_file=True)
+    ctx.run(extra=['-b', file], no_board_file=True, extra_debug=True)
     ctx.expect_out_file(['_local_/_KIRI_/pcb_layers', hash+'/_KIRI_/pcb_layers',
                          '_local_/_KIRI_/sch_sheets', hash+'/_KIRI_/sch_sheets',
                          'index.html', 'commits', 'project'])
@@ -2060,3 +2077,23 @@ def test_report_variant_t1(test_dir):
     ctx.search_in_file(prj+'-report.txt', [r'|\s+Total\s+|\s+40\s+|\s+52'])
     ctx.search_in_file(prj+'-report_(V1).txt', [r'|\s+Total\s+|\s+4\s+|\s+5\.'])
     ctx.clean_up()
+
+
+# ODB++ export using kicad-cli on KiCad 9+
+@pytest.mark.skipif(not context.ki9(), reason="Needs KiCad 9")
+def test_odb_zip(test_dir):
+    prj = 'light_control'
+    ctx = context.TestContext(test_dir, prj, 'odb_zip_mm', 'Export')
+    ctx.run()
+    ctx.expect_out_file(prj+'-odb.zip', sub=True)
+    ctx.clean_up(keep_project=True)
+
+
+# IPC-2581 export using kicad-cli on KiCad 9+
+@pytest.mark.skipif(not context.ki9(), reason="Needs KiCad 9")
+def test_ipc2581_xml(test_dir):
+    prj = 'light_control'
+    ctx = context.TestContext(test_dir, prj, 'ipc2581_xml_mils', 'Export')
+    ctx.run()
+    ctx.expect_out_file(prj+'-IPC-2581.xml', sub=True)
+    ctx.clean_up(keep_project=True)

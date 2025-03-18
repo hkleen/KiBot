@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2022-2024 Salvador E. Tropea
-# Copyright (c) 2022-2024 Instituto Nacional de Tecnología Industrial
+# Copyright (c) 2022-2025 Salvador E. Tropea
+# Copyright (c) 2022-2025 Instituto Nacional de Tecnología Industrial
 # License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
 # Base idea: https://gitlab.com/dennevi/Board2Pdf/ (Released as Public Domain)
+# Drill maps contributed by Nguyen Vincent (@nguyen-v)
 """
 Dependencies:
   - from: RSVG
@@ -29,7 +30,9 @@ Dependencies:
 #     version: '2.40'
 #     id: rsvg2
 from copy import deepcopy
+from dataclasses import dataclass
 import datetime
+import io
 import re
 import os
 import importlib
@@ -37,9 +40,13 @@ from pcbnew import B_Cu, B_Mask, F_Cu, F_Mask, FromMM, IsCopperLayer, LSET, PLOT
 from shutil import rmtree, copy2
 import sys
 from .error import KiPlotConfigurationError
+from .fil_base import BaseFilter, apply_exclude_filter
 from .gs import GS
+if not GS.ki5:
+    from pcbnew import PCB_GROUP, PCB_SHAPE
 from .optionable import Optionable
 from .out_base import VariantOptions
+from .out_any_drill import DrillOptions
 from .pre_base import BasePreFlight
 from .kicad.color_theme import load_color_theme
 from .kicad.patch_svg import patch_svg_file
@@ -47,12 +54,17 @@ from .kicad.config import KiConf
 from .kicad.v5_sch import SchError
 from .kicad.pcb import PCB
 from .misc import (PDF_PCB_PRINT, W_PDMASKFAIL, W_MISSTOOL, PCBDRAW_ERR, W_PCBDRAW, VIATYPE_THROUGH, VIATYPE_BLIND_BURIED,
-                   VIATYPE_MICROVIA, FONT_HELP_TEXT, W_BUG16418, pretty_list, try_int, W_NOPAGES, W_NOLAYERS, W_NOTHREPE)
+                   VIATYPE_MICROVIA, FONT_HELP_TEXT, W_BUG16418, pretty_list, try_int, W_NOPAGES, W_NOLAYERS, W_NOTHREPE,
+                   RENDERERS, read_png)
 from .create_pdf import create_pdf_from_pages
 from .macros import macros, document, output_class  # noqa: F401
 from .drill_marks import DRILL_MARKS_MAP, add_drill_marks
+from .kicad.drill_info import get_num_layer_pairs, get_layer_pair_name
+from .kicad.pcb_draw_helpers import draw_drill_map
+from .pre_include_table import IncludeTableOptions, update_table
 from .layer import Layer, get_priority
-from .kiplot import run_command, load_board
+from .kiplot import run_command, load_board, get_all_components, look_for_output, get_output_targets, run_output
+from .svgutils.transform import ImageElement, GroupElement
 from . import __version__
 from . import log
 
@@ -61,10 +73,19 @@ POLY_FILL_STYLE = ("fill:{0}; fill-opacity:1.0; stroke:{0}; stroke-width:1; stro
                    "stroke-linejoin:round;fill-rule:evenodd;")
 DRAWING_LAYERS = ['Dwgs.User', 'Cmts.User', 'Eco1.User', 'Eco2.User']
 EXTRA_LAYERS = ['F.Fab', 'B.Fab', 'F.CrtYd', 'B.CrtYd']
+GSPNERROR = re.compile(r'%\d*d[0-9a-fA-F]')
 # The following modules will be downloaded after we solve the dependencies
 # They are just helpers and we solve their dependencies
 svgutils = None  # Will be loaded during dependency check
 kicad_worksheet = None  # Also needs svgutils
+
+
+@dataclass
+class ImageGroup:
+    name: str
+    layer: int
+    bbox: tuple
+    items: list
 
 
 def pcbdraw_warnings(tag, msg):
@@ -139,11 +160,37 @@ class LayerOptions(Layer):
             self.use_for_center = True
             """ Use this layer for centering purposes.
                 You can invert the meaning using the `invert_use_for_center` option """
+            self.sketch_pads_on_fab_layers = False
+            r""" Draw the outline of the pads on the \*.Fab layers (KiCad 6+).
+                 When not defined we use the default value for the page """
+            self.exclude_filter = Optionable
+            """ [string|list(string)='_null'] Name of the filter to exclude components before printing this layer.
+                This option affects only this layer.
+                You should also set `plot_footprint_values` and `sketch_pads_on_fab` to false """
 
     def config(self, parent):
         super().config(parent)
         if self.color:
             self.validate_color('color')
+        self.exclude_filter = BaseFilter.solve_filter(self.exclude_filter, 'exclude_filter')
+        if not self.get_user_defined('sketch_pads_on_fab_layers'):
+            self.sketch_pads_on_fab_layers = parent.sketch_pads_on_fab_layers
+
+    @classmethod
+    def solve(cls, values, parent):
+        layers = super().solve(values)
+        for la in layers:
+            if isinstance(la.exclude_filter, type):
+                la.exclude_filter = None
+            if not la.get_user_defined('sketch_pads_on_fab_layers'):
+                la.sketch_pads_on_fab_layers = parent.sketch_pads_on_fab_layers
+        return layers
+
+    @classmethod
+    def create_layer(cls, name):
+        la = super().create_layer(name)
+        la.exclude_filter = None
+        return la
 
     def copy_extra_from(self, ref):
         """ Copy members specific to LayerOptions """
@@ -151,6 +198,9 @@ class LayerOptions(Layer):
         self.plot_footprint_refs = ref.plot_footprint_refs
         self.plot_footprint_values = ref.plot_footprint_values
         self.force_plot_invisible_refs_vals = ref.force_plot_invisible_refs_vals
+        self.use_for_center = ref.use_for_center
+        self.sketch_pads_on_fab_layers = ref.sketch_pads_on_fab_layers
+        self.exclude_filter = ref.exclude_filter
 
 
 class PagesOptions(Optionable):
@@ -183,7 +233,9 @@ class PagesOptions(Optionable):
                 Pattern (%*) and text variables are expanded.
                 The %ll is the list of layers included in this page.
                 In addition when you use `repeat_for_layer` the following patterns are available:
-                %ln layer name, %ls layer suffix and %ld layer description  """
+                %ln layer name, %ls layer suffix and %ld layer description.
+                When `repeat_layers` is `drill_pairs`, the following additional patterns are available:
+                %lpn layer name pair, %lp layer pair """
             self.layer_var = '%ll'
             """ Text to use for the `LAYER` in the title block.
                 All the expansions available for `sheet` are also available here """
@@ -196,7 +248,8 @@ class PagesOptions(Optionable):
             self.exclude_pads_from_silkscreen = False
             """ Do not plot the component pads in the silk screen (KiCad 5.x only) """
             self.tent_vias = True
-            """ Cover the vias """
+            """ Cover the vias. This option applies to KiCad 8 and older versions.
+                On KiCad 9 each via can control it individually """
             self.colored_holes = True
             """ Change the drill holes to be colored instead of white """
             self.holes_color = '#000000'
@@ -211,7 +264,7 @@ class PagesOptions(Optionable):
             self.page_id = '%02d'
             """ Text to differentiate the pages. Use %d (like in C) to get the page number """
             self.sketch_pads_on_fab_layers = False
-            r""" Draw only the outline of the pads on the \*.Fab layers (KiCad 6+) """
+            r""" Draw the outline of the pads on the \*.Fab layers (KiCad 6+) """
             self.sketch_pad_line_width = 0.1
             """ Line width for the sketched pads [mm], see `sketch_pads_on_fab_layers` (KiCad 6+)
                 Note that this value is currently ignored by KiCad (6.0.9) """
@@ -221,9 +274,13 @@ class PagesOptions(Optionable):
                 This can be used to generate a page for each copper layer, here you put `F.Cu`.
                 See `repeat_layers` """
             self.repeat_layers = LayerOptions
-            """ [list(dict)|list(string)|string='inners'] [all,selected,copper,technical,user,inners,outers,*]
-                List of layers to replace `repeat_for_layer`.
-                This can be used to generate a page for each copper layer, here you put `copper` """
+            """ [list(dict)|list(string)|string='inners'] [all,selected,copper,technical,user,inners,outers,*] List
+                of layers to replace `repeat_for_layer`.
+                This can be used to generate a page for each copper layer, here you put `copper`.
+                You can also use it to generate pages with drill maps, in this case use `drill_pairs` here.
+                Note that in this case the `repeat_for_layer` should be some drawing layer, which might contain
+                a group used to insert the drill table (like in the `include_table` preflight).
+                The drill map needs KiCad 7 or newer """
             self.repeat_inherit = True
             """ If we will inherit the options of the layer we are replacing.
                 Disable it if you specify the options in `repeat_layers`, which is unlikely """
@@ -231,6 +288,8 @@ class PagesOptions(Optionable):
         self._autoscale_margin_x_example = 0
         self._autoscale_margin_y_example = 0
         self._layers = None
+        self._layer_pair = "No layer pair"
+        self._layer_pair_name = "No layer pair name"
 
     def __str__(self):
         txt = self.sheet
@@ -245,6 +304,8 @@ class PagesOptions(Optionable):
     def expand_sheet_patterns(self, parent, sheet, layers, layer=None):
         sheet = sheet.replace('%ll', layers)
         if layer:
+            sheet = sheet.replace('%lpn', self._layer_pair_name)
+            sheet = sheet.replace('%lp', self._layer_pair)
             sheet = sheet.replace('%ln', layer.layer)
             sheet = sheet.replace('%ls', layer.suffix)
             sheet = sheet.replace('%ld', layer.description)
@@ -253,7 +314,8 @@ class PagesOptions(Optionable):
     def config(self, parent):
         super().config(parent)
         # Fill the ID member for all the layers
-        self._layers = LayerOptions.solve(self.layers)
+        self._layers = LayerOptions.solve(self.layers, self)
+        self._is_drill = False
         if self.sort_layers:
             self._layers.sort(key=lambda x: get_priority(x._id), reverse=True)
         if self.sheet_reference_color:
@@ -277,7 +339,20 @@ class PagesOptions(Optionable):
             if self._repeat_for_layer is None:
                 raise KiPlotConfigurationError("Layer `{}` specified in `repeat_for_layer` isn't valid".format(layer))
             self._repeat_for_layer_index = self._layers.index(self._repeat_for_layer)
-            self._repeat_layers = LayerOptions.solve(self.repeat_layers)
+            if self.repeat_layers != ['drill_pairs']:
+                self._repeat_layers = LayerOptions.solve(self.repeat_layers, self)
+            else:
+                self._is_drill = True
+                self._drill_map_layer = GS.board.GetLayerID(self.repeat_for_layer)
+                if isinstance(parent.drill, bool):
+                    self._drill_unify_pth_and_npth = True
+                else:
+                    if hasattr(parent.drill, 'unify_pth_and_npth'):  # 'auto' defaults to True
+                        self._drill_unify_pth_and_npth = False if parent.drill.unify_pth_and_npth == 'no' else True
+                    else:
+                        self._drill_unify_pth_and_npth = True
+                self._repeat_layers = (get_num_layer_pairs(self._drill_unify_pth_and_npth) *
+                                       [LayerOptions.create_layer(self.repeat_for_layer)])
             if not self.repeat_layers:
                 # Here we check the user specified something (or left the default)
                 # We don't check this "something" is usable (self._repeat_layers) because this prevents using default values
@@ -388,6 +463,13 @@ class PCB_PrintOptions(VariantOptions):
             """ Invert the meaning of the `use_for_center` layer option.
                 This can be used to just select the edge cuts for centering, in this case enable this option
                 and disable the `use_for_center` option of the edge cuts layer """
+            self.include_table = IncludeTableOptions
+            """ [boolean|dict=false] Use a boolean for simple cases or fine-tune its behavior.
+                When enabled we include tables using the same mechanism used in the `include_table`
+                preflight. The result isn't saved to disk """
+            self.drill = DrillOptions
+            """ [boolean|dict=false] Use a boolean for simple cases or fine-tune its behavior.
+                Used to customize the `drill_pairs` option to print drill maps """
         add_drill_marks(self)
         super().__init__()
         self._expand_id = 'assembly'
@@ -402,15 +484,40 @@ class PCB_PrintOptions(VariantOptions):
 
     def config(self, parent):
         super().config(parent)
+        self._include_table_output = False
+        if isinstance(self.include_table, bool):
+            if self.include_table:
+                self._include_table_output = True
+                self._include_table = IncludeTableOptions()
+                self._include_table.config(self)
+            else:
+                self._include_table_output = False
+        else:
+            self._include_table_output = True
+            self._include_table = self.include_table
+        if isinstance(self.drill, bool):
+            self._drill_unify_pth_and_npth = True
+            self._drill_group_slots_and_round_holes = True
+        else:
+            self._drill_unify_pth_and_npth = False if self.drill.unify_pth_and_npth == 'no' else True
+            self._drill_group_slots_and_round_holes = self.drill.group_slots_and_round_holes
         # Expand any repeat_for_layer
         pages = []
         for page in self.pages:
             layers_for_page = self.get_layers_for_page(page)
             if page.repeat_for_layer:
-                for la in page._repeat_layers:
+                for i, la in enumerate(page._repeat_layers):
                     new_page = deepcopy(page)
                     if page.repeat_inherit:
                         la.copy_extra_from(page._repeat_for_layer)
+                    if page._is_drill:
+                        new_page._drill_pair_index = i
+                        new_page._layer_pair = get_layer_pair_name(new_page._drill_pair_index, False,
+                                                                   self._drill_unify_pth_and_npth,
+                                                                   self._drill_group_slots_and_round_holes)
+                        new_page._layer_pair_name = get_layer_pair_name(new_page._drill_pair_index, True,
+                                                                        self._drill_unify_pth_and_npth,
+                                                                        self._drill_group_slots_and_round_holes)
                     new_page._layers[page._repeat_for_layer_index] = la
                     new_page.sheet = new_page.expand_sheet_patterns(parent, page.sheet, la.layer+'+'+layers_for_page, la)
                     new_page.layer_var = new_page.expand_sheet_patterns(parent, page.layer_var, la.layer+'+'+layers_for_page,
@@ -481,7 +588,7 @@ class PCB_PrintOptions(VariantOptions):
         return [self._parent.expand_filename(out_dir, self.output)]
 
     def clear_layer(self, layer):
-        tmp_layer = GS.board.GetLayerID(GS.work_layer)
+        tmp_layer = GS.board.GetLayerID(GS.global_work_layer)
         cleared_layer = GS.board.GetLayerID(layer)
         moved = []
         for g in GS.board.GetDrawings():
@@ -602,28 +709,22 @@ class PCB_PrintOptions(VariantOptions):
         self.pcb.write(pcb_name)
         # Copy the project
         pro_name, _, _ = GS.copy_project(pcb_name)
-        # Make a local WKS available
-        if self._sheet_reference_layout:
-            # Worksheet override
-            wks = os.path.abspath(self._sheet_reference_layout)
-            wks = KiConf.fix_page_layout(os.path.join(pcb_dir, GS.pro_fname), force_pcb=wks, force_sch=wks)
-        else:
-            # Original worksheet
-            wks = KiConf.fix_page_layout(os.path.join(pcb_dir, GS.pro_fname))
+        # Copy the layout, user provided or default, we need to expand vars here
+        # In particular KiBot internal stuff
+        wks = KiConf.fix_page_layout(os.path.join(pcb_dir, GS.pro_fname), force_pcb=self.layout, force_sch=self.layout)
         wks = wks[1]
-        if wks:
-            logger.debugl(1, '  - Worksheet: '+wks)
-            try:
-                ws = kicad_worksheet.Worksheet.load(wks)
-                error = None
-            except (kicad_worksheet.WksError, SchError) as e:
-                error = str(e)
-            if error:
-                raise KiPlotConfigurationError('Error reading `{}` ({})'.format(wks, error))
-            # Expand the variables in the copied worksheet
-            tb_vars = self.fill_kicad_vars(page, pages, p)
-            ws.expand(tb_vars, remove_images=True)
-            ws.save(wks)
+        logger.debugl(1, '  - Worksheet: '+wks)
+        try:
+            ws = kicad_worksheet.Worksheet.load(wks)
+            error = None
+        except (kicad_worksheet.WksError, SchError) as e:
+            error = str(e)
+        if error:
+            raise KiPlotConfigurationError('Error reading `{}` ({})'.format(wks, error))
+        # Expand the variables in the copied worksheet
+        tb_vars = self.fill_kicad_vars(page, pages, p)
+        ws.expand(tb_vars, remove_images=True)
+        ws.save(wks)
         # Plot the frame using a helper script
         # kicad-cli fails: https://gitlab.com/kicad/code/kicad/-/issues/18928
         script = os.path.join(GS.get_resource_path('tools'), 'frame_plotter')
@@ -637,7 +738,7 @@ class PCB_PrintOptions(VariantOptions):
             # https://gitlab.com/kicad/code/kicad/-/issues/18959
             logger.debugl(1, '  - Fixing images')
             # Do a manual draw, just to collect any image
-            ws.draw(GS.board, GS.board.GetLayerID('Rescue'), page, self.pcb.paper_w, self.pcb.paper_h, tb_vars)
+            ws.draw(GS.board, GS.board.GetLayerID(GS.global_work_layer), page, self.pcb.paper_w, self.pcb.paper_h, tb_vars)
             ws.undraw(GS.board)
             # We need to plot the images in a separated pass
             self.last_worksheet = ws
@@ -649,7 +750,7 @@ class PCB_PrintOptions(VariantOptions):
         id = la._id
         logger.debug('- Plotting pads for layer {} ({})'.format(la.layer, id))
         # Make invisible anything but through-hole pads
-        tmp_layer = GS.board.GetLayerID(GS.work_layer)
+        tmp_layer = GS.board.GetLayerID(GS.global_work_layer)
         moved = []
         removed = []
         vias = []
@@ -713,7 +814,7 @@ class PCB_PrintOptions(VariantOptions):
         id = la._id
         logger.debug('- Plotting vias for layer {} ({})'.format(la.layer, id))
         # Make invisible anything but vias
-        tmp_layer = GS.board.GetLayerID(GS.work_layer)
+        tmp_layer = GS.board.GetLayerID(GS.global_work_layer)
         moved = []
         removed = []
         vias = []
@@ -901,6 +1002,100 @@ class PCB_PrintOptions(VariantOptions):
                 # Process all text inside
                 self.search_text_for_g(e, texts)
 
+    def add_drill_map_drawing(self, p, g):
+        if p._is_drill:
+            if not GS.ki7:
+                raise KiPlotConfigurationError('The `pcb_print` drill map needs KiCad 7 or newer')
+            layer = p._drill_map_layer
+            index = p._drill_pair_index
+            draw_drill_map(g, layer, index, self._drill_unify_pth_and_npth,
+                           self._drill_group_slots_and_round_holes)
+
+    def move_kibot_image_groups(self):
+        """ Look for KiBot image groups (kibot_image_*)
+            Move them to the Rescue layer
+            Memorize them to restore and analysis """
+        self._image_groups = []
+        if GS.ki5:
+            # Groups were introduced in KiCad 6
+            return
+        tmp_layer = GS.board.GetLayerID(GS.global_work_layer)
+        for g in GS.board.Groups():
+            name = g.GetName()
+            if not name.startswith('kibot_image_'):
+                continue
+            x1, y1, x2, y2 = GS.compute_group_boundary(g)
+            moved = []
+            layer = None
+            for item in g.GetItems():
+                if layer is None:
+                    layer = item.GetLayer()
+                moved.append((item, item.GetLayer()))
+                item.SetLayer(tmp_layer)
+            self._image_groups.append(ImageGroup(name, layer, (x1, y1, x2, y2), moved))
+
+    def restore_kibot_image_groups(self):
+        """ Move the KiBot image groups (kibot_image_*) to their original layers """
+        for g in self._image_groups:
+            for item in g.items:
+                item[0].SetLayer(item[1])
+        self._image_groups = []
+
+    def add_output_images(self, svg, page):
+        """ Look for groups named kibot_image_OUTPUT and paste images from the referred OUTPUTs """
+        # Check which layers we printed
+        layers = {la._id for la in page._layers}
+        # Look for groups
+        logger.debug('Looking for image groups in the PCB')
+        for g in self._image_groups:
+            name = g.name
+            if not name.startswith('kibot_image_'):
+                continue
+            logger.debugl(2, f'- Found {name}')
+            # Check if this group is for a layer we printed
+            if g.layer not in layers:
+                logger.debug('- {name} not in printed layers')
+                continue
+            # Look for the image from the output
+            output_name = name[12:]
+            output_obj = look_for_output(output_name, '`include image`', self._parent, RENDERERS)
+            targets, _, _ = get_output_targets(output_name, self._parent)
+            targets = [fn for fn in targets if fn.endswith('.png')]
+            if not targets:
+                raise KiPlotConfigurationError("PCB group `{name}` uses `{output_name}` which doesn't generate any PNG")
+            fname = targets[0]
+            logger.debugl(2, f'- Related image: {fname}')
+            if not os.path.exists(fname):
+                # The target doesn't exist
+                if not output_obj._done:
+                    # The output wasn't created in this run, try running it
+                    logger.debug('- Not yet generated, tying to generate it')
+                    run_output(output_obj)
+            if not os.path.exists(fname):
+                raise KiPlotConfigurationError("Failed to generate `{fname}` for PCB group `{name}`")
+            # Add the image to the SVG
+            try:
+                s, w, h, dpi = read_png(fname, logger, only_size=False)
+            except TypeError as e:
+                raise KiPlotConfigurationError(f'Error reading {fname} size: {e} for PCB group `{name}`')
+            logger.debugl(2, f'- PNG: {w}x{h} {dpi} PPIs')
+            x1, y1, x2, y2 = g.bbox
+            logger.debugl(2, f'- Box: {x1},{y1} {x2},{y2} IUs')
+            # Convert pixels to mm and then to KiCad units
+            # w = GS.from_mm(w/dpi*25.4)
+            # h = GS.from_mm(h/dpi*25.4)
+            # logger.error(f'{w}x{h} IUs')
+            scale = GS.iu_to_svg(1.0, self.svg_precision)  # This is the scale to convert IUs to SVG units
+            logger.debugl(2, f'- Scale {scale}')
+            #  Put the image at the box coordinates with its size
+            img = ImageElement(io.BytesIO(s), x2-x1, y2-y1)
+            img.moveto(x1, y1)
+            img.scale(scale)
+            #  Put the image in a group
+            g = GroupElement([img])
+            #  Add the group to the SVG
+            svg.append(g)
+
     def merge_svg(self, input_folder, input_files, output_folder, output_file, p):
         """ Merge all layers into one page """
         first = True
@@ -925,6 +1120,7 @@ class PCB_PrintOptions(VariantOptions):
                 first = False
                 self.process_background(svg_out, width, height)
                 self.add_frame_images(svg_out, p.monochrome)
+                self.add_output_images(svg_out, p)
             else:
                 root = new_layer.getroot()
                 # Adjust the coordinates of this section to the main width
@@ -944,7 +1140,7 @@ class PCB_PrintOptions(VariantOptions):
     def plot_extra_cu(self, id, la, pc, p, filelist):
         """ Plot pads and vias to make them different """
         re_filled_zones = False
-        if id >= F_Cu and id <= B_Cu:
+        if IsCopperLayer(id):
             # Here we force the same bounding box
             # Problem: we will remove items, so the bbox can be affected
             # Solution: we add a couple of points at the edges of the bbox
@@ -1161,14 +1357,18 @@ class PCB_PrintOptions(VariantOptions):
         # if self.format == 'EPS':
         #    self.rsvg_command_eps = self.ensure_tool('rsvg2')
 
-    def rename_pages(self, output_dir):
+    def rename_pages(self, output_dir, real_output=None):
         for n, p in enumerate(self._pages):
             id, ext = self.get_id_and_ext(n)
             cur_name = self.expand_filename(output_dir, self.output, id, ext)
             id, ext = self.get_id_and_ext(n, p.page_id)
-            user_name = self.expand_filename(output_dir, self.output, id, ext)
+            user_name = self.expand_filename(output_dir, real_output or self.output, id, ext)
             if cur_name != user_name and os.path.isfile(cur_name):
+                logger.debug('- Renaming {cur_name} -> {user_name}')
                 os.replace(cur_name, user_name)
+        if real_output:
+            # Revert the output, GS workaround
+            self.output = real_output
 
     def check_ki7_scale_issue(self):
         """ Check if all visible layers has scaling problems """
@@ -1232,6 +1432,23 @@ class PCB_PrintOptions(VariantOptions):
                 vis_layers.addLayer(edge_id)
             GS.board.SetVisibleLayers(vis_layers)
 
+    def exclude_components_from_layer(self, layer):
+        if not layer.exclude_filter:
+            return
+        comps = self._comps_for_fab_ex = self._comps if self._comps else get_all_components()
+        comps_hash = self._comps_hash_for_fab_ex = {c.ref: c for c in comps}
+        self._old_included_fab = [c.included for c in comps]
+        apply_exclude_filter(comps, layer.exclude_filter)
+        # Save the current savings
+        self._layer_id_ex, self._graphs_ex = self.remove_graphics_from_layer(GS.board, comps_hash, layer.layer)
+
+    def restore_components_from_layer(self, layer):
+        if not layer.exclude_filter:
+            return
+        for c, v in zip(self._comps_for_fab_ex, self._old_included_fab):
+            c.included = v
+        self.restore_graphics_from_layer(GS.board, self._comps_hash_for_fab_ex, self._layer_id_ex, self._graphs_ex)
+
     def generate_output(self, output):
         self.check_tools()
         if not self._pages:
@@ -1273,9 +1490,22 @@ class PCB_PrintOptions(VariantOptions):
         # Make visible only the layers we need
         # This is very important when scaling, otherwise the results are controlled by the .kicad_prl (See #407)
         self.set_visible(edge_id)
+        # Move KiBot image groups away
+        self.move_kibot_image_groups()
+
+        # Update all tables
+        if GS.ki7 and self._include_table_output:
+            update_table(self._include_table, self)
+
         # Generate the output, page by page
         pages = []
         for n, p in enumerate(self._pages):
+            if not GS.ki5:
+                if p._is_drill:
+                    g_drill_map = PCB_GROUP(GS.board)
+                    self.add_drill_map_drawing(p, g_drill_map)
+                    if GS.ki7 and self._include_table_output:
+                        update_table(self._include_table, self, p._drill_pair_index, True)
             # Make visible only the layers we need
             # This is very important when scaling, otherwise the results are controlled by the .kicad_prl (See #407)
             if self.individual_page_scaling:
@@ -1303,12 +1533,12 @@ class PCB_PrintOptions(VariantOptions):
             po.SetMirror(p.mirror)
             p.scaling = self.set_scaling(po, p.scaling)
             po.SetNegative(p.negative_plot)
-            po.SetPlotViaOnMaskLayer(not p.tent_vias)
+            if not GS.ki9:
+                po.SetPlotViaOnMaskLayer(not p.tent_vias)
             if GS.ki5:
                 po.SetLineWidth(FromMM(p.line_width))
                 po.SetPlotPadsOnSilkLayer(not p.exclude_pads_from_silkscreen)
             else:
-                po.SetSketchPadsOnFabLayers(p.sketch_pads_on_fab_layers)
                 po.SetSketchPadLineWidth(p._sketch_pad_line_width)
             filelist = []
             if self.force_edge_cuts and next(filter(lambda x: x._id == edge_id, p._layers), None) is None:
@@ -1317,18 +1547,22 @@ class PCB_PrintOptions(VariantOptions):
             if p.layers == ['all'] and not p.get_user_defined('layers'):
                 logger.warning(W_NOLAYERS+f'No layers specified for `{p}` (`{self._parent.name}`), including `all`')
             re_filled_zones = False
-            for la in p._layers:
+            for pos, la in enumerate(p._layers):
                 id = la._id
                 logger.debug('- Plotting layer {} ({})'.format(la.layer, id))
                 po.SetPlotReference(la.plot_footprint_refs)
                 po.SetPlotValue(la.plot_footprint_values)
                 po.SetPlotInvisibleText(la.force_plot_invisible_refs_vals)
+                if GS.ki6:
+                    po.SetSketchPadsOnFabLayers(la.sketch_pads_on_fab_layers)
                 # Avoid holes on non-copper layers
                 po.SetDrillMarksType(self._drill_marks if IsCopperLayer(id) else 0)
                 pc.SetLayer(id)
                 if id in user_layer_ids:
                     self.mirror_text(p, id)
-                pc.OpenPlotfile(la.suffix, PLOT_FORMAT_SVG, p.sheet)
+                # Apply a filter to this layer
+                self.exclude_components_from_layer(la)
+                pc.OpenPlotfile(la.suffix+str(pos), PLOT_FORMAT_SVG, p.sheet)
                 pc.PlotLayer()
                 if id in user_layer_ids:
                     self.mirror_text(p, id)
@@ -1336,8 +1570,19 @@ class PCB_PrintOptions(VariantOptions):
                 filelist.append((pc.GetPlotFileName(), la.color))
                 re_filled_zones |= self.plot_extra_cu(id, la, pc, p, filelist)
                 self.plot_realistic_solder_mask(id, temp_dir, filelist[-1][0], filelist[-1][1], p.mirror, p.scaling)
+                # Revert a filter to this layer
+                self.restore_components_from_layer(la)
 #                 if needs_ki7_scale_workaround:
 #                     self.kicad7_scale_workaround(id, temp_dir, filelist[-1][0], filelist[-1][1], p.mirror, p.scaling)
+            # remove the drill map drawing
+            if not GS.ki5:
+                if p._is_drill:
+                    items = g_drill_map.GetItems()
+                    if not isinstance(items, list):
+                        items = list[items]
+                    for item in items:
+                        if isinstance(item, PCB_SHAPE):
+                            GS.board.Delete(item)
             # 2) Plot the frame using an empty layer and 1.0 scale
             po.SetMirror(False)
             if self.plot_sheet_reference:
@@ -1396,13 +1641,23 @@ class PCB_PrintOptions(VariantOptions):
                 else:  # EPS and PNG
                     id, ext = self.get_id_and_ext()
                     out_file = self.expand_filename(output_dir, self.output, id, ext, make_safe=False)
+                    real_output = None
+                    # Ghostscript issue workaround
+                    # Patterns like %02d followed by an hex digit makes GS fail (i.e. GS 10.00.0)
+                    # So here we use a pattern that works and then we rename the files
+                    if GSPNERROR.search(out_file):
+                        real_output = self.output
+                        self.output = '_kibot_tmp_%i.'+ext
+                        out_file = self.expand_filename(output_dir, self.output, id, ext, make_safe=False)
                     if self.format == 'EPS':
                         # Use GS to create one EPS per page
                         self.pdf_to_eps(pdf_file, out_file)
                     else:
                         # Use GS to create one PNG per page and then scale to the wanted width
                         self.pdf_to_png(pdf_file, out_file)
-                    self.rename_pages(output_dir)
+                    self.rename_pages(output_dir, real_output)
+        # Restore KiBot image groups away
+        self.restore_kibot_image_groups()
         # Remove the temporal files
         if not self.keep_temporal_files:
             rmtree(temp_dir_base)
@@ -1427,6 +1682,7 @@ class PCB_Print(BaseOutput):  # noqa: F821
     """ PCB Print
         Prints the PCB using a mechanism that is more flexible than `pdf_pcb_print` and `svg_pcb_print`.
         Supports PDF, SVG, PNG, EPS and PS formats.
+        You can add images generated other outputs to your print, see :ref:`add_print_images`.
         Important: `colored_vias` and `colored_pads` usually involves a zones refill. To avoid side
         effects we reload the PCB, which might be slow. If refills are tolerable for your case and
         you want to make it faster just add a `check_zone_fills` preflight. This will skip the reload """
@@ -1496,6 +1752,11 @@ class PCB_Print(BaseOutput):  # noqa: F821
                         if ly['layer'].endswith('.Mask'):
                             ly['color'] = '#14332440'
                     pages.append(page)
+            # Drill map
+            if GS.ki7:
+                page = {'repeat_for_layer': 'User.Drawings', 'repeat_layers': 'drill_pairs', 'layers':
+                        [{'layer': 'User.Drawings', 'color': '#000000'}, {'layer': 'Edge.Cuts', 'color': '#000000'}]}
+                pages.append(page)
             ops = {'format': fmt, 'pages': pages, 'keep_temporal_files': True}
             if fmt in ['PNG', 'SVG']:
                 ops['add_background'] = True

@@ -75,11 +75,8 @@ INNER_LAYERS = ['GND_Cu',
                 'Signal1_Cu',
                 'Signal2_Cu',
                 ]
-INNER_EXTS = ['g2',
-              'g5',
-              'g3',
-              'g4',
-              ]
+OLD_INNER_EXTS = ['g2', 'g5', 'g3', 'g4']
+INNER_EXTS = ['g1', 'g4', 'g2', 'g3'] if GS.ki9 else OLD_INNER_EXTS
 
 
 def test_gerber_2layer(test_dir):
@@ -175,7 +172,7 @@ def test_gerber_protel_2(test_dir):
     prj = 'good-project'
     ctx = context.TestContext(test_dir, prj, 'gerber_inner_protel_2', GERBER_DIR)
     ctx.run(extra_debug=True)
-    inner = ['gin'+str(int(layer[-1])-1) for layer in INNER_EXTS]
+    inner = ['gin'+str(int(layer[-1])-1) for layer in OLD_INNER_EXTS]
     exts = ALL_EXTS+inner
     files = []
     for n, suf in enumerate(ALL_LAYERS+INNER_LAYERS):

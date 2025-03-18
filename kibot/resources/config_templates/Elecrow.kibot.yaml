@@ -35,6 +35,7 @@ outputs:
       subtract_mask_from_silk: true
       inner_extension_pattern: '.g%n'
       edge_cut_extension: '.gml'
+      use_aux_axis_as_origin: @_KIBOT_DRILL_AUX_ORIGIN@
     layers:
       @_KIBOT_GERBER_LAYERS@
       @_KIBOT_F_PASTE@
@@ -49,6 +50,7 @@ outputs:
       pth_id: ''
       npth_id: '-NPTH'
       output: "%f%i.TXT"
+      use_aux_axis_as_origin: @_KIBOT_DRILL_AUX_ORIGIN@
 
   - name: _Elecrow_compress@_KIBOT_IMPORT_ID@
     comment: ZIP file for Elecrow
@@ -73,6 +75,7 @@ definitions:
   _KIBOT_PLOT_FOOTPRINT_REFS: true
   _KIBOT_PLOT_FOOTPRINT_VALUES: true
   _KIBOT_COMPRESS_MOVE: true
+  _KIBOT_DRILL_AUX_ORIGIN: false
   _KIBOT_GERBER_LAYERS: |
       - copper
             - F.SilkS

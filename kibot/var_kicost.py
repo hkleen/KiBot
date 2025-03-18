@@ -89,7 +89,7 @@ class KiCost(BaseVariant):  # noqa: F821
                 # Don't check if we already discarded it
                 continue
             variants = c.get_field_value(self.variant_field)
-            c.fitted = self.matches_variant(variants)
+            c.set_fitted(self.matches_variant(variants))
             if not c.fitted and GS.debug_level > 2:
                 logger.debug('ref: {} value: {} variants: {} -> False'.format(c.ref, c.value, variants))
         return comps

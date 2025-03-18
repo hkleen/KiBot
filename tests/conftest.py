@@ -2,6 +2,8 @@
 Test configuration
 """
 import pytest
+import warnings
+warnings.filterwarnings('ignore', message='.*SWIG-based Python.*', module='pcbnew')
 
 
 def pytest_addoption(parser):

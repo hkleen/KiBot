@@ -33,6 +33,7 @@ class BasePreFlight(Optionable, Registrable):
         self._files_to_remove = []
         self._category = None
         self.type = self.__class__.__name__.lower()
+        self._priority = 50
 
     # Compatibility with outputs for navigate_results
     @property
@@ -143,7 +144,7 @@ class BasePreFlight(Optionable, Registrable):
     def run_enabled(targets):
         BasePreFlight._targets = targets
         try:
-            for k, v in BasePreFlight._in_use.items():
+            for k, v in sorted(BasePreFlight._in_use.items(), key=lambda x: x[1]._priority, reverse=True):
                 if v._enabled:
                     if v.is_sch():
                         GS.check_sch()

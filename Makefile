@@ -201,7 +201,7 @@ t1k6: test_docker_local_1_ki6
 single_test:
 	rm -rf pp
 	-$(PY_COV) run src/kibot --help-list-outputs > /dev/null
-	-LANG=en $(PYTEST) --log-cli-level debug -k "$(SINGLE_TEST)" --test_dir=pp
+	-LANG=en_US.UTF-8 $(PYTEST) --log-cli-level debug -k "$(SINGLE_TEST)" --test_dir=pp
 	@echo "********************" Output
 	#@cat pp/*/output.txt
 	@echo "********************" Error
@@ -291,6 +291,11 @@ update_gha:
 	git commit -m "[CI/CD] Updating Github Action v2 for KiCad 8 latest" Dockerfile
 	git push
 	git tag -f -a v2_k8 -m "GitHub Action v2 for KiCad 8"
+	git push origin -f --tags
+	cp Dockerfile_dk9 Dockerfile
+	git commit -m "[CI/CD] Updating Github Action v2 for KiCad 9 development" Dockerfile
+	git push
+	git tag -f -a v2_dk9 -m "GitHub Action v2 for KiCad 9 (development)"
 	git push origin -f --tags
 
 

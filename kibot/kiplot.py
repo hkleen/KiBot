@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2020-2024 Salvador E. Tropea
-# Copyright (c) 2020-2024 Instituto Nacional de Tecnología Industrial
+# Copyright (c) 2020-2025 Salvador E. Tropea
+# Copyright (c) 2020-2025 Instituto Nacional de Tecnología Industrial
 # Copyright (c) 2018 John Beard
-# License: GPL-3.0
+# License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
 # Adapted from: https://github.com/johnbeard/kiplot
 """
@@ -19,6 +19,7 @@ from subprocess import run, PIPE, STDOUT, Popen, CalledProcessError
 from glob import glob
 from importlib.util import spec_from_file_location, module_from_spec
 
+from .bom.columnlist import ColumnList
 from .gs import GS
 from .registrable import RegOutput
 from .misc import (PLOT_ERROR, CORRUPTED_PCB, EXIT_BAD_ARGS, CORRUPTED_SCH, version_str2tuple,
@@ -26,7 +27,7 @@ from .misc import (PLOT_ERROR, CORRUPTED_PCB, EXIT_BAD_ARGS, CORRUPTED_SCH, vers
                    MOD_VIRTUAL, W_PCBNOSCH, W_NONEEDSKIP, W_WRONGCHAR, name2make, W_TIMEOUT, W_KIAUTO, W_VARSCH,
                    NO_SCH_FILE, NO_PCB_FILE, W_VARPCB, NO_YAML_MODULE, WRONG_ARGUMENTS, FAILED_EXECUTE, W_VALMISMATCH,
                    MOD_EXCLUDE_FROM_POS_FILES, MOD_EXCLUDE_FROM_BOM, MOD_BOARD_ONLY, hide_stderr, W_MAXDEPTH, DONT_STOP,
-                   W_BADREF, W_MULTIREF, try_decode_utf8)
+                   W_BADREF, try_decode_utf8, MISSING_FILES)
 from .error import PlotError, KiPlotConfigurationError, config_error, KiPlotError
 from .config_reader import CfgYamlReader
 from .pre_base import BasePreFlight
@@ -213,6 +214,13 @@ def load_board(pcb_file=None, forced=False):
     try:
         with hide_stderr():
             board = pcbnew.LoadBoard(pcb_file)
+        if board is None:
+            # KiCad 9 doesn't stop and returns None
+            raise OSError
+        if GS.global_work_layer and board.GetLayerID(GS.global_work_layer) < 0:
+            raise KiPlotConfigurationError(f"Unknown layer used for the global `work_layer` option"
+                                           f" (`{GS.global_work_layer}`)")
+
         if GS.global_invalidate_pcb_text_cache == 'yes' and GS.ki6:
             # Workaround for unexpected KiCad behavior:
             # https://gitlab.com/kicad/code/kicad/-/issues/14360
@@ -236,7 +244,7 @@ def load_board(pcb_file=None, forced=False):
                 if dr.GetClass().startswith('PCB_DIM_') and dr.GetUnitsMode() == pcbnew.DIM_UNITS_MODE_AUTOMATIC:
                     dr.SetUnitsMode(forced_units)
                     dr.Update()
-        if GS.ki8:
+        if GS.ki8 and not GS.ki9:
             # KiCad 8.0.2 crazyness: hidden text affects scaling, even when not plotted
             # So a PRL can affect the plot mechanism
             # https://gitlab.com/kicad/code/kicad/-/issues/17958
@@ -291,7 +299,7 @@ def load_sch(sch_file=None, forced=False):
     GS.sch = load_any_sch(sch_file, os.path.splitext(os.path.basename(sch_file))[0])
 
 
-def create_component_from_footprint(m, ref):
+def create_component_from_footprint(m, ref, env):
     c = SchematicComponentV6()
     c.f_ref = c.ref = ref
     c.name = m.GetValue()
@@ -325,13 +333,14 @@ def create_component_from_footprint(m, ref):
     f.number = 3
     c.add_field(f)
     # Other fields
-    copy_fields(c, m)
+    copy_fields(c, m, env)
     c._solve_fields(None)
     try:
         c.split_ref()
     except SchError:
         # Unusable ref, discard it
-        logger.warning(f'{W_BADREF}Not including component `{ref}` in filters because it has a malformed reference')
+        logger.warning(f'{W_BADREF}Not including component `{ref}` in filters because it has a malformed reference '
+                       f'@ PCB {GS.module_position(m)}')
         c = None
     return c
 
@@ -340,12 +349,33 @@ class PadProperty(object):
     pass
 
 
-def copy_fields(c, m):
-    for name, value in GS.get_fields(m).items():
+def expand_footprint_fields(fields, env):
+    extra_env = {k.upper() if k.lower() in INTERNAL_FIELDS else k: v for k, v in fields.items()}
+    new_fields = {}
+    for k, v in fields.items():
+        new_value = v
+        depth = 1
+        used_extra = [False]
+        while depth < GS.MAXDEPTH:
+            new_value = expand_env(new_value, env, extra_env, used_extra=used_extra)
+            if not used_extra[0]:
+                break
+            depth += 1
+            if depth == GS.MAXDEPTH:
+                logger.warning(W_MAXDEPTH+'Too much nested variables replacements, possible loop ({})'.format(v))
+        # Remove extra spaces as we did with the schematic values
+        new_fields[k] = new_value.strip()
+    return new_fields
+
+
+def copy_fields(c, m, env):
+    real_fields = GS.get_fields(m)
+    expanded_fields = expand_footprint_fields(real_fields, env)
+    for name, value in real_fields.items():
         if c.is_field(name.lower()):
             # Already there
             old = c.get_field_value(name)
-            if value and old != value:
+            if value and old != value and old != expanded_fields[name]:
                 logger.warning(f"{W_VALMISMATCH}{name} field mismatch for `{c.ref}` (SCH: `{old}` PCB: `{value}`)")
                 c.set_field(name, value)
         else:
@@ -354,40 +384,43 @@ def copy_fields(c, m):
             c.set_field(name, value)
 
 
+def get_all_components(collapse=True):
+    load_sch()
+    comps = GS.sch.get_components(collapse=collapse)
+    get_board_comps_data(comps)
+    return comps
+
+
 def get_board_comps_data(comps):
     """ Add information from the PCB to the list of components from the schematic.
         Note that we do it every time the function is called to reset transformation filters like rot_footprint. """
     if not GS.pcb_file:
         return
     load_board()
-    # Each reference could be more than one sub-units
-    # So this hash is ref -> [List of units]
-    comps_hash = {}
-    for c in comps:
-        cur_list = comps_hash.get(c.ref, [])
-        cur_list.append(c)
-        comps_hash[c.ref] = cur_list
+    comps_hash = {c.ref: c for c in comps}
+    # Get the KiCad variables for fields
+    KiConf.init(GS.sch_file)
+    env = KiConf.kicad_env
+    env.update(GS.load_pro_variables())
     for m in GS.get_modules():
         ref = m.GetReference()
         attrs = m.GetAttributes()
-        ref_in_hash = ref in comps_hash
-        if not ref_in_hash or not len(comps_hash[ref]):
+        c = comps_hash.get(ref)
+        if c is None:
             if not (attrs & MOD_BOARD_ONLY) and not ref.startswith('KiKit_'):
-                if not ref_in_hash:
-                    logger.warning(W_PCBNOSCH+f'`{ref}` component in board, but not in schematic')
-                else:
-                    logger.warning(W_MULTIREF+f'multiple `{ref}` components, not all operations will work')
+                logger.warning(W_PCBNOSCH+f'`{ref}` component in board, but not in schematic')
             if not GS.global_include_components_from_pcb:
                 # v1.6.3 behavior
                 continue
             # Create a component for this so we can include/exclude it using filters
-            c = create_component_from_footprint(m, ref)
+            c = create_component_from_footprint(m, ref, env)
             if c is None:
                 continue
             comps.append(c)
-        else:
-            # Take one with this ref. Note that more than one is not a normal situation
-            c = comps_hash[ref].pop()
+        if c.has_pcb_info:
+            # We already got this reference and filled the PCB info, this is another copy
+            c = deepcopy(c)
+            comps.append(c)
         new_value = m.GetValue()
         if new_value != c.value and '${' not in c.value:
             logger.warning(f"{W_VALMISMATCH}Value field mismatch for `{ref}` (SCH: `{c.value}` PCB: `{new_value}`)")
@@ -401,7 +434,7 @@ def get_board_comps_data(comps):
         c.has_pcb_info = True
         c.pad_properties = {}
         if GS.global_use_pcb_fields:
-            copy_fields(c, m)
+            copy_fields(c, m, env)
         # Net
         net_name = set()
         net_class = set()
@@ -525,14 +558,14 @@ def get_output_dir(o_dir, obj, dry=False):
 def config_output(out, dry=False, dont_stop=False):
     if out._configured:
         return True
-    # Should we load the PCB?
-    if not dry:
-        if out.is_pcb():
-            load_board()
-        if out.is_sch():
-            load_sch()
-    ok = True
     try:
+        # Should we load the PCB?
+        if not dry:
+            if out.is_pcb():
+                load_board()
+            if out.is_sch():
+                load_sch()
+        ok = True
         out.config(None)
     except (KiPlotConfigurationError, PlotError) as e:
         msg = "In section '"+out.name+"' ("+out.type+"): "+str(e)
@@ -1198,7 +1231,7 @@ def setup_fonts(source):
         return
     dest = os.path.expanduser('~/.fonts/')
     installed = False
-    for f in glob(os.path.join(source, '*.ttf')):
+    for f in glob(os.path.join(source, '*.ttf')) + glob(os.path.join(source, '*.otf')):
         fname = os.path.basename(f)
         fdest = os.path.join(dest, fname)
         if os.path.isfile(fdest):
@@ -1257,6 +1290,8 @@ def generate_examples(start_dir, dry, types):
     for f in _walk(start_dir, 6):
         if k_files_regex.search(f):
             candidates.add(os.path.realpath(os.path.dirname(f)))
+    if not candidates:
+        GS.exit_with_error(f'No KiCad projects found in `{start_dir}`', MISSING_FILES)
     # Try to generate the configs in the candidate places
     confs = []
     for c in sorted(candidates):
@@ -1300,6 +1335,14 @@ def generate_examples(start_dir, dry, types):
     index = os.path.join(GS.out_dir, 'index.html')
     if os.environ.get('DISPLAY') and which('x-www-browser') and os.path.isfile(index):
         Popen(['x-www-browser', index])
+
+
+def get_columns():
+    """ Create a list of valid columns """
+    if GS.sch:
+        cols = deepcopy(ColumnList.COLUMNS_DEFAULT)
+        return (GS.sch.get_field_names(cols), ColumnList.COLUMNS_EXTRA)
+    return (ColumnList.COLUMNS_DEFAULT, ColumnList.COLUMNS_EXTRA)
 
 
 # To avoid circular dependencies: Optionable needs it, but almost everything needs Optionable

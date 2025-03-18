@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2020-2023 Salvador E. Tropea
-# Copyright (c) 2020-2023 Instituto Nacional de Tecnología Industrial
-# License: GPL-3.0
+# Copyright (c) 2020-2024 Salvador E. Tropea
+# Copyright (c) 2020-2024 Instituto Nacional de Tecnología Industrial
+# License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
 """
 KiCad configuration classes.
@@ -80,6 +80,22 @@ def parse_len_str(val):
     return value
 
 
+def fix_windows(name):
+    if not name:
+        return name
+    if not os.path.isfile(name):
+        fixed = name.replace('\\', '/')
+        if os.path.isfile(fixed):
+            logger.debug(f'Fixing windows path: {name} -> {fixed}')
+            return fixed
+    return name
+
+
+def is_ci_cd_normal(var):
+    # Default docker images doesn't contain the 3D models, so we get this most of the time
+    return GS.ci_cd_detected and var.startswith('KICAD') and var.endswith('_3DMODEL_DIR')
+
+
 def expand_env(val, env, extra_env, used_extra=None):
     """ Expand KiCad environment variables """
     if used_extra is None:
@@ -110,7 +126,7 @@ def expand_env(val, env, extra_env, used_extra=None):
             else:
                 success = False
                 # Note: We can't expand NET_NAME(n)
-                if var not in reported and not var.startswith('NET_NAME('):
+                if var not in reported and not var.startswith('NET_NAME(') and not is_ci_cd_normal(var):
                     logger.non_critical_error(f'Unable to expand `{var}` in `{val}`')
                     reported.add(var)
     return val
@@ -517,7 +533,8 @@ class KiConf(object):
         if not loaded and 'KICAD_TEMPLATE_DIR' in KiConf.kicad_env:
             loaded = KiConf.load_lib_aliases(os.path.join(KiConf.kicad_env['KICAD_TEMPLATE_DIR'], table_name), lib_aliases)
         if not loaded:
-            logger.warning(W_NODEFSYMLIB + 'Missing default symbol library table')
+            if not GS.ci_cd_detected:
+                logger.warning(W_NODEFSYMLIB + 'Missing default symbol library table')
             # No default symbol libs table, try to create one
             if KiConf.sym_lib_dir:
                 for f in glob(os.path.join(sys_dir, pattern)):
@@ -568,7 +585,8 @@ class KiConf(object):
                 if global_fp_name and os.path.isfile(global_fp_name):
                     # Try to copy the template
                     if not GS.ci_cd_detected:
-                        logger.warning(f'{W_MISLIBTAB}Missing default system symbol table {table_name}, copying the template')
+                        logger.warning(f'{W_MISLIBTAB}Missing default system footprint table {table_name},'
+                                       ' copying the template')
                     logger.debug(f'Copying {global_fp_name} to {fp_name}')
                     copy2(global_fp_name, fp_name)
                     atexit.register(KiConf.remove_lib_table, fp_name)
@@ -630,7 +648,7 @@ class KiConf(object):
             section = data[key]
             pl = section.get('page_layout_descr_file', None) if not forced else forced
             if pl:
-                fname = KiConf.expand_env(pl)
+                fname = fix_windows(KiConf.expand_env(pl))
                 if os.path.isfile(fname):
                     dest = os.path.join(dest_dir, key+'.kicad_wks')
                     logger.debug('Copying {} -> {}'.format(fname, dest))
@@ -658,10 +676,10 @@ class KiConf(object):
         else:
             aux = data.get('schematic', None)
             if aux:
-                layouts[0] = KiConf.expand_env(aux.get('page_layout_descr_file', None), ref_dir=dest_dir)
+                layouts[0] = fix_windows(KiConf.expand_env(aux.get('page_layout_descr_file', None), ref_dir=dest_dir))
             aux = data.get('pcbnew', None)
             if aux:
-                layouts[1] = KiConf.expand_env(aux.get('page_layout_descr_file', None), ref_dir=dest_dir)
+                layouts[1] = fix_windows(KiConf.expand_env(aux.get('page_layout_descr_file', None), ref_dir=dest_dir))
         return layouts
 
     def fix_page_layout_k5(project, dry, force_sch, force_pcb):
@@ -683,7 +701,7 @@ class KiConf(object):
                 elif force_pcb and is_pcb_new:
                     dest = force_pcb
                 elif fname:
-                    fname = KiConf.expand_env(fname)
+                    fname = fix_windows(KiConf.expand_env(fname))
                     if os.path.isfile(fname):
                         dest = os.path.join(dest_dir, str(order)+'.kicad_wks')
                         if not dry:

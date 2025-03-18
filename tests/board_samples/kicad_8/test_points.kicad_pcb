@@ -391,6 +391,17 @@
 			(layer "F.CrtYd")
 			(uuid "16ddc81a-087d-4eb6-b557-50f163e6c1bd")
 		)
+		(fp_circle
+			(center 0 0)
+			(end 1.016 0)
+			(stroke
+				(width 0.1)
+				(type solid)
+			)
+			(fill solid)
+			(layer "F.Fab")
+			(uuid "703be16f-4a03-44fc-ae27-8ad65c936dc9")
+		)
 		(fp_text user "${REFERENCE}"
 			(at 0 -2 0)
 			(layer "F.Fab")

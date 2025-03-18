@@ -12,7 +12,7 @@ BlenderPointOfViewOptions parameters
 -  ``rotate_y`` :index:`: <pair: output - blender_export - options - point_of_view; rotate_y>` [:ref:`number <number>`] (default: ``0``) Angle to rotate the board in the Y axis, positive is clockwise [degrees].
 -  ``rotate_z`` :index:`: <pair: output - blender_export - options - point_of_view; rotate_z>` [:ref:`number <number>`] (default: ``0``) Angle to rotate the board in the Z axis, positive is clockwise [degrees].
 -  ``steps`` :index:`: <pair: output - blender_export - options - point_of_view; steps>` [:ref:`number <number>`] (default: ``1``) (range: 1 to 1000) Generate this amount of steps using the rotation angles as increments.
-   Use a value of 1 (default) to interpret the angles as absolute.
+   Use a value of 1 (default) to interpret the angles as absolute. |br|
    Used for animations. You should define the `default_file_id` to something like
    '_%03d' to get the animation frames.
 

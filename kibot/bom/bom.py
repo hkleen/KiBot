@@ -15,7 +15,7 @@ from math import ceil
 from .units import compare_values, comp_match
 from .bom_writer import write_bom
 from .columnlist import ColumnList
-from ..misc import DNF, W_FIELDCONF, W_MISSFPINFO
+from ..misc import DNF, W_FIELDCONF, W_MISSFPINFO, W_NOBOMOPS
 from ..gs import GS
 from .. import log
 
@@ -80,7 +80,7 @@ def compare_field(c1, c2, field, cfg):
 def compare_components(c1, c2, cfg):
     """ Determine if two parts are 'equal' """
     # 'fitted' value must be the same for both parts
-    if c1.fitted != c2.fitted:
+    if not cfg.group_not_fitted and c1.fitted != c2.fitted:
         return False
     # 'fixed' value must be the same for both parts
     if c1.fixed != c2.fixed:
@@ -182,7 +182,7 @@ class ComponentGroup(object):
     def add_component(self, c):
         """ Add a component to the group.
             Avoid repetition, checks if suitable.
-            Note: repeated components happens when a component contains more than one unit """
+            Note: repeated components happens when the PCB is a panel """
         if not self.components:
             self.components.append(c)
             self.refs[c.ref+c.project] = c
@@ -264,7 +264,7 @@ class ComponentGroup(object):
 
     def get_refs(self):
         """ Return a list of the components """
-        return self.cfg.ref_separator.join([c.ref for c in self.components])
+        return self.cfg._ref_separator.join([c.ref for c in self.components])
 
     def get_alt_refs(self):
         """ Alternative list of references using ranges """
@@ -274,10 +274,10 @@ class ComponentGroup(object):
             for n in self.components:
                 if n.project == sch.name:
                     S.add(n.ref_id+n.ref_prefix, _suffix_to_num(n.ref_suffix))
-            result = S.flush(self.cfg.ref_separator)
+            result = S.flush(self.cfg._ref_separator, self.cfg._ref_range_separator)
             if result:
                 if refs:
-                    refs += self.cfg.ref_separator
+                    refs += self.cfg._ref_separator
                 refs += result
         return refs
 
@@ -304,7 +304,7 @@ class ComponentGroup(object):
             self.fields[field] += " " + value
 
     def update_fields(self, conv, bottom_negative_x, x_origin, y_origin, angle_positive, footprint_populate_values,
-                      footprint_type_values, uses_fp_info, usealt=False):
+                      footprint_type_values, uses_fp_info, usealt=False, right_digits=4):
         for c in self.components:
             for f, v in c.get_user_fields():
                 self.update_field(f, v, c.ref)
@@ -314,7 +314,7 @@ class ComponentGroup(object):
         else:
             self.fields[ColumnList.COL_REFERENCE_L] = self.get_refs()
         # Quantity
-        self.fields[ColumnList.COL_GRP_QUANTITY_L] = str(self.get_count())
+        self.fields[ColumnList.COL_QUANTITY_L] = self.fields[ColumnList.COL_GRP_QUANTITY_L] = str(self.get_count())
         self.total = self.get_build_count()
         self.fields[ColumnList.COL_GRP_BUILD_QUANTITY_L] = str(self.total)
         self.fields[ColumnList.COL_SOURCE_BOM_L] = self.get_sources()
@@ -334,15 +334,18 @@ class ComponentGroup(object):
         self.fields[ColumnList.COL_FP_L] = comp.footprint
         if uses_fp_info and not comp.has_pcb_info:
             logger.warning(W_MISSFPINFO+'Missing footprint information for {}'.format(comp.ref))
+            if not GS.pcb_file:
+                logger.warning(W_MISSFPINFO+'Please provide a PCB file')
         pos_x = (comp.footprint_x - x_origin) * conv
         if bottom_negative_x and comp.bottom:
             pos_x = -pos_x
-        self.fields[ColumnList.COL_FP_X_L] = "{:.4f}".format(pos_x)
-        self.fields[ColumnList.COL_FP_Y_L] = "{:.4f}".format(-(comp.footprint_y - y_origin) * conv)
+        float_format = "{{:.{}f}}".format(right_digits) if right_digits else "{}"
+        self.fields[ColumnList.COL_FP_X_L] = float_format.format(pos_x)
+        self.fields[ColumnList.COL_FP_Y_L] = float_format.format(-(comp.footprint_y - y_origin) * conv)
         rot = comp.footprint_rot
         if angle_positive:
             rot = rot % 360
-        self.fields[ColumnList.COL_FP_ROT_L] = "{:.4f}".format(rot)
+        self.fields[ColumnList.COL_FP_ROT_L] = float_format.format(rot)
         self.fields[ColumnList.COL_FP_SIDE_L] = "bottom" if comp.bottom else "top"
         type = 0
         if comp.tht:
@@ -358,14 +361,35 @@ class ComponentGroup(object):
             type = ''
         self.fields[ColumnList.COL_FP_TYPE_NV_L] = type
         self.fields[ColumnList.COL_FP_FIT_L] = footprint_populate_values[comp.fitted]
-        self.fields[ColumnList.COL_FP_XS_L] = "{:.4f}".format(comp.footprint_w * conv)
-        self.fields[ColumnList.COL_FP_YS_L] = "{:.4f}".format(comp.footprint_h * conv)
+        self.fields[ColumnList.COL_FP_XS_L] = float_format.format(comp.footprint_w * conv)
+        self.fields[ColumnList.COL_FP_YS_L] = float_format.format(comp.footprint_h * conv)
         self.fields[ColumnList.COL_FP_LIB_L] = comp.footprint_lib
         self.fields[ColumnList.COL_SHEETPATH_L] = comp.sheet_path_h
         if not self.fields[ColumnList.COL_DESCRIPTION_L]:
             self.fields[ColumnList.COL_DESCRIPTION_L] = comp.desc
         self.fields[ColumnList.COL_NET_NAME_L] = comp.net_name
+        self.fields[ColumnList.COL_NET_LABEL_L] = comp.net_name.split('/')[-1]
         self.fields[ColumnList.COL_NET_CLASS_L] = comp.net_class
+        # KiCad attributes
+        self.fields[ColumnList.COL_DNP_L] = self.solve_multiple_attributes('kicad_dnp', 'DNP')
+        self.fields[ColumnList.COL_EXCLUDE_FROM_BOARD_L] = self.solve_multiple_attributes('on_board', 'Excluded from board',
+                                                                                          invert=True)
+        self.fields[ColumnList.COL_EXCLUDE_FROM_SIM_L] = self.solve_multiple_attributes('exclude_from_sim',
+                                                                                        'Excluded from simulation',)
+
+    def solve_multiple_attributes(self, attr, label, invert=False):
+        positive = 0
+        found = 0
+        for c in self.components:
+            if hasattr(c, attr):
+                found += 1
+                if getattr(c, attr):
+                    positive += 1
+        if not found:
+            return 'Unknown'
+        if positive != 0 and positive != len(self.components):
+            return '-- mixed values --'
+        return label if invert ^ positive != 0 else ''
 
     def get_row(self, columns):
         """ Return a dict of the KiCad data based on the supplied columns """
@@ -476,20 +500,37 @@ def group_components(cfg, components):
         g.sort_components()
         # Fill the columns
         g.update_fields(cfg.conv_units, cfg.bottom_negative_x, x_origin, y_origin, cfg.angle_positive,
-                        cfg.footprint_populate_values, cfg.footprint_type_values, uses_fp_info, cfg.use_alt)
+                        cfg.footprint_populate_values, cfg.footprint_type_values, uses_fp_info, cfg._use_alt, cfg.right_digits)
         if cfg.normalize_values:
             g.fields[ColumnList.COL_VALUE_L] = normalize_value(g.components[0], decimal_point)
     # Sort the groups
-    if cfg.sort_style == 'type_value':
+    sort_style = cfg.sort_style
+    if sort_style == 'kicad_bom':
+        bom_settings = GS.load_pro_bom_settings()
+        sort_asc = bom_settings.get("sort_asc", True)
+        sort_field = bom_settings.get("sort_field", '')
+        if not sort_field:
+            logger.warning(W_NOBOMOPS+'No KiCad BoM options available, sorting using `type_value`')
+            sort_style = 'type_value'
+    elif sort_style == 'field':
+        sort_asc = cfg.sort_ascending
+        sort_field = cfg.sort_field
+    if sort_style == 'type_value':
         # First priority is the Type of component (e.g. R?, U?, L?)
         # Second is the value
-        groups = sorted(groups, key=lambda g: [g.components[0].ref_prefix, get_value_sort(g.components[0])])
-    elif cfg.sort_style == 'type_value_ref':
+        groups = sorted(groups, key=lambda g: [g.components[0].ref_prefix, get_value_sort(g.components[0])],
+                        reverse=not cfg.sort_ascending)
+    elif sort_style == 'type_value_ref':
         # First priority is the Type of component (e.g. R?, U?, L?)
         # Second is the value, but if we don't have a value we use the reference
-        groups = sorted(groups, key=lambda g: [g.components[0].ref_prefix, get_value_sort(g.components[0], True)])
-    else:  # ref
-        groups = sorted(groups, key=lambda g: [g.components[0].ref_prefix, _suffix_to_num(g.components[0].ref_suffix)])
+        groups = sorted(groups, key=lambda g: [g.components[0].ref_prefix, get_value_sort(g.components[0], True)],
+                        reverse=not cfg.sort_ascending)
+    elif sort_style == 'ref':
+        groups = sorted(groups, key=lambda g: [g.components[0].ref_prefix, _suffix_to_num(g.components[0].ref_suffix)],
+                        reverse=not cfg.sort_ascending)
+    else:  # kicad_bom and field
+        logger.debug(f'Sorting using KiCad definition, field: `{sort_field}`, ascending: {sort_asc}')
+        groups = sorted(groups, key=lambda g: g.components[0].get_field_value(sort_field, lower=True), reverse=not sort_asc)
     # Enumerate the groups and compute stats
     n_total = n_total_smd = n_total_tht = 0
     n_fitted = n_fitted_smd = n_fitted_tht = 0
@@ -500,10 +541,12 @@ def group_components(cfg, components):
     for g in groups:
         is_fitted = g.is_fitted()
         if cfg.ignore_dnf and not is_fitted:
-            g.update_field('Row', str(dnf))
+            g.update_field(ColumnList.COL_ROW_NUMBER, str(dnf))
+            g.update_field(ColumnList.COL_ITEM_NUMBER, str(dnf))
             dnf += 1
         else:
-            g.update_field('Row', str(c))
+            g.update_field(ColumnList.COL_ROW_NUMBER, str(c))
+            g.update_field(ColumnList.COL_ITEM_NUMBER, str(c))
             c += 1
         # Stats
         g_l = g.get_count()

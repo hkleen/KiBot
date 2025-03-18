@@ -17,7 +17,7 @@
       Use '_kibom_dnc' for the default KiBoM behavior.
 
    -  ``dnf_filter`` :index:`: <pair: variant - kicost; dnf_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_kicost_dnp'``) Name of the filter to mark components as 'Do Not Fit'.
-      Use '_kibom_dnf' for the default KiBoM behavior.
+      Use '_kibom_dnf' for the default KiBoM behavior. |br|
       Use '_kicost_dnp'' for the default KiCost behavior.
 
    -  ``exclude_filter`` :index:`: <pair: variant - kicost; exclude_filter>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'_null'``) Name of the filter to exclude components from BoM processing.
@@ -26,17 +26,17 @@
    -  ``file_id`` :index:`: <pair: variant - kicost; file_id>` [:ref:`string <string>`] (default: ``''``) Text to use as the replacement for %v expansion.
    -  ``name`` :index:`: <pair: variant - kicost; name>` [:ref:`string <string>`] (default: ``''``) Used to identify this particular variant definition.
    -  ``pre_transform`` :index:`: <pair: variant - kicost; pre_transform>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``['_var_rename_kicost', '_kicost_rename']``) Name of the filter to transform fields before applying other filters.
-      Use '_var_rename' to transform VARIANT:FIELD fields.
-      Use '_var_rename_kicost' to transform kicost.VARIANT:FIELD fields.
+      Use '_var_rename' to transform VARIANT:FIELD fields. |br|
+      Use '_var_rename_kicost' to transform kicost.VARIANT:FIELD fields. |br|
       Use '_kicost_rename' to apply KiCost field rename rules.
 
    -  ``separators`` :index:`: <pair: variant - kicost; separators>` [:ref:`string <string>`] (default: ``',;/ '``) Valid separators for variants in the variant field.
-      Each character is a valid separator.
+      Each character is a valid separator. |br|
       Only supported internally, don't use it if you plan to use KiCost.
    -  ``sub_pcbs`` :index:`: <pair: variant - kicost; sub_pcbs>`  [:ref:`SubPCBOptions parameters <SubPCBOptions>`] [:ref:`list(dict) <list(dict)>`] (default: ``[]``) Used for multi-board workflows as defined by KiKit.
       I don't recommend using it, for detail read
-      `this <https://github.com/INTI-CMNB/KiBot/tree/master/docs/1_SCH_2_part_PCBs>`__.
-      But if you really need it you can define the sub-PCBs here.
+      `this <https://github.com/INTI-CMNB/KiBot/tree/master/docs/1_SCH_2_part_PCBs>`__. |br|
+      But if you really need it you can define the sub-PCBs here. |br|
       Then you just use *VARIANT[SUB_PCB_NAME]* instead of just *VARIANT*.
    -  ``variant`` :index:`: <pair: variant - kicost; variant>` [:ref:`string <string>`] (default: ``''``) Variants to match (regex).
    -  ``variant_field`` :index:`: <pair: variant - kicost; variant_field>` [:ref:`string <string>`] (default: ``'variant'``) Name of the field that stores board variant/s for component.

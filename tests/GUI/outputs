@@ -162,14 +162,21 @@
               null
             ],
             [
-              "dnf_filter",
+              "pre_transform",
               [
                 "DataTypeListStringSingular"
               ],
               null
             ],
             [
-              "pre_transform",
+              "exclude_filter",
+              [
+                "DataTypeListStringSingular"
+              ],
+              null
+            ],
+            [
+              "dnf_filter",
               [
                 "DataTypeListStringSingular"
               ],
@@ -191,6 +198,13 @@
             ],
             [
               "solder_paste_for_populated",
+              [
+                "DataTypeBoolean"
+              ],
+              null
+            ],
+            [
+              "solder_join_on_heatsink",
               [
                 "DataTypeBoolean"
               ],
@@ -656,14 +670,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -803,6 +824,20 @@
           "use_alt",
           [
             "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "ref_separator",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
+          "ref_range_separator",
+          [
+            "DataTypeString"
           ],
           null
         ],
@@ -963,13 +998,6 @@
           "normalize_locale",
           [
             "DataTypeBoolean"
-          ],
-          null
-        ],
-        [
-          "ref_separator",
-          [
-            "DataTypeString"
           ],
           null
         ],
@@ -1416,6 +1444,27 @@
                 "DataTypeBoolean"
               ],
               null
+            ],
+            [
+              "string_delimiter",
+              [
+                "DataTypeString"
+              ],
+              null
+            ],
+            [
+              "keep_line_breaks",
+              [
+                "DataTypeBoolean"
+              ],
+              null
+            ],
+            [
+              "keep_tabs",
+              [
+                "DataTypeBoolean"
+              ],
+              null
             ]
           ]
         ],
@@ -1513,6 +1562,13 @@
         ],
         [
           "merge_both_blank",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "group_not_fitted",
           [
             "DataTypeBoolean"
           ],
@@ -1646,6 +1702,13 @@
           null
         ],
         [
+          "right_digits",
+          [
+            "DataTypeNumber"
+          ],
+          null
+        ],
+        [
           "bottom_negative_x",
           [
             "DataTypeBoolean"
@@ -1670,6 +1733,20 @@
           "sort_style",
           [
             "DataTypeChoice"
+          ],
+          null
+        ],
+        [
+          "sort_ascending",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "sort_field",
+          [
+            "DataTypeListStringSingular"
           ],
           null
         ],
@@ -2076,14 +2153,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -2325,14 +2409,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -2464,14 +2555,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -2779,14 +2877,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -2972,6 +3077,13 @@
           null
         ],
         [
+          "default_font",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
           "variant",
           [
             "DataTypeString"
@@ -2979,14 +3091,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -3081,6 +3200,13 @@
       ],
       [
         [
+          "generate_drill_files",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
           "use_aux_axis_as_origin",
           [
             "DataTypeBoolean"
@@ -3134,6 +3260,65 @@
           ]
         ],
         [
+          "table",
+          [
+            "DataTypeDict",
+            "DataTypeString"
+          ],
+          [
+            [
+              "unify_pth_and_npth",
+              [
+                "DataTypeChoice"
+              ],
+              null
+            ],
+            [
+              "group_slots_and_round_holes",
+              [
+                "DataTypeBoolean"
+              ],
+              null
+            ],
+            [
+              "output",
+              [
+                "DataTypeString"
+              ],
+              null
+            ],
+            [
+              "units",
+              [
+                "DataTypeChoice"
+              ],
+              null
+            ],
+            [
+              "columns",
+              [
+                "DataTypeListDictOrString"
+              ],
+              [
+                [
+                  "field",
+                  [
+                    "DataTypeString"
+                  ],
+                  null
+                ],
+                [
+                  "name",
+                  [
+                    "DataTypeString"
+                  ],
+                  null
+                ]
+              ]
+            ]
+          ]
+        ],
+        [
           "pth_id",
           [
             "DataTypeString"
@@ -3155,14 +3340,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -3221,6 +3413,297 @@
           "route_mode_for_oval_holes",
           [
             "DataTypeBoolean"
+          ],
+          null
+        ]
+      ]
+    ]
+  ],
+  "export_3d": [
+    [
+      "name",
+      [
+        "DataTypeString"
+      ],
+      null
+    ],
+    [
+      "type",
+      [
+        "DataTypeString"
+      ],
+      null
+    ],
+    [
+      "dir",
+      [
+        "DataTypeString"
+      ],
+      null
+    ],
+    [
+      "comment",
+      [
+        "DataTypeString"
+      ],
+      null
+    ],
+    [
+      "extends",
+      [
+        "DataTypeString"
+      ],
+      null
+    ],
+    [
+      "run_by_default",
+      [
+        "DataTypeBoolean"
+      ],
+      null
+    ],
+    [
+      "disable_run_by_default",
+      [
+        "DataTypeString",
+        "DataTypeBoolean"
+      ],
+      null
+    ],
+    [
+      "output_id",
+      [
+        "DataTypeString"
+      ],
+      null
+    ],
+    [
+      "category",
+      [
+        "DataTypeListStringSingular"
+      ],
+      null
+    ],
+    [
+      "priority",
+      [
+        "DataTypeNumber"
+      ],
+      null
+    ],
+    [
+      "groups",
+      [
+        "DataTypeListStringSingular"
+      ],
+      null
+    ],
+    [
+      "options",
+      [
+        "DataTypeDict"
+      ],
+      [
+        [
+          "output",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
+          "format",
+          [
+            "DataTypeChoice"
+          ],
+          null
+        ],
+        [
+          "origin",
+          [
+            "DataTypeCombo"
+          ],
+          null
+        ],
+        [
+          "units",
+          [
+            "DataTypeChoice"
+          ],
+          null
+        ],
+        [
+          "min_distance",
+          [
+            "DataTypeNumber"
+          ],
+          null
+        ],
+        [
+          "subst_models",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "cut_vias_in_body",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "fill_all_vias",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "board_only",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "no_board_body",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "no_components",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "include_tracks",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "include_pads",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "include_zones",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "include_inner_copper",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "include_silkscreen",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "include_soldermask",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "fuse_shapes",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "net_filter",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
+          "no_optimize_step",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "no_virtual",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "download",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "download_lcsc",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "kicad_3d_url",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
+          "kicad_3d_url_suffix",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
+          "variant",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
+          "pre_transform",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
+          [
+            "DataTypeListStringSingular"
           ],
           null
         ]
@@ -3362,14 +3845,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -3464,6 +3954,13 @@
       ],
       [
         [
+          "generate_drill_files",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
           "use_aux_axis_as_origin",
           [
             "DataTypeBoolean"
@@ -3517,6 +4014,65 @@
           ]
         ],
         [
+          "table",
+          [
+            "DataTypeDict",
+            "DataTypeString"
+          ],
+          [
+            [
+              "unify_pth_and_npth",
+              [
+                "DataTypeChoice"
+              ],
+              null
+            ],
+            [
+              "group_slots_and_round_holes",
+              [
+                "DataTypeBoolean"
+              ],
+              null
+            ],
+            [
+              "output",
+              [
+                "DataTypeString"
+              ],
+              null
+            ],
+            [
+              "units",
+              [
+                "DataTypeChoice"
+              ],
+              null
+            ],
+            [
+              "columns",
+              [
+                "DataTypeListDictOrString"
+              ],
+              [
+                [
+                  "field",
+                  [
+                    "DataTypeString"
+                  ],
+                  null
+                ],
+                [
+                  "name",
+                  [
+                    "DataTypeString"
+                  ],
+                  null
+                ]
+              ]
+            ]
+          ]
+        ],
+        [
           "pth_id",
           [
             "DataTypeString"
@@ -3538,14 +4094,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -3860,14 +4423,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -4126,14 +4696,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -4340,6 +4917,13 @@
           null
         ],
         [
+          "default_font",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
           "variant",
           [
             "DataTypeString"
@@ -4347,14 +4931,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -4674,14 +5265,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -4786,6 +5384,364 @@
           "environment",
           [
             "DataTypeChoice"
+          ],
+          null
+        ]
+      ]
+    ]
+  ],
+  "ipc2581": [
+    [
+      "name",
+      [
+        "DataTypeString"
+      ],
+      null
+    ],
+    [
+      "type",
+      [
+        "DataTypeString"
+      ],
+      null
+    ],
+    [
+      "dir",
+      [
+        "DataTypeString"
+      ],
+      null
+    ],
+    [
+      "comment",
+      [
+        "DataTypeString"
+      ],
+      null
+    ],
+    [
+      "extends",
+      [
+        "DataTypeString"
+      ],
+      null
+    ],
+    [
+      "run_by_default",
+      [
+        "DataTypeBoolean"
+      ],
+      null
+    ],
+    [
+      "disable_run_by_default",
+      [
+        "DataTypeString",
+        "DataTypeBoolean"
+      ],
+      null
+    ],
+    [
+      "output_id",
+      [
+        "DataTypeString"
+      ],
+      null
+    ],
+    [
+      "category",
+      [
+        "DataTypeListStringSingular"
+      ],
+      null
+    ],
+    [
+      "priority",
+      [
+        "DataTypeNumber"
+      ],
+      null
+    ],
+    [
+      "groups",
+      [
+        "DataTypeListStringSingular"
+      ],
+      null
+    ],
+    [
+      "options",
+      [
+        "DataTypeDict"
+      ],
+      [
+        [
+          "output",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
+          "compress",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "precision",
+          [
+            "DataTypeNumber"
+          ],
+          null
+        ],
+        [
+          "units",
+          [
+            "DataTypeChoice"
+          ],
+          null
+        ],
+        [
+          "version",
+          [
+            "DataTypeChoice"
+          ],
+          null
+        ],
+        [
+          "field_part_number",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
+          "field_manufacturer",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
+          "field_dist_part_number",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
+          "field_distributor",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
+          "field_internal_id",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
+          "variant",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
+          "pre_transform",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ]
+      ]
+    ]
+  ],
+  "jobset": [
+    [
+      "name",
+      [
+        "DataTypeString"
+      ],
+      null
+    ],
+    [
+      "type",
+      [
+        "DataTypeString"
+      ],
+      null
+    ],
+    [
+      "dir",
+      [
+        "DataTypeString"
+      ],
+      null
+    ],
+    [
+      "comment",
+      [
+        "DataTypeString"
+      ],
+      null
+    ],
+    [
+      "extends",
+      [
+        "DataTypeString"
+      ],
+      null
+    ],
+    [
+      "run_by_default",
+      [
+        "DataTypeBoolean"
+      ],
+      null
+    ],
+    [
+      "disable_run_by_default",
+      [
+        "DataTypeString",
+        "DataTypeBoolean"
+      ],
+      null
+    ],
+    [
+      "output_id",
+      [
+        "DataTypeString"
+      ],
+      null
+    ],
+    [
+      "category",
+      [
+        "DataTypeListStringSingular"
+      ],
+      null
+    ],
+    [
+      "priority",
+      [
+        "DataTypeNumber"
+      ],
+      null
+    ],
+    [
+      "groups",
+      [
+        "DataTypeListStringSingular"
+      ],
+      null
+    ],
+    [
+      "options",
+      [
+        "DataTypeDict"
+      ],
+      [
+        [
+          "jobset",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
+          "run_output",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
+          "stop_on_error",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "no_virtual",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "download",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "download_lcsc",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "kicad_3d_url",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
+          "kicad_3d_url_suffix",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
+          "variant",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
+          "pre_transform",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
+          [
+            "DataTypeListStringSingular"
           ],
           null
         ]
@@ -5266,14 +6222,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -5524,14 +6487,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -5869,14 +6839,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -6037,6 +7014,13 @@
           null
         ],
         [
+          "logo_force_height",
+          [
+            "DataTypeNumber"
+          ],
+          null
+        ],
+        [
           "title",
           [
             "DataTypeString"
@@ -6059,7 +7043,223 @@
           null
         ],
         [
+          "render_markdown",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
           "header",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "display_kibot_version",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "display_category_images",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "image_white_background",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ]
+      ]
+    ]
+  ],
+  "navigate_results_rb": [
+    [
+      "name",
+      [
+        "DataTypeString"
+      ],
+      null
+    ],
+    [
+      "type",
+      [
+        "DataTypeString"
+      ],
+      null
+    ],
+    [
+      "dir",
+      [
+        "DataTypeString"
+      ],
+      null
+    ],
+    [
+      "comment",
+      [
+        "DataTypeString"
+      ],
+      null
+    ],
+    [
+      "extends",
+      [
+        "DataTypeString"
+      ],
+      null
+    ],
+    [
+      "run_by_default",
+      [
+        "DataTypeBoolean"
+      ],
+      null
+    ],
+    [
+      "disable_run_by_default",
+      [
+        "DataTypeString",
+        "DataTypeBoolean"
+      ],
+      null
+    ],
+    [
+      "output_id",
+      [
+        "DataTypeString"
+      ],
+      null
+    ],
+    [
+      "category",
+      [
+        "DataTypeListStringSingular"
+      ],
+      null
+    ],
+    [
+      "priority",
+      [
+        "DataTypeNumber"
+      ],
+      null
+    ],
+    [
+      "groups",
+      [
+        "DataTypeListStringSingular"
+      ],
+      null
+    ],
+    [
+      "options",
+      [
+        "DataTypeDict"
+      ],
+      [
+        [
+          "output",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
+          "link_from_root",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
+          "skip_not_run",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "logo",
+          [
+            "DataTypeString",
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "logo_url",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
+          "logo_force_height",
+          [
+            "DataTypeNumber"
+          ],
+          null
+        ],
+        [
+          "title",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
+          "title_url",
+          [
+            "DataTypeString",
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "nav_bar",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "render_markdown",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "header",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "display_kibot_version",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "display_category_images",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "image_white_background",
           [
             "DataTypeBoolean"
           ],
@@ -6175,14 +7375,165 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ]
+      ]
+    ]
+  ],
+  "odb": [
+    [
+      "name",
+      [
+        "DataTypeString"
+      ],
+      null
+    ],
+    [
+      "type",
+      [
+        "DataTypeString"
+      ],
+      null
+    ],
+    [
+      "dir",
+      [
+        "DataTypeString"
+      ],
+      null
+    ],
+    [
+      "comment",
+      [
+        "DataTypeString"
+      ],
+      null
+    ],
+    [
+      "extends",
+      [
+        "DataTypeString"
+      ],
+      null
+    ],
+    [
+      "run_by_default",
+      [
+        "DataTypeBoolean"
+      ],
+      null
+    ],
+    [
+      "disable_run_by_default",
+      [
+        "DataTypeString",
+        "DataTypeBoolean"
+      ],
+      null
+    ],
+    [
+      "output_id",
+      [
+        "DataTypeString"
+      ],
+      null
+    ],
+    [
+      "category",
+      [
+        "DataTypeListStringSingular"
+      ],
+      null
+    ],
+    [
+      "priority",
+      [
+        "DataTypeNumber"
+      ],
+      null
+    ],
+    [
+      "groups",
+      [
+        "DataTypeListStringSingular"
+      ],
+      null
+    ],
+    [
+      "options",
+      [
+        "DataTypeDict"
+      ],
+      [
+        [
+          "output",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
+          "compression",
+          [
+            "DataTypeChoice"
+          ],
+          null
+        ],
+        [
+          "precision",
+          [
+            "DataTypeNumber"
+          ],
+          null
+        ],
+        [
+          "units",
+          [
+            "DataTypeChoice"
+          ],
+          null
+        ],
+        [
+          "variant",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
           "pre_transform",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -7794,14 +9145,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -8001,6 +9359,13 @@
           null
         ],
         [
+          "solder_join_on_heatsink",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
           "variant",
           [
             "DataTypeString"
@@ -8008,14 +9373,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -8352,6 +9724,20 @@
                     "DataTypeBoolean"
                   ],
                   null
+                ],
+                [
+                  "sketch_pads_on_fab_layers",
+                  [
+                    "DataTypeBoolean"
+                  ],
+                  null
+                ],
+                [
+                  "exclude_filter",
+                  [
+                    "DataTypeListStringSingular"
+                  ],
+                  null
                 ]
               ]
             ],
@@ -8443,6 +9829,20 @@
                   "use_for_center",
                   [
                     "DataTypeBoolean"
+                  ],
+                  null
+                ],
+                [
+                  "sketch_pads_on_fab_layers",
+                  [
+                    "DataTypeBoolean"
+                  ],
+                  null
+                ],
+                [
+                  "exclude_filter",
+                  [
+                    "DataTypeListStringSingular"
                   ],
                   null
                 ]
@@ -8626,6 +10026,166 @@
           null
         ],
         [
+          "include_table",
+          [
+            "DataTypeDict",
+            "DataTypeBoolean"
+          ],
+          [
+            [
+              "outputs",
+              [
+                "DataTypeListDictOrString",
+                "DataTypeString"
+              ],
+              [
+                [
+                  "name",
+                  [
+                    "DataTypeString"
+                  ],
+                  null
+                ],
+                [
+                  "has_header",
+                  [
+                    "DataTypeBoolean"
+                  ],
+                  null
+                ],
+                [
+                  "bold_headers",
+                  [
+                    "DataTypeBoolean"
+                  ],
+                  null
+                ],
+                [
+                  "vertical_rule_width",
+                  [
+                    "DataTypeNumber"
+                  ],
+                  null
+                ],
+                [
+                  "horizontal_rule_width",
+                  [
+                    "DataTypeNumber"
+                  ],
+                  null
+                ],
+                [
+                  "top_rule_width",
+                  [
+                    "DataTypeNumber"
+                  ],
+                  null
+                ],
+                [
+                  "bottom_rule_width",
+                  [
+                    "DataTypeNumber"
+                  ],
+                  null
+                ],
+                [
+                  "header_rule_width",
+                  [
+                    "DataTypeNumber"
+                  ],
+                  null
+                ],
+                [
+                  "border_width",
+                  [
+                    "DataTypeNumber"
+                  ],
+                  null
+                ],
+                [
+                  "column_spacing",
+                  [
+                    "DataTypeNumber"
+                  ],
+                  null
+                ],
+                [
+                  "row_spacing",
+                  [
+                    "DataTypeNumber"
+                  ],
+                  null
+                ],
+                [
+                  "text_alignment",
+                  [
+                    "DataTypeChoice"
+                  ],
+                  null
+                ],
+                [
+                  "invert_columns_order",
+                  [
+                    "DataTypeBoolean"
+                  ],
+                  null
+                ],
+                [
+                  "force_font_width",
+                  [
+                    "DataTypeNumber"
+                  ],
+                  null
+                ]
+              ]
+            ],
+            [
+              "enabled",
+              [
+                "DataTypeBoolean"
+              ],
+              null
+            ],
+            [
+              "group_name",
+              [
+                "DataTypeString"
+              ],
+              null
+            ],
+            [
+              "format_drill_table",
+              [
+                "DataTypeBoolean"
+              ],
+              null
+            ]
+          ]
+        ],
+        [
+          "drill",
+          [
+            "DataTypeDict",
+            "DataTypeBoolean"
+          ],
+          [
+            [
+              "unify_pth_and_npth",
+              [
+                "DataTypeChoice"
+              ],
+              null
+            ],
+            [
+              "group_slots_and_round_holes",
+              [
+                "DataTypeBoolean"
+              ],
+              null
+            ]
+          ]
+        ],
+        [
           "drill_marks",
           [
             "DataTypeChoice"
@@ -8640,14 +10200,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -8777,14 +10344,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -9194,14 +10768,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -9346,14 +10927,21 @@
       null
     ],
     [
-      "dnf_filter",
+      "pre_transform",
       [
         "DataTypeListStringSingular"
       ],
       null
     ],
     [
-      "pre_transform",
+      "exclude_filter",
+      [
+        "DataTypeListStringSingular"
+      ],
+      null
+    ],
+    [
+      "dnf_filter",
       [
         "DataTypeListStringSingular"
       ],
@@ -9615,14 +11203,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -9829,14 +11424,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -10017,6 +11619,13 @@
           null
         ],
         [
+          "default_font",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
           "variant",
           [
             "DataTypeString"
@@ -10024,14 +11633,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -10313,14 +11929,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -10521,14 +12144,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -10787,14 +12417,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -11008,6 +12645,13 @@
           null
         ],
         [
+          "default_font",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
           "variant",
           [
             "DataTypeString"
@@ -11015,14 +12659,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -11661,14 +13312,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -11847,6 +13505,41 @@
           null
         ],
         [
+          "mm_digits",
+          [
+            "DataTypeNumber"
+          ],
+          null
+        ],
+        [
+          "mils_digits",
+          [
+            "DataTypeNumber"
+          ],
+          null
+        ],
+        [
+          "in_digits",
+          [
+            "DataTypeNumber"
+          ],
+          null
+        ],
+        [
+          "display_trailing_zeros",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "csv_remove_leading_spaces",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
           "variant",
           [
             "DataTypeString"
@@ -11854,14 +13547,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -11977,14 +13677,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -12156,14 +13863,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -12349,14 +14063,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -12528,14 +14249,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -12794,14 +14522,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -13087,14 +14822,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -13275,6 +15017,13 @@
           null
         ],
         [
+          "default_font",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
           "variant",
           [
             "DataTypeString"
@@ -13282,14 +15031,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],
@@ -13510,14 +15266,21 @@
           null
         ],
         [
-          "dnf_filter",
+          "pre_transform",
           [
             "DataTypeListStringSingular"
           ],
           null
         ],
         [
-          "pre_transform",
+          "exclude_filter",
+          [
+            "DataTypeListStringSingular"
+          ],
+          null
+        ],
+        [
+          "dnf_filter",
           [
             "DataTypeListStringSingular"
           ],

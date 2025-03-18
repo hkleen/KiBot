@@ -8,7 +8,7 @@ Dependencies:
   - from: KiAuto
     role: mandatory
     command: eeschema_do
-    version: 2.1.1
+    version: 2.3.4
 """
 from .gs import GS
 from .out_any_sch_print import Any_SCH_PrintOptions
@@ -41,7 +41,8 @@ class HPGL_SCH_PrintOptions(Any_SCH_PrintOptions):
 class HPGL_SCH_Print(BaseOutput):  # noqa: F821
     """ HPGL Schematic Print (Hewlett & Packard Graphics Language)
         Exports the schematic to the most common plotter format.
-        This output is what you get from the 'File/Plot' menu in eeschema. """
+        This output is what you get from the 'File/Plot' menu in eeschema.
+        Supports the image replacement using the prefix indicated by the `sch_image_prefix` global variable """
     __doc__ += FONT_HELP_TEXT
 
     def __init__(self):

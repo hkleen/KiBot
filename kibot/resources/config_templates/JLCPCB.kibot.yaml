@@ -57,6 +57,7 @@ outputs:
       line_width: 0.1
       subtract_mask_from_silk: true
       inner_extension_pattern: '.g%n'
+      use_aux_axis_as_origin: @_KIBOT_DRILL_AUX_ORIGIN@
     layers:
       @_KIBOT_GERBER_LAYERS@
       @_KIBOT_F_PASTE@
@@ -74,6 +75,7 @@ outputs:
       map: gerber
       route_mode_for_oval_holes: false
       output: "%f%i.%x"
+      use_aux_axis_as_origin: @_KIBOT_DRILL_AUX_ORIGIN@
 
   - name: _JLCPCB_position@_KIBOT_IMPORT_ID@
     comment: "Pick and place file, JLCPCB style"
@@ -88,6 +90,7 @@ outputs:
       units: millimeters
       separate_files_for_front_and_back: false
       only_smd: @_KIBOT_POS_ONLY_SMD@
+      use_aux_axis_as_origin: @_KIBOT_DRILL_AUX_ORIGIN@
       columns:
         - id: Ref
           name: Designator
@@ -154,6 +157,7 @@ definitions:
   _KIBOT_PLOT_FOOTPRINT_REFS: true
   _KIBOT_PLOT_FOOTPRINT_VALUES: false
   _KIBOT_COMPRESS_MOVE: true
+  _KIBOT_DRILL_AUX_ORIGIN: false
   _KIBOT_GERBER_LAYERS: |
       - copper
             - F.SilkS

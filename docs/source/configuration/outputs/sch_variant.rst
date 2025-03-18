@@ -9,6 +9,7 @@ Schematic with variant generator
 Creates a copy of the schematic with all the filters and variants applied.
 This copy isn't intended for development. |br|
 Is just a tweaked version of the original where you can look at the results. |br|
+Supports the image replacement using the prefix indicated by the `sch_image_prefix` global variable
 
 Type: ``sch_variant``
 
@@ -23,12 +24,13 @@ Parameters:
 -  **options** :index:`: <pair: output - sch_variant; options>`  [:ref:`Sch_Variant_Options parameters <Sch_Variant_Options>`] [:ref:`dict <dict>`] (default: empty dict, default values used) Options for the `sch_variant` output.
 -  **type** :index:`: <pair: output - sch_variant; type>` 'sch_variant'
 -  ``category`` :index:`: <pair: output - sch_variant; category>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``''``) [:ref:`comma separated <comma_sep>`] The category for this output. If not specified an internally defined
-   category is used.
-   Categories looks like file system paths, i.e. **PCB/fabrication/gerber**.
-   The categories are currently used for `navigate_results`.
+   category is used. |br|
+   Categories looks like file system paths, i.e. **PCB/fabrication/gerber**. |br|
+   Using '.' or './' as a category puts the file at the root. |br|
+   The categories are currently used for `navigate_results` and `navigate_results_rb`.
 
 -  ``disable_run_by_default`` :index:`: <pair: output - sch_variant; disable_run_by_default>` [:ref:`string <string>` | :ref:`boolean <boolean>`] (default: ``''``) Use it to disable the `run_by_default` status of other output.
-   Useful when this output extends another and you don't want to generate the original.
+   Useful when this output extends another and you don't want to generate the original. |br|
    Use the boolean true value to disable the output you are extending.
 -  ``extends`` :index:`: <pair: output - sch_variant; extends>` [:ref:`string <string>`] (default: ``''``) Copy the `options` section from the indicated output.
    Used to inherit options from another output of the same type.

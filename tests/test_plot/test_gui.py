@@ -368,6 +368,8 @@ def get_simple(path, items):
         if name == 'layer' and path.endswith('.layers.dict'):
             # Valid layer name
             continue
+        if name == 'enabled' and path.startswith('preflight.'):
+            continue
         valids = i[1]
         if 'DataTypeDict' in valids:
             continue
@@ -395,9 +397,9 @@ def for_output(e, name, items, level=0):
         # PcbDraw
         elif ikind == 'string' and input == 'copper':
             val = '#5e283a'
-        # KiBoM
+        # KiBoM and Drill tables
         elif ikind == 'string' and input == 'field':
-            val = 'References'
+            val = 'Count' if name.startswith('output.gerb_drill') or name.startswith('output.excellon') else 'References'
         if ikind == 'boolean':
             id = f'{name}.{input}.{ikind}'
             e.toggle_value(id)
@@ -449,6 +451,10 @@ def try_all_preflights_recipe(ctx):
         name = 'preflight.'+o
         # Preflights can embed the first level
         if len(c) == 1 and c[0][2] and 'DataTypeDict' in c[0][1]:
+            if len(c[0][1]) > 1:
+                # We have multiple data types, ensure the dict is selected
+                e.set_selection(name+'.'+o+'.choices', c[0][1].index('DataTypeDict'))
+                e.send_event(name+'.'+o+'.choices', 'EVT_CHOICE')
             for_output(e, name, c[0][2])
         else:
             for_output(e, name, c)

@@ -7,7 +7,7 @@
 # Adapted from: https://github.com/johnbeard/kiplot
 import os
 import re
-from pcbnew import (GERBER_JOBFILE_WRITER, PLOT_CONTROLLER, IsCopperLayer, F_Cu, B_Cu, Edge_Cuts, PLOT_FORMAT_HPGL,
+from pcbnew import (GERBER_JOBFILE_WRITER, PLOT_CONTROLLER, IsCopperLayer, Edge_Cuts, PLOT_FORMAT_HPGL,
                     PLOT_FORMAT_GERBER, PLOT_FORMAT_POST, PLOT_FORMAT_DXF, PLOT_FORMAT_PDF, PLOT_FORMAT_SVG, LSEQ, LSET)
 from .optionable import Optionable
 from .out_base import BaseOutput, VariantOptions
@@ -63,18 +63,20 @@ class AnyLayerOptions(VariantOptions):
             """ Include references and values even when they are marked as invisible """
             self.output = GS.def_global_output
             """ *Output file name, the default KiCad name if empty.
-                IMPORTANT! KiCad will always create the file using its own name and then we can rename it.
+                Important: KiCad will always create the file using its own name and then we can rename it.
                 For this reason you must avoid generating two variants at the same directory when one of
                 them uses the default KiCad name """
             self.tent_vias = True
-            """ Cover the vias.
+            """ Cover the vias. Usable for KiCad versions older than 9.
                 Warning: KiCad 8 has a bug that ignores this option. Set it from KiCad GUI """
             self.uppercase_extensions = False
             """ Use uppercase names for the extensions """
             self.inner_extension_pattern = ''
             """ Used to change the Protel style extensions for inner layers.
                 The replacement pattern can contain %n for the inner layer number and %N for the layer number.
-                Example '.g%n' """
+                Example '.g%n'.
+                Important: this numbering is consistent and the first inner layer is %n = 1 and %N = 2. Which
+                isn't true for KiCad. KiCad 8 uses 2 for the first inner and KiCad 9 uses 1 """
             self.edge_cut_extension = ''
             """ Used to configure the edge cuts layer extension for Protel mode. Include the dot """
             self.custom_reports = CustomReport
@@ -109,7 +111,9 @@ class AnyLayerOptions(VariantOptions):
         else:
             po.SetSketchPadsOnFabLayers(self.sketch_pads_on_fab_layers)
             po.SetSketchPadLineWidth(self.sketch_pad_line_width)
-        po.SetPlotViaOnMaskLayer(not self.tent_vias)
+        if not GS.ki9:
+            # Now controlled for each via
+            po.SetPlotViaOnMaskLayer(not self.tent_vias)
         # Only useful for gerber outputs
         po.SetCreateGerberJobFile(False)
         # We'll come back to this on a per-layer basis
@@ -128,10 +132,11 @@ class AnyLayerOptions(VariantOptions):
             filename = self.expand_filename(output_dir, output, suffix, os.path.splitext(k_filename)[1][1:])
         else:
             filename = k_filename
-        if id > F_Cu and id < B_Cu and self.inner_extension_pattern:
+        if GS.layer_is_inner(id) and self.inner_extension_pattern:
             ext = self.inner_extension_pattern
-            ext = ext.replace('%n', str(id))
-            ext = ext.replace('%N', str(id+1))
+            index = int(id/2-1) if GS.ki9 else id
+            ext = ext.replace('%n', str(index))
+            ext = ext.replace('%N', str(index+1))
             filename = os.path.splitext(filename)[0]+ext
         if id == Edge_Cuts and self.edge_cut_extension:
             filename = os.path.splitext(filename)[0]+self.edge_cut_extension
@@ -281,7 +286,7 @@ class AnyLayerOptions(VariantOptions):
         # plotinvisibletext
         self.force_plot_invisible_refs_vals = po.GetPlotInvisibleText()
         # viasonmask
-        self.tent_vias = not po.GetPlotViaOnMaskLayer()
+        self.tent_vias = True if GS.ki9 else not po.GetPlotViaOnMaskLayer()
         if GS.ki5:
             # padsonsilk
             self.exclude_pads_from_silkscreen = not po.GetPlotPadsOnSilkLayer()

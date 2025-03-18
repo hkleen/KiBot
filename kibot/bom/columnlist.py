@@ -59,16 +59,31 @@ class ColumnList:
     COL_SHEETPATH_L = COL_SHEETPATH.lower()
     COL_ROW_NUMBER = 'Row'
     COL_ROW_NUMBER_L = COL_ROW_NUMBER.lower()
+    # KiCad version of Row
+    COL_ITEM_NUMBER = '${ITEM_NUMBER}'
+    COL_ITEM_NUMBER_L = COL_ROW_NUMBER.lower()
     COL_STATUS = 'Status'
     COL_STATUS_L = COL_STATUS.lower()
     COL_NET_NAME = 'Net Name'
     COL_NET_NAME_L = COL_NET_NAME.lower()
+    COL_NET_LABEL = 'Net Label'
+    COL_NET_LABEL_L = COL_NET_LABEL.lower()
     COL_NET_CLASS = 'Net Class'
     COL_NET_CLASS_L = COL_NET_CLASS.lower()
+    # KiCad attributes
+    COL_DNP = '${DNP}'
+    COL_DNP_L = COL_DNP.lower()
+    COL_EXCLUDE_FROM_BOARD = '${EXCLUDE_FROM_BOARD}'
+    COL_EXCLUDE_FROM_BOARD_L = COL_EXCLUDE_FROM_BOARD.lower()
+    COL_EXCLUDE_FROM_SIM = '${EXCLUDE_FROM_SIM}'
+    COL_EXCLUDE_FROM_SIM_L = COL_EXCLUDE_FROM_SIM.lower()
 
     # Default columns for groups
     COL_GRP_QUANTITY = 'Quantity Per PCB'
     COL_GRP_QUANTITY_L = COL_GRP_QUANTITY.lower()
+    # KiCad version of 'Quantity Per PCB'
+    COL_QUANTITY = '${QUANTITY}'
+    COL_QUANTITY_L = COL_QUANTITY.lower()
     COL_GRP_BUILD_QUANTITY = 'Build Quantity'
     COL_GRP_BUILD_QUANTITY_L = COL_GRP_BUILD_QUANTITY.lower()
     COL_SOURCE_BOM = 'Source BoM'
@@ -76,11 +91,12 @@ class ColumnList:
 
     # Generated columns
     COLUMNS_GEN_L = {
-        COL_GRP_QUANTITY_L: 1,
-        COL_GRP_BUILD_QUANTITY_L: 1,
-        COL_ROW_NUMBER_L: 1,
-        COL_STATUS_L: 1,
-        COL_SOURCE_BOM_L: 1,
+        COL_GRP_QUANTITY_L,
+        COL_GRP_BUILD_QUANTITY_L,
+        COL_ROW_NUMBER_L,
+        COL_ITEM_NUMBER_L,
+        COL_STATUS_L,
+        COL_SOURCE_BOM_L,
     }
 
     # Default columns
@@ -115,6 +131,9 @@ class ColumnList:
 
     # Not included by default
     COLUMNS_EXTRA = [
+        COL_DNP,
+        COL_EXCLUDE_FROM_BOARD,
+        COL_EXCLUDE_FROM_SIM,
         COL_FP_X,
         COL_FP_Y,
         COL_FP_ROT,
@@ -124,20 +143,23 @@ class ColumnList:
         COL_FP_FIT,
         COL_FP_XS,
         COL_FP_YS,
+        COL_ITEM_NUMBER,
         COL_NET_NAME,
+        COL_NET_LABEL,
         COL_NET_CLASS,
+        COL_QUANTITY,
     ]
 
-    # Default columns
     # These columns are 'immutable'
     COLUMNS_PROTECTED_L = {
         COL_REFERENCE_L[:-1],  # The column is References and the field Reference
         COL_REFERENCE_L,  # The column is References and the field Reference
         COL_GRP_QUANTITY_L,
+        COL_QUANTITY_L,
         COL_VALUE_L,
         COL_PART_L,
         COL_PART_LIB_L,
-        # COL_DESCRIPTION_L: 1,
+        # COL_DESCRIPTION_L,
         COL_DATASHEET_L,
         COL_SHEETPATH_L,
         COL_FP_L,
@@ -149,7 +171,13 @@ class ColumnList:
         COL_FP_FIT_L,
         COL_FP_XS_L,
         COL_FP_YS_L,
-        COL_FP_LIB_L
+        COL_FP_LIB_L,
+        COL_DNP_L,
+        COL_EXCLUDE_FROM_BOARD_L,
+        COL_EXCLUDE_FROM_SIM_L,
+        COL_NET_NAME,
+        COL_NET_LABEL,
+        COL_NET_CLASS,
     }
 
     # Default fields used to group components

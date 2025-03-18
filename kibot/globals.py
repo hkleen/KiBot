@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2020-2023 Salvador E. Tropea
-# Copyright (c) 2020-2023 Instituto Nacional de Tecnología Industrial
-# License: GPL-3.0
+# Copyright (c) 2020-2025 Salvador E. Tropea
+# Copyright (c) 2020-2025 Instituto Nacional de Tecnología Industrial
+# License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
 import os
 from .error import KiPlotConfigurationError
@@ -299,12 +299,13 @@ class Globals(FiltersOptions):
             """ Tries to reformat the PCB/SCH date using the `date_format`.
                 This assumes you let KiCad fill this value and hence the time is in ISO format (YY-MM-DD) """
             self.units = ''
-            """ [millimeters,inches,mils] Default units. Affects `position`, `bom` and `panelize` outputs and
+            """ [millimeters,inches,mils] Default units. Affects `position`, `bom`, `panelize` and 'odb' outputs, and
                 the `erc` and `drc` preflights. Also KiCad 6 dimensions """
             self.use_dir_for_preflights = True
             """ Use the global `dir` as subdir for the preflights """
             self.variant = ''
-            """ Default variant to apply to all outputs """
+            """ Default variant to apply to all outputs. You can also use the `--variant` command line option to specify
+                one or more variants to be generated """
             self.out_dir = ''
             """ Base output dir, same as command line `--out-dir` """
             self.environment = Environment
@@ -317,6 +318,18 @@ class Globals(FiltersOptions):
             """ The name of the schematic field that contains the part number for the LCSC/JLCPCB distributor.
                 When empty KiBot will try to discover it.
                 You can use `_field_lcsc_part` as field name to use it in most places """
+            self.field_part_number = ''
+            """ The name of the schematic field that contains the manufacturer part number.
+                You can use `_field_part_number` as field name to use it in most places """
+            self.field_manufacturer = ''
+            """ The name of the schematic field that contains the manufacturer.
+                You can use `_field_manufacturer` as field name to use it in most places """
+            self.field_dist_part_number = ''
+            """ The name of the schematic field that contains the distributor part number.
+                You can use `_field_dist_part_number` as field name to use it in most places """
+            self.field_distributor = ''
+            """ The name of the schematic field that contains the distributor.
+                You can use `_field_distributor` as field name to use it in most places """
             self.allow_blind_buried_vias = True
             """ Allow the use of buried vias. This value is only used for KiCad 7+.
                 For KiCad 5 and 6 use the design rules settings, stored in the project """
@@ -343,7 +356,8 @@ class Globals(FiltersOptions):
                 They must be stored in sub-dirs. I.e. kibot_resources/fonts/MyFont.ttf
                 Note this is mainly useful for CI/CD, so you can store fonts and colors in your repo.
                 Also note that the fonts are installed using a mechanism known to work on Debian,
-                which is used by the KiBot docker images, on other OSs *your mileage may vary* """
+                which is used by the KiBot docker images, on other OSs *your mileage may vary*.
+                When using KiCad 9 you can just embed the fonts in the schematic/PCB """
             self.use_os_env_for_expand = True
             """ In addition to KiCad text variables also use the OS environment variables when expanding `${VARIABLE}` """
             self.field_tolerance = FieldTolerance
@@ -387,6 +401,8 @@ class Globals(FiltersOptions):
             self.layer_defaults = Layer
             """ [list(dict)=[]] Used to indicate the default suffix and description for the layers.
                 Note that the name for the layer must match exactly, no aliases """
+            self.work_layer = GS.def_work_layer
+            """ Layer used for temporal tasks, choose a layer you are not using in your design """
             self.include_components_from_pcb = True
             """ Include components that are only in the PCB, not in the schematic, for filter and variants processing.
                 Note that version 1.6.3 and older ignored them """
@@ -400,7 +416,14 @@ class Globals(FiltersOptions):
             """ String used for *yes*. Currently used by the **update_pcb_characteristics** preflight """
             self.str_no = 'no'
             """ String used for *no*. Currently used by the **update_pcb_characteristics** preflight """
-        self.set_doc('filters', " [list(dict)=[]] KiBot warnings to be ignored ")
+            self.sch_image_prefix = 'kibot_image'
+            """ Prefix used to paste images from outputs. Used by some outputs.
+                You must place a text box at the coordinates where you want to paste the image.
+                The width of the text box will be the width of the image.
+                The text box must contain *kibot_image_X* where X is the output name.
+                This option configures the prefix used. If this option is empty no images will be pasted """
+        self.set_doc('filters', " [list(dict)=[]] KiBot and KiCost warnings to be ignored."
+                                " Add 1000 to KiCost warnings (WCnnn) ")
         self._filter_what = 'KiBot warnings'
         self.filters = FilterOptionsKiBot
         self._unknown_is_error = True
@@ -513,6 +536,10 @@ class Globals(FiltersOptions):
         self.field_package = Optionable.force_list(self.field_package)
         self.field_temp_coef = Optionable.force_list(self.field_temp_coef)
         self.field_power = Optionable.force_list(self.field_power)
+        self.field_part_number = Optionable.force_list(self.field_part_number)
+        self.field_manufacturer = Optionable.force_list(self.field_manufacturer)
+        self.field_dist_part_number = Optionable.force_list(self.field_dist_part_number)
+        self.field_distributor = Optionable.force_list(self.field_distributor)
         # Transfer options to the GS globals
         for option in filter(lambda x: x[0] != '_', self.__dict__.keys()):
             gl = 'global_'+option

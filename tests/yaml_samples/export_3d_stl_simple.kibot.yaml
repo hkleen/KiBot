@@ -1,0 +1,12 @@
+kiplot:
+  version: 1
+
+outputs:
+  - name: STL
+    comment: "Generate 3D model (STL)"
+    type: export_3d
+    dir: 3D
+    options:
+      format: stl
+      include_tracks: true
+      include_pads: true

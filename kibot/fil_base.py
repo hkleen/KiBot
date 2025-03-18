@@ -197,8 +197,8 @@ def reset_filters(comps):
     for c in comps:
         c.included = True
         # If the global kicad_dnp_applied variable is True try to copy the DNP flag from KiCad v7
-        c.fitted = not GS.global_kicad_dnp_applied or c.kicad_dnp is None or not c.kicad_dnp
-        c.fixed = False
+        c.set_fitted(not GS.global_kicad_dnp_applied or c.kicad_dnp is None or not c.kicad_dnp)
+        c.set_fixed(False)
         c.back_up_fields()
 
 
@@ -207,7 +207,7 @@ def apply_fitted_filter(comps, filter):
         logger.debug('Applying filter `{}` to fitted'.format(filter.name))
         for c in comps:
             if c.fitted:
-                c.fitted = filter.filter(c)
+                c.set_fitted(filter.filter(c))
                 if not c.fitted and GS.debug_level > 2:
                     logger.debug('- Not fit: '+c.ref)
 
@@ -217,7 +217,7 @@ def apply_fixed_filter(comps, filter):
         logger.debug('Applying filter `{}` to fixed'.format(filter.name))
         for c in comps:
             if not c.fixed:
-                c.fixed = filter.filter(c)
+                c.set_fixed(filter.filter(c))
 
 
 class BaseFilter(RegFilter):

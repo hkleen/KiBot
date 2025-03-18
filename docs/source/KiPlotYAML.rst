@@ -53,6 +53,12 @@ Here are some examples for booleans:
    v1: true
    v2: false
 
+.. warning::
+   The YAML implementation currently used by KiBot also interprets `yes`,
+   `Yes`, `YES`, `on`, `On` and `ON` as *true* and `no`, `No`, `NO`,
+   `off`, `Off` and `OFF` as *false*. Use 'yes' and 'no' (with quotes)
+   to get an string.
+
 .. _string:
 
 And here are some examples for strings:

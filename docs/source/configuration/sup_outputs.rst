@@ -21,6 +21,7 @@ Notes:
    outputs/dxf
    outputs/dxf_sch_print
    outputs/excellon
+   outputs/export_3d
    outputs/gencad
    outputs/gerb_drill
    outputs/gerber
@@ -28,13 +29,17 @@ Notes:
    outputs/hpgl_sch_print
    outputs/ibom
    outputs/info
+   outputs/ipc2581
+   outputs/jobset
    outputs/kibom
    outputs/kicanvas
    outputs/kicost
    outputs/kikit_present
    outputs/kiri
    outputs/navigate_results
+   outputs/navigate_results_rb
    outputs/netlist
+   outputs/odb
    outputs/panelize
    outputs/pcb2blender_tools
    outputs/pcb_print

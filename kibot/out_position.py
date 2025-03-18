@@ -365,9 +365,6 @@ class Position(BaseOutput):  # noqa: F821
             """ *[dict={}] Options for the `position` output """
         self._category = 'PCB/fabrication/assembly'
 
-    def get_csv_separator(self):
-        return ','
-
     @staticmethod
     def get_conf_examples(name, layers):
         outs = []

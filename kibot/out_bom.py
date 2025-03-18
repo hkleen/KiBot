@@ -21,7 +21,6 @@ Dependencies:
     downloader: python
 """
 import csv
-from copy import deepcopy
 import os
 import re
 from .gs import GS
@@ -29,7 +28,8 @@ from .misc import W_BADFIELD, W_NEEDSPCB, DISTRIBUTORS, W_NOPART, W_MISSREF, DIS
 from .optionable import Optionable, BaseOptions
 from .registrable import RegOutput
 from .error import KiPlotConfigurationError
-from .kiplot import get_board_comps_data, load_any_sch, register_xmp_import, expand_fields, run_command, load_board
+from .kiplot import (get_board_comps_data, load_any_sch, register_xmp_import, expand_fields, run_command, load_board,
+                     get_columns)
 from .kicad.v5_sch import SchematicComponent, SchematicField
 from .bom.columnlist import ColumnList, BoMError
 from .bom.bom import do_bom
@@ -292,6 +292,12 @@ class BoMCSV(Optionable):
             """ Hide statistics information """
             self.quote_all = False
             """ *Enclose all values using double quotes """
+            self.string_delimiter = '"'
+            """ Character used to delimite strings """
+            self.keep_line_breaks = True
+            """ Don't remove line breaks in field values """
+            self.keep_tabs = True
+            """ Don't remove tabs in field values """
 
     def config(self, parent):
         super().config(parent)
@@ -468,21 +474,34 @@ class BoMOptions(BaseOptions):
                 The combination between the default for this option and the defaults for the filters provides
                 a behavior that mimics KiBoM default behavior """
             self.output = GS.def_global_output
-            """ *filename for the output (%i=bom)"""
+            """ *filename for the output (%i=bom). The extension depends on the selected format.
+                In the case of the **KICAD** format the extension comes from the name you selected in KiCad's
+                internal BoM """
             self.format = 'Auto'
-            """ *[HTML,CSV,TXT,TSV,XML,XLSX,HRTXT,Auto] format for the BoM.
+            """ *[HTML,CSV,TXT,TSV,XML,XLSX,HRTXT,KICAD,Auto] format for the BoM.
                 `Auto` defaults to CSV or a guess according to the options.
-                HRTXT stands for Human Readable TeXT """
+                HRTXT stands for Human Readable TeXT.
+                KICAD is used to get the options from KiCad project. In KiCad you can configure CSV like options """
             # Equivalent to KiBoM INI:
             self.ignore_dnf = True
             """ *Exclude DNF (Do Not Fit) components """
             self.fit_field = 'config'
             """ {no_case} Field name used for internal filters (not for variants) """
             self.use_alt = False
-            """ Print grouped references in the alternate compressed style eg: R1-R7,R18 """
+            """ Print grouped references in the alternate compressed style eg: R1-R7,R18.
+                Ignored when using the KICAD format """
+            self.use_ref_ranges = None
+            """ {use_alt} """
+            self.ref_separator = ' '
+            """ Separator used for the list of references. Ignored when using the KICAD format """
+            self.ref_range_separator = '-'
+            """ Separator used for ranges in the list of references. Used when `use_alt` is enabled.
+                Ignored when using the KICAD format """
             self.columns = BoMColumns
             """ *[list(dict)|list(string)=?] List of columns to display.
-                Can be just the name of the field.
+                One entry can be just the name of the field (a string).
+                If you want to import the columns used in KiCad internal BoM tool add an entry `_kicad_bom_fields`,
+                this will be replaced by the list from KiCad.
                 In addition to all user defined fields you have various special columns, consult :ref:`bom_columns` """
             self.cost_extra_columns = BoMColumns
             """ [list(dict)|list(string)=[]] List of columns to add to the global section of the cost.
@@ -491,8 +510,6 @@ class BoMOptions(BaseOptions):
             """ *Try to normalize the R, L and C values, producing uniform units and prefixes """
             self.normalize_locale = False
             """ When normalizing values use the locale decimal point """
-            self.ref_separator = ' '
-            """ Separator used for the list of references """
             self.html = BoMHTML
             """ *[dict={}] Options for the HTML format """
             self.xlsx = BoMXLSX
@@ -525,6 +542,8 @@ class BoMOptions(BaseOptions):
             """ Component groups with blank fields will be merged into the most compatible group, where possible """
             self.merge_both_blank = True
             """ When creating groups two components with empty/missing field will be interpreted as with the same value """
+            self.group_not_fitted = False
+            """ Enable it to group fitted and not fitted components together. This is how KiCad's internal BoM behaves """
             self.group_fields = GroupFields
             """ *[list(string)] {no_case} List of fields used for sorting individual components into groups.
                 Components which match (comparing *all* fields) will be grouped together.
@@ -534,6 +553,8 @@ class BoMOptions(BaseOptions):
                 Note that for resistors, capacitors and inductors the _Value_ field is parsed and qualifiers, like
                 tolerance, are discarded. Please use a separated field and disable `merge_blank_fields` if this
                 information is important. You can also disable `parse_value`.
+                When using `_kicad_bom_fields` in the `columns` you should use `[]` for this value, so the fields
+                selected in KiCad are used.
                 If empty: ['Part', 'Part Lib', 'Value', 'Footprint', 'Footprint Lib',
                 .          'Voltage', 'Tolerance', 'Current', 'Power'] is used """
             self.group_fields_fallbacks = Optionable
@@ -566,7 +587,7 @@ class BoMOptions(BaseOptions):
                 The `Reference` and `Value` are mandatory, in most cases `Part` is also needed.
                 The `Part` column should contain the name/type of the component. This is important for
                 passive components (R, L, C, etc.). If this information isn't available consider
-                configuring the grouping to exclude the `Part`. """
+                configuring the grouping to exclude the `Part` """
             self.ref_id = ''
             """ A prefix to add to all the references from this project. Used for multiple projects """
             self.source_by_id = False
@@ -581,8 +602,12 @@ class BoMOptions(BaseOptions):
             self.count_smd_tht = False
             """ Show the stats about how many of the components are SMD/THT. You must provide the PCB """
             self.units = 'millimeters'
-            """ *[millimeters,inches,mils] Units used for the positions ('Footprint X' and 'Footprint Y' columns).
+            """ *[millimeters,inches,mils] Units used for the positions ('Footprint X', 'Footprint Y', 'Footprint X-Size' and
+                'Footprint Y-Size' columns).
                 Affected by global options """
+            self.right_digits = 4
+            """ Number of digits for mantissa part of coordinates ('Footprint X', 'Footprint Y', 'Footprint X-Size',
+                'Footprint Y-Size' and 'Footprint Rot' columns) (0 is auto) """
             self.bottom_negative_x = False
             """ Use negative X coordinates for footprints on bottom layer (for XYRS) """
             self.use_aux_axis_as_origin = True
@@ -590,7 +615,16 @@ class BoMOptions(BaseOptions):
             self.angle_positive = True
             """ Always use positive values for the footprint rotation """
             self.sort_style = 'type_value'
-            """ *[type_value,type_value_ref,ref] Sorting criteria """
+            """ *[type_value,type_value_ref,ref,kicad_bom,field] Sorting criteria.
+                - type_value: component kind (reference prefix), then by value
+                - type_value_ref: like *type_value* but use the reference when we don't have a value
+                - ref: by reference
+                - kicad_bom: according to the options of the KiCad BoM tool
+                - field: using the `sort_field` field/s """
+            self.sort_ascending = True
+            """ Sort in ascending order """
+            self.sort_field = Optionable
+            """ [string|list(string)='Reference'] {no_case} Field or fields used for the `field` `sort_style` """
             self.footprint_populate_values = Optionable
             """ [string|list(string)='no,yes'] {comma_sep} {L:2} Values for the `Footprint Populate` column """
             self.footprint_type_values = Optionable
@@ -609,17 +643,12 @@ class BoMOptions(BaseOptions):
         super().__init__()
         self._no_conflict_example = ['Config', 'Part']
 
-    @staticmethod
-    def _get_columns():
-        """ Create a list of valid columns """
-        if GS.sch:
-            cols = deepcopy(ColumnList.COLUMNS_DEFAULT)
-            return (GS.sch.get_field_names(cols), ColumnList.COLUMNS_EXTRA)
-        return (ColumnList.COLUMNS_DEFAULT, ColumnList.COLUMNS_EXTRA)
-
     def _guess_format(self):
         """ Figure out the format """
         if self.format == 'Auto':
+            # If we use KiCad sorting assume we also want the format defined in KiCad
+            if self.sort_style == 'kicad_bom':
+                return 'kicad'
             # If we have HTML options generate an HTML
             if self.get_user_defined('html'):
                 return 'html'
@@ -650,7 +679,7 @@ class BoMOptions(BaseOptions):
             return
         self.variant = RegOutput.check_variant(self.variant)
 
-    def process_columns_config(self, cols, valid_columns, extra_columns):
+    def process_columns_config(self, cols, valid_columns, extra_columns, group_fields=None):
         column_rename = {}
         join = []
         columns = []
@@ -661,8 +690,36 @@ class BoMOptions(BaseOptions):
         # Lower case available columns (to check if valid)
         valid_columns_l = {c.lower(): c for c in valid_columns + extra_columns}
         logger.debug("Valid columns: {} ({})".format(valid_columns, len(valid_columns)))
-        # Create the different lists
+        # Expand the KiCad import
+        new_cols = []
         for col in cols:
+            if not isinstance(col, str) or col != '_kicad_bom_fields':
+                new_cols.append(col)
+                continue
+            logger.debug('Importing BoM settings from project')
+            # Import KiCad's BoM fields
+            bom_settings = GS.load_pro_bom_settings()
+            group_symbols = bom_settings.get('group_symbols', True)
+            fields_ordered = bom_settings.get('fields_ordered', [])
+            if not fields_ordered:
+                raise KiPlotConfigurationError("`_kicad_bom_fields` used, but no data found in the project")
+            for col in fields_ordered:
+                name = col.get('name', 'unknown')
+                if group_symbols and group_fields is not None and col.get('group_by', False):
+                    group_fields.append(name)
+                    logger.debugl(2, f'- Adding `{name}` to the grouping')
+                if not col.get('show', False) or name == '${EXCLUDE_FROM_BOM}':
+                    # Not used in the BoM
+                    logger.debugl(3, f'- Skipping `{name}`')
+                    continue
+                entry = BoMColumns()
+                entry.field = name
+                entry.name = col.get('label', '')
+                entry.join = ''
+                logger.debugl(2, f'- Adding `{entry.field}` as `{entry.name}`')
+                new_cols.append(entry)
+        # Create the different lists
+        for col in new_cols:
             if isinstance(col, str):
                 # Just a string, add to the list of used
                 new_col = col
@@ -687,6 +744,19 @@ class BoMOptions(BaseOptions):
                 # raise KiPlotConfigurationError('Invalid column name `{}`'.format(new_col))
                 logger.warning(W_BADFIELD+'Invalid column name `{}`. Valid columns are {}.'.
                                format(new_col, list(valid_columns_l.values())))
+            # Allow using "Reference" and "References"
+            if new_col_l == ColumnList.COL_REFERENCE_L[:-1]:
+                logger.debugl(3, '- Reference -> References')
+                renamed = ColumnList.COL_REFERENCE
+                renamed_l = renamed.lower()
+                if new_col_l in column_rename:
+                    # A display name already specified
+                    column_rename[renamed_l] = column_rename[new_col_l]
+                else:
+                    # Not specified, use the name as it was provided
+                    column_rename[renamed_l] = new_col
+                new_col = renamed
+            # Add the result to the output vectors
             columns.append(new_col)
             column_levels.append(level)
             column_comments.append(comment)
@@ -696,7 +766,20 @@ class BoMOptions(BaseOptions):
         super().config(parent)
         self._format = self._guess_format()
         self._expand_id = 'bom'
-        self._expand_ext = 'txt' if self._format == 'hrtxt' else self._format
+        if self._format == 'kicad':
+            kops = GS.load_pro_bom_fmt_settings()
+            self._expand_ext = os.path.splitext(GS.pro_bom_export_filename)[1]
+            # Default to CSV, KiCad always saves some setting, if the user never used them the file name is empty and the
+            # format is just CSV
+            self._expand_ext = self._expand_ext[1:] if self._expand_ext else 'csv'
+            self._ref_separator = kops.get('ref_delimiter', ',')
+            self._ref_range_separator = kops.get('ref_range_delimiter', '')
+            self._use_alt = self._ref_range_separator != ''
+        else:
+            self._expand_ext = 'txt' if self._format == 'hrtxt' else self._format
+            self._ref_separator = self.ref_separator
+            self._ref_range_separator = self.ref_range_separator
+            self._use_alt = self.use_alt
         # Variants, make it an object. Do it early because is needed by other initializations (i.e. title)
         self._normalize_variant()
         # Do title %X and ${var} expansions on the BoMLinkable titles
@@ -707,9 +790,6 @@ class BoMOptions(BaseOptions):
         if self._format == 'xlsx' and self.xlsx.title:
             self.xlsx.title = self.expand_filename_both(self.xlsx.title, make_safe=False)
             self.xlsx.extra_info = [self.expand_filename_both(t, make_safe=False) for t in self.xlsx.extra_info]
-        # Fill with empty if needed
-        if len(self.group_fields_fallbacks) < len(self.group_fields):
-            self.group_fields_fallbacks.extend(['']*(len(self.group_fields)-len(self.group_fields_fallbacks)))
         # Filters
         self.pre_transform = BaseFilter.solve_filter(self.pre_transform, 'pre_transform', is_transform=True)
         self.exclude_filter = BaseFilter.solve_filter(self.exclude_filter, 'exclude_filter')
@@ -727,12 +807,15 @@ class BoMOptions(BaseOptions):
             no_conflict = set(self.no_conflict)
         self._no_conflict = no_conflict
         # Columns
-        (valid_columns, extra_columns) = self._get_columns()
+        (valid_columns, extra_columns) = get_columns()
         self.create_default_columns(valid_columns)
         (self._columns, self._column_levels, self._column_comments, self._column_rename,
-         self._join) = self.process_columns_config(self.columns, valid_columns, extra_columns)
+         self._join) = self.process_columns_config(self.columns, valid_columns, extra_columns, self.group_fields)
         (self.columns_ce, self._column_levels_ce, self._column_comments_ce, self._column_rename_ce,
          self._join_ce) = self.process_columns_config(self.cost_extra_columns, valid_columns, extra_columns)
+        # Fill with empty if needed
+        if len(self.group_fields_fallbacks) < len(self.group_fields):
+            self.group_fields_fallbacks.extend(['']*(len(self.group_fields)-len(self.group_fields_fallbacks)))
 
     def create_default_columns(self, valid_columns):
         if not isinstance(self.columns, type):
@@ -990,12 +1073,12 @@ class BoM(BaseOutput):  # noqa: F821
     """ BoM (Bill of Materials)
         Used to generate the BoM in CSV, HTML, TSV, TXT, XML or XLSX format using the internal BoM.
         This output can generate XYRS files (pick and place files).
+        You can import the options used in the KiCad internal BoM, consult :ref:`bom_kicad_options`.
         Is compatible with KiBoM, but doesn't need to update the XML netlist because the components
         are loaded from the schematic.
         Important differences with KiBoM output:
         - All options are in the main `options` section, not in `conf` subsection.
-        - The `Component` column is named `Row` and works just like any other column.
-        This output is what you get from the 'Tools/Generate Bill of Materials' menu in eeschema. """
+        - The `Component` column is named `Row` and works just like any other column. """
     def __init__(self):
         super().__init__()
         with document:
@@ -1049,7 +1132,7 @@ class BoM(BaseOutput):  # noqa: F821
     def get_conf_examples(name, layers):
         outs = []
         # Make a list of available fields
-        fld_names, extra_names = BoMOptions._get_columns()
+        fld_names, extra_names = get_columns()
         fld_names_l = [f.lower() for f in fld_names]
         fld_set = set(fld_names_l)
         logger.debug(' - Available fields {}'.format(fld_names_l))
@@ -1120,4 +1203,13 @@ class BoM(BaseOutput):  # noqa: F821
             outs.append(gb)
         # Add the list of layers to the templates
         BoM.process_templates(mpn_fields, dists)
+        # Add an example that mimics KiCad internal BoM
+        kicad_fmt = GS.load_pro_bom_fmt_settings()
+        if kicad_fmt:
+            gb = {'name': 'kicad_internal_bom', 'type': name, 'dir': os.path.join('BoM', 'KiCad')}
+            gb['comment'] = 'BoM using KiCad settings'
+            ops = {'format': 'KICAD', 'ignore_dnf': False, 'group_not_fitted': True, 'group_fields': [],
+                   'sort_style': 'kicad_bom', 'columns': ['_kicad_bom_fields']}
+            gb['options'] = ops
+            outs.append(gb)
         return outs

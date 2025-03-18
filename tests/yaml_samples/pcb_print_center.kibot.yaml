@@ -1,0 +1,23 @@
+# Example KiBot config file
+kibot:
+  version: 1
+
+outputs:
+  - name: 'print_front'
+    comment: "Experiment"
+    type: pcb_print
+    options:
+      plot_sheet_reference: true
+      format: 'PDF'
+      scaling: 2.0
+      pages:
+        - layers:
+            - layer: User.Eco1
+              color: "#FFFFFF00"
+              use_for_center: true
+            - layer: F.Cu
+              use_for_center: false
+            - layer: Edge.Cuts
+              color: "#FF4040"
+              use_for_center: false
+

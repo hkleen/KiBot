@@ -29,12 +29,13 @@ Parameters:
 -  **output** :index:`: <pair: output - kicanvas; output>` [:ref:`string <string>`] (default: ``'%f-%i%I%v.%x'``) Filename for the output (%i=kicanvas, %x=html). Affected by global options.
 -  **type** :index:`: <pair: output - kicanvas; type>` 'kicanvas'
 -  ``category`` :index:`: <pair: output - kicanvas; category>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``''``) [:ref:`comma separated <comma_sep>`] The category for this output. If not specified an internally defined
-   category is used.
-   Categories looks like file system paths, i.e. **PCB/fabrication/gerber**.
-   The categories are currently used for `navigate_results`.
+   category is used. |br|
+   Categories looks like file system paths, i.e. **PCB/fabrication/gerber**. |br|
+   Using '.' or './' as a category puts the file at the root. |br|
+   The categories are currently used for `navigate_results` and `navigate_results_rb`.
 
 -  ``disable_run_by_default`` :index:`: <pair: output - kicanvas; disable_run_by_default>` [:ref:`string <string>` | :ref:`boolean <boolean>`] (default: ``''``) Use it to disable the `run_by_default` status of other output.
-   Useful when this output extends another and you don't want to generate the original.
+   Useful when this output extends another and you don't want to generate the original. |br|
    Use the boolean true value to disable the output you are extending.
 -  ``extends`` :index:`: <pair: output - kicanvas; extends>` [:ref:`string <string>`] (default: ``''``) Copy the `options` section from the indicated output.
    Used to inherit options from another output of the same type.

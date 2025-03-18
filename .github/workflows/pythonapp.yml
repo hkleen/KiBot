@@ -1,4 +1,4 @@
-# This workflow will install Python dependencies, run tests and lint with a single version of Python.
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
 name: Regression tests
@@ -31,10 +31,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ki_release: [ki5, ki6, ki7, ki8]
+        ki_release: [ki5, ki6, ki7, ki8, ki9]
         w_tests: [g1, g2, g3]
-        # ki_release: [ki8]
-        # w_tests: [g2]
+        # ki_release: [nightly]
+        # w_tests: [gdebug]
 
     runs-on: ubuntu-latest
     container: ghcr.io/inti-cmnb/kicad_auto_test:${{ matrix.ki_release }}

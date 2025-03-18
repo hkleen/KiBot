@@ -33,7 +33,7 @@ outputs:
       line_width: 0.1
       uppercase_extensions: true
       subtract_mask_from_silk: false
-      use_aux_axis_as_origin: true
+      use_aux_axis_as_origin: @_KIBOT_DRILL_AUX_ORIGIN@
       inner_extension_pattern: '.gl%N'
       edge_cut_extension: '.gml'
     layers:
@@ -47,7 +47,7 @@ outputs:
     dir: @_KIBOT_MANF_DIR@
     options:
       pth_and_npth_single_file: true
-      use_aux_axis_as_origin: true
+      use_aux_axis_as_origin: @_KIBOT_DRILL_AUX_ORIGIN@
       output: "%f.TXT"
 
   - name: _FusionPCB_compress@_KIBOT_IMPORT_ID@
@@ -73,6 +73,7 @@ definitions:
   _KIBOT_PLOT_FOOTPRINT_REFS: true
   _KIBOT_PLOT_FOOTPRINT_VALUES: true
   _KIBOT_COMPRESS_MOVE: true
+  _KIBOT_DRILL_AUX_ORIGIN: true
   _KIBOT_GERBER_LAYERS: |
       - copper
             - F.SilkS

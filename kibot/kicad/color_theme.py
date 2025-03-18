@@ -94,6 +94,7 @@ def load_color_theme(name):
                 cl[id] = parse_color(copper[c_name])
             else:
                 logger.warning(W_WRONGCOLOR+"The `{}` theme doesn't define a color for the {} layer".format(name, c_name_ori))
+                cl[id] = "#000000"
         else:
             c_name = c_name.replace('.', '_')
             c_name = KI6_KI5.get(c_name, c_name)
@@ -101,6 +102,7 @@ def load_color_theme(name):
                 cl[id] = parse_color(board[c_name])
             else:
                 logger.warning(W_WRONGCOLOR+"The `{}` theme doesn't define a color for the {} layer".format(name, c_name_ori))
+                cl[id] = "#000000"
         if extra_debug:
             logger.debug('- Color for layer {} ({}): {}'.format(c_name_ori, id, cl[id]))
     # Other colors (Title block and frame color, vias, etc.)

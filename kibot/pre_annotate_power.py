@@ -27,7 +27,7 @@ class Annotate_Power(BasePreFlight):  # noqa: F821
 
     def annotate_ki5(self):
         """ Annotate power components for KiCad 5 """
-        comps = GS.sch.get_components(exclude_power=False)
+        comps = GS.sch.get_components(exclude_power=False, collapse=False)
         num = 1
         for c in comps:
             if c.is_power:

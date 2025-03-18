@@ -6,10 +6,10 @@
 # https://gitlab.com/kicad/code/kicad/-/blob/master/resources/schemas/erc.v1.json?ref_type=heads
 import csv
 import io
-from .pre_any_xrc import ERCOptions, XRC, UNITS_2_KICAD
+from .pre_any_xrc import ERCOptions, XRC
 from .macros import macros, document, pre_class  # noqa: F401
 from .gs import GS
-from .misc import W_ERC, W_FILXRC
+from .misc import W_ERC, W_FILXRC, UNITS_2_KICAD
 from .log import get_logger
 logger = get_logger(__name__)
 
@@ -104,16 +104,20 @@ class ERC(XRC):  # noqa: F821
         # HTML Head
         html = self.create_html_top(data)
         # Generate the content
+        empty = True
         for sheet in data.get('sheets', []):
             violations = sheet.get('violations', [])
             if not violations:
                 continue
+            empty = False
             sheet_fname = sheet.get('file_name', '')
             name = sheet.get('path', '')
             if sheet_fname:
                 name += f' ({sheet_fname})'
             html += f'<p class="subtitle">Sheet {name}</p>\n'
             html += self.create_html_violations(violations)
+        if empty:
+            html += self.create_html_ok()
         html += self.create_html_bottom()
         return html
 

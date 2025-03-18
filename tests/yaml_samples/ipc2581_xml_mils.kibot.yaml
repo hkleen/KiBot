@@ -1,0 +1,21 @@
+kibot:
+  version: 1
+
+globals:
+  units: mils
+  field_part_number: MPN
+  field_manufacturer: MFR
+  field_dist_part_number: 'digikey#'
+
+outputs:
+  - name: ipc2581_xml_mils
+    comment: "PCB in IPC-2581 format"
+    type: ipc2581
+    dir: Export
+    options:
+      compress: false
+
+  - name: 'navigate'
+    comment: "Browse the results"
+    type: navigate_results_rb
+    run_by_default: false

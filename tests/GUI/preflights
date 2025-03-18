@@ -170,6 +170,30 @@
       null
     ]
   ],
+  "consolidate_pcbs": [
+    [
+      "consolidate_pcbs",
+      [
+        "DataTypeListDictSingular"
+      ],
+      [
+        [
+          "name",
+          [
+            "DataTypeString"
+          ],
+          null
+        ],
+        [
+          "file",
+          [
+            "DataTypeString"
+          ],
+          null
+        ]
+      ]
+    ]
+  ],
   "draw_fancy_stackup": [
     [
       "draw_fancy_stackup",
@@ -314,6 +338,13 @@
         ],
         [
           "column_spacing",
+          [
+            "DataTypeNumber"
+          ],
+          null
+        ],
+        [
+          "border_thickness",
           [
             "DataTypeNumber"
           ],
@@ -850,6 +881,13 @@
                 "DataTypeBoolean"
               ],
               null
+            ],
+            [
+              "force_font_width",
+              [
+                "DataTypeNumber"
+              ],
+              null
             ]
           ]
         ],
@@ -864,6 +902,13 @@
           "group_name",
           [
             "DataTypeString"
+          ],
+          null
+        ],
+        [
+          "format_drill_table",
+          [
+            "DataTypeBoolean"
           ],
           null
         ]
@@ -1112,6 +1157,13 @@
         ],
         [
           "expand_kibot_patterns",
+          [
+            "DataTypeBoolean"
+          ],
+          null
+        ],
+        [
+          "expand_in_command",
           [
             "DataTypeBoolean"
           ],

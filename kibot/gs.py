@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2020-2024 Salvador E. Tropea
-# Copyright (c) 2020-2024 Instituto Nacional de Tecnología Industrial
+# Copyright (c) 2020-2025 Salvador E. Tropea
+# Copyright (c) 2020-2025 Instituto Nacional de Tecnología Industrial
 # License: GPL-3.0
 # Project: KiBot (formerly KiPlot)
 from contextlib import contextmanager
@@ -20,7 +20,7 @@ from shutil import copy2
 from sys import exit, exc_info
 import tempfile
 from traceback import extract_stack, format_list, print_tb
-from .misc import EXIT_BAD_ARGS, W_DATEFORMAT, W_UNKVAR, WRONG_INSTALL, CORRUPTED_PRO
+from .misc import EXIT_BAD_ARGS, W_DATEFORMAT, W_UNKVAR, WRONG_INSTALL, CORRUPTED_PRO, hide_stderr
 from .log import get_logger
 
 logger = get_logger(__name__)
@@ -42,6 +42,8 @@ elif hasattr(pcbnew, 'PCB_PLOT_PARAMS'):
 # KiCad 5 uses a very different scale based on inches
 # KiCad 7 uses mm
 KICAD5_SVG_SCALE = 116930/297002200
+# Characters we don't want in a file name
+INVALID_CHARS = r'[?%*:|"<>]'
 
 
 class GS(object):
@@ -72,6 +74,9 @@ class GS(object):
     pro_fname = None     # file.kicad_pro (or .pro)
     pro_ext = '.pro'
     pro_variables = None  # KiCad 6 text variables defined in the project
+    pro_bom_settings = None  # KiCad BoM settings from the project
+    pro_bom_fmt_settings = None  # KiCad BoM file format options
+    pro_bom_export_filename = ''  # KiCad BoM file name, for the extension
     vars_regex = re.compile(r'\$\{([^\}]+)\}')
     # Main output dir
     out_dir = None
@@ -92,7 +97,6 @@ class GS(object):
     kicad_share_path = None
     kicad_dir = 'kicad'
     kicad_plugins_dirs = []
-    work_layer = 'Rescue'
     # KiCad version: major*1e6+minor*1e3+patch
     kicad_version_n = 0
     kicad_version_major = 0
@@ -135,8 +139,9 @@ class GS(object):
     cli_global_defs = {}
     # The variant value, but already solved
     solved_global_variant = None
-    #  This is used as default value for classes supporting "output" option
+    # This is used as default value for classes supporting "output" option
     def_global_output = '%f-%i%I%v.%x'
+    def_work_layer = 'Margin'
     # The class that controls the global options
     class_for_global_opts = None
     # The last tree we used to configure it
@@ -165,8 +170,12 @@ class GS(object):
     global_extra_pth_drill = None
     global_field_3D_model = None
     global_field_current = None
+    global_field_dist_part_number = None
+    global_field_distributor = None
     global_field_lcsc_part = None
+    global_field_manufacturer = None
     global_field_package = None
+    global_field_part_number = None
     global_field_power = None
     global_field_temp_coef = None
     global_field_tolerance = None
@@ -191,6 +200,7 @@ class GS(object):
     global_remove_adhesive_for_dnp = None
     global_resources_dir = None
     global_restore_project = None
+    global_sch_image_prefix = None
     global_set_text_variables_before_output = None
     global_silk_screen_color = None
     global_silk_screen_color_bottom = None
@@ -213,6 +223,7 @@ class GS(object):
     global_kicad_dnp_applied = None
     global_kicad_dnp_applies_to_3D = None
     global_cross_using_kicad = None
+    global_work_layer = None
     pasteable_cmd = shlex.join if hasattr(shlex, 'join') else lambda x: str(x)   # novermin
 
     @staticmethod
@@ -264,6 +275,32 @@ class GS(object):
         GS.pro_variables = data.get('text_variables', {})
         logger.debug("Current text variables: {}".format(GS.pro_variables))
         return GS.pro_variables
+
+    @staticmethod
+    def load_pro_bom_settings():
+        if GS.pro_bom_settings is not None:
+            return GS.pro_bom_settings
+        if GS.pro_file is None or GS.pro_ext == '.pro':
+            return {}
+        # Get the bom settings
+        with open(GS.pro_file, 'rt') as f:
+            pro_text = f.read()
+        try:
+            data = json.loads(pro_text)
+        except Exception:
+            GS.exit_with_error('Corrupted project {}'.format(GS.pro_file), CORRUPTED_PRO)
+        schematic = data.get('schematic', {})
+        GS.pro_bom_settings = schematic.get('bom_settings', {})
+        GS.pro_bom_fmt_settings = schematic.get('bom_fmt_settings', {})
+        GS.pro_bom_export_filename = schematic.get('bom_export_filename', '')
+        logger.debug("Current bom_settings: {}".format(GS.pro_bom_settings))
+        return GS.pro_bom_settings
+
+    @staticmethod
+    def load_pro_bom_fmt_settings():
+        if GS.pro_bom_fmt_settings is None:
+            GS.load_pro_bom_settings()
+        return GS.pro_bom_fmt_settings
 
     @staticmethod
     def read_pro():
@@ -357,6 +394,12 @@ class GS(object):
             return pcbnew.EDA_ANGLE(ang*10, pcbnew.TENTHS_OF_A_DEGREE_T)
         return ang*10
 
+    def angle_as_double(ang):
+        if isinstance(ang, float):
+            return ang
+        # Here we can't use KiCad version because the nasty pcb_transition can be patching it
+        return ang.AsDegrees()
+
     @staticmethod
     def get_modules():
         if GS.ki6:
@@ -437,7 +480,8 @@ class GS(object):
     @staticmethod
     def make_bkp(fname):
         bkp = fname+'-bak'
-        os.replace(fname, bkp)
+        if os.path.isfile(fname):
+            os.replace(fname, bkp)
 
     @staticmethod
     def zones():
@@ -612,7 +656,9 @@ class GS(object):
 
     @staticmethod
     def load_board_low_level(file):
-        return pcbnew.LoadBoard(file)
+        with hide_stderr():
+            board = pcbnew.LoadBoard(file)
+        return board
 
     @staticmethod
     def load_sch():
@@ -666,6 +712,9 @@ class GS(object):
 
     @staticmethod
     def create_eda_rect(tlx, tly, brx, bry):
+        if GS.ki9:
+            # TODO: Might be fixed in the release
+            return pcbnew.BOX2I(pcbnew.VECTOR2I(tlx, tly), pcbnew.VECTOR2L(brx-tlx, bry-tly))
         if GS.ki7:
             return pcbnew.BOX2I(pcbnew.VECTOR2I(tlx, tly), pcbnew.VECTOR2I(brx-tlx, bry-tly))
         return pcbnew.EDA_RECT(pcbnew.wxPoint(tlx, tly), pcbnew.wxSize(brx-tlx, bry-tly))
@@ -1026,3 +1075,38 @@ class GS(object):
     @staticmethod
     def get_stop_flag():
         return GS.stop_flag
+
+    @staticmethod
+    def move_board_items(vector):
+        any((x.Move(vector) for x in GS.get_modules()))
+        any((x.Move(vector) for x in GS.board.GetDrawings()))
+        any((x.Move(vector) for x in GS.board.GetTracks()))
+        any((x.Move(vector) for x in GS.board.Zones()))
+
+    @staticmethod
+    def sanitize_file_name(name):
+        # sanitize the name to avoid characters illegal in file systems
+        if GS.on_windows:
+            # Here \ *is* valid
+            if len(name) >= 2 and name[0].isalpha() and name[1] == ':':
+                # This name starts with a drive letter, : is valid in the first 2
+                name = name[:2]+re.sub(INVALID_CHARS, '_', name[2:])
+            else:
+                name = re.sub(INVALID_CHARS, '_', name)
+        else:
+            name = name.replace('\\', '/')
+            name = re.sub(INVALID_CHARS, '_', name)
+        return name
+
+    @staticmethod
+    def module_position(m):
+        pos = GS.get_center(m)
+        return f'({GS.to_mm(pos.x)}, {GS.to_mm(pos.y)}) mm'
+
+    @staticmethod
+    def layer_is_inner(id):
+        return pcbnew.IsInnerCopperLayer(id) if GS.ki9 else id > pcbnew.F_Cu and id < pcbnew.B_Cu
+
+    @staticmethod
+    def inner_layer_index(id):
+        return int(id/2-1) if GS.ki9 else id-pcbnew.F_Cu+1

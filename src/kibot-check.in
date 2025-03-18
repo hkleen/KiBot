@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-# Copyright (c) 2022 Salvador E. Tropea
-# Copyright (c) 2022 Instituto Nacional de Tecnología Industrial
+# Copyright (c) 2022-2025 Salvador E. Tropea
+# Copyright (c) 2022-2025 Instituto Nacional de Tecnología Industrial
 # License: GPL-3.0
 # Project: KiBot (formerly KiPlot)
 #
@@ -176,6 +176,21 @@ def check_tests(tests):
     return False
 
 
+def get_version(r):
+    single = r['version']
+    if not single:
+        return single
+    all = r['all_versions']
+    if not all:
+        return single
+    k_ver = kicad_version[0]
+    version = None
+    while k_ver >= 5 and version is None:
+        version = all.get(str(k_ver), None)
+        k_ver -= 1
+    return list(map(do_int, version.split('.'))) if version is not None else single
+
+
 def check_version(version, roles, no_ver=False, tests=None):
     res = ver_re.search(version)
     if res:
@@ -193,7 +208,8 @@ def check_version(version, roles, no_ver=False, tests=None):
         glb = r['output'] == 'global'
         this_sever = 0
         max_version = r.get('max_version')
-        if not_avail or (r['version'] and ver < r['version']) or (max_version and ver >= max_version):
+        version = get_version(r)
+        if not_avail or (version and ver < version) or (max_version and ver >= max_version):
             if mandatory:
                 this_sever = 4 if glb else 3
             else:
@@ -265,8 +281,9 @@ def show_roles(roles):
             print(RESET+'  - Optional to:')
             for o in optional:
                 ver = ''
-                if o['version']:
-                    ver = ' (v'+'.'.join(map(str, o['version']))+')'
+                version = get_version(o)
+                if version:
+                    ver = ' (v'+'.'.join(map(str, version))+')'
                 print(sev2color(o['sev'])+'    - {} for {}{}'.format(o['desc'], o['output'], ver))
 
 
@@ -463,7 +480,7 @@ if kicad_ok:
         version = 'Older than 5.1.6'
 else:
     version = NOT_AVAIL
-if kicad_version >= (5, 1, 6) and kicad_version < (8, 99):
+if kicad_version >= (5, 1, 6) and kicad_version < (9, 99):
     sev = 0
 else:
     sev = 4

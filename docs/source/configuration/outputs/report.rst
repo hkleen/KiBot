@@ -9,7 +9,8 @@ Design report
 Generates a report about the design.
 Mainly oriented to be sent to the manufacturer or check PCB details. |br|
 You can expand internal values, KiCad text variables and environment
-variables using `${VARIABLE}`
+variables using `${VARIABLE}`. |br|
+You can also use `${V1+V2}` or similar using Python operators
 
 Type: ``report``
 
@@ -25,12 +26,13 @@ Parameters:
 -  **options** :index:`: <pair: output - report; options>`  [:ref:`ReportOptions parameters <ReportOptions>`] [:ref:`dict <dict>`] (default: empty dict, default values used) Options for the `report` output.
 -  **type** :index:`: <pair: output - report; type>` 'report'
 -  ``category`` :index:`: <pair: output - report; category>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``''``) [:ref:`comma separated <comma_sep>`] The category for this output. If not specified an internally defined
-   category is used.
-   Categories looks like file system paths, i.e. **PCB/fabrication/gerber**.
-   The categories are currently used for `navigate_results`.
+   category is used. |br|
+   Categories looks like file system paths, i.e. **PCB/fabrication/gerber**. |br|
+   Using '.' or './' as a category puts the file at the root. |br|
+   The categories are currently used for `navigate_results` and `navigate_results_rb`.
 
 -  ``disable_run_by_default`` :index:`: <pair: output - report; disable_run_by_default>` [:ref:`string <string>` | :ref:`boolean <boolean>`] (default: ``''``) Use it to disable the `run_by_default` status of other output.
-   Useful when this output extends another and you don't want to generate the original.
+   Useful when this output extends another and you don't want to generate the original. |br|
    Use the boolean true value to disable the output you are extending.
 -  ``extends`` :index:`: <pair: output - report; extends>` [:ref:`string <string>`] (default: ``''``) Copy the `options` section from the indicated output.
    Used to inherit options from another output of the same type.

@@ -1,0 +1,4 @@
+Type,Front Side,Back Side,Total
+THT,${top_tht-top_tht_dnp},${bot_tht-bot_tht_dnp},${total_tht-total_tht_dnp}
+SMD,${top_smd-top_smd_dnp},${bot_smd-bot_smd_dnp},${total_smd-total_smd_dnp}
+Total,${top_total-top_total_dnp},${bot_total-bot_total_dnp},${total_all-total_all_dnp}

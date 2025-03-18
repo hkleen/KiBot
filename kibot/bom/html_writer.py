@@ -225,9 +225,10 @@ def content_table(html, groups, headings, head_names, cfg, link_datasheet, link_
 
 
 def embed_image(file):
-    s, w, h = read_png(file)
-    if s is None:
-        raise BoMError('Only PNG images are supported for the logo')
+    try:
+        s, w, h, _ = read_png(file, logger)
+    except TypeError as e:
+        raise BoMError(f'Only PNG images are supported for the logo ({e})')
     return int(w), int(h), 'data:image/png;base64,'+b64encode(s).decode('ascii')
 
 

@@ -7,35 +7,35 @@ PresentBoards parameters
 -  **name** :index:`: <pair: output - kikit_present - options - boards; name>` [:ref:`string <string>`] (default: ``''``) Name for this board. If empty we use the name of the PCB.
    Applies to all modes.
 -  ``back_image`` :index:`: <pair: output - kikit_present - options - boards; back_image>` [:ref:`string <string>`] (default: ``''``) How to obtain the back view of the PCB.
-   *local*: the name of an output to render it.
-   If empty we use the first renderer.
-   *file*: the name of the rendered image.
+   *local*: the name of an output to render it. |br|
+   If empty we use the first renderer. |br|
+   *file*: the name of the rendered image. |br|
    *external*: ignored, we use `extrenal_config`.
 -  ``comment`` :index:`: <pair: output - kikit_present - options - boards; comment>` [:ref:`string <string>`] (default: ``''``) A comment or description for this board.
    Applies to all modes.
 -  ``external_config`` :index:`: <pair: output - kikit_present - options - boards; external_config>` [:ref:`string <string>`] (default: ``''``) Name of an external KiBot configuration.
    Only used in the *external* mode.
 -  ``front_image`` :index:`: <pair: output - kikit_present - options - boards; front_image>` [:ref:`string <string>`] (default: ``''``) How to obtain the front view of the PCB.
-   *local*: the name of an output to render it.
-   If empty we use the first renderer.
-   *file*: the name of the rendered image.
+   *local*: the name of an output to render it. |br|
+   If empty we use the first renderer. |br|
+   *file*: the name of the rendered image. |br|
    *external*: ignored, we use `extrenal_config`.
 -  ``gerbers`` :index:`: <pair: output - kikit_present - options - boards; gerbers>` [:ref:`string <string>`] (default: ``''``) How to obtain an archive with the gerbers.
-   *local*: the name of a `gerber` output.
-   If empty we use the first `gerber` output.
-   *file*: the name of a compressed archive.
+   *local*: the name of a `gerber` output. |br|
+   If empty we use the first `gerber` output. |br|
+   *file*: the name of a compressed archive. |br|
    *external*: ignored, we use `extrenal_config`.
 -  ``mode`` :index:`: <pair: output - kikit_present - options - boards; mode>` [:ref:`string <string>`] (default: ``'local'``) (choices: "local", "file", "external") How images and gerbers are obtained.
-   *local*: Only applies to the currently selected PCB.
+   *local*: Only applies to the currently selected PCB. |br|
    You must provide the names of the outputs used to render
-   the images and compress the gerbers.
+   the images and compress the gerbers. |br|
    When empty KiBot will use the first render/gerber output
-   it finds.
+   it finds. |br|
    To apply variants use `pcb_from_output` and a `pcb_variant`
-   output.
+   output. |br|
    *file*: You must specify the file names used for the images and
-   the gerbers.
-   *external*: You must specify an external KiBot configuration.
+   the gerbers. |br|
+   *external*: You must specify an external KiBot configuration. |br|
    It will be applied to the selected PCB to create the images and
    the gerbers. The front image must be generated in a dir called
    *front*, the back image in a dir called *back* and the gerbers

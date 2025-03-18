@@ -52,6 +52,8 @@ class AnyDiffOptions(VariantOptions):
 
     def add_to_cache(self, name, hash):
         cmd = [self.command, '--no_reader', '--only_cache', '--old_file_hash', hash, '--cache_dir', self.cache_dir]
+        if GS.debug_level > 0:
+            cmd.append('-'+'v'*GS.debug_level)
         if self._kiri_mode:
             cmd.append('--kiri_mode')
         self.add_zones_ops(cmd)

@@ -14,7 +14,7 @@ Dependencies:
 import os
 import re
 from .error import KiPlotConfigurationError
-from .misc import KICAD2STEP_ERR
+from .misc import KICAD2STEP_ERR, W_DEPR
 from .gs import GS
 from .out_base_3d import Base3DOptions, Base3D
 from .macros import macros, document, output_class  # noqa: F401
@@ -51,6 +51,8 @@ class STEPOptions(Base3DOptions):
             raise KiPlotConfigurationError('Origin must be `grid` or `drill` or `X,Y`')
 
     def run(self, output):
+        if GS.ki9:
+            logger.warning(W_DEPR+'For KiCad 9 use the `export_3d` output instead of `step`')
         super().run(output)
         command = self.ensure_tool('KiAuto')
         # Make units explicit
@@ -89,6 +91,7 @@ class STEP(Base3D):
     """ STEP (ISO 10303-21 Clear Text Encoding of the Exchange Structure)
         Exports the PCB as a 3D model.
         This is the most common 3D format for exchange purposes.
+        For KiCad 9 use the `export_3d` output.
         This output is what you get from the 'File/Export/STEP' menu in pcbnew. """
     def __init__(self):
         super().__init__()
@@ -99,4 +102,6 @@ class STEP(Base3D):
 
     @staticmethod
     def get_conf_examples(name, layers):
+        if GS.ki9:
+            return None
         return Base3D.simple_conf_examples(name, '3D model in STEP format', '3D')

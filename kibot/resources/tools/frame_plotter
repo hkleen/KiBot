@@ -26,6 +26,7 @@ pc = pcbnew.PLOT_CONTROLLER(board)
 # Yes, ridiculous, but the COLOR_SETTINGS class isn't exported
 sm = pcbnew.GetSettingsManager()
 path = os.path.join(pcbnew.SETTINGS_MANAGER.GetUserSettingsPath(), 'colors')
+os.makedirs(path, exist_ok=True)
 with tempfile.NamedTemporaryFile(mode='wt', delete=False, suffix='.json', prefix='kibo_color_', dir=path) as f:
     f.write(json.dumps({"board": {"worksheet": f"rgb({r}, {g}, {b})"}}))
 new_cs = sm.AddNewColorSettings(os.path.basename(f.name))

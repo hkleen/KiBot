@@ -1,4 +1,4 @@
-.. _SUColumnsFancy:
+.. _SUColumnsFancy_pre:
 
 
 SUColumnsFancy parameters

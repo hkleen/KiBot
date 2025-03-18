@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2023-2024 Salvador E. Tropea
-# Copyright (c) 2023-2024 Instituto Nacional de Tecnología Industrial
+# Copyright (c) 2023-2025 Salvador E. Tropea
+# Copyright (c) 2023-2025 Instituto Nacional de Tecnología Industrial
 # License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
 """
@@ -279,6 +279,8 @@ class PCB3DExportOptions(Base3DOptionsWithHL):
             self.solder_paste_for_populated = True
             """ Add solder paste only for the populated components.
                 Populated components are the ones listed in `show_components` """
+            self.solder_join_on_heatsink = True
+            """ Solder the THT pads with heatsink fabrication attribute """
         self._expand_id = 'blender_export'
         self._expand_ext = 'pcb3d'
         self._unknown_is_error = True
@@ -467,6 +469,7 @@ class Blender_ExportOptions(BaseOptions):
             options['stackup_file'] = 'stackup'
             options['stackup_dir'] = 'layers'
             options['stackup_format'] = 'BIN'
+        options['solder_join_on_heatsink'] = self.pcb3d.solder_join_on_heatsink
         tree = {'name': '_temporal_pcb3d_tools',
                 'type': 'pcb2blender_tools',
                 'comment': 'Internally created for the PCB3D',

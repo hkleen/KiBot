@@ -139,9 +139,15 @@ outputs:
   type: excellon
   comment: This is the main format for the drilling machine
   options:
-    use_aux_axis_as_origin: true
+    generate_drill_files: false
     map: None
     report: ''
+    table: ''
+- name: output.export_3d
+  type: export_3d
+  comment: Exports the PCB as a 3D model using KiCad 9 or newer
+  options:
+    output: output.export_3d.options.dict
 - name: output.gencad
   type: gencad
   comment: Exports the PCB in GENCAD format
@@ -151,9 +157,10 @@ outputs:
   type: gerb_drill
   comment: This is the information for the drilling machine in gerber format
   options:
-    use_aux_axis_as_origin: true
+    generate_drill_files: false
     map: None
     report: ''
+    table: ''
 - name: output.gerber
   type: gerber
   comment: This is the main fabrication format for the PCB
@@ -192,6 +199,16 @@ outputs:
   comment: Records information about the current run
   options:
     output: output.info.options.dict
+- name: output.ipc2581
+  type: ipc2581
+  comment: Exports the PCB in the Digital Product Model Exchange IPC format
+  options:
+    output: output.ipc2581.options.dict
+- name: output.jobset
+  type: jobset
+  comment: Generates outputs defined in a KiCad jobset file (.kicad_jobset)
+  options:
+    jobset: output.jobset.options.dict
 - name: output.kibom
   type: kibom
   comment: Used to generate the BoM in HTML or CSV format using the KiBoM plug-in
@@ -235,11 +252,21 @@ outputs:
   comment: Generates a web page to navigate the generated outputs
   options:
     output: output.navigate_results.options.dict
+- name: output.navigate_results_rb
+  type: navigate_results_rb
+  comment: Generates a web page to navigate the generated outputs
+  options:
+    output: output.navigate_results_rb.options.dict
 - name: output.netlist
   type: netlist
   comment: Generates the list of connections for the project
   options:
     output: output.netlist.options.dict
+- name: output.odb
+  type: odb
+  comment: Exports the PCB in ODB++ format
+  options:
+    output: output.odb.options.dict
 - name: output.panelize
   type: panelize
   comment: Creates a panel to fabricate various copies of the PCB at once
@@ -298,6 +325,8 @@ outputs:
       repeat_layers:
       - inners
       - layer: output.pcb_print.options.dict.pages.dict.repeat_layers.dict
+    include_table: false
+    drill: false
 - name: output.pcb_variant
   type: pcb_variant
   comment: Creates a copy of the PCB with all the filters and variants applied

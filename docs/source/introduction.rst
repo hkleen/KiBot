@@ -40,8 +40,8 @@ So, for example, it’s common that you might want for each board rev to create/
 -  Fab docs for the assembler, including the BoM (Bill of Materials),
    costs spreadsheet and board view
 -  Pick and place files
--  PCB 3D model in STEP, VRML and PCB3D formats
--  PCB 3D render in PNG format
+-  PCB 3D model in STEP, VRML, STL, glTF, BRep, XAO and PCB3D formats
+-  PCB 3D render in PNG format (including high quality render using Blender)
 -  Compare PCB/SCHs
 -  Panelization
 -  Stencil creation

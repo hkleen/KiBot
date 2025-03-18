@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2020-2022 Salvador E. Tropea
-# Copyright (c) 2020-2022 Instituto Nacional de Tecnología Industrial
-# License: GPL-3.0
+# Copyright (c) 2020-2024 Salvador E. Tropea
+# Copyright (c) 2020-2024 Instituto Nacional de Tecnología Industrial
+# License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
 """
 KiCad v5 (and older) Schematic format.
@@ -21,7 +21,7 @@ from .error import SchError, SchFileError, SchLibError
 from ..gs import GS
 from ..misc import (W_BADPOLI, W_POLICOORDS, W_BADSQUARE, W_BADCIRCLE, W_BADARC, W_BADTEXT, W_BADPIN, W_BADCOMP, W_BADDRAW,
                     W_UNKDCM, W_UNKAR, W_ARNOPATH, W_ARNOREF, W_MISCFLD, W_EXTRASPC, W_NOLIB, W_INCPOS, W_NOANNO, W_MISSLIB,
-                    W_MISSDCM, W_MISSCMP, W_MISFLDNAME, W_NOENDLIB, try_decode_utf8)
+                    W_MISSDCM, W_MISSCMP, W_MISFLDNAME, W_NOENDLIB, W_VALMISMATCH, W_MULTIREF, try_decode_utf8)
 from .. import log
 
 logger = log.get_logger()
@@ -895,6 +895,8 @@ class SchematicComponent(object):
         self.qty = 1
         self.annotation_error = False
         self.net_name = self.net_class = ''
+        # The following is used by transform variants that creates components derived from another
+        self.parent_component = None
         # Position offset i.e. from the rotation filter
         self.pos_offset_x = self.pos_offset_y = None
         # KiCad 5 PCB flags (mutually exclusive)
@@ -912,10 +914,18 @@ class SchematicComponent(object):
         self.kicad_dnp = None       # Do Not Populate
         # Exclude from simulation is a field Sim.Enable
 
-    def get_field_value(self, field):
+    def get_field_value(self, field, lower=False):
+        if isinstance(field, list):
+            res = []
+            for f in field:
+                f = f.lower()
+                val = self.dfields[f].value if f in self.dfields else ''
+                res.append(val.lower() if lower else val)
+            return res
         field = field.lower()
         if field in self.dfields:
-            return self.dfields[field].value
+            val = self.dfields[field].value
+            return val.lower() if lower else val
         return ''
 
     def is_field(self, field):
@@ -960,6 +970,10 @@ class SchematicComponent(object):
         """ List of all the available field names for this component """
         return self.dfields.keys()
 
+    def get_real_field_names(self, names):
+        """ Returns the real names, using the lowercase ones """
+        return [self.dfields[n].name for n in names]
+
     def get_user_fields(self):
         """ Returns a list of tuples with the user defined fields (name, value) """
         return [(f.name, f.value) for f in self.fields if f.number > 3]
@@ -987,6 +1001,19 @@ class SchematicComponent(object):
             # No back-up. Make one for the next reset
             self.fields_bkp = deepcopy(self.fields)
             self.dfields_bkp = {f.name.lower(): f for f in self.fields_bkp}
+
+    def set_fitted(self, status):
+        self.fitted = status
+        if self.parent_component:
+            self.parent_component.set_fitted(status)
+
+    def set_fixed(self, status):
+        self.fixed = status
+        if self.parent_component:
+            self.parent_component.set_fixed(status)
+
+    def get_parent_ref(self):
+        return self.ref if not self.parent_component else self.parent_component.get_parent_ref()
 
     def _solve_ref(self, path):
         """ Look for the correct reference for this path.
@@ -1665,14 +1692,74 @@ class Schematic(object):
             files.update(sch.sheet.get_files())
         return sorted(files)
 
-    def get_components(self, exclude_power=True):
+    def check_repeated_ref(self, base_c, c):
+        """ Check the base and the new component are coherent.
+            Note that KiCad enforces it, fields for sub-units are the same.
+            This is an integrity check """
+        if base_c.value != c.value:
+            logger.warning(f"{W_VALMISMATCH}Two components with `{c.ref}` but different value")
+        if base_c.footprint != c.footprint:
+            logger.warning(f"{W_VALMISMATCH}Two components with `{c.ref}` but different footprint")
+
+    def get_components(self, exclude_power=True, collapse=True):
         """ A list of all the components. """
         if exclude_power:
             components = [c for c in self.components if not c.is_power]
         else:
             components = list(self.components)
         for sch in self.sheets:
-            components.extend(sch.sheet.get_components(exclude_power))
+            components.extend(sch.sheet.get_components(exclude_power, collapse))
+        if collapse:
+            # Here we handle: repeated references and sub-units
+            # For sub-units we keep one of them
+            # For repeated references we increase the "qty"
+            if GS.debug_level > 3:
+                logger.debug('Before collapse:')
+                for c in components:
+                    fields = {f.name: f.value for f in c.fields}
+                    logger.debug(f'{c}: {c.qty} {fields}')
+
+            new_comps = []
+            found_comps = {}
+            found_comps_u = {}
+            for c in components:
+                unit = c.unit or 0
+                if c.ref not in found_comps:
+                    # First time we see it
+                    found_comps_u[c.ref] = {unit: 1}
+                    found_comps[c.ref] = c
+                    new_comps.append(c)
+                    continue
+                # We already got this reference, increment the counter for this unit
+                known_units = found_comps_u[c.ref]
+                known_units[unit] = known_units.get(unit, 0)+1
+                self.check_repeated_ref(found_comps[c.ref], c)
+            # Adjust the qty member and keep the smaller unit number
+            components = []
+            for c in new_comps:
+                # Reset the PCB info, note that deepcopy of it is really slow
+                c.has_pcb_info = False
+                c.pad_properties = {}
+                units = found_comps_u[c.ref]
+                qty = max(units.values())
+                if len(units) == 1 and qty == 1:
+                    # No need to adjust details
+                    components.append(c)
+                    continue
+                # Adjust details using a copy
+                c = deepcopy(c)
+                c.qty = qty
+                logger.debug(c.qty)
+                if c.qty > 1:
+                    logger.warning(W_MULTIREF+f'multiple `{c.ref}` components, not all operations will work')
+                c.unit = min(units.keys())
+                components.append(c)
+
+            if GS.debug_level > 3:
+                logger.debug('After collapse:')
+                for c in components:
+                    fields = {f.name: f.value for f in c.fields}
+                    logger.debug(f'{c}: {c.qty} {fields}')
         components.sort(key=lambda g: g.ref)
         return components
 

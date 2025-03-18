@@ -1,0 +1,23 @@
+kibot:
+  version: 1
+
+variants:
+  - name: 'Test'
+    comment: 'Some useful comment'
+    type: kibom
+    file_id: '_Test'
+    variant: ''
+
+outputs:
+  - name: jobset
+    comment: "Test for KiCad jobset"
+    type: jobset
+    dir: jobset_out
+    options:
+      # jobset: pp/test.kicad_jobset
+      run_output: "cd8b8e48-4ea1-4456-aaaf-9de7a72a92f1"
+
+  - name: 'navigate'
+    comment: "Browse the results"
+    type: navigate_results_rb
+    run_by_default: false

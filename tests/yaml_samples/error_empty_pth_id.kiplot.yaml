@@ -1,0 +1,18 @@
+kibot:
+  version: 1
+
+outputs:
+
+  - name: excellon_drill
+    comment: "Excellon drill files"
+    type: excellon
+    dir: Drill
+    options:
+      generate_drill_files: false
+      pth_and_npth_single_file: false
+      pth_id: @PTH_ID@
+      map: 'pdf'
+
+...
+definitions:
+  PTH_ID:

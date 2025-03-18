@@ -1,0 +1,32 @@
+# Example KiBot config file
+kibot:
+  version: 1
+
+outputs:
+  - name: 'report_output_path_1'
+    comment: "Design report with output paths expansions"
+    type: report
+    output_id: _output_path_1
+    dir: report
+    options:
+      template: tests/data/report_output_path.txt
+
+  - name: 'report_output_path_2'
+    comment: "Design report with output paths expansions"
+    type: report
+    output_id: _output_path_2
+    dir: .
+    options:
+      template: tests/data/report_output_path.txt
+
+  - name: 'pcb_print_png'
+    comment: "Top & Bottom in PNG"
+    type: pcb_print
+    dir: png
+    options:
+      format: 'PNG'
+      pages:
+        - repeat_layers: 'copper'
+          repeat_for_layer: F.Cu
+          layers:
+            - layer: F.Cu

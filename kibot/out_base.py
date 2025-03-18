@@ -3,6 +3,7 @@
 # Copyright (c) 2020-2024 Instituto Nacional de Tecnología Industrial
 # License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
+from base64 import b64encode
 from copy import deepcopy
 import math
 import os
@@ -11,21 +12,23 @@ from shutil import rmtree
 from .bom.columnlist import ColumnList
 from .gs import GS
 from .kicad.pcb import replace_footprints
-from .kiplot import load_sch, get_board_comps_data
-from .misc import Rect, W_WRONGPASTE, DISABLE_3D_MODEL_TEXT, W_NOCRTYD, MOD_ALLOW_MISSING_COURTYARD, W_MISSDIR, W_KEEPTMP
+from .kicad.v6_sch import SchematicBitmapV6, Stroke, Color
+from .kiplot import get_all_components, look_for_output, get_output_targets, run_output
+from .misc import (Rect, W_WRONGPASTE, DISABLE_3D_MODEL_TEXT, W_NOCRTYD, MOD_ALLOW_MISSING_COURTYARD, W_MISSDIR, W_KEEPTMP,
+                   RENDERERS, read_png)
 if not GS.kicad_version_n:
     # When running the regression tests we need it
     from kibot.__main__ import detect_kicad
     detect_kicad()
 if GS.ki6:
     # New name, no alias ...
-    from pcbnew import wxPoint, LSET, FP_3DMODEL, ToMM
+    from pcbnew import FP_3DMODEL, LSET, ToMM, wxPoint
 else:
     from pcbnew import wxPoint, LSET, MODULE_3D_SETTINGS, ToMM
     FP_3DMODEL = MODULE_3D_SETTINGS
 from .registrable import RegOutput
 from .optionable import Optionable, BaseOptions
-from .fil_base import BaseFilter, apply_fitted_filter, reset_filters, apply_pre_transform
+from .fil_base import BaseFilter, apply_fitted_filter, reset_filters, apply_pre_transform, apply_exclude_filter
 from .kicad.config import KiConf
 from .macros import macros, document  # noqa: F401
 from .error import KiPlotConfigurationError
@@ -84,7 +87,8 @@ class BaseOutput(RegOutput):
             """ [string|list(string)=''] {comma_sep} The category for this output. If not specified an internally defined
                 category is used.
                 Categories looks like file system paths, i.e. **PCB/fabrication/gerber**.
-                The categories are currently used for `navigate_results` """
+                Using '.' or './' as a category puts the file at the root.
+                The categories are currently used for `navigate_results` and `navigate_results_rb` """
             self.priority = 50
             """ [0,100] Priority for this output. High priority outputs are created first.
                 Internally we use 10 for low priority, 90 for high priority and 50 for most outputs """
@@ -196,6 +200,10 @@ class BaseOutput(RegOutput):
     def fix_priority_help(self):
         self._help_priority = self._help_priority.replace('[number=50]', '[number={}]'.format(self.priority))
 
+    def get_csv_separator(self):
+        """ Default separator for CSV files """
+        return ','
+
     def run(self, output_dir):
         self.output_dir = output_dir
         output = self.options.output if hasattr(self.options, 'output') else ''
@@ -250,12 +258,21 @@ class VariantOptions(BaseOptions):
         with document:
             self.variant = ''
             """ Board variant to apply """
-            self.dnf_filter = Optionable
-            """ [string|list(string)='_null'] Name of the filter to mark components as not fitted.
-                A short-cut to use for simple cases where a variant is an overkill """
             self.pre_transform = Optionable
             """ [string|list(string)='_null'] Name of the filter to transform fields before applying other filters.
-                A short-cut to use for simple cases where a variant is an overkill """
+                Is a short-cut to use for simple cases where a variant is an overkill.
+                Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+                variant """
+            self.exclude_filter = Optionable
+            """ [string|list(string)='_null'] Name of the filter to exclude components from processing.
+                Is a short-cut to use for simple cases where a variant is an overkill.
+                Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+                variant """
+            self.dnf_filter = Optionable
+            """ [string|list(string)='_null'] Name of the filter to mark components as not fitted.
+                Is a short-cut to use for simple cases where a variant is an overkill.
+                Can be used to fine-tune a variant for a particular output that needs extra filtering done before the
+                variant """
         super().__init__()
         self._comps = None
         self._sub_pcb = None
@@ -263,17 +280,21 @@ class VariantOptions(BaseOptions):
         self._undo_3d_models_rep = {}
         self._highlight_3D_file = None
         self._highlighted_3D_components = None
+        # Use a condensed list of components. Repeated references are listed once. Sub-units are represented by one
+        self._collapse_components = True
 
     def config(self, parent):
         super().config(parent)
         self.variant = RegOutput.check_variant(self.variant)
         self.dnf_filter = BaseFilter.solve_filter(self.dnf_filter, 'dnf_filter')
         self.pre_transform = BaseFilter.solve_filter(self.pre_transform, 'pre_transform', is_transform=True)
+        self.exclude_filter = BaseFilter.solve_filter(self.exclude_filter, 'exclude_filter')
 
     def copy_options(self, ref):
         self.variant = ref.variant
         self.dnf_filter = ref.dnf_filter
         self.pre_transform = ref.pre_transform
+        self.exclude_filter = ref.exclude_filter
 
     def get_refs_hash(self):
         if not self._comps:
@@ -298,11 +319,14 @@ class VariantOptions(BaseOptions):
             return []
         return [c.ref for c in self._comps if c.fitted and c.included]
 
-    def get_not_fitted_refs(self):
+    def get_not_fitted_refs(self, parent=False):
         """ List of 'not fitted' components, also includes 'not included' """
         if not self._comps:
             return []
-        return [c.ref for c in self._comps if not c.fitted or not c.included]
+        if not parent:
+            return [c.ref for c in self._comps if not c.fitted or not c.included]
+        # Here we want only parent components
+        return list({c.get_parent_ref() for c in self._comps if not c.fitted or not c.included})
 
     def help_only_sub_pcbs(self):
         self.add_to_doc('variant', 'Used for sub-PCBs')
@@ -318,12 +342,13 @@ class VariantOptions(BaseOptions):
             The rect is a Rect object with the size.
             The layer is which layer id will be used.
             The angle is the cross angle, which matches the footprint. """
+        center = GS.p2v_k7(m.GetCenter())
         seg1 = GS.create_module_element(m)
         seg1.SetWidth(120000)
         seg1.SetStart(GS.p2v_k7(wxPoint(rect.x1, rect.y1)))
         seg1.SetEnd(GS.p2v_k7(wxPoint(rect.x2, rect.y2)))
         seg1.SetLayer(layer)
-        seg1.Rotate(GS.p2v_k7(seg1.GetCenter()), GS.angle(angle))
+        seg1.Rotate(center, GS.angle(angle))
         GS.footprint_update_local_coords(seg1)
         m.Add(seg1)
         seg2 = GS.create_module_element(m)
@@ -331,7 +356,7 @@ class VariantOptions(BaseOptions):
         seg2.SetStart(GS.p2v_k7(wxPoint(rect.x1, rect.y2)))
         seg2.SetEnd(GS.p2v_k7(wxPoint(rect.x2, rect.y1)))
         seg2.SetLayer(layer)
-        seg2.Rotate(GS.p2v_k7(seg2.GetCenter()), GS.angle(angle))
+        seg2.Rotate(center, GS.angle(angle))
         GS.footprint_update_local_coords(seg2)
         m.Add(seg2)
         return [seg1, seg2]
@@ -358,7 +383,8 @@ class VariantOptions(BaseOptions):
             if c and c.included and not c.fitted:
                 # Measure the component BBox (only graphics)
                 fp_angle = m.GetOrientationDegrees()
-                m.Rotate(GS.p2v_k7(m.GetCenter()), GS.angle(-fp_angle))
+                center = GS.p2v_k7(m.GetCenter())
+                m.Rotate(center, GS.angle(-fp_angle))
                 for gi in m.GraphicalItems():
                     if gi.GetClass() == GS.footprint_gr_type:
                         l_gi = gi.GetLayer()
@@ -366,8 +392,8 @@ class VariantOptions(BaseOptions):
                             frect.Union(GS.get_rect_for(gi.GetBoundingBox()))
                         if l_gi == bfab:
                             brect.Union(GS.get_rect_for(gi.GetBoundingBox()))
-                # Rotate the footprint back
-                m.Rotate(GS.p2v_k7(m.GetCenter()), GS.angle(fp_angle))
+                # Rotate the footprint back (using the same center)
+                m.Rotate(center, GS.angle(fp_angle))
                 # Cross the graphics in *.Fab
                 if frect.x1 is not None:
                     extra_tlay_lines.append(self.cross_module(m, frect, tlay, fp_angle))
@@ -433,7 +459,7 @@ class VariantOptions(BaseOptions):
         old_badhes = []
         old_fmask = []
         old_bmask = []
-        rescue = board.GetLayerID(GS.work_layer)
+        rescue = board.GetLayerID(GS.global_work_layer)
         fmask = board.GetLayerID('F.Mask')
         bmask = board.GetLayerID('B.Mask')
         if GS.global_remove_solder_mask_for_dnp:
@@ -442,7 +468,7 @@ class VariantOptions(BaseOptions):
         for m in GS.get_modules_board(board):
             ref = m.GetReference()
             c = comps_hash.get(ref, None)
-            if c and c.included and not c.fitted:
+            if c and not c.fitted:
                 # Remove all pads from *.Paste
                 if GS.global_remove_solder_paste_for_dnp or GS.global_remove_solder_mask_for_dnp:
                     old_c_layers = []
@@ -512,13 +538,16 @@ class VariantOptions(BaseOptions):
             for m in GS.get_modules_board(board):
                 ref = m.GetReference()
                 c = comps_hash.get(ref, None)
-                if c and c.included and not c.fitted:
+                if c and not c.fitted:
                     logger.debugl(3, '- Restoring paste/mask for '+ref)
                     restore = self._old_layers.pop(0)
                     for p in m.Pads():
                         pad_layers = p.GetLayerSet()
                         res = restore.pop(0)
-                        pad_layers.ParseHex(res, len(res))
+                        if GS.ki9:
+                            pad_layers.ParseHex(res)
+                        else:
+                            pad_layers.ParseHex(res, len(res))
                         p.SetLayerSet(pad_layers)
         if GS.global_remove_adhesive_for_dnp:
             for gi in self._old_fadhes:
@@ -531,43 +560,41 @@ class VariantOptions(BaseOptions):
             for gi in self._old_bmask:
                 gi.SetLayer(self._bmask)
 
-    def remove_fab(self, board, comps_hash):
-        """ Remove from Fab the excluded components. """
+    def remove_graphics_from_layer(self, board, comps_hash, layer_name):
+        """ Remove from layer_name the excluded components. """
         if comps_hash is None:
-            return
-        logger.debug('Removing from Fab')
-        ffab = board.GetLayerID('F.Fab')
-        bfab = board.GetLayerID('B.Fab')
-        old_ffab = []
-        old_bfab = []
-        rescue = board.GetLayerID(GS.work_layer)
+            return None, None
+        logger.debug(f'Removing from {layer_name}')
+        layer_id = board.GetLayerID(layer_name)
+        old_graphs = []
+        rescue = board.GetLayerID(GS.global_work_layer)
         for m in GS.get_modules_board(board):
             ref = m.GetReference()
             c = comps_hash.get(ref, None)
             if c is not None and not c.included:
-                logger.debugl(3, '- Removed Fab drawings from '+ref)
+                logger.debugl(3, f'- Removed {ref} drawings from {layer_name}')
                 # Remove any graphical item in the *.Fab layers
                 for gi in m.GraphicalItems():
                     l_gi = gi.GetLayer()
-                    if l_gi == ffab:
+                    if l_gi == layer_id:
                         gi.SetLayer(rescue)
-                        old_ffab.append(gi)
-                    if l_gi == bfab:
-                        gi.SetLayer(rescue)
-                        old_bfab.append(gi)
-        # Store the data to undo the above actions
-        self.old_ffab = old_ffab
-        self.old_bfab = old_bfab
-        self._ffab = ffab
-        self._bfab = bfab
+                        old_graphs.append(gi)
+        return layer_id, old_graphs
 
-    def restore_fab(self, board, comps_hash):
+    def remove_fab(self, board, comps_hash):
+        """ Remove from Fab the excluded components. """
+        self._ffab, self.old_ffab = self.remove_graphics_from_layer(board, comps_hash, 'F.Fab')
+        self._bfab, self.old_bfab = self.remove_graphics_from_layer(board, comps_hash, 'B.Fab')
+
+    def restore_graphics_from_layer(self, board, comps_hash, layer_id, graphs):
         if comps_hash is None:
             return
-        for gi in self.old_ffab:
-            gi.SetLayer(self._ffab)
-        for gi in self.old_bfab:
-            gi.SetLayer(self._bfab)
+        for gi in graphs:
+            gi.SetLayer(layer_id)
+
+    def restore_fab(self, board, comps_hash):
+        self.restore_graphics_from_layer(board, comps_hash, self._ffab, self.old_ffab)
+        self.restore_graphics_from_layer(board, comps_hash, self._bfab, self.old_bfab)
 
     def replace_3D_models(self, models, new_model, c):
         """ Changes the 3D model using a provided model.
@@ -632,7 +659,7 @@ class VariantOptions(BaseOptions):
             if c:
                 # The filter/variant knows about this component
                 models = m.Models()
-                if c.included and not c.fitted:
+                if not c.fitted:  # c.included was here, but the docs says this is for "BoM processing", not 3D
                     # Not fitted, remove the 3D model
                     rem_m_models = []
                     while not models.empty():
@@ -656,7 +683,7 @@ class VariantOptions(BaseOptions):
         for m in GS.get_modules_board(board):
             ref = m.GetReference()
             c = comps_hash.get(ref, None)
-            if c and c.included and not c.fitted:
+            if c and not c.fitted:
                 models = m.Models()
                 restore = self.rem_models.pop(0)
                 for model in reversed(restore):
@@ -843,10 +870,24 @@ class VariantOptions(BaseOptions):
         logger.debug(f'Replacing footprints from variant change {to_change}')
         replace_footprints(GS.pcb_file, to_change, logger, replace_pcb=False)
 
+    def add_parent_comps(self, c, comps):
+        if c.parent_component and c.parent_component.ref not in comps:
+            comps[c.parent_component.ref] = c.parent_component
+            self.add_parent_comps(c.parent_component, comps)
+
+    def include_parents(self, comps):
+        new_comps = {}
+        for ref, c in comps.items():
+            new_comps[ref] = c
+            self.add_parent_comps(c, new_comps)
+        return new_comps
+
     def filter_pcb_components(self, do_3D=False, do_2D=True, highlight=None):
         if not self.will_filter_pcb_components():
             return False
         self._comps_hash = self.get_refs_hash()
+        # As we will be comparing the reference split components won't match, so include their parents
+        self._comps_hash = self.include_parents(self._comps_hash)
         if self._sub_pcb:
             self._sub_pcb.apply(self._comps_hash)
         if self._comps:
@@ -973,11 +1014,23 @@ class VariantOptions(BaseOptions):
         logger.debug('- Modified PCB: '+fname)
         return fname
 
+    def save_tmp_sch_if_variant(self, force=False):
+        if self._comps or force:
+            # Save it to a temporal dir
+            sch_dir = GS.mkdtemp(self._expand_ext+'_sch_print')
+            GS.copy_project_sch(sch_dir)
+            fname = GS.sch.save_variant(sch_dir)
+            sch_file = os.path.join(sch_dir, fname)
+            self._files_to_remove.append(sch_dir)
+        else:
+            sch_file = GS.sch_file
+        return sch_file
+
     @staticmethod
     def save_tmp_dir_board(id, force_dir=None, forced_name=None):
         """ Save the PCB to a temporal dir.
             Disadvantage: all relative paths inside the file becomes useless
-            Aadvantage: the name of the file remains the same """
+            Advantage: the name of the file remains the same """
         pcb_dir = GS.mkdtemp(id) if force_dir is None else force_dir
         basename = forced_name if forced_name else GS.pcb_basename
         fname = os.path.join(pcb_dir, basename+'.kicad_pcb')
@@ -1027,12 +1080,7 @@ class VariantOptions(BaseOptions):
         if not self._filters_to_expand:
             return components
         new_list = []
-        if self._comps:
-            all_comps = self._comps
-        else:
-            load_sch()
-            all_comps = GS.sch.get_components()
-            get_board_comps_data(all_comps)
+        all_comps = self._comps if self._comps else get_all_components()
         # Scan the list to show
         for c in components:
             if isinstance(c, str):
@@ -1081,15 +1129,14 @@ class VariantOptions(BaseOptions):
     def load_list_components(self):
         """ Makes the list of components available """
         self._files_to_remove = []
-        if not self.dnf_filter and not self.variant and not self.pre_transform:
+        if not self.dnf_filter and not self.variant and not self.pre_transform and not self.exclude_filter:
             return
-        load_sch()
         # Get the components list from the schematic
-        comps = GS.sch.get_components()
-        get_board_comps_data(comps)
+        comps = get_all_components(collapse=self._collapse_components)
         # Apply the filter
         reset_filters(comps)
         comps = apply_pre_transform(comps, self.pre_transform)
+        apply_exclude_filter(comps, self.exclude_filter)
         apply_fitted_filter(comps, self.dnf_filter)
         # Apply the variant
         if self.variant:
@@ -1137,15 +1184,13 @@ class VariantOptions(BaseOptions):
         if not self._comps:
             # No variant or filter applied
             # Load the components
-            load_sch()
-            self._comps = GS.sch.get_components()
-            get_board_comps_data(self._comps)
+            self._comps = get_all_components()
         # If the component isn't listed by the user make it DNF
         show_components = set(self.expand_kf_components(self.show_components))
         self.undo_show = set()
         for c in self._comps:
             if c.ref not in show_components and c.fitted:
-                c.fitted = False
+                c.set_fitted(False)
                 self.undo_show.add(c.ref)
                 logger.debugl(2, '- Removing '+c.ref)
 
@@ -1155,7 +1200,111 @@ class VariantOptions(BaseOptions):
             return
         for c in self._comps:
             if c.ref in self.undo_show:
-                c.fitted = True
+                c.set_fitted(True)
+
+    def sch_replace_one_image(self, sheet, box, output_name, box_index):
+        """ Replace one image in the schematic, see sch_replace_images """
+        # Get the image file name
+        logger.debugl(2, f"- Looking for output {output_name} images")
+        output_obj = look_for_output(output_name, '`sch print image`', self._parent, RENDERERS)
+        targets, _, _ = get_output_targets(output_name, self._parent)
+        targets = [fn for fn in targets if fn.endswith('.png')]
+        if not targets:
+            raise KiPlotConfigurationError("{self.desc_box(box)} uses `{output_name}` which doesn't"
+                                           " generate any PNG")
+        fname = targets[0]
+        logger.debugl(2, f"- Related image: {fname}")
+        if not os.path.exists(fname):
+            # The target doesn't exist
+            if not output_obj._done:
+                # The output wasn't created in this run, try running it
+                logger.debug('- Not yet generated, tying to generate it')
+                run_output(output_obj)
+        if not os.path.exists(fname):
+            raise KiPlotConfigurationError("Failed to generate `{fname}` for {self.desc_box(box)}`")
+        logger.debugl(2, "- Reading image")
+        # Add the image to the SCH
+        try:
+            s, w, h, dpi = read_png(fname, logger, only_size=False)
+        except TypeError as e:
+            raise KiPlotConfigurationError(f'Error reading {fname} size: {e} for {self.desc_box(box)}')
+        # Check if we already have an image there
+        old_img_index = -1
+        old_img = None
+        new_images = []
+        for index, img in enumerate(sheet.bitmaps):
+            if abs(img.pos_x-box.size.x/2-box.pos_x) < 0.1 and abs(img.pos_y-box.size.y/2-box.pos_y) < 0.1:
+                old_img_index = index
+                old_img = img
+            else:
+                new_images.append(img)
+        sheet.bitmaps = new_images
+        if old_img_index > 0:
+            logger.debugl(2, "- Replacing existing image")
+        # Put the image
+        img_w = w/dpi*25.4
+        img_h = h/dpi*25.4
+        logger.debugl(2, f'- PNG: {w}x{h} px {dpi} PPIs {img_w}x{img_h} mm')
+        logger.debugl(2, f'- Box: {box.pos_x},{box.pos_y} +{box.size.x},{box.size.y} mm')
+        scale = box.size.x/img_w
+        logger.debugl(2, f'- Scale {scale}')
+        bmp = SchematicBitmapV6()
+        bmp.pos_x = box.pos_x + box.size.x/2
+        bmp.pos_y = box.pos_y + (img_h*scale)/2
+        bmp.scale = scale
+        bmp.uuid = ''
+        data = b64encode(s).decode('ascii')
+        bmp.data = [data[i:i+76] for i in range(0, len(data), 76)]
+        # Append the new image
+        sheet.bitmaps.append(bmp)
+        old_box = deepcopy(box)
+        sheet._replaced_images.append((old_img_index, old_box, old_img, box_index))
+        # Ensure the box is invisible
+        transparent = Color()
+        transparent.r = 255
+        transparent.a = 0
+        new_stroke = Stroke()
+        new_stroke.color = transparent
+        box.stroke = new_stroke
+        box.effects.color = transparent
+        box.effects.w = box.effects.h = 0
+        # Adjust the box height
+        box.size.y = img_h*scale
+        return True
+
+    def sch_replace_images(self, sch):
+        """ Used by outputs that support replacing 'kibot_image_OUTPUT' in schematics """
+        if not GS.global_sch_image_prefix or GS.ki5:
+            return False
+        logger.debug("Replacing images in schematic")
+        res = False
+        key = GS.global_sch_image_prefix+'_'
+        key_l = len(key)
+        for s in GS.sch.all_sheets:
+            s._replaced_images = []
+            for index, b in enumerate(s.text_boxes):
+                text = b.text.strip()
+                if text.startswith(key):
+                    res |= self.sch_replace_one_image(s, b, text[key_l:], index)
+        return res
+
+    def sch_restore_images(self, sch):
+        """ Used to undo sch_replace_images """
+        if not GS.global_sch_image_prefix or GS.ki5:
+            return False
+        logger.debug("Restoring images in schematic")
+        key = GS.global_sch_image_prefix+'_'
+        len(key)
+        for s in GS.sch.all_sheets:
+            for (index, box, img, box_index) in reversed(s._replaced_images):
+                s.text_boxes[box_index] = box
+                if index < 0:
+                    # Was appended
+                    s.bitmaps.pop()
+                else:
+                    # Put the original image back
+                    s.bitmaps[index] = img
+            s._replaced_images = None
 
 
 class PcbMargin(Optionable):

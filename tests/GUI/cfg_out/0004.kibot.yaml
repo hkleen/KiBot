@@ -7,23 +7,48 @@ preflight:
   check_fields:
     field: References
   check_zone_fills: false
-  draw_fancy_stackup: true
-  draw_stackup: true
-  drc: true
-  erc: true
+  consolidate_pcbs:
+    name: preflight.consolidate_pcbs.consolidate_pcbs.dict
+    file: first_pcb.kicad_pcb
+  draw_fancy_stackup:
+    pos_x: 20
+    columns:
+    - width: 20
+  draw_stackup:
+    pos_x: 20
+    columns:
+    - separator: ','
+  drc:
+    schematic_parity: false
+    format: HTML,RPT
+    filters:
+    - filter: preflight.drc.filters.dict
+      error: lib_symbol_issues
+  erc:
+    dir: preflight.erc
+    format: HTML,RPT
+    filters:
+    - filter: preflight.erc.filters.dict
+      error: lib_symbol_issues
   erc_warnings: false
   fill_zones: false
   filters:
   - filter: preflight.filters.filters.dict
     error: lib_symbol_issues
   ignore_unconnected: false
-  include_table: true
+  include_table:
+    outputs:
+    - bom_html
+    - bom_csv
+    - name: preflight.include_table.outputs.dict
   pcb_replace:
     date_command: preflight.pcb_replace
     replace_tags:
       tag: preflight.pcb_replace.replace_tags.dict
-  run_drc: true
-  run_erc: true
+  run_drc:
+    dir: preflight.run_drc
+  run_erc:
+    dir: preflight.run_erc
   sch_replace:
     date_command: preflight.sch_replace
     replace_tags:
@@ -34,7 +59,8 @@ preflight:
   update_pcb_characteristics: false
   update_qr: false
   update_stackup: false
-  update_xml: true
+  update_xml:
+    check_pcb_parity: true
 outputs:
 - name: bom_html
   comment: Bill of Materials in HTML format

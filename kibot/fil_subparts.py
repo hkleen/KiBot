@@ -24,11 +24,17 @@ class DistributorsList(Optionable):
 
 @filter_class
 class Subparts(BaseFilter):  # noqa: F821
-    """ Subparts
+    """ Subparts (**Deprecated**)
         This filter implements the KiCost subparts mechanism.
         It allows to have more than one part in the same schematic symbol.
         Some people use it to include connectors and cables related to a connector in the PCB.
-        [KiCost docs](https://hildogjr.github.io/KiCost/docs/_build/singlehtml/index.html) """
+        [KiCost docs](https://hildogjr.github.io/KiCost/docs/_build/singlehtml/index.html).
+        Its use is discouraged, if you want to include extra stuff in your BoM there are much better
+        mechanisms. You can consolidate extra information from a CSV or complementary schematic.
+        Also consider specifying this filter as a local filter for particular outputs (like `bom`),
+        use the `pre_transform` option.
+        You can also explicitly add extra components in the schematic and mark them as not for the
+        PCB """
     def __init__(self):
         super().__init__()
         self._is_transform = True
@@ -155,6 +161,7 @@ class Subparts(BaseFilter):  # noqa: F821
         alt_values_len = len(alt_values)
         for i in range(max_num_subparts):
             new_comp = deepcopy(comp)
+            new_comp.parent_component = comp
             if multi_part:
                 # Adjust the reference name
                 if self.use_ref_sep_for_first:

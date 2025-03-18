@@ -1,4 +1,4 @@
-.. _PCB_ReplaceOptions:
+.. _PCB_ReplaceOptions_pre:
 
 
 PCB_ReplaceOptions parameters
@@ -15,7 +15,7 @@ PCB_ReplaceOptions parameters
                    This command will work only if you have a date in the PCB/Schematic. |br|
 ..
 
--  ``replace_tags`` :index:`: <pair: preflight - pcb_replace - pcb_replace; replace_tags>`  [:ref:`TagReplacePCB parameters <TagReplacePCB>`] [:ref:`dict <dict>` | :ref:`list(dict) <list(dict)>`] (default: ``[]``) Tag or tags to replace.
+-  ``replace_tags`` :index:`: <pair: preflight - pcb_replace - pcb_replace; replace_tags>`  [:ref:`TagReplacePCB parameters <TagReplacePCB_pre>`] [:ref:`dict <dict>` | :ref:`list(dict) <list(dict)>`] (default: ``[]``) Tag or tags to replace.
 
 .. toctree::
    :caption: Used dicts

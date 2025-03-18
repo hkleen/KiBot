@@ -1,0 +1,6 @@
+# Example KiBot config file
+kibot:
+  version: 1
+
+preflight:
+  drc: true

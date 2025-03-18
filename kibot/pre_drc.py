@@ -7,10 +7,10 @@
 import csv
 import io
 import os
-from .pre_any_xrc import DRCOptions, XRC, UNITS_2_KICAD
+from .pre_any_xrc import DRCOptions, XRC
 from .macros import macros, document, pre_class  # noqa: F401
 from .gs import GS
-from .misc import W_DRC, W_FILXRC
+from .misc import W_DRC, W_FILXRC, UNITS_2_KICAD
 from .log import get_logger
 logger = get_logger(__name__)
 JSON_SECTIONS = ('violations', 'unconnected_items', 'schematic_parity')
@@ -110,13 +110,17 @@ class DRC(XRC):  # noqa: F821
         # HTML Head
         html = self.create_html_top(data)
         # Generate the content
+        empty = True
         for section in JSON_SECTIONS:
             violations = data.get(section, [])
             if not violations:
                 continue
+            empty = False
             name = SECTION_HUMAN[section]
             html += f'<p class="subtitle">{name}</p>\n'
             html += self.create_html_violations(violations)
+        if empty:
+            html += self.create_html_ok()
         html += self.create_html_bottom()
         return html
 
@@ -168,7 +172,15 @@ class DRC(XRC):  # noqa: F821
             cmd.append('--schematic-parity')
         if self._all_track_errors:
             cmd.append('--all-track-errors')
-        cmd.append(GS.pcb_file)
+        if BasePreFlight.get_option('check_zone_fills') and not BasePreFlight.get_option('fill_zones'):  # noqa: F821
+            # We need to fill zones, but not change the current PCB
+            fname = GS.tmp_file(suffix='.kicad_pcb', dir=GS.pcb_dir, what='modified PCB', a_logger=logger)
+            GS.board.Save(fname)
+            GS.copy_project(fname)
+            self._files_to_remove.extend(GS.get_pcb_and_pro_names(fname))
+        else:
+            fname = GS.pcb_file
+        cmd.append(fname)
         return cmd
 
     @staticmethod

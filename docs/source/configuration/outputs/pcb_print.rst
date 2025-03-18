@@ -8,6 +8,7 @@ PCB Print
 
 Prints the PCB using a mechanism that is more flexible than `pdf_pcb_print` and `svg_pcb_print`.
 Supports PDF, SVG, PNG, EPS and PS formats. |br|
+You can add images generated other outputs to your print, see :ref:`add_print_images`. |br|
 
 .. note::
    `colored_vias` and `colored_pads` usually involves a zones refill. To avoid side
@@ -33,12 +34,13 @@ Parameters:
 -  **options** :index:`: <pair: output - pcb_print; options>`  [:ref:`PCB_PrintOptions parameters <PCB_PrintOptions>`] [:ref:`dict <dict>`] (default: empty dict, default values used) Options for the `pcb_print` output.
 -  **type** :index:`: <pair: output - pcb_print; type>` 'pcb_print'
 -  ``category`` :index:`: <pair: output - pcb_print; category>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``''``) [:ref:`comma separated <comma_sep>`] The category for this output. If not specified an internally defined
-   category is used.
-   Categories looks like file system paths, i.e. **PCB/fabrication/gerber**.
-   The categories are currently used for `navigate_results`.
+   category is used. |br|
+   Categories looks like file system paths, i.e. **PCB/fabrication/gerber**. |br|
+   Using '.' or './' as a category puts the file at the root. |br|
+   The categories are currently used for `navigate_results` and `navigate_results_rb`.
 
 -  ``disable_run_by_default`` :index:`: <pair: output - pcb_print; disable_run_by_default>` [:ref:`string <string>` | :ref:`boolean <boolean>`] (default: ``''``) Use it to disable the `run_by_default` status of other output.
-   Useful when this output extends another and you don't want to generate the original.
+   Useful when this output extends another and you don't want to generate the original. |br|
    Use the boolean true value to disable the output you are extending.
 -  ``extends`` :index:`: <pair: output - pcb_print; extends>` [:ref:`string <string>`] (default: ``''``) Copy the `options` section from the indicated output.
    Used to inherit options from another output of the same type.

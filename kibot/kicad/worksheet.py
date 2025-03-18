@@ -13,7 +13,6 @@ Documentation: https://dev-docs.kicad.org/en/file-formats/sexpr-worksheet/
 """
 from base64 import b64decode
 import io
-from struct import unpack
 from pcbnew import wxPoint, wxSize, FromMM, wxPointMM
 from ..gs import GS
 if not GS.kicad_version_n:
@@ -34,7 +33,7 @@ from .sexpdata import load, dumps, SExpData
 from .sexp_helpers import (_check_is_symbol_list, _check_float, _check_integer, _check_symbol_value, _check_str, _check_symbol,
                            _check_relaxed, _get_points, _check_symbol_str, Color)
 from ..svgutils.transform import ImageElement, GroupElement
-from ..misc import W_WKSVERSION
+from ..misc import W_WKSVERSION, read_png
 from .. import log
 
 logger = log.get_logger()
@@ -425,33 +424,10 @@ class WksBitmap(WksDrawing):
         p.images.append(e)
 
     def parse_png(e):
-        s = e.data
-        offset = 8
-        ppi = 300
-        w = h = -1
-        if s[0:8] != b'\x89PNG\r\n\x1a\n':
-            raise WksError('Image is not a PNG')
-        logger.debugl(2, 'Parsing PNG chunks')
-        while offset < len(s):
-            size, type = unpack('>L4s', s[offset:offset+8])
-            logger.debugl(2, f'- Chunk {type} ({size})')
-            if type == b'IHDR':
-                w, h = unpack('>LL', s[offset+8:offset+16])
-                logger.debugl(2, f'  - Size {w}x{h}')
-            elif type == b'pHYs':
-                dpi_w, dpi_h, units = unpack('>LLB', s[offset+8:offset+17])
-                if dpi_w != dpi_h:
-                    raise WksError(f'PNG with different resolution for X and Y ({dpi_w} {dpi_h})')
-                if units != 1:
-                    raise WksError(f'PNG with unknown units ({units})')
-                ppi = dpi_w/(100/2.54)
-                logger.debugl(2, f'  - PPI {ppi} ({dpi_w} {dpi_h} {units})')
-                break
-            elif type == b'IEND':
-                break
-            offset += size+12
-        if w == -1:
-            raise WksError('Broken PNG, no IHDR chunk')
+        try:
+            _, w, h, ppi = read_png(e.data, logger, only_size=False)
+        except TypeError as e:
+            raise WksError(str(e))
         return w, h, ppi
 
     def add_to_svg(e, svg, p, svg_precision):
@@ -524,7 +500,8 @@ class Worksheet(object):
             elif e_type == 'tbtext':
                 obj = WksText.parse(e)
                 if not version:
-                    obj.text = text_from_ki5(obj.text)
+                    # Translate KiCad 5 %X markers, and also change the sexp tree
+                    e[1] = obj.text = text_from_ki5(obj.text)
                 elements.append(obj)
             elif e_type == 'polygon':
                 elements.append(WksPolygon.parse(e))

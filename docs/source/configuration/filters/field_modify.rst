@@ -16,8 +16,8 @@ Field Modifier
       Applied to all if nothing specified here.
 
    -  ``regex`` :index:`: <pair: filter - field_modify; regex>` [:ref:`string <string>`] (default: ``'(https?://\\S+)'``) Regular expression to match the field content.
-      Only fields that matches will be modified.
-      An empty regex will match anything.
+      Only fields that matches will be modified. |br|
+      An empty regex will match anything. |br|
       The example matches an HTTP URL.
    -  ``replace`` :index:`: <pair: filter - field_modify; replace>` [:ref:`string <string>`] (default: ``'<a href="\\1">\\1</a>'``) Text to replace, can contain references to sub-expressions.
       The example converts an HTTP URL into an HTML link, like the URLify filter.

@@ -95,7 +95,8 @@ class Run_ERC(BasePreFlight):  # noqa: F821
         try:
             move(tmp_name, output)
         except FileNotFoundError:
-            logger.error(' Oops!')
+            if ret <= 127:
+                logger.error('Missing ERC report')
         if ret:
             if ret > 127:
                 ret = -(256-ret)

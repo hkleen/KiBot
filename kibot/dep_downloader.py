@@ -74,10 +74,9 @@ Dependencies:
     github: INTI-CMNB/KiKit
     pypi: KiKit
     downloader: pytool
-    version: 1.3.0.4
-    comments:
-      - Official 1.3.0 release does not work, use my fork if 1.3.0 is the latest
-      - You can also try the official 1.4.0 release
+    version_k6: 1.5.0
+    version_k7: 1.6.0
+    version_k9: 1.7.0
   - from: KiKit
     role: Separate multiboard projects
   - name: Xvfbwrapper
@@ -892,7 +891,7 @@ GS.check_tool_dep_get_ver = check_tool_dep_get_ver
 
 class ToolDependencyRole(object):
     """ Class used to define the role of a tool """
-    def __init__(self, desc=None, version=None, output=None, max_version=None):
+    def __init__(self, desc=None, version=None, output=None, max_version=None, all_versions=None):
         # Is this tool mandatory
         self.mandatory = desc is None
         # If not mandatory, for what?
@@ -900,6 +899,7 @@ class ToolDependencyRole(object):
         # Which version is needed?
         self.version = version
         self.max_version = max_version
+        self.all_versions = all_versions
         # Which output needs it?
         self.output = output
 
@@ -958,6 +958,22 @@ class ToolDependency(object):
         self.role = role
 
 
+def get_dep_version(dep):
+    # Look if we have a version depending on KiCad version
+    k_ver = GS.kicad_version_major
+    all_versions = {kv: dep['version_k'+str(kv)] for kv in range(5, 25) if 'version_k'+str(kv) in dep}
+    version = None
+    while k_ver >= 5 and version is None:
+        version = dep.get('version_k'+str(k_ver), None)
+        k_ver -= 1
+    # Try a version for all KiCad versions
+    if version is None:
+        version = dep.get('version', None)
+    if version is not None:
+        version = version_str2tuple(str(version))
+    return all_versions, version
+
+
 def register_dep(context, dep):
     # Solve inheritance
     parent = dep.get('from', None)
@@ -974,13 +990,11 @@ def register_dep(context, dep):
     desc = dep['role']
     if desc.lower() == 'mandatory':
         desc = None
-    version = dep.get('version', None)
-    if version is not None:
-        version = version_str2tuple(str(version))
+    all_versions, version = get_dep_version(dep)
     max_version = dep.get('max_version', None)
     if max_version is not None:
         max_version = version_str2tuple(str(max_version))
-    role = ToolDependencyRole(desc=desc, version=version, max_version=max_version)
+    role = ToolDependencyRole(desc=desc, version=version, max_version=max_version, all_versions=all_versions)
     # Solve the URLs
     github = dep.get('github', None)
     url_def = url_down_def = None

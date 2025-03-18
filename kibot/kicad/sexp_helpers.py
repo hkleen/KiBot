@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2021-2024 Salvador E. Tropea
-# Copyright (c) 2021-2024 Instituto Nacional de Tecnología Industrial
+# Copyright (c) 2021-2025 Salvador E. Tropea
+# Copyright (c) 2021-2025 Instituto Nacional de Tecnología Industrial
 # License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
 from .error import SchError
@@ -109,9 +109,17 @@ def _check_symbol(items, pos, name):
 
 
 def _check_hide(items, pos, name):
-    value = _check_symbol(items, pos, name + ' hide')
+    # hide alone as a symbol or (hide yes/no)
+    value = _check_len(items, pos, name)
+    name += ' hide'
+    if isinstance(value, list):
+        hide = _check_symbol(value, 0, name)
+        if hide != 'hide':
+            raise SchError(f'Found Symbol `{hide}` when `hide` expected')
+        return _get_yes_no(value, 1, name)
+    value = _check_symbol(items, pos, name)
     if value != 'hide':
-        raise SchError('Found Symbol `{}` when `hide` expected'.format(value))
+        raise SchError(f'Found Symbol `{value}` when `hide` expected')
     return True
 
 
@@ -127,6 +135,13 @@ def _check_float(items, pos, name):
     if not isinstance(value, (float, int)):
         raise SchError('{} is not a float `{}`'.format(name, value))
     return value
+
+
+def _check_floats(items, pos, name):
+    value = _check_len(items, pos, name)
+    if not isinstance(value, (float, int)):
+        raise SchError('{} is not a float `{}`'.format(name, value))
+    return items[pos:]
 
 
 def _check_str(items, pos, name):

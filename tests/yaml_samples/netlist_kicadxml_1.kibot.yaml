@@ -1,0 +1,10 @@
+kibot:
+  version: 1
+
+outputs:
+  - name: xml_netlist
+    comment: Schematic netlist in KiCad XML format
+    type: netlist
+    dir: Export
+    options:
+      format: kicadxml

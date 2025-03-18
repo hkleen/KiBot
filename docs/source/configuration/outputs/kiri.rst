@@ -26,19 +26,20 @@ Parameters:
 -  **dir** :index:`: <pair: output - kiri; dir>` [:ref:`string <string>`] (default: ``'./'``) Output directory for the generated files.
    If it starts with `+` the rest is concatenated to the default dir.
 -  **layers** :index:`: <pair: output - kiri; layers>`  [:ref:`Layer parameters <Layer>`] [:ref:`list(dict) <list(dict)>` | :ref:`list(string) <list(string)>` | :ref:`string <string>`] (default: ``'all'``) (choices: "all", "selected", "copper", "technical", "user", "inners", "outers") (also accepts any string) List
-   of PCB layers to use. When empty all available layers are used.
+   of PCB layers to use. When empty all available layers are used. |br|
    Note that if you want to support adding/removing layers you should specify a list here.
 -  **name** :index:`: <pair: output - kiri; name>` [:ref:`string <string>`] (default: ``''``) Used to identify this particular output definition.
    Avoid using `_` as first character. These names are reserved for KiBot.
 -  **options** :index:`: <pair: output - kiri; options>`  [:ref:`KiRiOptions parameters <KiRiOptions>`] [:ref:`dict <dict>`] (default: empty dict, default values used) Options for the `diff` output.
 -  **type** :index:`: <pair: output - kiri; type>` 'kiri'
 -  ``category`` :index:`: <pair: output - kiri; category>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``''``) [:ref:`comma separated <comma_sep>`] The category for this output. If not specified an internally defined
-   category is used.
-   Categories looks like file system paths, i.e. **PCB/fabrication/gerber**.
-   The categories are currently used for `navigate_results`.
+   category is used. |br|
+   Categories looks like file system paths, i.e. **PCB/fabrication/gerber**. |br|
+   Using '.' or './' as a category puts the file at the root. |br|
+   The categories are currently used for `navigate_results` and `navigate_results_rb`.
 
 -  ``disable_run_by_default`` :index:`: <pair: output - kiri; disable_run_by_default>` [:ref:`string <string>` | :ref:`boolean <boolean>`] (default: ``''``) Use it to disable the `run_by_default` status of other output.
-   Useful when this output extends another and you don't want to generate the original.
+   Useful when this output extends another and you don't want to generate the original. |br|
    Use the boolean true value to disable the output you are extending.
 -  ``extends`` :index:`: <pair: output - kiri; extends>` [:ref:`string <string>`] (default: ``''``) Copy the `options` section from the indicated output.
    Used to inherit options from another output of the same type.

@@ -329,6 +329,11 @@ W_NOTHREPE = '(W165) '
 W_LANGNOTA = '(W166) '
 W_NOVIAS = '(W167) '
 W_NOMATCHGRP = '(W168) '
+W_NOBOMOPS = '(W169) '
+W_NODRILL = '(W170) '
+W_NOPCBTB = '(W171) '
+W_DEFNOSTR = '(W172) '
+W_CONVPDF = '(W173) '
 # Somehow arbitrary, the colors are real, but can be different
 PCB_MAT_COLORS = {'fr1': "937042", 'fr2': "949d70", 'fr3': "adacb4", 'fr4': "332B16", 'fr5': "6cc290"}
 PCB_FINISH_COLORS = {'hal': "8b898c", 'hasl': "8b898c", 'imag': "8b898c", 'enig': "cfb96e", 'enepig': "cfb96e",
@@ -346,7 +351,7 @@ SOLDER_COLORS = {'green': ("#285e3a", "#208b47"),
 SILK_COLORS = {'black': "0b1013", 'white': "d5dce4"}
 # Some browser name to pretend, popular at the moment
 # https://techblog.willshouse.com/2012/01/03/most-common-user-agents/ on 2024-10-22
-USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36'
+USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36'
 # Old value, caused problems with Zscaler
 # USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101 Firefox/102.0'
 # Text used to disable 3D models
@@ -354,6 +359,7 @@ DISABLE_3D_MODEL_TEXT = '_Disabled_by_KiBot'
 RENDERERS = ['pcbdraw', 'render_3d', 'blender_export']
 PCB_GENERATORS = ['pcb_variant', 'panelize']
 KIKIT_UNIT_ALIASES = {'millimeters': 'mm', 'inches': 'inch', 'mils': 'mil'}
+UNITS_2_KICAD = {'millimeters': 'mm', 'inches': 'in', 'mils': 'mils'}
 FONT_HELP_TEXT = ('\n        Important: If you use custom fonts and/or colors please consult the `resources_dir` '
                   'global variable.')
 # CSS style for HTML tables used by BoM and ERC
@@ -391,6 +397,8 @@ STYLE_COMMON = (" .cell-title { vertical-align: bottom; }\n"
                 " .color-ref th { text-align: left }\n"
                 " .color-ref td { padding: 5px 20px; }\n"
                 " .head-table { margin-bottom: 2em; }\n"
+                # Style the centered checkmark
+                " .centered-checkmark { font-size: 30vw; text-align: center; color: green; }\n"
                 # Table sorting cursor. 60% transparent when disabled. Solid white when enabled.
                 " .tg-sort-header::-moz-selection{background:0 0}\n"
                 " .tg-sort-header::selection{background:0 0}.tg-sort-header{cursor:pointer}\n"
@@ -552,13 +560,42 @@ def version_str2tuple(ver):
     return tuple(map(int, ver.split('.')))
 
 
-def read_png(file):
-    with open(file, 'rb') as f:
-        s = f.read()
-    if not (s[:8] == b'\x89PNG\r\n\x1a\n' and (s[12:16] == b'IHDR')):
-        return None, None, None
-    w, h = unpack('>LL', s[16:24])
-    return s, w, h
+def read_png(file, logger, only_size=True):
+    if isinstance(file, str):
+        with open(file, 'rb') as f:
+            s = f.read()
+    else:
+        # The data itself as bytes
+        s = file
+    offset = 8
+    ppi = 300
+    w = h = -1
+    if s[0:8] != b'\x89PNG\r\n\x1a\n':
+        raise TypeError('Image is not a PNG')
+    logger.debugl(2, 'Parsing PNG chunks')
+    while offset < len(s):
+        size, type = unpack('>L4s', s[offset:offset+8])
+        logger.debugl(2, f'- Chunk {type} ({size})')
+        if type == b'IHDR':
+            w, h = unpack('>LL', s[offset+8:offset+16])
+            logger.debugl(2, f'  - Size {w}x{h}')
+            if only_size:
+                return s, w, h, ppi
+        elif type == b'pHYs':
+            dpi_w, dpi_h, units = unpack('>LLB', s[offset+8:offset+17])
+            if dpi_w != dpi_h:
+                raise TypeError(f'PNG with different resolution for X and Y ({dpi_w} {dpi_h})')
+            if units != 1:
+                raise TypeError(f'PNG with unknown units ({units})')
+            ppi = dpi_w/(100/2.54)
+            logger.debugl(2, f'  - PPI {ppi} ({dpi_w} {dpi_h} {units})')
+            break
+        elif type == b'IEND':
+            break
+        offset += size+12
+    if w == -1:
+        raise TypeError('Broken PNG, no IHDR chunk')
+    return s, w, h, ppi
 
 
 def force_list(v):

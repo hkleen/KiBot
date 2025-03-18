@@ -11,7 +11,7 @@ This preflight modifies the PCB and schematic, use it only in revision control e
 Used to assign references according to footprint coordinates. |br|
 The project must be fully annotated first
 
-   -  **annotate_pcb** :index:`: <pair: preflight - annotate_pcb; annotate_pcb>`  [:ref:`Annotate_PCBOptions parameters <Annotate_PCBOptions>`] [:ref:`dict <dict>`] (default: empty dict, default values used)  Options for the `annotate_pcb` preflight.
+   -  **annotate_pcb** :index:`: <pair: preflight - annotate_pcb; annotate_pcb>`  [:ref:`Annotate_PCBOptions parameters <Annotate_PCBOptions_pre>`] [:ref:`dict <dict>`] (default: empty dict, default values used)  Options for the `annotate_pcb` preflight.
 
 .. toctree::
    :caption: Used dicts

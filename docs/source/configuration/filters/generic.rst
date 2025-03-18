@@ -18,7 +18,7 @@ Generic filter
    -  ``config_separators`` :index:`: <pair: filter - generic; config_separators>` [:ref:`string <string>`] (default: ``' ,'``) Characters used to separate options inside the config field.
    -  ``exclude_all_hash_ref`` :index:`: <pair: filter - generic; exclude_all_hash_ref>` [:ref:`boolean <boolean>`] (default: ``false``) Exclude all components with a reference starting with #.
    -  ``exclude_any`` :index:`: <pair: filter - generic; exclude_any>`  [:ref:`BoMRegex parameters <BoMRegex_fi>`] [:ref:`list(dict) <list(dict)>`] (default: ``[]``) A series of regular expressions used to exclude parts.
-      If a component matches ANY of these, it will be excluded.
+      If a component matches ANY of these, it will be excluded. |br|
       Column names are case-insensitive.
    -  ``exclude_bottom`` :index:`: <pair: filter - generic; exclude_bottom>` [:ref:`boolean <boolean>`] (default: ``false``) Exclude components on the bottom side of the PCB.
    -  ``exclude_config`` :index:`: <pair: filter - generic; exclude_config>` [:ref:`boolean <boolean>`] (default: ``false``) Exclude components containing a key value in the config field.
@@ -36,13 +36,13 @@ Generic filter
    -  ``exclude_value`` :index:`: <pair: filter - generic; exclude_value>` [:ref:`boolean <boolean>`] (default: ``false``) Exclude components if their 'Value' is any of the keys.
    -  ``exclude_virtual`` :index:`: <pair: filter - generic; exclude_virtual>` [:ref:`boolean <boolean>`] (default: ``false``) Exclude components marked as virtual in the PCB.
    -  ``include_only`` :index:`: <pair: filter - generic; include_only>`  [:ref:`BoMRegex parameters <BoMRegex_fi>`] [:ref:`list(dict) <list(dict)>`] (default: ``[]``) A series of regular expressions used to include parts.
-      If there are any regex defined here, only components that match against ANY of them will be included.
-      Column/field names are case-insensitive.
+      If there are any regex defined here, only components that match against ANY of them will be included. |br|
+      Column/field names are case-insensitive. |br|
       If empty this rule is ignored.
    -  ``invert`` :index:`: <pair: filter - generic; invert>` [:ref:`boolean <boolean>`] (default: ``false``) Invert the result of the filter.
    -  ``keys`` :index:`: <pair: filter - generic; keys>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``'dnf_list'``) (choices: "dnc_list", "dnf_list") (also accepts any string) List of keys to match.
-      The `dnf_list` and `dnc_list` internal lists can be specified as strings.
-      Use `dnf_list` for ['dnf', 'dnl', 'dnp', 'do not fit', 'do not load', 'do not place', 'no stuff', 'nofit', 'noload', 'noplace', 'nostuff', 'not fitted', 'not loaded', 'not placed'].
+      The `dnf_list` and `dnc_list` internal lists can be specified as strings. |br|
+      Use `dnf_list` for ['dnf', 'dnl', 'dnp', 'do not fit', 'do not load', 'do not place', 'no stuff', 'nofit', 'noload', 'noplace', 'nostuff', 'not fitted', 'not loaded', 'not placed']. |br|
       Use `dnc_list` for ['dnc', 'do not change', 'fixed', 'no change'].
 
 

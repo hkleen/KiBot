@@ -1,0 +1,10 @@
+kibot:
+  version: 1
+
+outputs:
+  - name: orcad_netlist
+    comment: Schematic netlist in OrCadPCB2 format
+    type: netlist
+    dir: Export
+    options:
+      format: orcadpcb2

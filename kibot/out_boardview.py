@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2021-2024 Salvador E. Tropea
-# Copyright (c) 2021-2024 Instituto Nacional de Tecnología Industrial
-# Copyright (c) 2018-2024 @whitequark
+# Copyright (c) 2021-2025 Salvador E. Tropea
+# Copyright (c) 2021-2025 Instituto Nacional de Tecnología Industrial
+# Copyright (c) 2018-2025 @whitequark
 # License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
 # Adapted from: https://github.com/whitequark/kicad-boardview
 import re
 from pcbnew import SHAPE_POLY_SET, PAD_SHAPE_CIRCLE
 from .gs import GS
+from .kiplot import get_all_components
 from .misc import UI_SMD, UI_VIRTUAL
 from .out_base import VariantOptions
 from .macros import macros, document, output_class  # noqa: F401
@@ -249,6 +250,38 @@ def convert_bvr(pcb, bvr):
     bvr.write(outline_pts)
 
 
+def convert_obdata(pcb, obdata, comps_hash):
+    obdata.write("COMPONENTS_DATA_START\n")
+    obdata.write("### Component Category Value Comment\n")
+    obdata.write("### v = value, p = package, c = manufacturer code, r = rating, m = misc, s = status\n")
+    obdata.write("###\n")
+
+    for module in GS.get_modules():
+        ref = module.GetReference()
+        libid = module.GetFPID()
+        package = libid.GetUniStringLibId()
+        value = module.GetValue()
+
+        package = re.sub(r'^.*:', '', package)
+
+        obdata.write(f"{ref} p {package}\n")
+        if comps_hash and ref in comps_hash:
+            c = comps_hash[ref]
+            if not c.fitted or not c.included:
+                obdata.write(f"{ref} s -\n")
+            if GS.global_field_part_number:
+                for pn in GS.global_field_part_number:
+                    mpn = c.get_field_value(pn)
+                    if mpn:
+                        obdata.write(f"{ref} c {mpn}\n")
+        elif GS.ki8 and module.IsDNP():
+            obdata.write(f"{ref} s -\n")
+        obdata.write(f"{ref} v {value}\n")
+
+    obdata.write("COMPONENTS_DATA_END\n")
+    obdata.write("### END")
+
+
 class BoardViewOptions(VariantOptions):
     def __init__(self):
         with document:
@@ -258,8 +291,10 @@ class BoardViewOptions(VariantOptions):
             """ Sort components by reference. Disable this option to get a file closer to what
                 kicad-boardview generates """
             self.format = 'BRD'
-            """ [BRD,BVR] Format used for the generated file. The BVR file format is bigger but keeps
-                more information, like alphanumeric pin names """
+            """ [BRD,BVR,OBDATA] Format used for the generated file. The BVR file format is bigger but keeps
+                more information, like alphanumeric pin names.
+                OBDATA is the OpenBoardData format. You can include the manufacturer part number defining the global
+                `field_part_number` variable. Excluded and not fitted components are marked with `-` status """
         super().__init__()
         self._expand_id = 'boardview'
         self._expand_ext = 'brd'
@@ -275,6 +310,17 @@ class BoardViewOptions(VariantOptions):
         with open(output, 'wt') as f:
             if self.format == 'BRD':
                 convert_brd(GS.board, f, self.sorted)
+            elif self.format == 'OBDATA':
+                # We can include the manufacturer part number
+                # For this we need the components hash
+                if not self._comps:
+                    # No variant or filter, get the values
+                    self._comps = get_all_components()
+                    refs_hash = self.get_refs_hash()
+                    self._comps = None
+                else:
+                    refs_hash = self.get_refs_hash()
+                convert_obdata(GS.board, f, refs_hash)
             else:
                 convert_bvr(GS.board, f)
         self.unfilter_pcb_components()

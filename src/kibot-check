@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-# Copyright (c) 2022 Salvador E. Tropea
-# Copyright (c) 2022 Instituto Nacional de Tecnología Industrial
+# Copyright (c) 2022-2025 Salvador E. Tropea
+# Copyright (c) 2022-2025 Instituto Nacional de Tecnología Industrial
 # License: GPL-3.0
 # Project: KiBot (formerly KiPlot)
 #
@@ -43,6 +43,7 @@ deps = '{\
         "pypi_name": "Bash",\
         "role": [\
             {\
+                "all_versions": {},\
                 "desc": "Run external commands to create replacement text",\
                 "mandatory": false,\
                 "max_version": null,\
@@ -50,6 +51,7 @@ deps = '{\
                 "version": null\
             },\
             {\
+                "all_versions": {},\
                 "desc": "Run external commands to create replacement text",\
                 "mandatory": false,\
                 "max_version": null,\
@@ -57,6 +59,7 @@ deps = '{\
                 "version": null\
             },\
             {\
+                "all_versions": {},\
                 "desc": "Run external commands to create replacement text",\
                 "mandatory": false,\
                 "max_version": null,\
@@ -91,6 +94,7 @@ deps = '{\
         "pypi_name": "Blender",\
         "role": [\
             {\
+                "all_versions": {},\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
@@ -130,6 +134,7 @@ deps = '{\
         "pypi_name": "Colorama",\
         "role": [\
             {\
+                "all_versions": {},\
                 "desc": "Get color messages in a portable way",\
                 "mandatory": false,\
                 "max_version": null,\
@@ -152,7 +157,7 @@ deps = '{\
         "extra_checks": null,\
         "extra_deb": null,\
         "help_option": "--version",\
-        "importance": 2,\
+        "importance": 3,\
         "in_debian": true,\
         "is_kicad_plugin": false,\
         "is_python": false,\
@@ -164,6 +169,7 @@ deps = '{\
         "pypi_name": "Ghostscript",\
         "role": [\
             {\
+                "all_versions": {},\
                 "desc": "Create outputs preview",\
                 "mandatory": false,\
                 "max_version": null,\
@@ -171,6 +177,15 @@ deps = '{\
                 "version": null\
             },\
             {\
+                "all_versions": {},\
+                "desc": "Create outputs preview",\
+                "mandatory": false,\
+                "max_version": null,\
+                "output": "navigate_results_rb",\
+                "version": null\
+            },\
+            {\
+                "all_versions": {},\
                 "desc": "Create PNG, PS and EPS formats",\
                 "mandatory": false,\
                 "max_version": null,\
@@ -193,7 +208,7 @@ deps = '{\
         "extra_checks": null,\
         "extra_deb": null,\
         "help_option": "--version",\
-        "importance": 7,\
+        "importance": 8,\
         "in_debian": true,\
         "is_kicad_plugin": false,\
         "is_python": false,\
@@ -205,6 +220,7 @@ deps = '{\
         "pypi_name": "Git",\
         "role": [\
             {\
+                "all_versions": {},\
                 "desc": "Compare with files in the repo",\
                 "mandatory": false,\
                 "max_version": null,\
@@ -212,6 +228,7 @@ deps = '{\
                 "version": null\
             },\
             {\
+                "all_versions": {},\
                 "desc": "Find commit hash and/or date",\
                 "mandatory": false,\
                 "max_version": null,\
@@ -219,6 +236,7 @@ deps = '{\
                 "version": null\
             },\
             {\
+                "all_versions": {},\
                 "desc": "Compare with files in the repo",\
                 "mandatory": false,\
                 "max_version": null,\
@@ -226,6 +244,7 @@ deps = '{\
                 "version": null\
             },\
             {\
+                "all_versions": {},\
                 "desc": "Find origin url",\
                 "mandatory": false,\
                 "max_version": null,\
@@ -233,6 +252,15 @@ deps = '{\
                 "version": null\
             },\
             {\
+                "all_versions": {},\
+                "desc": "Find origin url",\
+                "mandatory": false,\
+                "max_version": null,\
+                "output": "navigate_results_rb",\
+                "version": null\
+            },\
+            {\
+                "all_versions": {},\
                 "desc": "Find commit hash and/or date",\
                 "mandatory": false,\
                 "max_version": null,\
@@ -240,6 +268,7 @@ deps = '{\
                 "version": null\
             },\
             {\
+                "all_versions": {},\
                 "desc": "Find commit hash and/or date",\
                 "mandatory": false,\
                 "max_version": null,\
@@ -247,6 +276,7 @@ deps = '{\
                 "version": null\
             },\
             {\
+                "all_versions": {},\
                 "desc": "Find commit hash and/or date",\
                 "mandatory": false,\
                 "max_version": null,\
@@ -273,7 +303,7 @@ deps = '{\
         ],\
         "extra_deb": null,\
         "help_option": "--version",\
-        "importance": 5,\
+        "importance": 6,\
         "in_debian": true,\
         "is_kicad_plugin": false,\
         "is_python": false,\
@@ -285,6 +315,7 @@ deps = '{\
         "pypi_name": "ImageMagick",\
         "role": [\
             {\
+                "all_versions": {},\
                 "desc": "Automatically crop images",\
                 "mandatory": false,\
                 "max_version": null,\
@@ -292,6 +323,7 @@ deps = '{\
                 "version": null\
             },\
             {\
+                "all_versions": {},\
                 "desc": "Create outputs preview",\
                 "mandatory": false,\
                 "max_version": null,\
@@ -299,6 +331,15 @@ deps = '{\
                 "version": null\
             },\
             {\
+                "all_versions": {},\
+                "desc": "Create outputs preview",\
+                "mandatory": false,\
+                "max_version": null,\
+                "output": "navigate_results_rb",\
+                "version": null\
+            },\
+            {\
+                "all_versions": {},\
                 "desc": "Create monochrome prints and scaled PNG files",\
                 "mandatory": false,\
                 "max_version": null,\
@@ -306,6 +347,7 @@ deps = '{\
                 "version": null\
             },\
             {\
+                "all_versions": {},\
                 "desc": "Create JPG and BMP images",\
                 "mandatory": false,\
                 "max_version": null,\
@@ -313,6 +355,7 @@ deps = '{\
                 "version": null\
             },\
             {\
+                "all_versions": {},\
                 "desc": "Automatically crop images",\
                 "mandatory": false,\
                 "max_version": null,\
@@ -352,6 +395,7 @@ deps = '{\
         "pypi_name": "Interactive HTML BoM",\
         "role": [\
             {\
+                "all_versions": {},\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
@@ -390,6 +434,7 @@ deps = '{\
         "pypi_name": "KiBoM",\
         "role": [\
             {\
+                "all_versions": {},\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
@@ -428,6 +473,7 @@ deps = '{\
         "pypi_name": "kiauto",\
         "role": [\
             {\
+                "all_versions": {},\
                 "desc": "Compare schematics",\
                 "mandatory": false,\
                 "max_version": null,\
@@ -439,17 +485,19 @@ deps = '{\
                 ]\
             },\
             {\
+                "all_versions": {},\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
                 "output": "dxf_sch_print",\
                 "version": [\
                     2,\
-                    1,\
-                    1\
+                    3,\
+                    4\
                 ]\
             },\
             {\
+                "all_versions": {},\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
@@ -461,17 +509,19 @@ deps = '{\
                 ]\
             },\
             {\
+                "all_versions": {},\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
                 "output": "hpgl_sch_print",\
                 "version": [\
                     2,\
-                    1,\
-                    1\
+                    3,\
+                    4\
                 ]\
             },\
             {\
+                "all_versions": {},\
                 "desc": "Show KiAuto installation information",\
                 "mandatory": false,\
                 "max_version": null,\
@@ -483,6 +533,7 @@ deps = '{\
                 ]\
             },\
             {\
+                "all_versions": {},\
                 "desc": "Compare schematics",\
                 "mandatory": false,\
                 "max_version": null,\
@@ -494,6 +545,7 @@ deps = '{\
                 ]\
             },\
             {\
+                "all_versions": {},\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
@@ -505,6 +557,7 @@ deps = '{\
                 ]\
             },\
             {\
+                "all_versions": {},\
                 "desc": "Print the page frame in GUI mode",\
                 "mandatory": false,\
                 "max_version": null,\
@@ -516,6 +569,7 @@ deps = '{\
                 ]\
             },\
             {\
+                "all_versions": {},\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
@@ -527,28 +581,31 @@ deps = '{\
                 ]\
             },\
             {\
+                "all_versions": {},\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
                 "output": "pdf_sch_print",\
                 "version": [\
                     2,\
-                    1,\
-                    1\
+                    3,\
+                    4\
                 ]\
             },\
             {\
+                "all_versions": {},\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
                 "output": "ps_sch_print",\
                 "version": [\
                     2,\
-                    1,\
-                    1\
+                    3,\
+                    4\
                 ]\
             },\
             {\
+                "all_versions": {},\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
@@ -560,6 +617,7 @@ deps = '{\
                 ]\
             },\
             {\
+                "all_versions": {},\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
@@ -571,6 +629,7 @@ deps = '{\
                 ]\
             },\
             {\
+                "all_versions": {},\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
@@ -582,17 +641,19 @@ deps = '{\
                 ]\
             },\
             {\
+                "all_versions": {},\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
                 "output": "svg_sch_print",\
                 "version": [\
                     2,\
-                    1,\
-                    1\
+                    3,\
+                    4\
                 ]\
             },\
             {\
+                "all_versions": {},\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
@@ -604,6 +665,7 @@ deps = '{\
                 ]\
             },\
             {\
+                "all_versions": {},\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
@@ -615,6 +677,7 @@ deps = '{\
                 ]\
             },\
             {\
+                "all_versions": {},\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
@@ -626,6 +689,7 @@ deps = '{\
                 ]\
             },\
             {\
+                "all_versions": {},\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
@@ -637,6 +701,7 @@ deps = '{\
                 ]\
             },\
             {\
+                "all_versions": {},\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
@@ -675,6 +740,7 @@ deps = '{\
         "pypi_name": "kidiff",\
         "role": [\
             {\
+                "all_versions": {},\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
@@ -686,6 +752,7 @@ deps = '{\
                 ]\
             },\
             {\
+                "all_versions": {},\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
@@ -724,6 +791,7 @@ deps = '{\
         "pypi_name": "KiCost",\
         "role": [\
             {\
+                "all_versions": {},\
                 "desc": "Find components costs and specs",\
                 "mandatory": false,\
                 "max_version": null,\
@@ -735,6 +803,7 @@ deps = '{\
                 ]\
             },\
             {\
+                "all_versions": {},\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
@@ -753,10 +822,7 @@ deps = '{\
     "KiKit": {\
         "arch": null,\
         "command": "kikit",\
-        "comments": [\
-            "Official 1.3.0 release does not work, use my fork if 1.3.0 is the latest",\
-            "You can also try the official 1.4.0 release"\
-        ],\
+        "comments": [],\
         "deb_package": "kikit",\
         "downloader": {},\
         "downloader_str": "pytool",\
@@ -776,50 +842,67 @@ deps = '{\
         "pypi_name": "KiKit",\
         "role": [\
             {\
+                "all_versions": {\
+                    "6": "1.5.0",\
+                    "7": "1.6.0",\
+                    "9": "1.7.0"\
+                },\
                 "desc": "Separate multiboard projects",\
                 "mandatory": false,\
                 "max_version": null,\
                 "output": "global",\
                 "version": [\
                     1,\
-                    3,\
-                    0,\
-                    4\
+                    6,\
+                    0\
                 ]\
             },\
             {\
+                "all_versions": {\
+                    "6": "1.5.0",\
+                    "7": "1.6.0",\
+                    "9": "1.7.0"\
+                },\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
                 "output": "panelize",\
                 "version": [\
                     1,\
-                    5,\
-                    1\
+                    6,\
+                    0\
                 ]\
             },\
             {\
+                "all_versions": {\
+                    "6": "1.5.0",\
+                    "7": "1.6.0",\
+                    "9": "1.7.0"\
+                },\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
                 "output": "stencil_3d",\
                 "version": [\
                     1,\
-                    3,\
-                    0,\
-                    4\
+                    6,\
+                    0\
                 ]\
             },\
             {\
+                "all_versions": {\
+                    "6": "1.5.0",\
+                    "7": "1.6.0",\
+                    "9": "1.7.0"\
+                },\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
                 "output": "stencil_for_jig",\
                 "version": [\
                     1,\
-                    3,\
-                    0,\
-                    4\
+                    6,\
+                    0\
                 ]\
             }\
         ],\
@@ -851,6 +934,7 @@ deps = '{\
         "pypi_name": "LXML",\
         "role": [\
             {\
+                "all_versions": {},\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
@@ -858,6 +942,7 @@ deps = '{\
                 "version": null\
             },\
             {\
+                "all_versions": {},\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
@@ -893,6 +978,7 @@ deps = '{\
         "pypi_name": "Lark",\
         "role": [\
             {\
+                "all_versions": {},\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
@@ -927,6 +1013,7 @@ deps = '{\
         "pypi_name": "OpenSCAD",\
         "role": [\
             {\
+                "all_versions": {},\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
@@ -934,6 +1021,7 @@ deps = '{\
                 "version": null\
             },\
             {\
+                "all_versions": {},\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
@@ -976,6 +1064,7 @@ deps = '{\
         "pypi_name": "Pandoc",\
         "role": [\
             {\
+                "all_versions": {},\
                 "desc": "Create PDF/ODF/DOCX files",\
                 "mandatory": false,\
                 "max_version": null,\
@@ -1011,6 +1100,7 @@ deps = '{\
         "pypi_name": "PyYAML",\
         "role": [\
             {\
+                "all_versions": {},\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
@@ -1046,6 +1136,7 @@ deps = '{\
         "pypi_name": "QRCodeGen",\
         "role": [\
             {\
+                "all_versions": {},\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
@@ -1080,6 +1171,7 @@ deps = '{\
         "pypi_name": "RAR",\
         "role": [\
             {\
+                "all_versions": {},\
                 "desc": "Compress in RAR format",\
                 "mandatory": false,\
                 "max_version": null,\
@@ -1102,7 +1194,7 @@ deps = '{\
         "extra_checks": null,\
         "extra_deb": null,\
         "help_option": "--version",\
-        "importance": 5,\
+        "importance": 7,\
         "in_debian": true,\
         "is_kicad_plugin": false,\
         "is_python": false,\
@@ -1114,6 +1206,7 @@ deps = '{\
         "pypi_name": "RSVG tools",\
         "role": [\
             {\
+                "all_versions": {},\
                 "desc": "SVG logos for the BoM",\
                 "mandatory": false,\
                 "max_version": null,\
@@ -1121,6 +1214,7 @@ deps = '{\
                 "version": null\
             },\
             {\
+                "all_versions": {},\
                 "desc": "Create outputs preview",\
                 "mandatory": false,\
                 "max_version": null,\
@@ -1128,6 +1222,7 @@ deps = '{\
                 "version": null\
             },\
             {\
+                "all_versions": {},\
                 "desc": "Create PNG icons",\
                 "mandatory": false,\
                 "max_version": null,\
@@ -1135,6 +1230,23 @@ deps = '{\
                 "version": null\
             },\
             {\
+                "all_versions": {},\
+                "desc": "Create outputs preview",\
+                "mandatory": false,\
+                "max_version": null,\
+                "output": "navigate_results_rb",\
+                "version": null\
+            },\
+            {\
+                "all_versions": {},\
+                "desc": "Create PNG icons",\
+                "mandatory": false,\
+                "max_version": null,\
+                "output": "navigate_results_rb",\
+                "version": null\
+            },\
+            {\
+                "all_versions": {},\
                 "desc": "Create PDF, PNG, PS and EPS formats",\
                 "mandatory": false,\
                 "max_version": null,\
@@ -1142,6 +1254,7 @@ deps = '{\
                 "version": null\
             },\
             {\
+                "all_versions": {},\
                 "desc": "Create PNG, JPG and BMP images",\
                 "mandatory": false,\
                 "max_version": null,\
@@ -1187,6 +1300,7 @@ deps = '{\
         "pypi_name": "Requests",\
         "role": [\
             {\
+                "all_versions": {},\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
@@ -1222,6 +1336,7 @@ deps = '{\
         "pypi_name": "XLSXWriter",\
         "role": [\
             {\
+                "all_versions": {},\
                 "desc": "Create XLSX files",\
                 "mandatory": false,\
                 "max_version": null,\
@@ -1260,6 +1375,7 @@ deps = '{\
         "pypi_name": "Xvfb",\
         "role": [\
             {\
+                "all_versions": {},\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
@@ -1267,6 +1383,7 @@ deps = '{\
                 "version": null\
             },\
             {\
+                "all_versions": {},\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
@@ -1302,6 +1419,7 @@ deps = '{\
         "pypi_name": "Xvfbwrapper",\
         "role": [\
             {\
+                "all_versions": {},\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
@@ -1309,6 +1427,7 @@ deps = '{\
                 "version": null\
             },\
             {\
+                "all_versions": {},\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
@@ -1344,6 +1463,7 @@ deps = '{\
         "pypi_name": "markdown2",\
         "role": [\
             {\
+                "all_versions": {},\
                 "desc": null,\
                 "mandatory": true,\
                 "max_version": null,\
@@ -1379,6 +1499,7 @@ deps = '{\
         "pypi_name": "numpy",\
         "role": [\
             {\
+                "all_versions": {},\
                 "desc": "Automatically adjust SVG margin",\
                 "mandatory": false,\
                 "max_version": null,\
@@ -1548,6 +1669,21 @@ def check_tests(tests):
     return False
 
 
+def get_version(r):
+    single = r['version']
+    if not single:
+        return single
+    all = r['all_versions']
+    if not all:
+        return single
+    k_ver = kicad_version[0]
+    version = None
+    while k_ver >= 5 and version is None:
+        version = all.get(str(k_ver), None)
+        k_ver -= 1
+    return list(map(do_int, version.split('.'))) if version is not None else single
+
+
 def check_version(version, roles, no_ver=False, tests=None):
     res = ver_re.search(version)
     if res:
@@ -1565,7 +1701,8 @@ def check_version(version, roles, no_ver=False, tests=None):
         glb = r['output'] == 'global'
         this_sever = 0
         max_version = r.get('max_version')
-        if not_avail or (r['version'] and ver < r['version']) or (max_version and ver >= max_version):
+        version = get_version(r)
+        if not_avail or (version and ver < version) or (max_version and ver >= max_version):
             if mandatory:
                 this_sever = 4 if glb else 3
             else:
@@ -1637,8 +1774,9 @@ def show_roles(roles):
             print(RESET+'  - Optional to:')
             for o in optional:
                 ver = ''
-                if o['version']:
-                    ver = ' (v'+'.'.join(map(str, o['version']))+')'
+                version = get_version(o)
+                if version:
+                    ver = ' (v'+'.'.join(map(str, version))+')'
                 print(sev2color(o['sev'])+'    - {} for {}{}'.format(o['desc'], o['output'], ver))
 
 
@@ -1835,7 +1973,7 @@ if kicad_ok:
         version = 'Older than 5.1.6'
 else:
     version = NOT_AVAIL
-if kicad_version >= (5, 1, 6) and kicad_version < (8, 99):
+if kicad_version >= (5, 1, 6) and kicad_version < (9, 99):
     sev = 0
 else:
     sev = 4

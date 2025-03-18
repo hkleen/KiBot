@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2020-2024 Salvador E. Tropea
-# Copyright (c) 2020-2024 Instituto Nacional de Tecnología Industrial
+# Copyright (c) 2020-2025 Salvador E. Tropea
+# Copyright (c) 2020-2025 Instituto Nacional de Tecnología Industrial
 # Copyright (c) 2018 John Beard
 # License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
@@ -10,8 +10,9 @@
 Usage:
   kibot [-b BOARD] [-e SCHEMA] [-c CONFIG] [-d OUT_DIR] [-s PRE]
          [-q | -v...] [-L LOGFILE] [-C | -i | -n] [-m MKFILE] [-A] [-g DEF] ...
-         [-E DEF] ... [--defs-from-env] [-w LIST] [-D | -W] [--warn-ci-cd]
-         [--banner N] [--gui | --internal-check] [-I INJECT] [TARGET...]
+         [-E DEF] ... [--defs-from-env] [--defs-from-project] [-w LIST] [-D | -W]
+         [--warn-ci-cd] [--banner N] [--gui | --internal-check] [-I INJECT]
+         [--variant VAR] ... [TARGET...]
   kibot [-v...] [-b BOARD] [-e SCHEMA] [-c PLOT_CONFIG] [--banner N]
          [-E DEF] ... [--defs-from-env] [--config-outs]
          [--only-pre|--only-groups] [--only-names] [--output-name-first] --list
@@ -49,6 +50,8 @@ Options:
   -D, --dont-stop                  Try to continue if an output fails
   --defs-from-env                  Use the environment vars as preprocessor
                                    values
+  --defs-from-project              Use the KiCad vars as preprocessor values.
+                                   They are stored in the project file
   -e SCHEMA, --schematic SCHEMA    The schematic file (.sch/.kicad_sch)
   -E DEF, --define DEF             Define preprocessor value (VAR=VAL)
   -g DEF, --global-redef DEF       Overwrite a global value (VAR=VAL)
@@ -78,6 +81,13 @@ Options:
   --sub-pcbs                       When listing variants also include sub-PCBs
   -v, --verbose                    Show debugging information
   -V, --version                    Show program's version number and exit
+  --variant VAR                    Generate the VAR variant. Can be specified
+                                   multiple times to generate more than one
+                                   variant. Specifying ALL (uppercase) will
+                                   generate all available variants.
+                                   If you also want to generate the default
+                                   case, no variant, include NONE in the
+                                   list of variants
   -w, --no-warn LIST               Exclude the mentioned warnings (comma sep)
   -W, --stop-on-warnings           Stop on warnings
   --warn-ci-cd                     Don't disable warnings expected on CI/CD
@@ -114,6 +124,8 @@ import platform
 import re
 import sys
 from sys import path as sys_path
+import warnings
+warnings.filterwarnings('ignore', message='.*SWIG-based Python.*', module='pcbnew')
 from . import __version__, __copyright__, __license__
 # Import log first to set the domain
 from . import log
@@ -302,7 +314,8 @@ def detect_kicad():
     GS.ki6 = GS.kicad_version_major >= 6
     GS.ki6_only = GS.kicad_version_major == 6
     GS.ki7 = GS.kicad_version_major >= 7
-    GS.ki8 = (GS.kicad_version_major == 7 and GS.kicad_version_minor >= 99) or GS.kicad_version_major >= 8
+    GS.ki8 = GS.kicad_version_major >= 8
+    GS.ki9 = GS.kicad_version_major >= 9
     GS.footprint_gr_type = 'MGRAPHIC' if not GS.ki8 else 'PCB_SHAPE'
     GS.board_gr_type = 'DRAWSEGMENT' if GS.ki5 else 'PCB_SHAPE'
     GS.footprint_update_local_coords = GS.dummy1 if GS.ki8 else GS.footprint_update_local_coords_ki7
@@ -323,8 +336,7 @@ def detect_kicad():
             GS.kicad_share_path = GS.kicad_share_path.replace('/kicad/', '/kicad-nightly/')
             GS.kicad_dir = 'kicad-nightly'
         GS.pro_ext = '.kicad_pro'
-        # KiCad 6 doesn't support the Rescue layer
-        GS.work_layer = 'User.9'
+        # KiCad 6+ doesn't support the Rescue layer, they can save it to disk, but can't load it
     else:
         # Bug in KiCad (#6989), prints to stderr:
         # `../src/common/stdpbase.cpp(62): assert "traits" failed in Get(test_dir): create wxApp before calling this`
@@ -333,7 +345,6 @@ def detect_kicad():
         with hide_stderr():
             GS.kicad_conf_path = pcbnew.GetKicadConfigPath()
         GS.pro_ext = '.pro'
-        GS.work_layer = 'Rescue'
     # Dirs to look for plugins
     GS.kicad_plugins_dirs = []
     # /usr/share/kicad/*
@@ -365,6 +376,8 @@ def detect_kicad():
 def parse_defines(args):
     if args.defs_from_env:
         GS.cli_defines.update(os.environ)
+    if args.defs_from_project:
+        GS.cli_defines.update(GS.load_pro_variables())
     for define in args.define:
         if '=' not in define:
             GS.exit_with_error(f'Malformed `define` option, must be VARIABLE=VALUE ({define})', EXIT_BAD_ARGS)
@@ -594,9 +607,56 @@ def main():
         from .GUI.analyze import analyze
         analyze()
     else:
-        # Do all the job (preflight + outputs)
-        generate_outputs(args.target, args.invert_sel, args.skip_pre, args.cli_order, args.no_priority,
-                         dont_stop=args.dont_stop)
+        if args.variant:
+            # One or more variants specified at the CLI
+            if 'ALL' in args.variant:
+                variants = list(RegOutput.get_variants().keys())
+                if 'NONE' in args.variant:
+                    variants.insert(0, 'NONE')
+                if not variants:
+                    GS.exit_with_error('Asking to generate ALL variants, but no variant defined', EXIT_BAD_ARGS)
+                args.variant = variants
+            logger.debug(f'Generating variants: {args.variant}')
+            # Check the list of variants is valid and find their objects
+            solved_variants = {}
+            for variant in args.variant:
+                if variant == 'NONE':
+                    solved_variants[''] = None
+                else:
+                    solved_variants[variant] = RegOutput.check_variant(variant)
+            # Now iterate all of them
+            first = True
+            for var_name, var_obj in solved_variants.items():
+                logger.info(f'Variant `{var_name}`:')
+                GS.variant = GS.global_variant = var_name
+                GS.solved_global_variant = var_obj
+                if first:
+                    first = False
+                else:
+                    # Reset all outputs
+                    for o in RegOutput.get_outputs():
+                        old_tree = o._tree
+                        o.__init__()
+                        o.set_tree(old_tree)
+                    # Preflights aren't "variantic", so skip all of them for the rest of variants
+                    args.skip_pre = 'all'
+                generate_outputs(args.target, args.invert_sel, args.skip_pre, args.cli_order, args.no_priority,
+                                 dont_stop=args.dont_stop)
+            return 0
+        else:
+            # Do all the job (preflight + outputs)
+            if False:
+                import cProfile
+                logger.error('Start')
+                with cProfile.Profile() as pr:
+                    generate_outputs(args.target, args.invert_sel, args.skip_pre, args.cli_order, args.no_priority,
+                                     dont_stop=args.dont_stop)
+                    pr.print_stats(sort='time')
+                    pr.print_stats(sort='cumulative')
+                logger.error('End')
+            else:
+                generate_outputs(args.target, args.invert_sel, args.skip_pre, args.cli_order, args.no_priority,
+                                 dont_stop=args.dont_stop)
     # Print total warnings
     logger.log_totals()
 

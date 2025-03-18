@@ -208,7 +208,7 @@ class IBoMOptions(VariantOptions):
             # Plugin could be installed without execute flags
             cmd.insert(0, 'python3')
         # Apply variants/filters
-        to_remove = ','.join(self.get_not_fitted_refs())
+        to_remove = ','.join(self.get_not_fitted_refs(parent=True))
         if self.blacklist and to_remove:
             self.blacklist += ','
         self.blacklist += to_remove
@@ -217,7 +217,8 @@ class IBoMOptions(VariantOptions):
         template = IBoMOptions()
         for k, v in template.get_attrs_gen():
             v = getattr(self, k)
-            if not v or k in ['output', 'variant', 'dnf_filter', 'pre_transform', 'hide_excluded', 'forced_name']:
+            if not v or k in ['output', 'variant', 'dnf_filter', 'exclude_filter', 'pre_transform', 'hide_excluded',
+                              'forced_name']:
                 continue
             if k == 'offset_back_rotation' and version < (2, 5, 0, 2):
                 continue

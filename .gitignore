@@ -42,3 +42,26 @@ ojo/
 .cache
 .cache_3d
 log
+.*~
+*.dst
+
+# Gerber specs that can't be uploaded to GitHub
+info/Gerber/
+
+# Nice images, but too big
+experiments/resistor_colors/resistor_tht-3D_top.png
+experiments/resistor_colors/resistor_tht-3D_blender_top.png
+
+# Random experiments
+experiments/GenCad/
+experiments/Hellen-One/
+experiments/JLC/
+experiments/SVG/
+experiments/__doc__/modules/
+experiments/grammar/
+experiments/kicad/ChangeFootprint/
+experiments/kicad/Interposition/
+experiments/kicad/Plot_Layer/
+experiments/kicad/Print_Layer/v5_print/
+experiments/pcbdraw-mask/
+

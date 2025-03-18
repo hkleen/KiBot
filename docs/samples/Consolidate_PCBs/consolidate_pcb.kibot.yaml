@@ -1,0 +1,12 @@
+kibot:
+  version: 1
+
+preflight:
+  consolidate_pcbs:
+    - name: Battery
+      file: batteryPack-variant_battery.kicad_pcb
+    - name: Charger
+      file: batteryPack-variant_charger.kicad_pcb
+    - name: Connector
+      file: batteryPack-variant_connector.kicad_pcb
+

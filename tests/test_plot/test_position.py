@@ -81,10 +81,55 @@ def test_position_3Rs_1(test_dir):
 
 
 @pytest.mark.skipif(not context.ki8(), reason="Just checking with modern KiCad")
-def test_panel_C1x4(test_dir):
+def test_panel_C1x4_base(test_dir):
     """ This tests a 4 boards panel with just one component C1
         Half of the panel is rotated 180 degrees """
     ctx = context.TestContext(test_dir, 'panel_C1x4', 'simple_position_csv', POS_DIR)
+    ctx.run()
+    pos_top = ctx.get_pos_top_csv_filename()
+    rows, header, info = ctx.load_csv(os.path.basename(pos_top))
+    assert len(rows) == 4
+    assert sum(1 for x in rows if float(x[5]) == 180) == 2
+    assert sum(1 for x in rows if float(x[5]) == 0) == 2
+    ctx.clean_up()
+
+
+@pytest.mark.skipif(not context.ki8(), reason="Just checking with modern KiCad")
+def test_panel_C1x4_rep(test_dir):
+    """ This tests a 4 boards panel with just one component C1
+        In this case the schematic also has four C1 components
+        Half of the panel is rotated 180 degrees """
+    ctx = context.TestContext(test_dir, 'panel_C1x4_rep', 'simple_position_csv', POS_DIR)
+    ctx.run()
+    pos_top = ctx.get_pos_top_csv_filename()
+    rows, header, info = ctx.load_csv(os.path.basename(pos_top))
+    assert len(rows) == 4
+    assert sum(1 for x in rows if float(x[5]) == 180) == 2
+    assert sum(1 for x in rows if float(x[5]) == 0) == 2
+    ctx.clean_up()
+
+
+@pytest.mark.skipif(not context.ki8(), reason="Just checking with modern KiCad")
+def test_panel_U1x4_base(test_dir):
+    """ This tests a 4 boards panel with just one component U1
+        The component has 3 sub-units
+        Half of the panel is rotated 180 degrees """
+    ctx = context.TestContext(test_dir, 'panel_U1x4', 'simple_position_csv', POS_DIR)
+    ctx.run()
+    pos_top = ctx.get_pos_top_csv_filename()
+    rows, header, info = ctx.load_csv(os.path.basename(pos_top))
+    assert len(rows) == 4
+    assert sum(1 for x in rows if float(x[5]) == 180) == 2
+    assert sum(1 for x in rows if float(x[5]) == 0) == 2
+    ctx.clean_up()
+
+
+@pytest.mark.skipif(not context.ki8(), reason="Just checking with modern KiCad")
+def test_panel_U1x4_rep(test_dir):
+    """ This tests a 4 boards panel with just one component U1
+        The component has 3 sub-units. The schematic has 4 copies of U1, one with the 3 units and the rest with 2
+        Half of the panel is rotated 180 degrees """
+    ctx = context.TestContext(test_dir, 'panel_U1x4_rep', 'simple_position_csv', POS_DIR)
     ctx.run()
     pos_top = ctx.get_pos_top_csv_filename()
     rows, header, info = ctx.load_csv(os.path.basename(pos_top))

@@ -58,6 +58,10 @@ Note that from the YAML point this is two documents in the same file.
 The second document is used to provide default values for the
 definitions. As defaults they have the lowest precedence.
 
+.. warning::
+   Be careful about using booleans in definitions. Note that `on`, `off`, `yes`, `no`, etc. are
+   usually interpreted as booleans in YAML. Use quotes in the definition and/or in the place
+   where the value is expanded to avoid ambiguity.
 
 .. index::
    pair: definitions; during import

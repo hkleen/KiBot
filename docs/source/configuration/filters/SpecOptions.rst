@@ -13,6 +13,6 @@ SpecOptions parameters
 -  ``policy`` :index:`: <pair: filter - spec_to_field - specs; policy>` [:ref:`string <string>`] (default: ``'overwrite'``) (choices: "overwrite", "update", "new") Controls the behavior of the copy mechanism.
    `overwrite` always copy the spec value,
    `update` copy only if the field already exist,
-   `new` copy only if the field doesn't exist..
+   `new` copy only if the field doesn't exist. |br|.
 -  **type** :index:`: <pair: filter - spec_to_field - specs; type>` ''
 

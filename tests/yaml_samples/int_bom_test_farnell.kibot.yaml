@@ -1,0 +1,43 @@
+# Example KiBot config file
+kibot:
+  version: 1
+
+outputs:
+  - name: 'bom_internal'
+    comment: "Bill of Materials in XLSX format w/prices"
+    type: bom
+    dir: KiCost
+    options:
+      use_alt: true
+      pre_transform: _kicost_rename
+      number: 50
+      group_fields: ['Part', 'Part Lib', 'Value', 'Footprint', 'Footprint Lib']
+      columns:
+        - References
+        - Part
+        - Value
+        - Quantity Per PCB
+        - field: manf
+          name: Manufacturer
+        - field: manf#
+          name: Manufacturer P/N
+        - field: digikey#
+          level: 1
+          comment: 'Code used to buy the part at Digi-Key'
+      cost_extra_columns:
+        - field: 'Resistance'
+          name: 'Real value'
+          comment: 'Verdadero valor'
+          join: 'Capacitance'
+          level: 1
+        - field: 'Tolerance'
+          name: Tolerancia
+          comment: 'La tolerancia'
+          level: 1
+        - 'Voltage'
+      distributors:
+        - Farnell
+      xlsx:
+        kicost: true
+        kicost_api_enable:
+          - Element14

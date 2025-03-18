@@ -900,3 +900,35 @@ def test_line_width_max(test_dir):
     ctx.run(EXIT_BAD_CONFIG)
     assert ctx.search_err(r"`line_width` outside its range ")
     ctx.clean_up(keep_project=True)
+
+
+@pytest.mark.indep
+def test_error_empty_pth_id(test_dir):
+    ctx = context.TestContext(test_dir, PRJ, 'error_empty_pth_id')
+    ctx.run(EXIT_BAD_CONFIG)
+    assert ctx.search_err("Empty option .pth_id.")
+    ctx.clean_up(keep_project=True)
+
+
+@pytest.mark.indep
+def test_error_drill_wrong_column(test_dir):
+    ctx = context.TestContext(test_dir, PRJ, 'error_drill_wrong_column')
+    ctx.run(EXIT_BAD_CONFIG)
+    assert ctx.search_err("Invalid column name .Bogus.")
+    ctx.clean_up(keep_project=True)
+
+
+@pytest.mark.indep
+def test_drill_missing_field(test_dir):
+    ctx = context.TestContext(test_dir, PRJ, 'error_drill_missing_field')
+    ctx.run(EXIT_BAD_CONFIG)
+    assert ctx.search_err("Missing or empty .field. in columns list")
+    ctx.clean_up(keep_project=True)
+
+
+@pytest.mark.indep
+def test_drill_no_columns(test_dir):
+    ctx = context.TestContext(test_dir, PRJ, 'error_drill_no_columns')
+    ctx.run(EXIT_BAD_CONFIG)
+    assert ctx.search_err("No columns for the drill table")
+    ctx.clean_up(keep_project=True)

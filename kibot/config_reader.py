@@ -24,7 +24,7 @@ import textwrap
 from .error import KiPlotConfigurationError, config_error
 from .misc import (NO_YAML_MODULE, EXIT_BAD_ARGS, EXAMPLE_CFG, WONT_OVERWRITE, W_NOOUTPUTS, W_UNKOUT, W_NOFILTERS,
                    W_NOVARIANTS, W_NOGLOBALS, TRY_INSTALL_CHECK, W_NOPREFLIGHTS, W_NOGROUPS, W_NEWGROUP, error_level_to_name,
-                   DEFAULT_ROTATIONS, DEFAULT_OFFSETS, W_EXTRADOCS, RE_LEN)
+                   DEFAULT_ROTATIONS, DEFAULT_OFFSETS, W_EXTRADOCS, RE_LEN, W_DEFNOSTR)
 from .gs import GS
 from .registrable import RegOutput, RegVariant, RegFilter, RegDependency
 from .pre_base import BasePreFlight
@@ -77,7 +77,17 @@ def update_dict(d, u):
 def do_replace(k, v, content, replaced):
     key = '@'+k+'@'
     if key in content:
-        logger.debugl(2, '- Replacing {} -> {}'.format(key, v))
+        # Handle empty definitions keeping YAML's "null"
+        if v is None:
+            v = 'null'
+        if isinstance(v, bool):
+            v = str(v).lower()  # True/False is also valid
+        if isinstance(v, (int, float)):
+            v = str(v)
+        if not isinstance(v, str):
+            logger.warning(W_DEFNOSTR+f'Please only use simple data types for definitions (`{k}` contains `{v}`'
+                           f' which is `{type(v).__name__}` type)')
+        logger.debugl(2, f'- Replacing {key} -> {v} ({type(v)})')
         content = content.replace(key, str(v))
         replaced = True
     return content, replaced
@@ -939,6 +949,8 @@ def print_output_options(name, cl, indent, context=None, skip_keys=False, skip_o
             if (text.startswith('Important: ') or text.startswith('Warning: ')) and ln+1 < clines:
                 print(adapt_text(ind_help+text+'\n'+('\n'.join(lines[ln+1:]))+'.'))
                 break
+            if rst_mode and text[-1] == '.':
+                text += ' |br|'
             print(ind_help+adapt_text(text+('.' if ln+1 == clines else '')))
         num_opts = num_opts+1
         if isinstance(v, type):
@@ -959,7 +971,7 @@ def print_output_options(name, cl, indent, context=None, skip_keys=False, skip_o
                 print(f".. _{v.__name__+id}:\n\n")
                 print(title)
                 print('~'*len(title)+'\n')
-            print_output_options('', v, i, new_context, separate_files=separate_files, skip_keys=separate_files)
+            print_output_options('', v, i, new_context, separate_files=separate_files, skip_keys=separate_files, id=id)
             if separate_files and has_dict:
                 sys.stdout = ori
                 f.close()
@@ -1116,7 +1128,7 @@ def _print_preflights_help(rst, deprecated=False):
                 for ln in range(2, len(lines)):
                     print('                 '+adapt_text(lines[ln]))
         print_output_options(n, o, ind_size, 'preflight - '+n, skip_options={'comment', 'name'}, skip_keys=True,
-                             force_is_basic=True, separate_files=split)
+                             force_is_basic=True, separate_files=split, id='_pre')
         if split:
             sys.stdout = ori
             f.close()
