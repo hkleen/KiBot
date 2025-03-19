@@ -781,9 +781,9 @@ class PCB_PrintOptions(VariantOptions):
         via_type = 'VIA' if GS.ki5 else 'PCB_VIA'
         for e in GS.board.GetTracks():
             if e.GetClass() == via_type:
-                vias.append((e, e.GetDrill(), e.GetWidth()))
+                vias.append((e, e.GetDrill(), GS.get_via_width(e)))
                 e.SetDrill(0)
-                e.SetWidth(self.min_w)
+                GS.set_via_width(e, self.min_w)
             elif e.GetLayer() == id:
                 if e.GetWidth():
                     e.SetLayer(tmp_layer)
@@ -803,7 +803,7 @@ class PCB_PrintOptions(VariantOptions):
             pad.SetLayerSet(layers)
         for (via, drill, width) in vias:
             via.SetDrill(drill)
-            via.SetWidth(width)
+            GS.set_via_width(via, width)
         if len(zones):
             GS.fill_zones(GS.board, zones)
         # Add it to the list
@@ -850,20 +850,20 @@ class PCB_PrintOptions(VariantOptions):
                         # So we create a "patch" for the hole
                         top = e.TopLayer()
                         bottom = e.BottomLayer()
-                        w = e.GetWidth()
+                        w = GS.get_via_width(e)
                         d = e.GetDrill()
                         vias.append((e, d, w, top, bottom))
-                        e.SetWidth(d)
+                        GS.set_via_width(e, d)
                         e.SetDrill(1)
                         e.SetTopLayer(F_Cu)
                         e.SetBottomLayer(B_Cu)
                 else:
                     top = e.TopLayer()
                     bottom = e.BottomLayer()
-                    w = e.GetWidth()
+                    w = GS.get_via_width(e)
                     d = e.GetDrill()
                     vias.append((e, d, w, top, bottom))
-                    e.SetWidth(self.min_w)
+                    GS.set_via_width(e, self.min_w)
             elif e.GetLayer() == id:
                 if e.GetWidth():
                     e.SetLayer(tmp_layer)
@@ -882,7 +882,7 @@ class PCB_PrintOptions(VariantOptions):
             pad.SetLayerSet(layers)
         for (via, drill, width, top, bottom) in vias:
             via.SetDrill(drill)
-            via.SetWidth(width)
+            GS.set_via_width(via, width)
             via.SetTopLayer(top)
             via.SetBottomLayer(bottom)
         if len(zones):
