@@ -573,6 +573,10 @@ class Base3DOptions(VariantOptions):
                 # Some missing components found and we downloaded them
                 # Save the fixed board
                 ret = self.save_tmp_board()
+                if also_sch and GS.sch_file:
+                    link_name = ret.replace('.kicad_pcb', '.kicad_sch')
+                    os.symlink(GS.sch_file, link_name)
+                    self._files_to_remove.append(link_name)
                 # Undo the changes done during download
                 self.undo_3d_models_rename(GS.board)
                 if dnp_removed:
