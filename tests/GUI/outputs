@@ -1784,6 +1784,13 @@
             "DataTypeBoolean"
           ],
           null
+        ],
+        [
+          "kicad_dnp_applied",
+          [
+            "DataTypeChoice"
+          ],
+          null
         ]
       ]
     ]

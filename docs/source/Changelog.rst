@@ -21,7 +21,8 @@ Added
 
 -  BoM:
 
-   -  New ``Footprint Full`` field for the ``LIB:FOOTPRINT`` name
+   -  ``Footprint Full`` virtual field for the ``LIB:FOOTPRINT`` name
+   -  ``kicad_dnp_applied`` option to overwrite the global option
 
 [1.8.3] - 2025-03-18
 --------------------

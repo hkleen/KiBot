@@ -694,6 +694,11 @@ outputs:
       ignore_dnf: true
       # [boolean=true] Component quantities are always expressed as integers. Using the ceil() function
       int_qtys: true
+      # [string='global'] [global,yes,no] What we do with the KiCad DNP flag.
+      # `global` means we apply the `kicad_dnp_applied` global option.
+      # `yes` means we always remove DNP components.
+      # `no` means we ignore the DNP flag and let filters do its work
+      kicad_dnp_applied: 'global'
       # [boolean=true] Component groups with blank fields will be merged into the most compatible group, where possible
       merge_blank_fields: true
       # [boolean=true] When creating groups two components with empty/missing field will be interpreted as with the same value
