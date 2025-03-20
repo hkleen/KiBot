@@ -31,6 +31,8 @@ class ColumnList:
     COL_FP_L = COL_FP.lower()
     COL_FP_LIB = 'Footprint Lib'
     COL_FP_LIB_L = COL_FP_LIB.lower()
+    COL_FP_FULL = 'Footprint Full'
+    COL_FP_FULL_L = COL_FP_FULL.lower()
     COL_FP_X = 'Footprint X'
     COL_FP_X_L = COL_FP_X.lower()
     COL_FP_Y = 'Footprint Y'
@@ -134,6 +136,7 @@ class ColumnList:
         COL_DNP,
         COL_EXCLUDE_FROM_BOARD,
         COL_EXCLUDE_FROM_SIM,
+        COL_FP_FULL_L,
         COL_FP_X,
         COL_FP_Y,
         COL_FP_ROT,
