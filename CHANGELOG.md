@@ -5,8 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [1.8.3] - UNRELEASED
+## [1.8.4] - UNRELEASED
 ### Added
+- Schematic:
+  - Support for files embedded on symbols (#802)
 - BoM:
   - `Footprint Full` virtual field for the `LIB:FOOTPRINT` name
   - `kicad_dnp_applied` option to overwrite the global option

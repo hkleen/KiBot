@@ -13,11 +13,15 @@ Changelog <https://keepachangelog.com/en/1.0.0/>`__, and this project
 adheres to `Semantic
 Versioning <https://semver.org/spec/v2.0.0.html>`__.
 
-[1.8.3] - UNRELEASED
+[1.8.4] - UNRELEASED
 --------------------
 
 Added
 ~~~~~
+
+-  Schematic:
+
+   -  Support for files embeded on symbols (#802)
 
 -  BoM:
 

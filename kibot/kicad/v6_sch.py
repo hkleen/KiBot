@@ -804,6 +804,8 @@ class LibComponent(object):
         # KiCad 9
         # WTF?!
         self.embedded_fonts = None
+        self.embedded_files = []    # I.e. datasheet
+        self.embedded_file_names = {}
 
     def get_field_value(self, field):
         field = field.lower()
@@ -895,9 +897,11 @@ class LibComponent(object):
                 comp.draw.append(DrawTextV6.parse(i))
             elif i_type == 'text_box':
                 comp.draw.append(TextBox.parse(i, i_type))
-            elif i_type == 'embedded_fonts':
+            elif i_type == 'embedded_fonts':  # KiCad 9
                 # Fonts in a lib component?!
                 comp.embedded_fonts = _get_yes_no(i, 1, i_type)
+            elif i_type == 'embedded_files':  # KiCad 9
+                comp._get_embedded_files(i)
             # PINS...
             elif i_type == 'pin':
                 vis_obj = PinV6.parse(i)
@@ -933,6 +937,14 @@ class LibComponent(object):
             if vis_obj:
                 comp.box.union(vis_obj.box)
         return comp
+
+    def _get_embedded_files(self, files):
+        if not isinstance(files, list):
+            raise SchError('The embedded files is not a list')
+        for f in files[1:]:
+            obj = EmbeddedFile.load(f)
+            self.embedded_files.append(obj)
+            self.embedded_file_names[obj.name] = obj
 
     def assign_crosses(self):
         """ Compute the box for the crossed components """
@@ -1001,9 +1013,6 @@ class LibComponent(object):
         if s.unit_name is not None:
             sdata.append(_symbol('unit_name', [s.unit_name]))
             sdata.append(Sep())
-        # Fonts
-        if s.embedded_fonts is not None:
-            sdata.append(_symbol_yn('embedded_fonts', s.embedded_fonts))
         # Properties
         for f in s.fields:
             fdata = f.write()
@@ -1019,6 +1028,17 @@ class LibComponent(object):
         # Units
         for u in s.units:
             sdata.extend([u.write(cross), Sep()])
+        # Fonts
+        if s.embedded_fonts is not None:
+            sdata.append(_symbol_yn('embedded_fonts', s.embedded_fonts))
+        # - Embedded files (here are the fonts)
+        if s.embedded_files:
+            files = []
+            for f in s.embedded_files:
+                files.append(Sep())
+                files.append(f.write())
+            files.append(Sep())
+            sdata.extend([Sep(), _symbol('embedded_files', files), Sep()])
         return _symbol('symbol', sdata)
 
 
