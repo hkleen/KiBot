@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `Footprint Full` virtual field for the `LIB:FOOTPRINT` name
   - `kicad_dnp_applied` option to overwrite the global option
 
+### Fixed
+- 3D outputs with variants: Use of the ${PROJECTNAME} KiCad variable (#801)
+
 ## [1.8.3] - 2025-03-18
 ### Added
 - New outputs:
