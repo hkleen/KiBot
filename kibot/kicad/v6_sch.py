@@ -1477,7 +1477,7 @@ class SchematicBitmapV6(object):
                 # v6/7: Symbol v8: String
                 bmp.data = [_check_relaxed(values, i+1, 'image data') for i, d in enumerate(values[1:])]
             else:
-                raise SchError('Unknown symbol attribute `{}`'.format(i))
+                raise SchError('Unknown image attribute `{}`'.format(i))
         return bmp
 
     def write(self):
@@ -1518,7 +1518,7 @@ class Text(object):
                 # KiCad 7.99
                 text.exclude_from_sim = _get_yes_no(i, 1, i_type)
             else:
-                raise SchError('Unknown symbol attribute `{}`'.format(i))
+                raise SchError(f'Unknown {name} attribute `{i}`')
         return text
 
     def write(self):
