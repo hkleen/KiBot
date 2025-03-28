@@ -71,6 +71,8 @@ def abs_path_model(data, replace):
 
 
 def do_expand_env(fname, used_extra, extra_debug, lib_nickname):
+    if fname.startswith('kicad-embed://'):
+        return fname, True
     # Is it using ALIAS:xxxxx?
     force_used_extra = False
     if ':' in fname:
@@ -90,7 +92,7 @@ def do_expand_env(fname, used_extra, extra_debug, lib_nickname):
     if os.path.isfile(full_name):
         if force_used_extra:
             used_extra[0] = True
-        return full_name
+        return full_name, False
     if ':' not in fname or GS.global_disable_3d_alias_as_env:
         # Try using the current working dir
         full_name_cwd = KiConf.expand_env(fname, used_extra, ref_dir=os.getcwd())
@@ -116,13 +118,13 @@ def do_expand_env(fname, used_extra, extra_debug, lib_nickname):
                     force_used_extra = True
         if force_used_extra:
             used_extra[0] = True
-        return full_name
+        return full_name, False
     # Look for ALIAS:file
     ind = fname.index(':')
     alias_name = fname[:ind]
     if len(alias_name) == 1:
         # Is a drive letter, not an alias
-        return full_name
+        return full_name, False
     rest = fname[ind+1:]
     new_fname = '${'+alias_name+'}'+os.path.sep+rest
     new_full_name = KiConf.expand_env(new_fname, used_extra)
@@ -130,8 +132,8 @@ def do_expand_env(fname, used_extra, extra_debug, lib_nickname):
         logger.debug("- Expanded {} -> {}".format(new_fname, new_full_name))
     if os.path.isfile(new_full_name):
         used_extra[0] = True
-        return new_full_name
-    return full_name
+        return new_full_name, False
+    return full_name, False
 
 
 class Base3DOptions(VariantOptions):
@@ -511,8 +513,8 @@ class Base3DOptions(VariantOptions):
                     # Skip filtered footprints
                     continue
                 used_extra = [False]
-                full_name = do_expand_env(m3d.m_Filename, used_extra, extra_debug, lib_nickname)
-                if not os.path.isfile(full_name):
+                full_name, is_embedded = do_expand_env(m3d.m_Filename, used_extra, extra_debug, lib_nickname)
+                if not is_embedded and not os.path.isfile(full_name):
                     logger.debugl(2, 'Missing 3D model file {} ({})'.format(full_name, m3d.m_Filename))
                     # Missing 3D model
                     if self.download:
@@ -524,7 +526,7 @@ class Base3DOptions(VariantOptions):
                             self.replace_model(replace, m3d, force_wrl, is_copy_mode, rename_function, rename_data)
                     if full_name not in downloaded:
                         logger.warning(W_MISS3D+'Missing 3D model for {}: `{}`'.format(ref, full_name))
-                else:  # File was found
+                elif not is_embedded:  # File was found
                     replace = self.do_colored_tht_resistor(full_name, sch_comp, used_extra)
                     if used_extra[0] or is_copy_mode:
                         # The file is there, but we got it expanding a user defined text

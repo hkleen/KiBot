@@ -33,6 +33,8 @@ Fixed
 
 -  3D outputs with variants: Use of the ${PROJECTNAME} KiCad variable
    (#801)
+-  3D outputs: Embedded 3D models misinterpreted as KiCad 6 aliases (See
+   #802)
 
 [1.8.3] - 2025-03-18
 --------------------
