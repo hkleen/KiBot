@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2020-2023 Salvador E. Tropea
-# Copyright (c) 2020-2023 Instituto Nacional de Tecnología Industrial
+# Copyright (c) 2020-2025 Salvador E. Tropea
+# Copyright (c) 2020-2025 Instituto Nacional de Tecnología Industrial
 # License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
 from pcbnew import PLOT_FORMAT_DXF, SKETCH, FILLED
@@ -10,7 +10,12 @@ from .gs import GS
 from .misc import FONT_HELP_TEXT
 from .macros import macros, document, output_class  # noqa: F401
 if GS.ki6:
-    from pcbnew import DXF_UNITS_MILLIMETERS, DXF_UNITS_INCHES
+    try:
+        from pcbnew import DXF_UNITS_MILLIMETERS, DXF_UNITS_INCHES
+    except ImportError:
+        # KiCad 9.0.1 release ... really?!
+        # Using the constant is more problematic than just using hardcoded values, ridiculous
+        pass
 else:
     DXF_UNITS_MILLIMETERS = 1
     DXF_UNITS_INCHES = 0
