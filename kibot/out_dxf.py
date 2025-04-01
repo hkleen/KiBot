@@ -15,7 +15,9 @@ if GS.ki6:
     except ImportError:
         # KiCad 9.0.1 release ... really?!
         # Using the constant is more problematic than just using hardcoded values, ridiculous
-        pass
+        from pcbnew import DXF_UNITS_MM, DXF_UNITS_INCH
+        DXF_UNITS_MILLIMETERS = DXF_UNITS_MM
+        DXF_UNITS_INCHES = DXF_UNITS_INCH
 else:
     DXF_UNITS_MILLIMETERS = 1
     DXF_UNITS_INCHES = 0
