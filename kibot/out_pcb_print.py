@@ -1466,7 +1466,7 @@ class PCB_PrintOptions(VariantOptions):
         else:
             # Find the layout file
             layout = KiConf.fix_page_layout(GS.pro_file, dry=True)[1]
-        if not layout.startswith(EMBED_PREFIX) and (not layout or not os.path.isfile(layout)):
+        if not layout or (not layout.startswith(EMBED_PREFIX) and not os.path.isfile(layout)):
             layout = os.path.abspath(os.path.join(GS.get_resource_path('kicad_layouts'), 'default.kicad_wks'))
         logger.debug('- Using layout: '+layout)
         self.layout = layout
