@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Schematic:
   - Support for files embedded on symbols (#802)
+  - Support for embedded worksheets
 - BoM:
   - `Footprint Full` virtual field for the `LIB:FOOTPRINT` name
   - `kicad_dnp_applied` option to overwrite the global option

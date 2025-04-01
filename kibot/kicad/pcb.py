@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2022-2024 Salvador E. Tropea
-# Copyright (c) 2022-2024 Instituto Nacional de Tecnología Industrial
+# Copyright (c) 2022-2025 Salvador E. Tropea
+# Copyright (c) 2022-2025 Instituto Nacional de Tecnología Industrial
 # License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
 """
@@ -10,7 +10,7 @@ Currently used only for the paper size
 import os
 from .config import KiConf
 from ..error import KiPlotConfigurationError
-from ..misc import W_NOLIB, W_MISSFPINFO
+from ..misc import W_NOLIB, W_MISSFPINFO, EMBED_PREFIX
 from ..gs import GS
 from .sexpdata import load, dumps, SExpData, sexp_iter, Symbol
 from .sexp_helpers import _check_relaxed, _get_symbol_name, make_separated, load_sexp_file, _symbol
@@ -197,3 +197,24 @@ def replace_footprints(fname, replacements, logger, replace_pcb=True):
     # If we replaced one or more footprints
     if updated:
         save_pcb_from_sexp(pcb, logger, replace_pcb)
+
+
+def get_embedded_file(fname, efile):
+    pcb = load_sexp_file(fname)
+    name = efile[len(EMBED_PREFIX):]
+    for ef in sexp_iter(pcb, 'kicad_pcb/embedded_files/file'):
+        for s in ef[1:]:
+            i_type = _check_is_symbol_list(s)
+            if i_type == 'name':
+                iname = _check_str(s, 1, i_type)
+            elif i_type == 'type':
+                _check_symbol(s, 1, i_type)
+            elif i_type == 'checksum':
+                checksum = _check_str(s, 1, i_type)
+            elif i_type == 'data':
+                _check_symbol(s, 1, i_type)
+        if name == iname:
+            cache_name = GS.get_embed_dir('kicad_embedded_'+checksum+os.path.splitext(name)[1])
+            if os.path.isfile(cache_name):
+                return cache_name
+    raise KiPlotConfigurationError(f'Missing embedded file `{efile}`')

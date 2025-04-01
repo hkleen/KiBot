@@ -16,7 +16,7 @@ import os
 import re
 from ..gs import GS
 from .. import log
-from ..misc import W_NOLIB, W_UNKFLD, W_MISSCMP, W_FIELDCONF
+from ..misc import W_NOLIB, W_UNKFLD, W_MISSCMP, W_FIELDCONF, EMBED_PREFIX
 from .error import SchError
 from .sexpdata import load, SExpData, Symbol, dumps, Sep
 from .sexp_helpers import (_check_is_symbol_list, _check_len, _check_len_total, _check_symbol, _check_hide, _check_integer,
@@ -2480,6 +2480,16 @@ class SchematicV6(Schematic):
             logger.debug(f"- {p}")
             for sy, c in s.symbol_uuids.items():
                 logger.debug(f"  - {sy} -> {c}")
+
+    def get_embedded_file(self, efile):
+        name = efile[len(EMBED_PREFIX):]
+        if name not in self.embedded_file_names:
+            raise SchError(f'Missing embedded file `{efile}`')
+        o = self.embedded_file_names[name]
+        cache_name = GS.get_embed_dir('kicad_embedded_'+o.checksum+os.path.splitext(name)[1])
+        if os.path.isfile(cache_name):
+            return cache_name
+        raise SchError(f'Missing embedded file `{efile}`')
 
     def load(self, fname, project, parent=None):  # noqa: C901
         """ Load a v6.x KiCad Schematic.

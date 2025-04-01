@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2022-2024 Salvador E. Tropea
-# Copyright (c) 2022-2024 Instituto Nacional de Tecnología Industrial
+# Copyright (c) 2022-2025 Salvador E. Tropea
+# Copyright (c) 2022-2025 Instituto Nacional de Tecnología Industrial
 # License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
 from copy import copy
@@ -13,7 +13,7 @@ from .error import KiPlotConfigurationError
 from .gs import GS
 from .kiplot import config_output, get_output_dir, run_output, register_xmp_import
 from .kicad.config import KiConf, LibAlias, FP_LIB_TABLE, SYM_LIB_TABLE
-from .misc import WRONG_ARGUMENTS, INTERNAL_ERROR, W_COPYOVER, W_MISSLIB, W_MISSCMP, W_NOFILES
+from .misc import WRONG_ARGUMENTS, INTERNAL_ERROR, W_COPYOVER, W_MISSLIB, W_MISSCMP, W_NOFILES, EMBED_PREFIX
 from .optionable import Optionable
 from .out_base_3d import Base3DOptions
 from .registrable import RegOutput
@@ -250,10 +250,10 @@ class Copy_FilesOptions(Base3DOptions):
             prj_name_used = prj_name
             if dry and prj_name_used is not None and not os.path.isfile(prj_name_used):
                 prj_name_used = GS.pro_file
-            wks = GS.fix_page_layout(prj_name_used, dry=dry)
-            if wks[0]:  # Schematic WKS
+            wks = GS.fix_page_layout(prj_name_used, dry=dry, no_copy_embedded=True)
+            if wks[0] and not wks[0].startswith(EMBED_PREFIX):  # Schematic WKS
                 extra_files.append(os.path.join(os.path.dirname(prj_name), 'schematic.kicad_wks'))
-            if wks[1]:  # PCB WKS
+            if wks[1] and not wks[1].startswith(EMBED_PREFIX):  # PCB WKS
                 extra_files.append(os.path.join(os.path.dirname(prj_name), 'pcbnew.kicad_wks'))
             if mode_project:
                 extra_files += self.copy_footprints(f.dest, dry)

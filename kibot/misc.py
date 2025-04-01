@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2020-2024 Salvador E. Tropea
-# Copyright (c) 2020-2024 Instituto Nacional de Tecnología Industrial
+# Copyright (c) 2020-2025 Salvador E. Tropea
+# Copyright (c) 2020-2025 Instituto Nacional de Tecnología Industrial
 # License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
 """ Miscellaneous definitions """
@@ -100,6 +100,7 @@ KICAD_VERSION_6_0_2 = 60000020
 KICAD_VERSION_7_0_1 = 70000010
 KICAD_VERSION_7_0_1_1 = 70000011
 TRY_INSTALL_CHECK = 'Try running the installation checker: kibot-check'
+EMBED_PREFIX = 'kicad-embed://'
 
 # Internal filter names
 IFILT_MECHANICAL = '_mechanical'

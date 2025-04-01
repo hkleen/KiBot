@@ -27,13 +27,14 @@ else:
     PCB_TEXT = TEXTE_PCB
     FILL_T_FILLED_SHAPE = 0
     SHAPE_T_POLY = 4
+from .pcb import get_embedded_file
 from .pcb_draw_helpers import (GR_TEXT_HJUSTIFY_LEFT, GR_TEXT_HJUSTIFY_RIGHT, GR_TEXT_HJUSTIFY_CENTER,
                                GR_TEXT_VJUSTIFY_TOP, GR_TEXT_VJUSTIFY_CENTER, GR_TEXT_VJUSTIFY_BOTTOM)
 from .sexpdata import load, dumps, SExpData
 from .sexp_helpers import (_check_is_symbol_list, _check_float, _check_integer, _check_symbol_value, _check_str, _check_symbol,
                            _check_relaxed, _get_points, _check_symbol_str, Color)
 from ..svgutils.transform import ImageElement, GroupElement
-from ..misc import W_WKSVERSION, read_png
+from ..misc import W_WKSVERSION, read_png, EMBED_PREFIX
 from .. import log
 
 logger = log.get_logger()
@@ -473,6 +474,8 @@ class Worksheet(object):
 
     @staticmethod
     def load(file):
+        if file.startswith(EMBED_PREFIX):
+            file = get_embedded_file(GS.pcb_file, file)
         with open(file, 'rt') as fh:
             error = None
             try:

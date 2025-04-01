@@ -22,6 +22,7 @@ Added
 -  Schematic:
 
    -  Support for files embedded on symbols (#802)
+   -  Support for embedded worksheets
 
 -  BoM:
 

@@ -55,7 +55,7 @@ from .kicad.v5_sch import SchError
 from .kicad.pcb import PCB
 from .misc import (PDF_PCB_PRINT, W_PDMASKFAIL, W_MISSTOOL, PCBDRAW_ERR, W_PCBDRAW, VIATYPE_THROUGH, VIATYPE_BLIND_BURIED,
                    VIATYPE_MICROVIA, FONT_HELP_TEXT, W_BUG16418, pretty_list, try_int, W_NOPAGES, W_NOLAYERS, W_NOTHREPE,
-                   RENDERERS, read_png)
+                   RENDERERS, read_png, EMBED_PREFIX)
 from .create_pdf import create_pdf_from_pages
 from .macros import macros, document, output_class  # noqa: F401
 from .drill_marks import DRILL_MARKS_MAP, add_drill_marks
@@ -687,7 +687,7 @@ class PCB_PrintOptions(VariantOptions):
         if self._sheet_reference_layout:
             # Worksheet override
             wks = os.path.abspath(self._sheet_reference_layout)
-            KiConf.fix_page_layout(os.path.join(pcb_dir, GS.pro_fname), force_pcb=wks, force_sch=wks)
+            KiConf.fix_page_layout(os.path.join(pcb_dir, GS.pro_fname), force_pcb=wks)
         self._files_to_remove.append(pcb_dir)
         # Restore the layer
         self.restore_layer()
@@ -711,7 +711,7 @@ class PCB_PrintOptions(VariantOptions):
         pro_name, _, _ = GS.copy_project(pcb_name)
         # Copy the layout, user provided or default, we need to expand vars here
         # In particular KiBot internal stuff
-        wks = KiConf.fix_page_layout(os.path.join(pcb_dir, GS.pro_fname), force_pcb=self.layout, force_sch=self.layout)
+        wks = KiConf.fix_page_layout(os.path.join(pcb_dir, GS.pro_fname), force_pcb=self.layout)
         wks = wks[1]
         logger.debugl(1, '  - Worksheet: '+wks)
         try:
@@ -1466,7 +1466,7 @@ class PCB_PrintOptions(VariantOptions):
         else:
             # Find the layout file
             layout = KiConf.fix_page_layout(GS.pro_file, dry=True)[1]
-        if not layout or not os.path.isfile(layout):
+        if not layout.startswith(EMBED_PREFIX) and (not layout or not os.path.isfile(layout)):
             layout = os.path.abspath(os.path.join(GS.get_resource_path('kicad_layouts'), 'default.kicad_wks'))
         logger.debug('- Using layout: '+layout)
         self.layout = layout

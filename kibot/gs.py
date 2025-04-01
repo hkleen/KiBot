@@ -1150,3 +1150,10 @@ class GS(object):
             w = [w]*(end-start+1)
         for layer, width in zip(range(start, end+1), w):
             via.SetWidth(GS.ordinal_to_copper_layer(layer), width)
+
+    @staticmethod
+    def get_embed_dir(fname):
+        ki_ver = f'{GS.kicad_version_major}.{GS.kicad_version_minor}'
+        if GS.on_windows:
+            return os.path.expanduser(os.path.join('~', 'AppData', 'Local', 'KiCad', ki_ver, 'embed', fname))
+        return os.path.expanduser(os.path.join('~', '.cache', 'kicad', ki_ver, 'embed', fname))

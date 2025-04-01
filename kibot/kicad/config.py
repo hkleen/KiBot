@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2020-2024 Salvador E. Tropea
-# Copyright (c) 2020-2024 Instituto Nacional de Tecnología Industrial
+# Copyright (c) 2020-2025 Salvador E. Tropea
+# Copyright (c) 2020-2025 Instituto Nacional de Tecnología Industrial
 # License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
 """
@@ -29,7 +29,7 @@ from ..error import KiPlotConfigurationError
 from ..gs import GS
 from .. import log
 from ..misc import (W_NOCONFIG, W_NOKIENV, W_NOLIBS, W_NODEFSYMLIB, MISSING_WKS, W_MAXDEPTH, W_3DRESVER, W_LIBTVERSION,
-                    W_LIBTUNK, W_MISLIBTAB)
+                    W_LIBTUNK, W_MISLIBTAB, EMBED_PREFIX)
 from .sexpdata import load, SExpData, Symbol, dumps, Sep
 from .sexp_helpers import _check_is_symbol_list, _check_integer, _check_relaxed
 
@@ -81,7 +81,7 @@ def parse_len_str(val):
 
 
 def fix_windows(name):
-    if not name:
+    if not name or name.startswith(EMBED_PREFIX):
         return name
     if not os.path.isfile(name):
         fixed = name.replace('\\', '/')
@@ -643,15 +643,32 @@ class KiConf(object):
                 KiConf.aliases_3D[name] = value
         logger.debugl(1, 'Finished loading 3D aliases')
 
-    def fix_page_layout_k6_key(key, data, dest_dir, forced):
+    def fix_page_layout_k6_key(key, data, dest_dir, forced, no_copy_embedded, is_pcb):
         if key in data:
             section = data[key]
             pl = section.get('page_layout_descr_file', None) if not forced else forced
             if pl:
-                fname = fix_windows(KiConf.expand_env(pl))
+                if pl.startswith(EMBED_PREFIX):
+                    if no_copy_embedded:
+                        return pl
+                    if is_pcb:
+                        if GS.pcb_file:
+                            from .pcb import get_embedded_file
+                            fname = get_embedded_file(GS.pcb_file, pl)
+                        else:
+                            logger.debug("** Not patching the PCB worksheet because we don't have a PCB")
+                            return pl
+                    else:
+                        if GS.sch:
+                            fname = GS.sch.get_embedded_file(pl)
+                        else:
+                            logger.debug("** Not patching the SCH worksheet because we don't have a SCH")
+                            return pl
+                else:
+                    fname = fix_windows(KiConf.expand_env(pl))
                 if os.path.isfile(fname):
                     dest = os.path.join(dest_dir, key+'.kicad_wks')
-                    logger.debug('Copying {} -> {}'.format(fname, dest))
+                    logger.debug(f'Copying {fname} -> {dest}')
                     copy2(fname, dest)
                     data[key]['page_layout_descr_file'] = key+'.kicad_wks'
                     logger.debug(f'Replacing page layout {pl} -> {key}.kicad_wks')
@@ -660,7 +677,7 @@ class KiConf(object):
                     GS.exit_with_error('Missing page layout file: '+fname, MISSING_WKS)
         return None
 
-    def fix_page_layout_k6(project, dry, force_sch, force_pcb):
+    def fix_page_layout_k6(project, dry, force_sch, force_pcb, no_copy_embedded):
         # Get the current definitions
         dest_dir = os.path.dirname(project)
         with open(project, 'rt') as f:
@@ -668,8 +685,8 @@ class KiConf(object):
         data = json.loads(pro_text)
         layouts = [None, None]
         if not dry:
-            layouts[1] = KiConf.fix_page_layout_k6_key('pcbnew', data, dest_dir, force_pcb)
-            layouts[0] = KiConf.fix_page_layout_k6_key('schematic', data, dest_dir, force_sch)
+            layouts[1] = KiConf.fix_page_layout_k6_key('pcbnew', data, dest_dir, force_pcb, no_copy_embedded, is_pcb=True)
+            layouts[0] = KiConf.fix_page_layout_k6_key('schematic', data, dest_dir, force_sch, no_copy_embedded, is_pcb=False)
             logger.debug(f'Saving modified project to {project}')
             with open(project, 'wt') as f:
                 f.write(json.dumps(data, sort_keys=True, indent=2))
@@ -724,7 +741,7 @@ class KiConf(object):
                 lns = f.writelines(lns)
         return layouts
 
-    def fix_page_layout(project, dry=False, force_sch=None, force_pcb=None):
+    def fix_page_layout(project, dry=False, force_sch=None, force_pcb=None, no_copy_embedded=False):
         """ When we copy the project the page layouts must be also copied.
             After copying the project to another destination we have wrong relative references to the WKSs.
             We copy these files and patch the project so the files are named in a simple way.
@@ -734,12 +751,12 @@ class KiConf(object):
         KiConf.init(GS.pcb_file or GS.sch_file)
         if GS.ki5:
             return KiConf.fix_page_layout_k5(project, dry, force_sch, force_pcb)
-        return KiConf.fix_page_layout_k6(project, dry, force_sch, force_pcb)
+        return KiConf.fix_page_layout_k6(project, dry, force_sch, force_pcb, no_copy_embedded)
 
     def expand_env(name, used_extra=None, ref_dir=None):
         if used_extra is None:
             used_extra = [False]
-        if not name:
+        if not name or name.startswith(EMBED_PREFIX):
             return name
         expanded = expand_env(un_quote(name), KiConf.kicad_env, GS.load_pro_variables(), used_extra)
         # Don't try to get the absolute path for something that starts with a variable that we couldn't expand

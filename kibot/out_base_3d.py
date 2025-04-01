@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2020-2023 Salvador E. Tropea
-# Copyright (c) 2020-2023 Instituto Nacional de Tecnología Industrial
-# License: GPL-3.0
+# Copyright (c) 2020-2025 Salvador E. Tropea
+# Copyright (c) 2020-2025 Instituto Nacional de Tecnología Industrial
+# License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
 from decimal import Decimal
 from fnmatch import fnmatch
@@ -13,7 +13,8 @@ from shutil import copy2
 from .bom.units import comp_match
 from .EasyEDA.easyeda_3d import download_easyeda_3d_model
 from .fil_base import reset_filters
-from .misc import W_MISS3D, W_FAILDL, W_DOWN3D, DISABLE_3D_MODEL_TEXT, W_BADTOL, W_BADRES, W_RESVALISSUE, W_RES3DNAME
+from .misc import (W_MISS3D, W_FAILDL, W_DOWN3D, DISABLE_3D_MODEL_TEXT, W_BADTOL, W_BADRES, W_RESVALISSUE, W_RES3DNAME,
+                   EMBED_PREFIX)
 from .gs import GS
 from .optionable import Optionable
 from .out_base import VariantOptions, BaseOutput
@@ -71,7 +72,7 @@ def abs_path_model(data, replace):
 
 
 def do_expand_env(fname, used_extra, extra_debug, lib_nickname):
-    if fname.startswith('kicad-embed://'):
+    if fname.startswith(EMBED_PREFIX):
         return fname, True
     # Is it using ALIAS:xxxxx?
     force_used_extra = False
