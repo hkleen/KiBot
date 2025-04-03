@@ -69,6 +69,7 @@ Parameters:
 -  ``extends`` :index:`: <pair: output - pdf; extends>` [:ref:`string <string>`] (default: ``''``) Copy the `options` section from the indicated output.
    Used to inherit options from another output of the same type.
 -  ``force_plot_invisible_refs_vals`` :index:`: <pair: output - pdf; force_plot_invisible_refs_vals>` [:ref:`boolean <boolean>`] (default: ``false``) Include references and values even when they are marked as invisible.
+   Not available on KiCad 9.0.1 and newer.
 -  ``groups`` :index:`: <pair: output - pdf; groups>` [:ref:`string <string>` | :ref:`list(string) <list(string)>`] (default: ``''``) One or more groups to add this output. In order to catch typos
    we recommend to add outputs only to existing groups. You can create an empty group if
    needed.

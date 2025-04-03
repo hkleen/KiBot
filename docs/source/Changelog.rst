@@ -19,6 +19,12 @@ Versioning <https://semver.org/spec/v2.0.0.html>`__.
 Added
 ~~~~~
 
+-  Support for the broken API in KiCad 9.0.1
+
+   -  Change in the names of various constants
+   -  Removed the SetPlotInvisibleText plot option
+   -  Change in the SetPlotOnAllLayersSelection call
+
 -  Schematic:
 
    -  Support for files embedded on symbols (#802)

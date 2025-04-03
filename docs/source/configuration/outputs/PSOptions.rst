@@ -33,6 +33,7 @@ PSOptions parameters
 
 -  ``exclude_pads_from_silkscreen`` :index:`: <pair: output - ps - options; exclude_pads_from_silkscreen>` [:ref:`boolean <boolean>`] (default: ``false``) Do not plot the component pads in the silk screen (KiCad 5.x only).
 -  ``force_plot_invisible_refs_vals`` :index:`: <pair: output - ps - options; force_plot_invisible_refs_vals>` [:ref:`boolean <boolean>`] (default: ``false``) Include references and values even when they are marked as invisible.
+   Not available on KiCad 9.0.1 and newer.
 -  ``individual_page_scaling`` :index:`: <pair: output - ps - options; individual_page_scaling>` [:ref:`boolean <boolean>`] (default: ``true``) Tell KiCad to apply the scaling for each layer as a separated entity.
    Disabling it the pages are coherent and can be superposed.
 -  ``inner_extension_pattern`` :index:`: <pair: output - ps - options; inner_extension_pattern>` [:ref:`string <string>`] (default: ``''``) Used to change the Protel style extensions for inner layers.

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2024 Salvador E. Tropea
-# Copyright (c) 2024 Instituto Nacional de Tecnología Industrial
+# Copyright (c) 2024-2025 Salvador E. Tropea
+# Copyright (c) 2024-2025 Instituto Nacional de Tecnología Industrial
 # License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
 import os
@@ -8,6 +8,7 @@ from .error import KiPlotConfigurationError
 from .gs import GS
 from .kicad.pcb_draw_helpers import draw_rect, draw_line, draw_text
 from .kiplot import load_board, get_output_targets, look_for_output
+from .misc import KICAD_VERSION_9_0_1
 from .layer import Layer
 from .optionable import Optionable
 from .macros import macros, document, pre_class  # noqa: F401
@@ -218,7 +219,10 @@ def draw_thickness(g, x, y, w, font_h, first, last, layer, right=True):
     dim.SetOverrideTextEnabled(True)
     dim.SetOverrideText(GS.to_mm(ds.GetBoardThickness()))
     dim.SetHeight(h)
-    dim.SetUnitsMode(pcbnew.DIM_UNITS_MODE_MILLIMETRES)
+    if GS.kicad_version_n < KICAD_VERSION_9_0_1:
+        dim.SetUnitsMode(pcbnew.DIM_UNITS_MODE_MILLIMETRES)
+    else:
+        dim.SetUnitsMode(pcbnew.DIM_UNITS_MODE_MM)
     dim.Update()
     g.AddItem(dim)
     GS.board.Add(dim)
