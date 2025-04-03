@@ -55,7 +55,7 @@ from .kicad.v5_sch import SchError
 from .kicad.pcb import PCB
 from .misc import (PDF_PCB_PRINT, W_PDMASKFAIL, W_MISSTOOL, PCBDRAW_ERR, W_PCBDRAW, VIATYPE_THROUGH, VIATYPE_BLIND_BURIED,
                    VIATYPE_MICROVIA, FONT_HELP_TEXT, W_BUG16418, pretty_list, try_int, W_NOPAGES, W_NOLAYERS, W_NOTHREPE,
-                   RENDERERS, read_png, EMBED_PREFIX)
+                   RENDERERS, read_png, EMBED_PREFIX, KICAD_VERSION_9_0_1)
 from .create_pdf import create_pdf_from_pages
 from .macros import macros, document, output_class  # noqa: F401
 from .drill_marks import DRILL_MARKS_MAP, add_drill_marks
@@ -156,7 +156,8 @@ class LayerOptions(Layer):
             self.plot_footprint_values = True
             """ Include the footprint values """
             self.force_plot_invisible_refs_vals = False
-            """ Include references and values even when they are marked as invisible """
+            """ Include references and values even when they are marked as invisible.
+                Not available on KiCad 9.0.1 and newer """
             self.use_for_center = True
             """ Use this layer for centering purposes.
                 You can invert the meaning using the `invert_use_for_center` option """
@@ -1552,7 +1553,8 @@ class PCB_PrintOptions(VariantOptions):
                 logger.debug('- Plotting layer {} ({})'.format(la.layer, id))
                 po.SetPlotReference(la.plot_footprint_refs)
                 po.SetPlotValue(la.plot_footprint_values)
-                po.SetPlotInvisibleText(la.force_plot_invisible_refs_vals)
+                if GS.kicad_version_n < KICAD_VERSION_9_0_1:
+                    po.SetPlotInvisibleText(la.force_plot_invisible_refs_vals)
                 if GS.ki6:
                     po.SetSketchPadsOnFabLayers(la.sketch_pads_on_fab_layers)
                 # Avoid holes on non-copper layers

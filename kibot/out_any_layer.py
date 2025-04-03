@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2020-2023 Salvador E. Tropea
-# Copyright (c) 2020-2023 Instituto Nacional de Tecnología Industrial
+# Copyright (c) 2020-2025 Salvador E. Tropea
+# Copyright (c) 2020-2025 Instituto Nacional de Tecnología Industrial
 # Copyright (c) 2018 John Beard
-# License: GPL-3.0
+# License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
 # Adapted from: https://github.com/johnbeard/kiplot
 import os
@@ -14,7 +14,7 @@ from .out_base import BaseOutput, VariantOptions
 from .error import PlotError
 from .layer import Layer
 from .gs import GS
-from .misc import W_NOLAYER, KICAD_VERSION_7_0_1, MISSING_TOOL, AUTO_SCALE
+from .misc import W_NOLAYER, KICAD_VERSION_7_0_1, MISSING_TOOL, AUTO_SCALE, KICAD_VERSION_9_0_1
 from .macros import macros, document  # noqa: F401
 from . import log
 
@@ -60,7 +60,8 @@ class AnyLayerOptions(VariantOptions):
             self.plot_footprint_values = True
             """ Include the footprint values """
             self.force_plot_invisible_refs_vals = False
-            """ Include references and values even when they are marked as invisible """
+            """ Include references and values even when they are marked as invisible.
+                Not available on KiCad 9.0.1 and newer """
             self.output = GS.def_global_output
             """ *Output file name, the default KiCad name if empty.
                 Important: KiCad will always create the file using its own name and then we can rename it.
@@ -103,7 +104,8 @@ class AnyLayerOptions(VariantOptions):
         po.SetPlotFrameRef(self.plot_sheet_reference and (not GS.ki5))
         po.SetPlotReference(self.plot_footprint_refs)
         po.SetPlotValue(self.plot_footprint_values)
-        po.SetPlotInvisibleText(self.force_plot_invisible_refs_vals)
+        if GS.kicad_version_n < KICAD_VERSION_9_0_1:
+            po.SetPlotInvisibleText(self.force_plot_invisible_refs_vals)
         # Edge layer included or not
         GS.SetExcludeEdgeLayer(po, self.exclude_edge_layer)
         if GS.ki5:
