@@ -118,6 +118,14 @@ test_docker_local_1_ki7:
 
 t1k7: test_docker_local_1_ki7
 
+test_docker_local_1_ki9:
+	rm -rf output
+	rm -f tests/.local
+	docker run --rm -v $(CWD):$(CWD) --workdir="$(CWD)" ghcr.io/inti-cmnb/kicad_auto_test:ki9 \
+		/bin/bash -c "python3-coverage run src/kibot --help-outputs > /dev/null; pytest-3 --log-cli-level debug -k '$(SINGLE_TEST)' --test_dir=output ; $(PY_COV) html; chown -R $(USER_ID):$(GROUP_ID) output/ tests/ .coverage.* htmlcov/ .cache"
+
+t1k9: test_docker_local_1_ki9
+
 # pip3 uninstall -y kiauto ; dpkg -i kiauto_2.2.5-1_all.deb ;
 test_docker_local_1_n:
 	rm -rf output
