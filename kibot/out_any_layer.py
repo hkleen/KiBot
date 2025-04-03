@@ -276,7 +276,11 @@ class AnyLayerOptions(VariantOptions):
     def read_vals_from_po(self, po):
         # excludeedgelayer
         if GS.ki7:
-            self.exclude_edge_layer = not po.GetPlotOnAllLayersSelection().Contains(GS.board.GetLayerID('Edge.Cuts'))
+            if GS.kicad_version_n < KICAD_VERSION_9_0_1:
+                self.exclude_edge_layer = not po.GetPlotOnAllLayersSelection().Contains(GS.board.GetLayerID('Edge.Cuts'))
+            else:
+                id = GS.board.GetLayerID('Edge.Cuts')
+                self.exclude_edge_layer = po.GetPlotOnAllLayersSequence().TestLayers(id, id+1) != 1
         else:
             self.exclude_edge_layer = po.GetExcludeEdgeLayer()
         # plotframeref
@@ -286,7 +290,7 @@ class AnyLayerOptions(VariantOptions):
         # plotvalue
         self.plot_footprint_values = po.GetPlotValue()
         # plotinvisibletext
-        self.force_plot_invisible_refs_vals = po.GetPlotInvisibleText()
+        self.force_plot_invisible_refs_vals = po.GetPlotInvisibleText() if GS.kicad_version_n < KICAD_VERSION_9_0_1 else False
         # viasonmask
         self.tent_vias = True if GS.ki9 else not po.GetPlotViaOnMaskLayer()
         if GS.ki5:
