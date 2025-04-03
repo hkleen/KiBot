@@ -694,6 +694,11 @@ outputs:
       ignore_dnf: true
       # [boolean=true] Component quantities are always expressed as integers. Using the ceil() function
       int_qtys: true
+      # [string='global'] [global,yes,no] What we do with the KiCad DNP flag.
+      # `global` means we apply the `kicad_dnp_applied` global option.
+      # `yes` means we always remove DNP components.
+      # `no` means we ignore the DNP flag and let filters do its work
+      kicad_dnp_applied: 'global'
       # [boolean=true] Component groups with blank fields will be merged into the most compatible group, where possible
       merge_blank_fields: true
       # [boolean=true] When creating groups two components with empty/missing field will be interpreted as with the same value
@@ -1149,7 +1154,8 @@ outputs:
       exclude_filter: '_null'
       # [boolean=false] Do not plot the component pads in the silk screen (KiCad 5.x only)
       exclude_pads_from_silkscreen: false
-      # [boolean=false] Include references and values even when they are marked as invisible
+      # [boolean=false] Include references and values even when they are marked as invisible.
+      # Not available on KiCad 9.0.1 and newer
       force_plot_invisible_refs_vals: false
       # [boolean=true] Tell KiCad to apply the scaling for each layer as a separated entity.
       # Disabling it the pages are coherent and can be superposed
@@ -1568,7 +1574,8 @@ outputs:
       exclude_filter: '_null'
       # [boolean=false] Do not plot the component pads in the silk screen (KiCad 5.x only)
       exclude_pads_from_silkscreen: false
-      # [boolean=false] Include references and values even when they are marked as invisible
+      # [boolean=false] Include references and values even when they are marked as invisible.
+      # Not available on KiCad 9.0.1 and newer
       force_plot_invisible_refs_vals: false
       # [string='%f-%i%I%v.%x'] Name for the gerber job file (%i='job', %x='gbrjob'). Affected by global options
       gerber_job_file: '%f-%i%I%v.%x'
@@ -1658,7 +1665,8 @@ outputs:
       exclude_filter: '_null'
       # [boolean=false] Do not plot the component pads in the silk screen (KiCad 5.x only)
       exclude_pads_from_silkscreen: false
-      # [boolean=false] Include references and values even when they are marked as invisible
+      # [boolean=false] Include references and values even when they are marked as invisible.
+      # Not available on KiCad 9.0.1 and newer
       force_plot_invisible_refs_vals: false
       # [boolean=true] Tell KiCad to apply the scaling for each layer as a separated entity.
       # Disabling it the pages are coherent and can be superposed
@@ -3347,7 +3355,8 @@ outputs:
               # This option affects only this layer.
               # You should also set `plot_footprint_values` and `sketch_pads_on_fab` to false
               exclude_filter: '_null'
-              # [boolean=false] Include references and values even when they are marked as invisible
+              # [boolean=false] Include references and values even when they are marked as invisible.
+              # Not available on KiCad 9.0.1 and newer
               force_plot_invisible_refs_vals: false
               # [string=''] Name of the layer. As you see it in KiCad
               layer: 'F.Cu'
@@ -3404,7 +3413,8 @@ outputs:
               # This option affects only this layer.
               # You should also set `plot_footprint_values` and `sketch_pads_on_fab` to false
               exclude_filter: '_null'
-              # [boolean=false] Include references and values even when they are marked as invisible
+              # [boolean=false] Include references and values even when they are marked as invisible.
+              # Not available on KiCad 9.0.1 and newer
               force_plot_invisible_refs_vals: false
               # [string=''] Name of the layer. As you see it in KiCad
               layer: 'F.Cu'
@@ -3688,7 +3698,8 @@ outputs:
       exclude_filter: '_null'
       # [boolean=false] Do not plot the component pads in the silk screen (KiCad 5.x only)
       exclude_pads_from_silkscreen: false
-      # [boolean=false] Include references and values even when they are marked as invisible
+      # [boolean=false] Include references and values even when they are marked as invisible.
+      # Not available on KiCad 9.0.1 and newer
       force_plot_invisible_refs_vals: false
       # [boolean=true] Tell KiCad to apply the scaling for each layer as a separated entity.
       # Disabling it the pages are coherent and can be superposed
@@ -4006,7 +4017,8 @@ outputs:
       exclude_filter: '_null'
       # [boolean=false] Do not plot the component pads in the silk screen (KiCad 5.x only)
       exclude_pads_from_silkscreen: false
-      # [boolean=false] Include references and values even when they are marked as invisible
+      # [boolean=false] Include references and values even when they are marked as invisible.
+      # Not available on KiCad 9.0.1 and newer
       force_plot_invisible_refs_vals: false
       # [boolean=true] Tell KiCad to apply the scaling for each layer as a separated entity.
       # Disabling it the pages are coherent and can be superposed
@@ -4636,7 +4648,8 @@ outputs:
       exclude_filter: '_null'
       # [boolean=false] Do not plot the component pads in the silk screen (KiCad 5.x only)
       exclude_pads_from_silkscreen: false
-      # [boolean=false] Include references and values even when they are marked as invisible
+      # [boolean=false] Include references and values even when they are marked as invisible.
+      # Not available on KiCad 9.0.1 and newer
       force_plot_invisible_refs_vals: false
       # [boolean=true] Tell KiCad to apply the scaling for each layer as a separated entity.
       # Disabling it the pages are coherent and can be superposed

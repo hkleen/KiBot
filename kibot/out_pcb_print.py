@@ -55,7 +55,7 @@ from .kicad.v5_sch import SchError
 from .kicad.pcb import PCB
 from .misc import (PDF_PCB_PRINT, W_PDMASKFAIL, W_MISSTOOL, PCBDRAW_ERR, W_PCBDRAW, VIATYPE_THROUGH, VIATYPE_BLIND_BURIED,
                    VIATYPE_MICROVIA, FONT_HELP_TEXT, W_BUG16418, pretty_list, try_int, W_NOPAGES, W_NOLAYERS, W_NOTHREPE,
-                   RENDERERS, read_png)
+                   RENDERERS, read_png, EMBED_PREFIX, KICAD_VERSION_9_0_1)
 from .create_pdf import create_pdf_from_pages
 from .macros import macros, document, output_class  # noqa: F401
 from .drill_marks import DRILL_MARKS_MAP, add_drill_marks
@@ -156,7 +156,8 @@ class LayerOptions(Layer):
             self.plot_footprint_values = True
             """ Include the footprint values """
             self.force_plot_invisible_refs_vals = False
-            """ Include references and values even when they are marked as invisible """
+            """ Include references and values even when they are marked as invisible.
+                Not available on KiCad 9.0.1 and newer """
             self.use_for_center = True
             """ Use this layer for centering purposes.
                 You can invert the meaning using the `invert_use_for_center` option """
@@ -687,7 +688,7 @@ class PCB_PrintOptions(VariantOptions):
         if self._sheet_reference_layout:
             # Worksheet override
             wks = os.path.abspath(self._sheet_reference_layout)
-            KiConf.fix_page_layout(os.path.join(pcb_dir, GS.pro_fname), force_pcb=wks, force_sch=wks)
+            KiConf.fix_page_layout(os.path.join(pcb_dir, GS.pro_fname), force_pcb=wks)
         self._files_to_remove.append(pcb_dir)
         # Restore the layer
         self.restore_layer()
@@ -711,7 +712,7 @@ class PCB_PrintOptions(VariantOptions):
         pro_name, _, _ = GS.copy_project(pcb_name)
         # Copy the layout, user provided or default, we need to expand vars here
         # In particular KiBot internal stuff
-        wks = KiConf.fix_page_layout(os.path.join(pcb_dir, GS.pro_fname), force_pcb=self.layout, force_sch=self.layout)
+        wks = KiConf.fix_page_layout(os.path.join(pcb_dir, GS.pro_fname), force_pcb=self.layout)
         wks = wks[1]
         logger.debugl(1, '  - Worksheet: '+wks)
         try:
@@ -781,9 +782,9 @@ class PCB_PrintOptions(VariantOptions):
         via_type = 'VIA' if GS.ki5 else 'PCB_VIA'
         for e in GS.board.GetTracks():
             if e.GetClass() == via_type:
-                vias.append((e, e.GetDrill(), e.GetWidth()))
+                vias.append((e, e.GetDrill(), GS.get_via_width(e)))
                 e.SetDrill(0)
-                e.SetWidth(self.min_w)
+                GS.set_via_width(e, self.min_w)
             elif e.GetLayer() == id:
                 if e.GetWidth():
                     e.SetLayer(tmp_layer)
@@ -803,7 +804,7 @@ class PCB_PrintOptions(VariantOptions):
             pad.SetLayerSet(layers)
         for (via, drill, width) in vias:
             via.SetDrill(drill)
-            via.SetWidth(width)
+            GS.set_via_width(via, width)
         if len(zones):
             GS.fill_zones(GS.board, zones)
         # Add it to the list
@@ -850,20 +851,20 @@ class PCB_PrintOptions(VariantOptions):
                         # So we create a "patch" for the hole
                         top = e.TopLayer()
                         bottom = e.BottomLayer()
-                        w = e.GetWidth()
+                        w = GS.get_via_width(e)
                         d = e.GetDrill()
                         vias.append((e, d, w, top, bottom))
-                        e.SetWidth(d)
+                        GS.set_via_width(e, d)
                         e.SetDrill(1)
                         e.SetTopLayer(F_Cu)
                         e.SetBottomLayer(B_Cu)
                 else:
                     top = e.TopLayer()
                     bottom = e.BottomLayer()
-                    w = e.GetWidth()
+                    w = GS.get_via_width(e)
                     d = e.GetDrill()
                     vias.append((e, d, w, top, bottom))
-                    e.SetWidth(self.min_w)
+                    GS.set_via_width(e, self.min_w)
             elif e.GetLayer() == id:
                 if e.GetWidth():
                     e.SetLayer(tmp_layer)
@@ -882,7 +883,7 @@ class PCB_PrintOptions(VariantOptions):
             pad.SetLayerSet(layers)
         for (via, drill, width, top, bottom) in vias:
             via.SetDrill(drill)
-            via.SetWidth(width)
+            GS.set_via_width(via, width)
             via.SetTopLayer(top)
             via.SetBottomLayer(bottom)
         if len(zones):
@@ -1466,7 +1467,7 @@ class PCB_PrintOptions(VariantOptions):
         else:
             # Find the layout file
             layout = KiConf.fix_page_layout(GS.pro_file, dry=True)[1]
-        if not layout or not os.path.isfile(layout):
+        if not layout or (not layout.startswith(EMBED_PREFIX) and not os.path.isfile(layout)):
             layout = os.path.abspath(os.path.join(GS.get_resource_path('kicad_layouts'), 'default.kicad_wks'))
         logger.debug('- Using layout: '+layout)
         self.layout = layout
@@ -1552,7 +1553,8 @@ class PCB_PrintOptions(VariantOptions):
                 logger.debug('- Plotting layer {} ({})'.format(la.layer, id))
                 po.SetPlotReference(la.plot_footprint_refs)
                 po.SetPlotValue(la.plot_footprint_values)
-                po.SetPlotInvisibleText(la.force_plot_invisible_refs_vals)
+                if GS.kicad_version_n < KICAD_VERSION_9_0_1:
+                    po.SetPlotInvisibleText(la.force_plot_invisible_refs_vals)
                 if GS.ki6:
                     po.SetSketchPadsOnFabLayers(la.sketch_pads_on_fab_layers)
                 # Avoid holes on non-copper layers

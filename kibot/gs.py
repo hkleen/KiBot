@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2020-2025 Salvador E. Tropea
 # Copyright (c) 2020-2025 Instituto Nacional de Tecnología Industrial
-# License: GPL-3.0
+# License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
 from contextlib import contextmanager
 import os
@@ -1110,3 +1110,50 @@ class GS(object):
     @staticmethod
     def inner_layer_index(id):
         return int(id/2-1) if GS.ki9 else id-pcbnew.F_Cu+1
+
+    @staticmethod
+    def copper_layer_to_ordinal(n):
+        ordinal = pcbnew.CopperLayerToOrdinal(n)
+        # Adjust to the current PCB
+        if ordinal == pcbnew.CopperLayerToOrdinal(pcbnew.B_Cu):
+            ordinal = GS.board.GetCopperLayerCount()-1
+        return ordinal
+
+    @staticmethod
+    def ordinal_to_copper_layer(n):
+        if n == GS.board.GetCopperLayerCount()-1:
+            return pcbnew.B_Cu
+        if n == 0:
+            return pcbnew.F_Cu
+        return (n+1)*2
+
+    @staticmethod
+    def get_via_width(via):
+        if not GS.ki9:
+            return via.GetWidth()
+        # On KiCad 9 we can have a different width for each layer
+        # To potentially support more than 32 layers (and they aren't currently supported) the code became a nightmare
+        start = GS.copper_layer_to_ordinal(via.TopLayer())
+        end = GS.copper_layer_to_ordinal(via.BottomLayer())
+        res = [via.GetWidth(GS.ordinal_to_copper_layer(layer)) for layer in range(start, end+1)]
+        return res
+
+    @staticmethod
+    def set_via_width(via, w):
+        if not GS.ki9:
+            return via.SetWidth(w)
+        # On KiCad 9 we can have a different width for each layer
+        # To potentially support more than 32 layers (and they aren't currently supported) the code became a nightmare
+        start = GS.copper_layer_to_ordinal(via.TopLayer())
+        end = GS.copper_layer_to_ordinal(via.BottomLayer())
+        if not isinstance(w, list):
+            w = [w]*(end-start+1)
+        for layer, width in zip(range(start, end+1), w):
+            via.SetWidth(GS.ordinal_to_copper_layer(layer), width)
+
+    @staticmethod
+    def get_embed_dir(fname):
+        ki_ver = f'{GS.kicad_version_major}.{GS.kicad_version_minor}'
+        if GS.on_windows:
+            return os.path.expanduser(os.path.join('~', 'AppData', 'Local', 'KiCad', ki_ver, 'embed', fname))
+        return os.path.expanduser(os.path.join('~', '.cache', 'kicad', ki_ver, 'embed', fname))

@@ -63,6 +63,14 @@ def to_inches(iu, dig=2):
     return do_round(GS.to_mils(iu)/1000, dig)
 
 
+def get_via_width(via):
+    w = GS.get_via_width(via)
+    if not isinstance(w, list):
+        return w
+    # Take the smaller pad for a KiCad 9 via
+    return min(w)
+
+
 def get_class_index(val, lst):
     """ Used to search in an Eurocircuits class vector.
         Returns the first match that is >= to val. """
@@ -657,7 +665,7 @@ class ReportOptions(VariantOptions):
                 self._tracks_m[w] = self._tracks_m.get(w, 0) + 1
             elif tclass == via_type:
                 via = t.Cast()
-                via_id = (via.GetDrill(), via.GetWidth())
+                via_id = (via.GetDrill(), get_via_width(via))
                 self._vias[via_id] = self._vias.get(via_id, 0) + 1
                 d = adjust_drill(via_id[0])
                 oar, oar_ec, d_ec = self.compute_oar(via_id[1], d)

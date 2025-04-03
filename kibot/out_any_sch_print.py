@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2020-2024 Salvador E. Tropea
-# Copyright (c) 2020-2024 Instituto Nacional de Tecnología Industrial
+# Copyright (c) 2020-2025 Salvador E. Tropea
+# Copyright (c) 2020-2025 Instituto Nacional de Tecnología Industrial
 # License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
 import os
 from .error import KiPlotConfigurationError
 from .gs import GS
 from .out_base import VariantOptions
+from .misc import EMBED_PREFIX
 from .macros import macros, document, output_class  # noqa: F401
 from . import log
 
@@ -69,12 +70,11 @@ class Any_SCH_PrintOptions(VariantOptions):
                     raise KiPlotConfigurationError(f'Missing `{new_wks}` worksheet')
             else:
                 ori_wks = new_wks = wks[0]
-                if ori_wks and not os.path.isfile(new_wks):
+                if ori_wks and not new_wks.startswith(EMBED_PREFIX) and not os.path.isfile(new_wks):
                     raise KiPlotConfigurationError(f'Missing `{new_wks}` worksheet')
             if ori_wks != new_wks:
                 prj = GS.read_pro()
-                GS.fix_page_layout(GS.pro_file, dry=False, force_sch=os.path.relpath(new_wks, GS.pro_dir),
-                                   force_pcb=os.path.relpath(wks[1], GS.pro_dir))
+                GS.fix_page_layout(GS.pro_file, dry=False, force_sch=os.path.relpath(new_wks, GS.pro_dir))
         elif self.sheet_reference_layout:
             raise KiPlotConfigurationError('Using `sheet_reference_layout` but no project available')
 

@@ -640,6 +640,11 @@ class BoMOptions(BaseOptions):
             self.exclude_marked_in_pcb = False
             """ Exclude components marked with *Exclude from BOM* in the PCB.
                 This is a KiCad 6 option """
+            self.kicad_dnp_applied = 'global'
+            """ [global,yes,no] What we do with the KiCad DNP flag.
+                `global` means we apply the `kicad_dnp_applied` global option.
+                `yes` means we always remove DNP components.
+                `no` means we ignore the DNP flag and let filters do its work """
         super().__init__()
         self._no_conflict_example = ['Config', 'Part']
 
@@ -1006,15 +1011,19 @@ class BoMOptions(BaseOptions):
         # Aggregate components from other projects
         self.aggregate_comps(comps)
         # Apply all the filters
-        reset_filters(comps)
+        reset_filters(comps, kicad_dnp_applied=self.kicad_dnp_applied)
         if self.exclude_marked_in_sch:
+            logger.debug('Transfer "Exclude from bill of materials" from schematic')
             for c in comps:
-                if c.included:
+                if c.included and not c.in_bom:
                     c.included = c.in_bom
+                    logger.debugl(3, f'- {c.ref} excluded')
         if self.exclude_marked_in_pcb:
+            logger.debug('Transfer "Exclude from bill of materials" from PCB')
             for c in comps:
-                if c.included:
+                if c.included and not c.in_bom_pcb:
                     c.included = c.in_bom_pcb
+                    logger.debugl(3, f'- {c.ref} excluded')
         comps = apply_pre_transform(comps, self.pre_transform)
         apply_exclude_filter(comps, self.exclude_filter)
         apply_fitted_filter(comps, self.dnf_filter)

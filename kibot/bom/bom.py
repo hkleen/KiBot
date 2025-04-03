@@ -364,6 +364,8 @@ class ComponentGroup(object):
         self.fields[ColumnList.COL_FP_XS_L] = float_format.format(comp.footprint_w * conv)
         self.fields[ColumnList.COL_FP_YS_L] = float_format.format(comp.footprint_h * conv)
         self.fields[ColumnList.COL_FP_LIB_L] = comp.footprint_lib
+        self.fields[ColumnList.COL_FP_FULL_L] = (comp.footprint_lib+':'+comp.footprint if comp.footprint_lib else
+                                                 comp.footprint)
         self.fields[ColumnList.COL_SHEETPATH_L] = comp.sheet_path_h
         if not self.fields[ColumnList.COL_DESCRIPTION_L]:
             self.fields[ColumnList.COL_DESCRIPTION_L] = comp.desc

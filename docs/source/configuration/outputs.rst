@@ -737,6 +737,7 @@ In addition to all the user defined fields you also have the following columns:
    attribute is enabled, for compatibility with KiCad BoM.
 -  **Footprint**: The name of the footprint, without the library name.
 -  **Footprint Lib**: The name of the library for the footprint.
+-  **Footprint Full**: The full name for the footprint (LIB:NAME).
 -  **Footprint Populate**: If the footprint is populated (soldered) or not, can be: *yes* or *no*.
    Affected by the **footprint_populate_values** option.
 -  **Footprint Rot**: The rotation angle for the footprint.

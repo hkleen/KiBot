@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2022 Salvador E. Tropea
-# Copyright (c) 2022 Instituto Nacional de Tecnología Industrial
-# License: GPL-3.0
+# Copyright (c) 2022-2025 Salvador E. Tropea
+# Copyright (c) 2022-2025 Instituto Nacional de Tecnología Industrial
+# License: AGPL-3.0
 # Project: KiBot (formerly KiPlot)
 """
 KiCad 6 color theme loader
@@ -93,7 +93,10 @@ def load_color_theme(name):
             if c_name in copper:
                 cl[id] = parse_color(copper[c_name])
             else:
-                logger.warning(W_WRONGCOLOR+"The `{}` theme doesn't define a color for the {} layer".format(name, c_name_ori))
+                if int(c_name[2:]) <= 30:
+                    # KiCad 9 extended the range of layers to 128 and changed the numbering so In31.Cu exists, but
+                    # in the stackup you can indicate upto 32 layers, so In31.Cu isn't usable
+                    logger.warning(W_WRONGCOLOR+f"The `{name}` theme doesn't define a color for the {c_name_ori} layer")
                 cl[id] = "#000000"
         else:
             c_name = c_name.replace('.', '_')
@@ -101,7 +104,7 @@ def load_color_theme(name):
             if c_name in board:
                 cl[id] = parse_color(board[c_name])
             else:
-                logger.warning(W_WRONGCOLOR+"The `{}` theme doesn't define a color for the {} layer".format(name, c_name_ori))
+                logger.warning(W_WRONGCOLOR+f"The `{name}` theme doesn't define a color for the {c_name_ori} layer")
                 cl[id] = "#000000"
         if extra_debug:
             logger.debug('- Color for layer {} ({}): {}'.format(c_name_ori, id, cl[id]))

@@ -1,3 +1,16 @@
+kibot (1.8.4-1) stable; urgency=medium
+
+  * Added support for the broken API in KiCad 9.0.1
+  * Added schematic support for embedded files on symbols and embedded
+    worksheets
+  * BoM:
+    - Added `Footprint Full` virtual field for the `LIB:FOOTPRINT` name
+    - Added `kicad_dnp_applied` option to overwrite the global option
+  * 3D outputs with variants: Fixed use of the ${PROJECTNAME} KiCad variable
+  * 3D outputs: Fixed embedded 3D models misinterpreted as KiCad 6 aliases
+
+ -- Salvador Eduardo Tropea <salvador@inti.gob.ar>  Thu, 03 Apr 2025 11:06:02 -0300
+
 kibot (1.8.3-1) stable; urgency=medium
 
   * New outputs:

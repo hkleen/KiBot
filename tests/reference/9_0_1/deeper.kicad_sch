@@ -10,7 +10,7 @@
 
   (lib_symbols
     (symbol "Device:R" (pin_numbers hide) (pin_names (offset 0)) (exclude_from_sim no) (in_bom yes) (on_board yes)
-      (embedded_fonts no) (property "Reference" "R" (at 2.032 0 90)
+      (property "Reference" "R" (at 2.032 0 90)
         (effects (font (size 1.27 1.27)))
       )
       (property "Value" "R" (at 0 0 90)
@@ -47,7 +47,7 @@
           (number "2" (effects (font (size 1.27 1.27))))
         )
       )
-    )
+      (embedded_fonts no))
   )
 
   (symbol (lib_id "Device:R") (at 139.7 80.01 0) (unit 1)

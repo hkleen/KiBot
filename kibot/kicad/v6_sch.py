@@ -16,7 +16,7 @@ import os
 import re
 from ..gs import GS
 from .. import log
-from ..misc import W_NOLIB, W_UNKFLD, W_MISSCMP, W_FIELDCONF
+from ..misc import W_NOLIB, W_UNKFLD, W_MISSCMP, W_FIELDCONF, EMBED_PREFIX
 from .error import SchError
 from .sexpdata import load, SExpData, Symbol, dumps, Sep
 from .sexp_helpers import (_check_is_symbol_list, _check_len, _check_len_total, _check_symbol, _check_hide, _check_integer,
@@ -804,6 +804,8 @@ class LibComponent(object):
         # KiCad 9
         # WTF?!
         self.embedded_fonts = None
+        self.embedded_files = []    # I.e. datasheet
+        self.embedded_file_names = {}
 
     def get_field_value(self, field):
         field = field.lower()
@@ -895,9 +897,11 @@ class LibComponent(object):
                 comp.draw.append(DrawTextV6.parse(i))
             elif i_type == 'text_box':
                 comp.draw.append(TextBox.parse(i, i_type))
-            elif i_type == 'embedded_fonts':
+            elif i_type == 'embedded_fonts':  # KiCad 9
                 # Fonts in a lib component?!
                 comp.embedded_fonts = _get_yes_no(i, 1, i_type)
+            elif i_type == 'embedded_files':  # KiCad 9
+                comp._get_embedded_files(i)
             # PINS...
             elif i_type == 'pin':
                 vis_obj = PinV6.parse(i)
@@ -933,6 +937,14 @@ class LibComponent(object):
             if vis_obj:
                 comp.box.union(vis_obj.box)
         return comp
+
+    def _get_embedded_files(self, files):
+        if not isinstance(files, list):
+            raise SchError('The embedded files is not a list')
+        for f in files[1:]:
+            obj = EmbeddedFile.load(f)
+            self.embedded_files.append(obj)
+            self.embedded_file_names[obj.name] = obj
 
     def assign_crosses(self):
         """ Compute the box for the crossed components """
@@ -1001,9 +1013,6 @@ class LibComponent(object):
         if s.unit_name is not None:
             sdata.append(_symbol('unit_name', [s.unit_name]))
             sdata.append(Sep())
-        # Fonts
-        if s.embedded_fonts is not None:
-            sdata.append(_symbol_yn('embedded_fonts', s.embedded_fonts))
         # Properties
         for f in s.fields:
             fdata = f.write()
@@ -1019,6 +1028,17 @@ class LibComponent(object):
         # Units
         for u in s.units:
             sdata.extend([u.write(cross), Sep()])
+        # Fonts
+        if s.embedded_fonts is not None:
+            sdata.append(_symbol_yn('embedded_fonts', s.embedded_fonts))
+        # - Embedded files (here are the fonts)
+        if s.embedded_files:
+            files = []
+            for f in s.embedded_files:
+                files.append(Sep())
+                files.append(f.write())
+            files.append(Sep())
+            sdata.extend([Sep(), _symbol('embedded_files', files), Sep()])
         return _symbol('symbol', sdata)
 
 
@@ -1457,7 +1477,7 @@ class SchematicBitmapV6(object):
                 # v6/7: Symbol v8: String
                 bmp.data = [_check_relaxed(values, i+1, 'image data') for i, d in enumerate(values[1:])]
             else:
-                raise SchError('Unknown symbol attribute `{}`'.format(i))
+                raise SchError('Unknown image attribute `{}`'.format(i))
         return bmp
 
     def write(self):
@@ -1498,7 +1518,7 @@ class Text(object):
                 # KiCad 7.99
                 text.exclude_from_sim = _get_yes_no(i, 1, i_type)
             else:
-                raise SchError('Unknown symbol attribute `{}`'.format(i))
+                raise SchError(f'Unknown {name} attribute `{i}`')
         return text
 
     def write(self):
@@ -2460,6 +2480,16 @@ class SchematicV6(Schematic):
             logger.debug(f"- {p}")
             for sy, c in s.symbol_uuids.items():
                 logger.debug(f"  - {sy} -> {c}")
+
+    def get_embedded_file(self, efile):
+        name = efile[len(EMBED_PREFIX):]
+        if name not in self.embedded_file_names:
+            raise SchError(f'Missing embedded file `{efile}`')
+        o = self.embedded_file_names[name]
+        cache_name = GS.get_embed_dir('kicad_embedded_'+o.checksum+os.path.splitext(name)[1])
+        if os.path.isfile(cache_name):
+            return cache_name
+        raise SchError(f'Missing embedded file `{efile}`')
 
     def load(self, fname, project, parent=None):  # noqa: C901
         """ Load a v6.x KiCad Schematic.

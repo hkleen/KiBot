@@ -991,12 +991,21 @@ class VariantOptions(BaseOptions):
                     m.SetFPIDAsString(data[2])
                 GS.set_fields(m, data[1])
 
+    def patch_prjname(self, fname):
+        """ Fixes ${PROJECTNAME} when we save to a temporal PCB """
+        with open(fname, 'rt') as fh:
+            data = fh.read()
+        if '${PROJECTNAME}' in data:
+            with open(fname, 'wt') as fh:
+                fh.write(data.replace('${PROJECTNAME}', GS.pcb_basename))
+
     def save_tmp_board(self, dir=None):
         """ Save the PCB to a temporal file.
             Advantage: all relative paths inside the file remains valid
             Disadvantage: the name of the file gets altered """
         fname = GS.tmp_file(suffix='.kicad_pcb', dir=GS.pcb_dir if dir is None else dir, what='modified PCB', a_logger=logger)
         GS.board.Save(fname)
+        self.patch_prjname(fname)
         GS.copy_project(fname)
         self._files_to_remove.extend(GS.get_pcb_and_pro_names(fname))
         return fname

@@ -5,6 +5,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.8.4] - 2025-04-03
+### Added
+- Support for the broken API in KiCad 9.0.1
+  - Change in the names of various constants
+  - Removed the SetPlotInvisibleText plot option
+  - Change in the SetPlotOnAllLayersSelection call
+- Schematic:
+  - Support for files embedded on symbols (#802)
+  - Support for embedded worksheets
+- BoM:
+  - `Footprint Full` virtual field for the `LIB:FOOTPRINT` name
+  - `kicad_dnp_applied` option to overwrite the global option
+
+### Fixed
+- 3D outputs with variants: Use of the ${PROJECTNAME} KiCad variable (#801)
+- 3D outputs: Embedded 3D models misinterpreted as KiCad 6 aliases (See #802)
+
+
 ## [1.8.3] - 2025-03-18
 ### Added
 - New outputs:

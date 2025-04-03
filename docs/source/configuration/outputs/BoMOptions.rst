@@ -103,6 +103,10 @@ BoMOptions parameters
 
 -  ``group_not_fitted`` :index:`: <pair: output - bom - options; group_not_fitted>` [:ref:`boolean <boolean>`] (default: ``false``) Enable it to group fitted and not fitted components together. This is how KiCad's internal BoM behaves.
 -  ``int_qtys`` :index:`: <pair: output - bom - options; int_qtys>` [:ref:`boolean <boolean>`] (default: ``true``) Component quantities are always expressed as integers. Using the ceil() function.
+-  ``kicad_dnp_applied`` :index:`: <pair: output - bom - options; kicad_dnp_applied>` [:ref:`string <string>`] (default: ``'global'``) (choices: "global", "yes", "no") What we do with the KiCad DNP flag.
+   `global` means we apply the `kicad_dnp_applied` global option. |br|
+   `yes` means we always remove DNP components. |br|
+   `no` means we ignore the DNP flag and let filters do its work.
 -  ``merge_blank_fields`` :index:`: <pair: output - bom - options; merge_blank_fields>` [:ref:`boolean <boolean>`] (default: ``true``) Component groups with blank fields will be merged into the most compatible group, where possible.
 -  ``merge_both_blank`` :index:`: <pair: output - bom - options; merge_both_blank>` [:ref:`boolean <boolean>`] (default: ``true``) When creating groups two components with empty/missing field will be interpreted as with the same value.
 -  ``no_conflict`` :index:`: <pair: output - bom - options; no_conflict>` [:ref:`list(string) <list(string)>`] (default: computed for your project) [:ref:`case insensitive <no_case>`]List of fields where we tolerate conflicts.
