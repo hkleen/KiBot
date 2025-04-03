@@ -14,14 +14,10 @@ KiBot (formerly KiPlot)
 - If you are looking for the GitHub Actions documentation, and you already know how
   to use KiBot, or want a quick start, read: :ref:`usage-of-github-actions`
 
-**New on v1.8.3**
+**New on v1.8.4**
 
-- New **Preliminary KiCad 9 support**
-- New outputs: ODB (ODB++), IPC2581 (IPC-2581 aka IPC-DPMX), export_3d (BREP, GLB, STL, STEP and XAO) and jobset
-- Support to use the options from the KiCad internal BoM.
-- New preflights: consolidate_pcbs and check_fields
-- New global variable: work_layer
-- Suport for OrcadPCB2, Allegro, CADSTAR, PADS, KiCad XML, Spice and Spice netlist formats
+- Support for KiCad 9.0.1
+- Better support for embedded files (3D models, worksheets, etc.)
 
 .. toctree::
    :maxdepth: 3
