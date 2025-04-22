@@ -124,7 +124,7 @@ test_docker_local_1_ki9:
 	docker run --rm -v $(CWD):$(CWD) --workdir="$(CWD)" ghcr.io/inti-cmnb/kicad_auto_test:ki9 \
 		/bin/bash -c "python3-coverage run src/kibot --help-outputs > /dev/null; pytest-3 --log-cli-level debug -k '$(SINGLE_TEST)' --test_dir=output ; $(PY_COV) html; chown -R $(USER_ID):$(GROUP_ID) output/ tests/ .coverage.* htmlcov/ .cache"
 
-t1k9: test_docker_local_1_ki9
+t1k9: single_test
 
 # pip3 uninstall -y kiauto ; dpkg -i kiauto_2.2.5-1_all.deb ;
 test_docker_local_1_n:
@@ -140,7 +140,7 @@ test_docker_local_1_sn:
 		/bin/bash -c "export KIBOT_COPY_REF=$(KIBOT_COPY_REF); src/kibot --help-outputs > /dev/null ; pytest-3 --log-cli-level debug -k '$(SINGLE_TEST)' --test_dir=output ; chown -R $(USER_ID):$(GROUP_ID) output/ tests/ .coverage.* htmlcov/ .cache"
 # rm -R .cache/ ; KIBOT_COPY_REF="1" SINGLE_TEST=test_print_sch_variant_ni_2 make test_docker_local_1_sn
 
-t1k8: single_test
+t1k8: test_docker_local_1_ki8
 
 t1n: test_docker_local_1_n
 
