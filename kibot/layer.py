@@ -398,9 +398,10 @@ for i in range(1, 31):
     Layer.DEFAULT_LAYER_DESC[name] = 'Inner layer '+str(i)
 if GS.ki6:
     # Add all the User.N layers
+    step = 2 if GS.ki9 else 1
     for i in range(1, 10):
         name = 'User.'+str(i)
-        Layer.DEFAULT_LAYER_NAMES[name] = pcbnew.User_1+i-1
+        Layer.DEFAULT_LAYER_NAMES[name] = pcbnew.User_1+(i-1)*step
         Layer.DEFAULT_LAYER_DESC[name] = 'User layer '+str(i)
 Layer.ID_2_DEFAULT_NAME = {v: k for k, v in Layer.DEFAULT_LAYER_NAMES.items()}
 for k, v in Layer.KICAD6_RENAME.items():

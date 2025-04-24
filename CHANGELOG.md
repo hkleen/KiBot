@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.8.5] - UNRELEASED
+### Fixed
+- User.N layer numbering. I.e. pcb_print issues with their numbering (#808)
+
+
 ## [1.8.4] - 2025-04-03
 ### Added
 - Support for the broken API in KiCad 9.0.1
