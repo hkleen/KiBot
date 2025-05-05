@@ -177,7 +177,7 @@ class Base3DOptions(VariantOptions):
         os.makedirs(os.path.dirname(dest), exist_ok=True)
         # Is already there?
         if os.path.isfile(dest):
-            logger.debug('Using cached model `{}`'.format(dest))
+            logger.debug(f'Using cached model `{dest}` ({os.path.getsize(dest)})')
             return dest
         logger.debug('Downloading `{}`'.format(url))
         failed = False
@@ -190,6 +190,7 @@ class Base3DOptions(VariantOptions):
             return None
         with open(dest, 'wb') as f:
             f.write(r.content)
+        logger.debug(f'- Downloaded {dest} ({os.path.getsize(dest)})')
         return dest
 
     def wrl_name(self, name, force_wrl):
