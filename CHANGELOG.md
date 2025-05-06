@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [1.8.5] - UNRELEASED
+### Added
+- Schematic: Support for private fields (#812)
+
 ### Fixed
 - User.N layer numbering. I.e. pcb_print issues with their numbering (#808)
 

@@ -1,4 +1,4 @@
-(kicad_sch (version 20241209) (generator "eeschema") (generator_version "9.0")
+(kicad_sch (version 20250114) (generator "eeschema") (generator_version "9.0")
 
   (uuid "e6521bef-4109-48f7-8b88-4121b0468927")
 
@@ -17,11 +17,11 @@
 
   (lib_symbols
     (symbol "Device:C" (pin_numbers hide) (pin_names (offset 0.254)) (exclude_from_sim no) (in_bom yes) (on_board yes)
-      (property "Reference" "C" (at 0.635 2.54 0)
-        (effects (font (size 1.27 1.27)) (justify left))
+      (property "Reference" "C1" (at 6.4008 0 90) (do_not_autoplace)
+        (effects (font (size 1.27 1.27)))
       )
-      (property "Value" "C" (at 0.635 -2.54 0)
-        (effects (font (size 1.27 1.27)) (justify left))
+      (property "Value" "C" (at 4.0894 0 90) (show_name)
+        (effects (font (size 1.27 1.27)))
       )
       (property "Footprint" "" (at 0.9652 -3.81 0)
         (effects (font (size 1.27 1.27)) (hide yes))
@@ -29,8 +29,11 @@
       (property "Datasheet" "~" (at 0 0 0)
         (effects (font (size 1.27 1.27)) (hide yes))
       )
-      (property "Description" "Unpolarized capacitor" (at 0 0 0)
+      (property "Description" "" (at 0 0 0)
         (effects (font (size 1.27 1.27)) (hide yes))
+      )
+      (property private "pp" "" (at 4.572 -1.778 0) (show_name)
+        (effects (font (size 1.27 1.27)))
       )
       (property "ki_keywords" "cap capacitor" (at 0 0 0)
         (effects (font (size 1.27 1.27)) (hide yes))
@@ -144,10 +147,7 @@
         (polyline
           (pts
             (xy 0 2.286)
-            (xy 1.016 1.905)
-            (xy 0 1.524)
-            (xy -1.016 1.143)
-            (xy 0 0.762)
+            (xy 0 2.54)
           )
           (stroke (width 0) (type default))
           (fill (type none))
@@ -155,7 +155,10 @@
         (polyline
           (pts
             (xy 0 2.286)
-            (xy 0 2.54)
+            (xy 1.016 1.905)
+            (xy 0 1.524)
+            (xy -1.016 1.143)
+            (xy 0 0.762)
           )
           (stroke (width 0) (type default))
           (fill (type none))
@@ -1625,7 +1628,25 @@
       "SxOlHgdjjG0nBZasABdf/avnAXy7iGNhjDFWQoLw95de/6sXSj0OxhjbbgoO5ABAXveHSOAvcW19"
       "TBljjJUZEviqLuceLPU4GGNsO1pXc9LWg490w8T/BtC4weNhjDG2ucYhxG8MvPqlfyj1QBhjbLta"
       "92oBndf/RjgD9QEIvA3A2wB0bNioGGOMFZG4AKIfQeDHKmW+fuH150ZLPSLGGNvONmb5LgDhA4/U"
-      "q4a8TpG0ZElYxhhjpWeYwsgo5pnRV58dK/VYGGOMXfX/ARD6Y1WuLYYhAAAAAElFTkSuQmCC"
+      "q4a8TpG0ZElYxhhjpWeYwsgo5pnRV58dK/VYGGOMXfX/ARD6Y1WuLYYhAAAAAElFTkSuQmCCAAAA"
+      "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
     )
   )
 
@@ -1807,6 +1828,9 @@
     )
     (property "Description" "" (at 45.72 87.63 0)
       (effects (font (size 1.27 1.27)) (hide yes))
+    )
+    (property private "pp" "" (at 47.498 83.058 0) (show_name)
+      (effects (font (size 1.27 1.27)))
     )
     (pin "1" (uuid "636ec398-3d70-4359-98b8-4ebd9a3143be"))
     (pin "2" (uuid "15129e2c-3876-4c0d-83a8-7e8db04bdace"))
