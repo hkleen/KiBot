@@ -14,7 +14,7 @@ from .bom.units import comp_match
 from .EasyEDA.easyeda_3d import download_easyeda_3d_model
 from .fil_base import reset_filters
 from .misc import (W_MISS3D, W_FAILDL, W_DOWN3D, DISABLE_3D_MODEL_TEXT, W_BADTOL, W_BADRES, W_RESVALISSUE, W_RES3DNAME,
-                   EMBED_PREFIX)
+                   EMBED_PREFIX, get_file_hash)
 from .gs import GS
 from .optionable import Optionable
 from .out_base import VariantOptions, BaseOutput
@@ -461,11 +461,14 @@ class Base3DOptions(VariantOptions):
         old_name = m3d.m_Filename
         new_name = self.wrl_name(replace, force_wrl) if not is_copy_mode else rename_function(rename_data, replace)
         self._undo_3d_models[new_name] = old_name
-        try:
-            fsize = os.path.getsize(new_name)
-        except FileNotFoundError:
-            fsize = 'not found'
-        logger.debugl(3, f' - Replacing 3D model `{m3d.m_Filename}` by `{new_name}` ({fsize})')
+        if GS.debug_level > 2:
+            try:
+                fsize = os.path.getsize(new_name)
+                fhash = get_file_hash(new_name)
+            except FileNotFoundError:
+                fsize = 'not found'
+                fhash = 'unknown'
+            logger.debug(f' - Replacing 3D model `{m3d.m_Filename}` by `{new_name}` ({fsize} - {fhash})')
         m3d.m_Filename = new_name
         self.models_replaced = True
 

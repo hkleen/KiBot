@@ -6,6 +6,7 @@
 """ Miscellaneous definitions """
 
 from contextlib import contextmanager
+import hashlib
 import os
 import re
 from struct import unpack
@@ -652,3 +653,41 @@ def try_decode_utf8(data, where, logger):
         data = nres
         logger.non_critical_error('Using: '+data.rstrip())
     return data
+
+
+# Adapted from "Gemini 2.5 Pro Preview O5-O6" example
+def get_file_hash(filepath, algorithm="sha256", buffer_size=65536):
+    """
+    Calculates the hash of a file using the specified algorithm.
+
+    Args:
+        filepath (str): The path to the file.
+        algorithm (str): The hashing algorithm to use (e.g., 'md5', 'sha1', 'sha256', 'sha512').
+                         Defaults to 'sha256'.
+                         You can see available algorithms with `hashlib.algorithms_available`.
+        buffer_size (int): The size of the chunks to read from the file (in bytes).
+                           Defaults to 65536 (64KB).
+
+    Returns:
+        str: The hexadecimal representation of the file's hash.
+
+    Raises:
+        FileNotFoundError: If the file does not exist.
+        ValueError: If the specified algorithm is not supported by hashlib.
+    """
+    try:
+        # Create a hash object using the specified algorithm
+        hash_obj = hashlib.new(algorithm)
+    except ValueError:
+        raise ValueError(f"Unsupported hash algorithm: {algorithm}. "
+                         f"Supported: {sorted(hashlib.algorithms_available)}")
+
+    with open(filepath, 'rb') as f:  # Open the file in binary read mode
+        # Read the file in chunks
+        while True:
+            chunk = f.read(buffer_size)
+            if not chunk:
+                break
+            hash_obj.update(chunk)
+
+    return hash_obj.hexdigest()  # Get the hexadecimal digest of the hash
