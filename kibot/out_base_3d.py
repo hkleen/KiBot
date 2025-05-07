@@ -452,7 +452,7 @@ class Base3DOptions(VariantOptions):
             self.create_colored_tht_resistor(name, cache_name, bars, r_len)
         changed[0] = True
         # Show the result
-        logger.debug('- {} {} {}% {} ({})'.format(c.ref, c.value, tol, bars, status))
+        logger.debug(' - {} {} {}% {} ({})'.format(c.ref, c.value, tol, bars, status))
         return cache_name
 
     def replace_model(self, replace, m3d, force_wrl, is_copy_mode, rename_function, rename_data):
@@ -461,6 +461,7 @@ class Base3DOptions(VariantOptions):
         old_name = m3d.m_Filename
         new_name = self.wrl_name(replace, force_wrl) if not is_copy_mode else rename_function(rename_data, replace)
         self._undo_3d_models[new_name] = old_name
+        logger.debugl(3, f' - Replacing 3D model `{m3d.m_Filename}` by {new_name} ({os.path.getsize(new_name)})')
         m3d.m_Filename = new_name
         self.models_replaced = True
 
