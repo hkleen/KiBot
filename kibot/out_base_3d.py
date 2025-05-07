@@ -461,7 +461,11 @@ class Base3DOptions(VariantOptions):
         old_name = m3d.m_Filename
         new_name = self.wrl_name(replace, force_wrl) if not is_copy_mode else rename_function(rename_data, replace)
         self._undo_3d_models[new_name] = old_name
-        logger.debugl(3, f' - Replacing 3D model `{m3d.m_Filename}` by {new_name} ({os.path.getsize(new_name)})')
+        try:
+            fsize = os.path.getsize(new_name)
+        except FileNotFoundError:
+            fsize = 'not found'
+        logger.debugl(3, f' - Replacing 3D model `{m3d.m_Filename}` by `{new_name}` ({fsize})')
         m3d.m_Filename = new_name
         self.models_replaced = True
 
