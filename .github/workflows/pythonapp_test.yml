@@ -1,0 +1,95 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Regression tests
+
+on:
+  push:
+    paths:
+    - '**.py'
+    - 'g*.sh'
+    - 'src/kibot'
+    - 'tests/**'
+    - '.github/workflows/pythonapp.yml'
+    - 'tools/dev_image/Dockerfile'
+    - 'tools/dev_image_k6/Dockerfile'
+  pull_request:
+    paths:
+    - '**.py'
+    - 'g*.sh'
+    - 'src/kibot'
+    - 'tests/**'
+    - '.github/workflows/pythonapp.yml'
+    - 'tools/dev_image/Dockerfile'
+    - 'tools/dev_image_k6/Dockerfile'
+  repository_dispatch:
+    types: [run_tests]
+  workflow_dispatch:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        ki_release: [ki9]
+        w_tests: [g3]
+
+    runs-on: ubuntu-latest
+    container: ghcr.io/inti-cmnb/kicad_auto_test:${{ matrix.ki_release }}
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    - name: Test ${{ matrix.ki_release }}
+      env:
+        KI_RELEASE: ${{ matrix.ki_release }}
+        PIP_OPS: ${{ matrix.ki_release != 'ki5' && '--break-system-packages' || ''}}
+      run: |
+        rm -rf output
+        rm -f tests/.local
+        ##### Experimental stuff:
+        ## Remove KiAuto
+        #dpkg --remove --force-all kiauto
+        ## Install KiAuto@master
+        #curl https://codeload.github.com/INTI-CMNB/KiAuto/zip/refs/heads/master --output pp.zip
+        #unzip pp.zip
+        #pip3 install ${PIP_OPS} KiAuto-master/
+        ## Clean the downloaded stuff
+        #rm -rf KiAuto-master/ pp.zip
+        ## Install KiDiff@master
+        #curl https://codeload.github.com/INTI-CMNB/KiDiff/zip/refs/heads/master --output pp.zip
+        #unzip pp.zip
+        #pip3 install ${PIP_OPS} KiDiff-master/
+        ## Clean the downloaded stuff
+        #rm -rf KiDiff-master/ pp.zip
+        ## Check what we got
+        #echo $PATH
+        #ls -la /usr/bin/*_do || true
+        #ls -la /usr/local/bin/*_do || true
+        #which pcbnew_do
+        #pcbnew_do --version
+        # KiDiff tests
+        #curl https://codeload.github.com/INTI-CMNB/KiDiff/zip/refs/heads/kiri_mode --output pp.zip
+        #unzip pp.zip
+        #prefix=/usr make -C KiDiff-kiri_mode install
+        #rm -rf KiDiff-kiri_mode/ pp.zip
+        #kicad-diff.py --version
+        ##### End Experimental stuff
+        # Ensure we start a fresh coverage meassurement
+        python3-coverage erase
+        # Create the caches with macros
+        python3-coverage run src/kibot --help-outputs > /dev/null
+        # Individual run for specific tests
+        # pytest --log-cli-level debug -k "test_ibom_parse_fail" --test_dir=output
+        # Run the 90% faster tests (under 3 s) together
+        # Do it in parallel
+        ./${{ matrix.w_tests }}.sh
+    - name: Store results
+      if: ${{ always() }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: Test_Output_${{ matrix.ki_release }}_${{ matrix.w_tests }}
+        # Important! empty directories are skipped!!!!
+        path: output
+        include-hidden-files: true
